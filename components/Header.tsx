@@ -72,13 +72,15 @@ export function Header() {
   };
 
   const navLinks = [
-    { label: "PYQs Explorer", href: "/pyqs", icon: Compass },
-    { label: "Subjects", href: "/subjects", icon: Layers },
+    { label: "Study Plan", href: "/study-planner", icon: BookOpen },
+    { label: "Current Affairs", href: "/current-affairs", icon: Layers },
+    { label: "Daily Quiz", href: "/daily-quiz", icon: CheckCircle },
+    { label: "PYQ Explorer", href: "/pyqs", icon: Compass },
+    { label: "Exams", href: "/exams", icon: ShieldCheck },
+    { label: "Mains", href: "/mains", icon: BarChart2 },
     { label: "Mock Tests", href: "/mock-tests", icon: Clock },
-    { label: "Dashboard", href: "/dashboard", icon: BarChart2 },
     { label: "Revision", href: "/revision", icon: RotateCw },
-    { label: "Bookmarks", href: "/bookmarks", icon: Bookmark },
-    { label: "Pricing", href: "/pricing", icon: ShieldCheck },
+    { label: "Pricing", href: "/pricing", icon: Bookmark },
   ];
 
   return (

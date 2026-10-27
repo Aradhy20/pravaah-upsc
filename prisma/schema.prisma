@@ -36,6 +36,8 @@ model User {
   subscriptions Subscription[]
   payments      PaymentRecord[]
   refunds       RefundRecord[]
+  dailyQuizAttempts DailyQuizAttempt[]
+  mainsDrafts   MainsDraft[]
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
 }
@@ -141,6 +143,7 @@ model Question {
   bookmarks      Bookmark[]
   notes          UserNote[]
   schedules      ReviewSchedule[]
+  storyLinks     StoryQuestionLink[]
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
 
@@ -501,3 +504,191 @@ model RefundRecord {
   processedAt      DateTime      @default(now())
   createdAt        DateTime      @default(now())
 }
+
+// ==========================================
+// CURRENT AFFAIRS & DAILY QUIZ PIPELINE
+// ==========================================
+
+model CurrentAffairsStory {
+  id               String               @id @default(cuid())
+  title            String
+  slug             String               @unique
+  summary          String
+  content          String
+  importancePrelims String?
+  importanceMains  String?
+  sourceName       String               // e.g. "PIB Delhi", "The Hindu", "PRS Legislative"
+  sourceUrl        String
+  sourceDate       DateTime?
+  publishedAt      DateTime             @default(now())
+  status           String               @default("PUBLISHED") // "PUBLISHED", "FACT_CHECK_REQUIRED", "DRAFT", "ARCHIVED"
+  termsList        String?              // Comma-separated or JSON list of key terms
+  prelimsFodder    String?
+  mainsFodder      String?
+  viewCount        Int                  @default(0)
+  topics           StoryTopic[]
+  questionLinks    StoryQuestionLink[]
+  quizQuestions    DailyQuizQuestion[]
+  createdAt        DateTime             @default(now())
+  updatedAt        DateTime             @updatedAt
+}
+
+model StoryTopic {
+  id             String              @id @default(cuid())
+  storyId        String
+  story          CurrentAffairsStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  syllabusPaper  String              // "GS1", "GS2", "GS3", "GS4", "PRELIMS"
+  topicName      String
+  confidence     Float               @default(0.95)
+  createdAt      DateTime            @default(now())
+}
+
+model StoryQuestionLink {
+  id                    String              @id @default(cuid())
+  storyId               String
+  story                 CurrentAffairsStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  questionId            String
+  question              Question            @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  relationshipRationale String
+  createdAt             DateTime            @default(now())
+
+  @@unique([storyId, questionId])
+}
+
+model DailyQuiz {
+  id             String              @id @default(cuid())
+  quizDate       DateTime            @unique // Unique per calendar day
+  title          String
+  description    String?
+  totalQuestions Int                 @default(5)
+  isPublished    Boolean             @default(true)
+  questions      DailyQuizQuestion[]
+  attempts       DailyQuizAttempt[]
+  createdAt      DateTime            @default(now())
+}
+
+model DailyQuizQuestion {
+  id            String               @id @default(cuid())
+  dailyQuizId   String
+  dailyQuiz     DailyQuiz            @relation(fields: [dailyQuizId], references: [id], onDelete: Cascade)
+  storyId       String?
+  story         CurrentAffairsStory? @relation(fields: [storyId], references: [id], onDelete: SetNull)
+  orderIndex    Int                  @default(1)
+  questionText  String
+  optionA       String
+  optionB       String
+  optionC       String
+  optionD       String
+  correctOption String               // "A", "B", "C", "D"
+  explanation   String
+  createdAt     DateTime             @default(now())
+}
+
+model DailyQuizAttempt {
+  id              String    @id @default(cuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  dailyQuizId     String
+  dailyQuiz       DailyQuiz @relation(fields: [dailyQuizId], references: [id], onDelete: Cascade)
+  score           Float
+  totalMarks      Float     @default(10.0)
+  accuracyPercent Float
+  answersJson     String    // JSON string of user answers { questionId: selectedOption }
+  completedAt     DateTime  @default(now())
+
+  @@unique([userId, dailyQuizId])
+}
+
+// ==========================================
+// COMPREHENSIVE MULTI-EXAM CATALOGUE
+// ==========================================
+
+model ExamDirectory {
+  id                         String   @id @default(cuid())
+  code                       String   @unique // "CSE", "IFS", "CDS", "NDA", "CAPF", "ESE", "CMS", "EPFO"
+  name                       String
+  conductingBody             String   @default("UPSC")
+  category                   String   @default("Civil Services") // "Defence", "Engineering", "Medical", etc.
+  overview                   String
+  eligibilityQualifications  String
+  ageLimit                   String
+  attemptsAllowed            String
+  stagesDescription          String
+  officialNotificationUrl    String
+  syllabusOverview           String
+  examCycleDates             String?  // e.g. "Notification: Feb, Prelims: May, Mains: Sep"
+  totalVacanciesTypical      String?
+  isActive                   Boolean  @default(true)
+  orderIndex                 Int      @default(1)
+  createdAt                  DateTime @default(now())
+  updatedAt                  DateTime @updatedAt
+}
+
+// ==========================================
+// MAINS ANSWER-WRITING WORKSPACE
+// ==========================================
+
+model MainsQuestion {
+  id                String       @id @default(cuid())
+  paperCode         String       // "GS1", "GS2", "GS3", "GS4", "ESSAY"
+  year              Int
+  questionNumber    Int
+  questionText      String
+  marks             Int          @default(10) // 10 or 15 marks
+  wordLimit         Int          @default(150) // 150 or 250 words
+  theme             String       // e.g. "Modern History", "Governance", "Ethics Case Study"
+  frameworkGuidance String?      // Introduction, Body dimensions, Conclusion guidance
+  drafts            MainsDraft[]
+  createdAt         DateTime     @default(now())
+
+  @@unique([paperCode, year, questionNumber])
+}
+
+model MainsDraft {
+  id                   String        @id @default(cuid())
+  userId               String
+  user                 User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mainsQuestionId      String
+  mainsQuestion        MainsQuestion @relation(fields: [mainsQuestionId], references: [id], onDelete: Cascade)
+  userAnswer           String
+  wordCount            Int           @default(0)
+  timeSpentSeconds     Int           @default(0)
+  selfEvaluationScore  Float?
+  selfEvaluationNotes  String?
+  aiFeedbackJson       String?
+  isSubmitted          Boolean       @default(false)
+  createdAt            DateTime      @default(now())
+  updatedAt            DateTime      @updatedAt
+
+  @@unique([userId, mainsQuestionId])
+}
+
+// ==========================================
+// OPERATIONS, SCHEDULING & MONITORING
+// ==========================================
+
+model BackgroundJob {
+  id           String    @id @default(cuid())
+  jobType      String    // "SOURCE_AUDIT", "CURRENT_AFFAIRS_CRAWL", "PAPER_DISCOVERY", "STALENESS_CHECK"
+  status       String    @default("QUEUED") // "QUEUED", "RUNNING", "SUCCESS", "FAILED"
+  summary      String?
+  errorDetails String?
+  durationMs   Int       @default(0)
+  startedAt    DateTime  @default(now())
+  completedAt  DateTime?
+}
+
+model SourceRegistryRecord {
+  id               String    @id @default(cuid())
+  sourceId         String    @unique
+  sourceName       String
+  canonicalDomain  String
+  sourceType       String
+  collectionMethod String
+  lastStatusCode   Int       @default(200)
+  lastCheckedAt    DateTime  @default(now())
+  lastSuccessAt    DateTime?
+  isHealthy        Boolean   @default(true)
+  errorMessage     String?
+}
+
