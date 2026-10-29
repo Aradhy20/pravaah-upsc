@@ -55,13 +55,20 @@ export default function AdminDashboardPage() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          <a
+            href="/admin/ingestion"
+            className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-indigo-700"
+          >
+            <Layers className="h-4 w-4" />
+            <span>Ingestion Operations</span>
+          </a>
           <a
             href="/admin/imports"
-            className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-700"
+            className="flex items-center gap-1.5 rounded-lg bg-blue-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-700"
           >
             <UploadCloud className="h-4 w-4" />
-            <span>Import Question Batch</span>
+            <span>Import Batch</span>
           </a>
         </div>
       </div>

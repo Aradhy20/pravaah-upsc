@@ -1,1 +1,1 @@
-year,paper,questionNumber,error
+questionId,year,paper,qNumber,errorCode,message,severity

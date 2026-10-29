@@ -1,33 +1,33 @@
-# Pravaah UPSC — Source Document Registry & Ingestion Manifest
+# Pravaah UPSC — Master Source Registry & Canonical Directory
 
-**Pipeline Component:** `scripts/discover_upsc_papers.py`
-**Target Official Source:** Union Public Service Commission (`upsc.gov.in`)
-**Catalog Scope:** 2019 – 2024 (6 Full Exam Cycles)
-**Total Registered Papers:** 12 (6 GS1 + 6 CSAT)
-**Target Question Yield:** 1080 Verified Questions (GS1: 600, CSAT: 480)
+**Document Version:** 2.0 (Multi-Source Production Standard)
+**Registry Synchronized:** 2026-10-29 17:13:58 UTC
+**Operational Focus:** Authoritative Official Question Papers, Regulatory Feeds & Educational Reference Benchmarks
 
 ---
 
-## 1. Official Examination Papers Registry (Series A)
+## 1. Master Registered Sources Directory
 
-| Year | Paper | Series | Questions | Marks | Negative Mark | Source Archive Reference | Key Version |
-| :---: | :---: | :---: | :---: | :---: | :---: | :--- | :---: |
-| 2024 | **GS1** | Series A | 100 | 200 | -0.666 | [UPSC_CSE_Prelims_2024_GS1_Series_A.pdf](https://upsc.gov.in/sites/default/files/CSP_2024_GS_P1_A.pdf) | Official Final Key |
-| 2024 | **GS2** | Series A | 80 | 200 | -0.833 | [UPSC_CSE_Prelims_2024_GS2_CSAT_Series_A.pdf](https://upsc.gov.in/sites/default/files/CSP_2024_CSAT_P2_A.pdf) | Official Final Key |
-| 2023 | **GS1** | Series A | 100 | 200 | -0.666 | [UPSC_CSE_Prelims_2023_GS1_Series_A.pdf](https://upsc.gov.in/sites/default/files/CSP_2023_GS_P1_A.pdf) | Official Final Key |
-| 2023 | **GS2** | Series A | 80 | 200 | -0.833 | [UPSC_CSE_Prelims_2023_GS2_CSAT_Series_A.pdf](https://upsc.gov.in/sites/default/files/CSP_2023_CSAT_P2_A.pdf) | Official Final Key |
-| 2022 | **GS1** | Series A | 100 | 200 | -0.666 | [UPSC_CSE_Prelims_2022_GS1_Series_A.pdf](https://upsc.gov.in/sites/default/files/CSP_2022_GS_P1_A.pdf) | Official Final Key |
-| 2022 | **GS2** | Series A | 80 | 200 | -0.833 | [UPSC_CSE_Prelims_2022_GS2_CSAT_Series_A.pdf](https://upsc.gov.in/sites/default/files/CSP_2022_CSAT_P2_A.pdf) | Official Final Key |
-| 2021 | **GS1** | Series A | 100 | 200 | -0.666 | [UPSC_CSE_Prelims_2021_GS1_Series_A.pdf](https://upsc.gov.in/sites/default/files/CSP_2021_GS_P1_A.pdf) | Official Final Key |
-| 2021 | **GS2** | Series A | 80 | 200 | -0.833 | [UPSC_CSE_Prelims_2021_GS2_CSAT_Series_A.pdf](https://upsc.gov.in/sites/default/files/CSP_2021_CSAT_P2_A.pdf) | Official Final Key |
-| 2020 | **GS1** | Series A | 100 | 200 | -0.666 | [UPSC_CSE_Prelims_2020_GS1_Series_A.pdf](https://upsc.gov.in/sites/default/files/CSP_2020_GS_P1_A.pdf) | Official Final Key |
-| 2020 | **GS2** | Series A | 80 | 200 | -0.833 | [UPSC_CSE_Prelims_2020_GS2_CSAT_Series_A.pdf](https://upsc.gov.in/sites/default/files/CSP_2020_CSAT_P2_A.pdf) | Official Final Key |
-| 2019 | **GS1** | Series A | 100 | 200 | -0.666 | [UPSC_CSE_Prelims_2019_GS1_Series_A.pdf](https://upsc.gov.in/sites/default/files/CSP_2019_GS_P1_A.pdf) | Official Final Key |
-| 2019 | **GS2** | Series A | 80 | 200 | -0.833 | [UPSC_CSE_Prelims_2019_GS2_CSAT_Series_A.pdf](https://upsc.gov.in/sites/default/files/CSP_2019_CSAT_P2_A.pdf) | Official Final Key |
+| ID | Source Name | Canonical Domain | Endpoint / Entry URL | Content Type | Status |
+| :--- | :--- | :--- | :--- | :--- | :---: |
+| `src-upsc-prev-papers` | **UPSC Official Previous Question Papers** | `upsc.gov.in` | [https://www.upsc.gov.in/examinations/previous-question-papers](https://www.upsc.gov.in/examinations/previous-question-papers) | `OFFICIAL_AUTHORITY` | `ACTIVE_PERMITTED` |
+| `src-upsc-archive` | **UPSC Question Papers Archive** | `upsc.gov.in` | [https://www.upsc.gov.in/examinations/question-papers](https://www.upsc.gov.in/examinations/question-papers) | `OFFICIAL_AUTHORITY` | `ACTIVE_PERMITTED` |
+| `src-upsc-answer-keys` | **UPSC Official Final Answer Keys Portal** | `upsc.gov.in` | [https://www.upsc.gov.in/examinations/answer-keys](https://www.upsc.gov.in/examinations/answer-keys) | `OFFICIAL_AUTHORITY` | `ACTIVE_PERMITTED` |
+| `src-pib-gov` | **Press Information Bureau (PIB)** | `pib.gov.in` | [https://pib.gov.in/allRel.aspx](https://pib.gov.in/allRel.aspx) | `GOVERNMENT_FEED` | `ACTIVE_PERMITTED` |
+| `src-rbi-notifications` | **Reserve Bank of India Press Releases & Notifications** | `rbi.org.in` | [https://rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx](https://rbi.org.in/Scripts/BS_PressReleaseDisplay.aspx) | `REGULATORY_BODY` | `ACTIVE_PERMITTED` |
+| `src-prs-india` | **PRS Legislative Research (Bill Track & Policy)** | `prsindia.org` | [https://prsindia.org/billtrack](https://prsindia.org/billtrack) | `POLICY_RESEARCH` | `REFERENCE_BENCHMARK_ONLY` |
+| `src-iasboard-ref` | **IASBoard UPSC Learning Portal** | `iasboard.com` | [https://iasboard.com/](https://iasboard.com/) | `EDUCATIONAL_BENCHMARK` | `REFERENCE_BENCHMARK_ONLY` |
+| `src-decodecivils-ref` | **Decode Civils Current Affairs Portal** | `decodecivils.com` | [https://currentaffairs.decodecivils.com/](https://currentaffairs.decodecivils.com/) | `EDUCATIONAL_BENCHMARK` | `REFERENCE_BENCHMARK_ONLY` |
+| `src-human-peritus-ref` | **Human Peritus Specialist Exam Portal** | `humanperitus.in` | [https://humanperitus.in/](https://humanperitus.in/) | `EDUCATIONAL_BENCHMARK` | `REFERENCE_BENCHMARK_ONLY` |
+| `src-unlockias-ref` | **UnlockIAS Other UPSC Exams Portal** | `unlockias.in` | [https://www.unlockias.in/upsc-exams-other-than-cse](https://www.unlockias.in/upsc-exams-other-than-cse) | `EDUCATIONAL_BENCHMARK` | `REFERENCE_BENCHMARK_ONLY` |
+| `src-examday-ref` | **ExamDay AI UPSC Platform** | `examday.ai` | [https://examday.ai/](https://examday.ai/) | `EDUCATIONAL_BENCHMARK` | `REFERENCE_BENCHMARK_ONLY` |
+| `src-question-paper-milte-h` | **Question Paper Milte H (Colloquial Query Canonical Resolution)** | `upsc.gov.in` | [https://www.upsc.gov.in/examinations/previous-question-papers](https://www.upsc.gov.in/examinations/previous-question-papers) | `OFFICIAL_AUTHORITY_CANONICAL_TARGET` | `ACTIVE_PERMITTED` |
 
 ---
 
-## 2. Integrity & Attribution Policy
-- All documents in this registry are official examination question papers and final answer keys released by the Union Public Service Commission (Govt of India).
-- Standardized to **Series A** across all examination years to eliminate option numbering ambiguity.
-- Official negative marking rules apply strictly: -0.666 marks for GS Paper I, and -0.833 marks for CSAT Paper II.
+## 2. Ingestion Adapter Registry
+- `adapters/upsc_official.py`: Handles official PDF discovery, SHA-256 hashing, and Series A parsing.
+- `adapters/pib_feed.py`: Discovers daily government releases and maps them to GS1/GS2/GS3/GS4 syllabus.
+- `adapters/rbi_feed.py`: Discovers monetary and banking policy updates for GS3 Indian Economy.
+- `adapters/prs_legislative.py`: Tracks Parliament bills and constitutional amendment acts for GS2 Polity.
+
