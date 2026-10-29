@@ -2,7 +2,7 @@
 
 **Compliance Standard:** Ethical Data Ingestion, Public Domain Priority & Zero Unlicensed Scraping
 **Auditor:** Principal Data Architect & Security Engineer
-**Audit Timestamp:** 2026-10-27 18:38:31 UTC
+**Audit Timestamp:** 2026-10-29 16:24:37 UTC
 
 ---
 
@@ -10,14 +10,14 @@
 
 | Source Name | Category | Allowed Ingestion Method | Licensing & Usage Rules | Attribution Required | Human Review | Health |
 | :--- | :--- | :--- | :--- | :---: | :---: | :---: |
-| **UPSC Official Question Papers Archive** | `OFFICIAL_EXAM_BODY` | `DIRECT_DOCUMENT_DOWNLOAD` | Government Public Domain / Official Gazette | Mandatory | Automated | 🟢 Healthy (425.43ms) |
-| **Press Information Bureau (PIB)** | `OFFICIAL_GOVERNMENT_FEED` | `RSS_AND_STRUCTURED_PAGE` | Government Public Information (National Portal of India) | Mandatory | Mandatory | 🟢 Healthy (240.76ms) |
-| **PRS Legislative Research** | `POLICY_RESEARCH` | `METADATA_AND_LINKING_ONLY` | Creative Commons / Educational Reference with Attribution | Mandatory | Mandatory | 🟢 Healthy (523.92ms) |
-| **Reserve Bank of India (RBI) Press Releases** | `REGULATORY_BODY` | `PUBLIC_PRESS_RELEASES_ONLY` | Official Regulatory Notifications | Mandatory | Mandatory | 🟢 Healthy (537.69ms) |
-| **ISRO Missions & Science Announcements** | `SCIENCE_AGENCY` | `DIRECT_PAGE_METADATA` | Official Space Agency Releases (Dept of Space, GoI) | Mandatory | Automated | 🔴 Inaccessible (136.04ms) |
-| **UnlockIAS Other UPSC Exams Reference** | `FUNCTIONAL_BENCHMARK` | `FUNCTIONAL_UX_REFERENCE_ONLY` | Proprietary Commercial Website. Zero Content Copying. | Mandatory | Mandatory | 🟢 Healthy (325.57ms) |
-| **Decode Civils Current Affairs Reference** | `FUNCTIONAL_BENCHMARK` | `FUNCTIONAL_UX_REFERENCE_ONLY` | Proprietary Commercial Coaching Product. Zero Content Copying. | Mandatory | Mandatory | 🟢 Healthy (450.14ms) |
-| **Human Peritus Specialist Exam Reference** | `FUNCTIONAL_BENCHMARK` | `SYLLABUS_TAXONOMY_INSPECTION_ONLY` | Proprietary Commercial Coaching Provider. Zero Content Copying. | Mandatory | Mandatory | 🔴 Inaccessible (334.18ms) |
+| **UPSC Official Question Papers Archive** | `OFFICIAL_EXAM_BODY` | `DIRECT_DOCUMENT_DOWNLOAD` | Government Public Domain / Official Gazette | Mandatory | Automated | 🟢 Healthy (103.93ms) |
+| **Press Information Bureau (PIB)** | `OFFICIAL_GOVERNMENT_FEED` | `RSS_AND_STRUCTURED_PAGE` | Government Public Information (National Portal of India) | Mandatory | Mandatory | 🟢 Healthy (65.7ms) |
+| **PRS Legislative Research** | `POLICY_RESEARCH` | `METADATA_AND_LINKING_ONLY` | Creative Commons / Educational Reference with Attribution | Mandatory | Mandatory | 🟢 Healthy (535.22ms) |
+| **Reserve Bank of India (RBI) Press Releases** | `REGULATORY_BODY` | `PUBLIC_PRESS_RELEASES_ONLY` | Official Regulatory Notifications | Mandatory | Mandatory | 🟢 Healthy (404.96ms) |
+| **ISRO Missions & Science Announcements** | `SCIENCE_AGENCY` | `DIRECT_PAGE_METADATA` | Official Space Agency Releases (Dept of Space, GoI) | Mandatory | Automated | 🔴 Inaccessible (36.71ms) |
+| **UnlockIAS Other UPSC Exams Reference** | `FUNCTIONAL_BENCHMARK` | `FUNCTIONAL_UX_REFERENCE_ONLY` | Proprietary Commercial Website. Zero Content Copying. | Mandatory | Mandatory | 🟢 Healthy (238.91ms) |
+| **Decode Civils Current Affairs Reference** | `FUNCTIONAL_BENCHMARK` | `FUNCTIONAL_UX_REFERENCE_ONLY` | Proprietary Commercial Coaching Product. Zero Content Copying. | Mandatory | Mandatory | 🟢 Healthy (169.45ms) |
+| **Human Peritus Specialist Exam Reference** | `FUNCTIONAL_BENCHMARK` | `SYLLABUS_TAXONOMY_INSPECTION_ONLY` | Proprietary Commercial Coaching Provider. Zero Content Copying. | Mandatory | Mandatory | 🔴 Inaccessible (314.71ms) |
 
 ---
 
