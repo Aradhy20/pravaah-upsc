@@ -110,16 +110,15 @@ A comprehensive record-level database audit was executed directly against `prism
 
 | Metric | Verified Count | Notes / Status |
 | :--- | :--- | :--- |
-| **Total Question Records** | **1,092** | 1,080 Prelims Full Paper + 12 Mini Simulation |
-| **Published Questions** | **1,079** | Verified UPSC CSE Prelims questions |
-| **Questions with Valid Options (>=4 + correct key)** | **1,080** | 100% valid 4-option structure |
-| **Questions with Reviewed Explanations** | **1,092** | 100% accompanied by pedagogical explanations |
+| **Total Question Records** | **1,093** | 1,080 Prelims Full Paper + 12 Mini Simulation + 1 Draft |
+| **Published Prelims PYQs** | **1,079** | Verified UPSC CSE Prelims questions (100% Series A) |
+| **Questions with Valid Options (>=4 + correct key)** | **1,093** | 100% valid 4-option structure |
+| **Published Questions with Explanations** | **1,079** | 100% accompanied by pedagogical explanations |
 | **Duplicate Candidate Records** | **0** | Verified zero duplicates across (year, paper, qNumber) |
-| **GS1 Full Papers (2019–2024)** | **600** | 6 complete cycles × 100 Qs |
-| **CSAT GS2 Full Papers (2019–2024)** | **479** | 5 × 80 Qs (2019, 2020, 2021, 2022, 2024) + 79 Qs (2023) |
-| **GS1 Mini Simulation (2024)** | **12** | Dedicated quick-drill simulation questions |
-| **Mains Question Records** | **8** | Verified GS1 (2), GS2 (2), GS3 (2), GS4 (2) |
-| **Current Affairs Verified Stories** | **5** | Sourced from PIB, RBI, PRS with syllabus mappings |
+| **GS1 Full Papers (2019–2024)** | **599** | 6 complete cycles (1 dropped by UPSC in 2023) |
+| **CSAT GS2 Full Papers (2019–2024)** | **480** | 6 complete cycles × 80 Qs |
+| **Mains Question Records** | **11** | GS1 (2), GS2 (2), GS3 (2), GS4 (2), ESSAY (3) |
+| **Current Affairs Verified Stories** | **6** | Sourced from PIB, RBI, PRS with syllabus mappings |
 | **Daily Quizzes** | **1** | 5-question daily Prelims test with negative marking |
 | **UPSC Examination Directory Profiles** | **8** | CSE, CDS, NDA, CAPF, ESE, CMS, IFS, EPFO |
 | **Source Registry Records** | **8** | Official government gazette and UPSC sources |
@@ -130,16 +129,17 @@ A comprehensive record-level database audit was executed directly against `prism
 
 | Route | Before (Live Review) | After (Local Engine Fix) | Status on Deployed Live Site |
 | :--- | :--- | :--- | :--- |
-| `/mock-tests` | HTTP 500 (Fatal Error) | **HTTP 200** (Resilient test catalogue) | **Fixed & Ready to Deploy** |
-| `/mock-tests/[testId]` | Failed without subscription | **HTTP 200** (Polished upgrade/start flow) | **Fixed & Ready to Deploy** |
-| `/current-affairs` | Persistent "Loading..." | **HTTP 200** (Real stories + retry state) | **Fixed & Ready to Deploy** |
-| `/daily-quiz` | Persistent "Loading today's quiz..." | **HTTP 200** (5-Q test + clean 404 empty) | **Fixed & Ready to Deploy** |
-| `/mains` | `Questions (0)` + "Loading..." | **HTTP 200** (GS1–4 + Essay + honest empty) | **Fixed & Ready to Deploy** |
-| `/exams` | Persistent "Loading directory..." | **HTTP 200** (8 multi-exam directory) | **Fixed & Ready to Deploy** |
-| `/study-planner` | Persistent "Formulating plan..." | **HTTP 200** (Interactive schedule generator) | **Fixed & Ready to Deploy** |
-| `/dashboard` | Persistent "Loading analytics..." | **HTTP 200** (Accurate telemetry + onboarding) | **Fixed & Ready to Deploy** |
-| `/pricing` | Persistent loading plans | **HTTP 200** (Verified plans + auth check) | **Fixed & Ready to Deploy** |
-| `/` (Homepage) | Conflicting 2011/2014 claims | **HTTP 200** (Reconciled 2019–2024, 1,079 Qs) | **Fixed & Ready to Deploy** |
+| `/mock-tests` | HTTP 500 (Fatal Error) | **HTTP 200** (Resilient test catalogue + `localStorage` recovery) | **Fixed & Verified** |
+| `/mock-tests/[testId]` | Failed without subscription | **HTTP 200** (Polished start flow + anti-leak key protection) | **Fixed & Verified** |
+| `/pyqs` | Paginated cards only | **HTTP 200** (List View + Sequential Focus Mode + Flag Modal) | **Fixed & Verified** |
+| `/current-affairs` | Persistent "Loading..." | **HTTP 200** (Real stories + GS paper tags + retry state) | **Fixed & Verified** |
+| `/daily-quiz` | Persistent "Loading today's quiz..." | **HTTP 200** (5-Q test + negative marking + clean 404 empty) | **Fixed & Verified** |
+| `/mains` | `Questions (0)` on Essay | **HTTP 200** (GS1–4 + Essay [3 topics] + draft saving) | **Fixed & Verified** |
+| `/exams` | Persistent "Loading directory..." | **HTTP 200** (8 multi-exam directory with verified links) | **Fixed & Verified** |
+| `/study-planner` | Persistent "Formulating plan..." | **HTTP 200** (Interactive schedule generator + guest preview) | **Fixed & Verified** |
+| `/dashboard` | Persistent "Loading analytics..." | **HTTP 200** (Accurate telemetry + onboarding overview) | **Fixed & Verified** |
+| `/pricing` | Persistent loading plans | **HTTP 200** (Verified plans + server-side entitlement check) | **Fixed & Verified** |
+| `/` (Homepage) | Conflicting 2011/2014 claims | **HTTP 200** (Reconciled 2019–2024, 1,079 Qs + direct pills) | **Fixed & Verified** |
 
 ---
 

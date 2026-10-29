@@ -4,7 +4,7 @@ import React, { useState, useEffect, useCallback, Suspense } from "react";
 import { useSearchParams, useRouter } from "next/navigation";
 import { FilterBar } from "@/components/FilterBar";
 import { QuestionCard, QuestionData } from "@/components/QuestionCard";
-import { Loader2, AlertCircle, Compass, HelpCircle } from "lucide-react";
+import { Loader2, AlertCircle, Compass, HelpCircle, List, Maximize2, ChevronLeft, ChevronRight } from "lucide-react";
 
 function PYQExplorerContent() {
   const router = useRouter();
@@ -26,6 +26,39 @@ function PYQExplorerContent() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(false);
   const [totalQuestions, setTotalQuestions] = useState(0);
+  const [viewMode, setViewMode] = useState<"list" | "focus">("list");
+  const [focusIndex, setFocusIndex] = useState(0);
+
+  // Next / Prev question handlers in Focus Mode
+  const handleNextQuestion = useCallback(() => {
+    if (focusIndex < questions.length - 1) {
+      setFocusIndex((prev) => prev + 1);
+    } else if (hasMore) {
+      setPage((prev) => prev + 1);
+      setFocusIndex(0);
+    }
+  }, [focusIndex, questions.length, hasMore]);
+
+  const handlePrevQuestion = useCallback(() => {
+    if (focusIndex > 0) {
+      setFocusIndex((prev) => prev - 1);
+    } else if (page > 1) {
+      setPage((prev) => prev - 1);
+      setFocusIndex(14);
+    }
+  }, [focusIndex, page]);
+
+  // Keyboard navigation for Focus Mode
+  useEffect(() => {
+    if (viewMode !== "focus") return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+      if (e.key === "ArrowRight") handleNextQuestion();
+      if (e.key === "ArrowLeft") handlePrevQuestion();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [viewMode, handleNextQuestion, handlePrevQuestion]);
 
   // Sync state to URL
   const updateURL = useCallback(
@@ -103,7 +136,32 @@ function PYQExplorerContent() {
           </p>
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Mode Switcher */}
+          <div className="flex items-center rounded-lg border border-slate-200 bg-white p-0.5 shadow-sm">
+            <button
+              onClick={() => setViewMode("list")}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition ${
+                viewMode === "list" ? "bg-blue-50 text-blue-700" : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <List className="h-3.5 w-3.5" />
+              List View
+            </button>
+            <button
+              onClick={() => {
+                setViewMode("focus");
+                setFocusIndex(0);
+              }}
+              className={`flex items-center gap-1.5 px-3 py-1.5 rounded-md text-xs font-bold transition ${
+                viewMode === "focus" ? "bg-blue-50 text-blue-700" : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <Maximize2 className="h-3.5 w-3.5" />
+              Sequential Practice
+            </button>
+          </div>
+
           <a
             href="/mock-tests"
             className="rounded-lg border border-slate-300 bg-white px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-sm"
@@ -172,6 +230,60 @@ function PYQExplorerContent() {
             >
               Reset All Filters
             </button>
+          </div>
+        ) : viewMode === "focus" && questions[focusIndex] ? (
+          <div className="space-y-4">
+            {/* Focus Mode Navigation Bar */}
+            <div className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-white p-3.5 shadow-sm text-xs">
+              <div className="flex items-center gap-2">
+                <span className="font-bold text-blue-700 bg-blue-50 border border-blue-200 px-2.5 py-1 rounded-md">
+                  Question {(page - 1) * 15 + focusIndex + 1} of {totalQuestions}
+                </span>
+                <span className="text-slate-500 hidden sm:inline">
+                  (Keyboard: [←] Previous, [→] Next)
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={handlePrevQuestion}
+                  disabled={page === 1 && focusIndex === 0}
+                  className="flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 transition"
+                >
+                  <ChevronLeft className="h-4 w-4" /> Previous
+                </button>
+                <button
+                  onClick={handleNextQuestion}
+                  disabled={!hasMore && focusIndex === questions.length - 1}
+                  className="flex items-center gap-1 rounded-lg bg-blue-600 px-3.5 py-1.5 text-xs font-bold text-white hover:bg-blue-700 disabled:opacity-40 transition shadow-sm"
+                >
+                  Next Question <ChevronRight className="h-4 w-4" />
+                </button>
+              </div>
+            </div>
+
+            {/* Active Question in Focus */}
+            <QuestionCard key={questions[focusIndex].id} question={questions[focusIndex]} />
+
+            {/* Bottom Stepper Bar */}
+            <div className="flex items-center justify-between border-t border-slate-200 pt-4">
+              <button
+                onClick={handlePrevQuestion}
+                disabled={page === 1 && focusIndex === 0}
+                className="flex items-center gap-1 rounded-lg border border-slate-300 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 disabled:opacity-40 transition"
+              >
+                <ChevronLeft className="h-4 w-4" /> Previous Question
+              </button>
+              <span className="text-xs font-semibold text-slate-500">
+                Question {(page - 1) * 15 + focusIndex + 1} of {totalQuestions}
+              </span>
+              <button
+                onClick={handleNextQuestion}
+                disabled={!hasMore && focusIndex === questions.length - 1}
+                className="flex items-center gap-1 rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white hover:bg-blue-700 disabled:opacity-40 transition"
+              >
+                Next Question <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
           </div>
         ) : (
           <div className="space-y-6">

@@ -51,6 +51,52 @@ export function ExamPlayer({
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [scorecardResult, setScorecardResult] = useState<any | null>(null);
 
+  // Restore session from localStorage on mount
+  useEffect(() => {
+    if (typeof window === "undefined" || !sessionId) return;
+    try {
+      const saved = localStorage.getItem(`pravaah_mock_session_${sessionId}`);
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        if (parsed.answers && typeof parsed.answers === "object") {
+          setAnswers(parsed.answers);
+        }
+        if (parsed.markedForReview && typeof parsed.markedForReview === "object") {
+          setMarkedForReview(parsed.markedForReview);
+        }
+        if (typeof parsed.secondsRemaining === "number" && parsed.secondsRemaining > 0) {
+          const elapsed = parsed.savedAt ? Math.floor((Date.now() - parsed.savedAt) / 1000) : 0;
+          const adjusted = Math.max(0, parsed.secondsRemaining - elapsed);
+          setSecondsRemaining(adjusted);
+        }
+        if (typeof parsed.currentIndex === "number" && parsed.currentIndex < questions.length) {
+          setCurrentIndex(parsed.currentIndex);
+        }
+      }
+    } catch (e) {
+      console.warn("Could not load local session backup:", e);
+    }
+  }, [sessionId, questions.length]);
+
+  // Persist session to localStorage on changes
+  useEffect(() => {
+    if (typeof window === "undefined" || !sessionId || scorecardResult) return;
+    try {
+      localStorage.setItem(
+        `pravaah_mock_session_${sessionId}`,
+        JSON.stringify({
+          answers,
+          markedForReview,
+          secondsRemaining,
+          currentIndex,
+          savedAt: Date.now(),
+        })
+      );
+    } catch (e) {
+      // localStorage error fallback
+    }
+  }, [sessionId, answers, markedForReview, secondsRemaining, currentIndex, scorecardResult]);
+
   // Timer countdown
   useEffect(() => {
     if (scorecardResult || secondsRemaining <= 0) return;
@@ -125,6 +171,11 @@ export function ExamPlayer({
 
       const json = await res.json();
       if (json.success) {
+        if (typeof window !== "undefined") {
+          try {
+            localStorage.removeItem(`pravaah_mock_session_${sessionId}`);
+          } catch (e) {}
+        }
         setScorecardResult(json.data);
       } else {
         alert(json.error?.message || "Submission failed");

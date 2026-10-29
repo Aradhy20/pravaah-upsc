@@ -13,6 +13,8 @@ import {
   BookOpen,
   Sparkles,
   Check,
+  Flag,
+  AlertTriangle,
 } from "lucide-react";
 
 export interface OptionItem {
@@ -62,6 +64,40 @@ export function QuestionCard({
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [noteSaved, setNoteSaved] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [isReporting, setIsReporting] = useState(false);
+  const [reportReason, setReportReason] = useState("Discrepancy with official key");
+  const [reportDetails, setReportDetails] = useState("");
+  const [reportSubmitting, setReportSubmitting] = useState(false);
+  const [reportSubmitted, setReportSubmitted] = useState(false);
+
+  const handleSubmitReport = async () => {
+    if (!reportReason || reportSubmitting) return;
+    setReportSubmitting(true);
+    try {
+      const res = await fetch("/api/v1/questions/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          questionId: question.id,
+          reason: reportReason,
+          description: reportDetails,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setReportSubmitted(true);
+        setTimeout(() => {
+          setIsReporting(false);
+          setReportSubmitted(false);
+          setReportDetails("");
+        }, 2500);
+      }
+    } catch (e) {
+      console.error("Failed to submit question report:", e);
+    } finally {
+      setReportSubmitting(false);
+    }
+  };
 
   const handleSelectOption = async (optionCode: string) => {
     if (selectedOption !== null) return; // already answered
@@ -188,6 +224,17 @@ export function QuestionCard({
           >
             {copied ? <Check className="h-4 w-4 text-emerald-600" /> : <Share2 className="h-4 w-4" />}
           </button>
+          <button
+            onClick={() => setIsReporting(!isReporting)}
+            title="Report question error or key ambiguity"
+            className={`rounded-lg p-1.5 transition ${
+              isReporting
+                ? "text-amber-600 bg-amber-50"
+                : "text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+            }`}
+          >
+            <Flag className="h-4 w-4" />
+          </button>
         </div>
       </div>
 
@@ -280,6 +327,66 @@ export function QuestionCard({
             </div>
           ) : (
             <p className="mt-1 text-slate-700">{noteContent}</p>
+          )}
+        </div>
+      )}
+
+      {/* Inline Issue Reporting Panel */}
+      {isReporting && (
+        <div className="mt-4 rounded-lg border border-rose-200 bg-rose-50/70 p-3.5 text-xs animate-in fade-in duration-150">
+          <div className="flex items-center justify-between pb-1 text-rose-900 font-bold">
+            <span className="flex items-center gap-1.5">
+              <AlertTriangle className="h-4 w-4 text-rose-600" />
+              Report Question Issue
+            </span>
+            {reportSubmitted && (
+              <span className="text-emerald-700 font-bold text-[11px] bg-emerald-100 px-2 py-0.5 rounded">
+                Report logged for academic audit!
+              </span>
+            )}
+          </div>
+          {!reportSubmitted && (
+            <div className="mt-2 space-y-2">
+              <div>
+                <label className="block text-[11px] font-semibold text-slate-700 mb-1">
+                  Reason for discrepancy:
+                </label>
+                <select
+                  value={reportReason}
+                  onChange={(e) => setReportReason(e.target.value)}
+                  className="w-full rounded border border-rose-300 bg-white p-1.5 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-rose-500"
+                >
+                  <option value="Discrepancy with official key">Discrepancy with official UPSC key</option>
+                  <option value="Typo or wording error">Typo or wording transcription error</option>
+                  <option value="Explanation error">Explanation or concept needs clarification</option>
+                  <option value="Option formatting">Option formatting or alignment issue</option>
+                </select>
+              </div>
+              <div>
+                <textarea
+                  value={reportDetails}
+                  onChange={(e) => setReportDetails(e.target.value)}
+                  placeholder="Provide reference or details (e.g. standard textbook, official gazette, question series)..."
+                  rows={2}
+                  className="w-full rounded border border-rose-300 bg-white p-2 text-xs text-slate-800 focus:outline-none focus:ring-1 focus:ring-rose-500"
+                />
+              </div>
+              <div className="flex justify-end gap-2 pt-1">
+                <button
+                  onClick={() => setIsReporting(false)}
+                  className="rounded px-2.5 py-1 text-slate-600 hover:bg-rose-100"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSubmitReport}
+                  disabled={reportSubmitting}
+                  className="rounded bg-rose-700 px-3.5 py-1 font-bold text-white hover:bg-rose-800 disabled:opacity-50"
+                >
+                  {reportSubmitting ? "Submitting..." : "Submit Report"}
+                </button>
+              </div>
+            </div>
           )}
         </div>
       )}

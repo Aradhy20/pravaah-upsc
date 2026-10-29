@@ -157,6 +157,38 @@ export default function HomePage() {
               <span>Start Timed Exam</span>
             </a>
           </div>
+
+          {/* Daily Workflow Shortcuts */}
+          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
+            <a
+              href="/daily-quiz"
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition shadow-xs"
+            >
+              <CheckCircle className="h-3.5 w-3.5 text-blue-600" />
+              <span>Today's Daily Quiz</span>
+            </a>
+            <a
+              href="/current-affairs"
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 font-semibold text-slate-700 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 transition shadow-xs"
+            >
+              <TrendingUp className="h-3.5 w-3.5 text-teal-600" />
+              <span>Current Affairs & Syllabus Links</span>
+            </a>
+            <a
+              href="/mains"
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition shadow-xs"
+            >
+              <BookOpen className="h-3.5 w-3.5 text-indigo-600" />
+              <span>Mains & Essay Writing</span>
+            </a>
+            <a
+              href="/exams"
+              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 transition shadow-xs"
+            >
+              <Layers className="h-3.5 w-3.5 text-amber-600" />
+              <span>Official UPSC Exams Directory</span>
+            </a>
+          </div>
         </div>
       </section>
 

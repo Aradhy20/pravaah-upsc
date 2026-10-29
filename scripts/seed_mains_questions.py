@@ -91,6 +91,36 @@ MAINS_QUESTIONS = [
         "theme": "Case Study — Environmental Clearance vs Development",
         "questionText": "You are the District Collector of an ecologically sensitive hilly district. A central infrastructure expressway project is scheduled for execution, promising major economic connectivity. However, local indigenous communities are protesting due to fear of landslides, loss of catchment forests, and sacred groves. A major developer offers community development funds while political pressure mounts for immediate land clearance. Discuss the ethical dilemmas involved and outline your course of action as the District Collector.",
         "frameworkGuidance": "Stakeholder mapping: Local indigenous communities, developer, state administration, future generations, ecological systems. Ethical dilemmas: Economic development vs. environmental conservation; Procedural compliance vs. substantive justice; Political pressure vs. administrative neutrality. Course of action: Order independent geological EIA, conduct transparent Gram Sabha consultations, demand realignment around sacred groves, ensure statutory rehabilitation under LARR Act 2013."
+    },
+    {
+        "paperCode": "ESSAY",
+        "year": 2024,
+        "questionNumber": 1,
+        "marks": 125,
+        "wordLimit": 1000,
+        "theme": "Philosophy & Modern Technology",
+        "questionText": "The process of self-discovery has now been technologically outsourced.",
+        "frameworkGuidance": "Introduction: Contrast classical self-discovery (Socratic introspection, Upanishadic self-inquiry) with modern algorithmic mediation (predictive algorithms, digital personas). Body: Dimension 1 - Epistemological outsourcing (relying on search queries, AI assistants, and digital analytics to define preferences and career trajectories); Dimension 2 - Cognitive costs (erosion of solitude, hyper-targeted dopamine loops); Dimension 3 - Democratic and social ramifications (filter bubbles reinforcing curated identities); Dimension 4 - Constructive potential (technology illuminating psychological patterns, connecting seekers globally). Synthesis: Reclaiming subjective sovereignty through digital mindfulness and cognitive fasting. Conclusion: Technology can inform, but authentic self-realization demands inward silence, adversity, and conscious moral choice."
+    },
+    {
+        "paperCode": "ESSAY",
+        "year": 2024,
+        "questionNumber": 5,
+        "marks": 125,
+        "wordLimit": 1000,
+        "theme": "Moral Psychology & Character",
+        "questionText": "Courage to accept and dedication to improve are two keys to success.",
+        "frameworkGuidance": "Introduction: Illustrate how progress at personal, institutional, and civilisational levels requires unflinching confrontation with reality followed by relentless refinement. Body: Part 1 - Courage to accept (Overcoming confirmation bias and administrative complacency; examples: Post-independence famine acceptance leading to the Green Revolution; ISRO analyzing Chandrayaan-2 telemetry to pioneer Chandrayaan-3). Part 2 - Dedication to improve (Kaizen, institutional grit, iterative governance). Part 3 - Interdependence (Acceptance without dedication breeds fatalism; dedication without acceptance causes wasted momentum on dogma). Conclusion: Relevance to civil services leadership and building a resilient, self-critical, and innovative nation."
+    },
+    {
+        "paperCode": "ESSAY",
+        "year": 2023,
+        "questionNumber": 1,
+        "marks": 125,
+        "wordLimit": 1000,
+        "theme": "Existential Philosophy & Intellectual Inquiry",
+        "questionText": "Thinking is like a game, it does not begin until there is an opposite team.",
+        "frameworkGuidance": "Introduction: Explore dialectical thinking from Socratic dialogue and Nyaya philosophy to modern scientific inquiry. Body: Dimension 1 - Thesis and antithesis driving synthesis (Hegelian dialectic); Dimension 2 - The peril of echo chambers and ideological monologues; Dimension 3 - Intellectual sparring in constitutional democracy (parliamentary debate, judicial scrutiny, dissent as safety valve); Dimension 4 - Constructive vs. destructive opposition (intellectual sparring vs. partisan cynicism). Conclusion: Cultivating intellectual hospitality and welcoming counter-perspectives as essential steps toward truth and institutional wisdom."
     }
 ]
 
