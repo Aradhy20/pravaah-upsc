@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import {
   BookOpen,
   Calendar,
@@ -44,14 +42,12 @@ export default function DailyStudyPlannerPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-        <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p className="mt-2 text-sm text-slate-500">Formulating your personalized study plan...</p>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -62,8 +58,6 @@ export default function DailyStudyPlannerPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      <Header />
-
       <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Planner Header */}
         <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 rounded-2xl p-6 sm:p-10 text-white shadow-sm mb-8">
@@ -274,8 +268,6 @@ export default function DailyStudyPlannerPage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

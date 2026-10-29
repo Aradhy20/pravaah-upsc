@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import {
   FileText,
   Clock,
@@ -130,8 +128,6 @@ export default function MainsWorkspacePage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      <Header />
-
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Banner */}
         <div className="bg-gradient-to-r from-indigo-950 via-slate-900 to-blue-950 rounded-2xl p-6 sm:p-10 text-white shadow-sm mb-8">
@@ -397,8 +393,6 @@ export default function MainsWorkspacePage() {
           </div>
         </div>
       </main>
-
-      <Footer />
     </div>
   );
 }

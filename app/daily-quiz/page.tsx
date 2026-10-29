@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import {
   CheckCircle,
   XCircle,
@@ -75,14 +73,12 @@ export default function DailyQuizPage() {
   if (loading) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-        <Header />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p className="mt-2 text-sm text-slate-500">Loading today's quiz...</p>
           </div>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -90,7 +86,6 @@ export default function DailyQuizPage() {
   if (!quiz) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-        <Header />
         <div className="flex-1 max-w-2xl mx-auto px-4 py-16 text-center">
           <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-4" />
           <h1 className="text-xl font-bold text-slate-900">No Quiz Available</h1>
@@ -105,7 +100,6 @@ export default function DailyQuizPage() {
             Explore Daily Current Affairs
           </Link>
         </div>
-        <Footer />
       </div>
     );
   }
@@ -115,8 +109,6 @@ export default function DailyQuizPage() {
 
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-      <Header />
-
       <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Banner */}
         <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
@@ -386,8 +378,6 @@ export default function DailyQuizPage() {
           </div>
         )}
       </main>
-
-      <Footer />
     </div>
   );
 }
