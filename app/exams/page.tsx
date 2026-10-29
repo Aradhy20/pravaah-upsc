@@ -18,23 +18,30 @@ import {
 export default function ExamsCataloguePage() {
   const [exams, setExams] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedCategory, setSelectedCategory] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    async function fetchExams() {
-      try {
-        const res = await fetch("/api/v1/exams");
-        const data = await res.json();
-        if (data.success) {
-          setExams(data.exams || []);
-        }
-      } catch (e) {
-        console.error("Failed to load exams:", e);
-      } finally {
-        setLoading(false);
+  const fetchExams = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/v1/exams");
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setExams(data.exams || []);
+      } else {
+        setError(data.error || "Failed to load examination profiles from database.");
       }
+    } catch (e: any) {
+      console.error("Failed to load exams:", e);
+      setError("Network error while connecting to UPSC examination directory.");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
     fetchExams();
   }, []);
 
@@ -100,7 +107,21 @@ export default function ExamsCataloguePage() {
         </div>
 
         {/* Exam Cards Grid */}
-        {loading ? (
+        {error ? (
+          <div className="bg-white rounded-xl p-8 text-center border border-rose-200 shadow-sm max-w-xl mx-auto my-8">
+            <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 mb-3 border border-rose-100">
+              <ShieldCheck className="h-6 w-6" />
+            </div>
+            <h3 className="text-base font-bold text-slate-900">Directory Temporarily Unavailable</h3>
+            <p className="text-xs text-rose-700 mt-1 mb-4">{error}</p>
+            <button
+              onClick={() => fetchExams()}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-sm"
+            >
+              Retry Loading Exams
+            </button>
+          </div>
+        ) : loading ? (
           <div className="py-20 text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p className="mt-2 text-sm text-slate-500 font-medium">Loading UPSC examination directory...</p>

@@ -18,26 +18,35 @@ import {
 export default function DailyQuizPage() {
   const [quiz, setQuiz] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<{ [qId: string]: string }>({});
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<any | null>(null);
 
-  useEffect(() => {
-    async function loadQuiz() {
-      try {
-        const res = await fetch("/api/v1/quiz/daily");
-        const data = await res.json();
-        if (data.success) {
-          setQuiz(data.quiz);
-        }
-      } catch (e) {
-        console.error("Failed to load daily quiz:", e);
-      } finally {
-        setLoading(false);
+  const loadQuiz = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/v1/quiz/daily");
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setQuiz(data.quiz);
+      } else if (res.status === 404) {
+        setQuiz(null);
+      } else {
+        setError(data.error || "Failed to load today's daily quiz.");
       }
+    } catch (e: any) {
+      console.error("Failed to load daily quiz:", e);
+      setError("Network error while connecting to the daily quiz engine.");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
     loadQuiz();
   }, []);
 
@@ -77,6 +86,36 @@ export default function DailyQuizPage() {
           <div className="text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p className="mt-2 text-sm text-slate-500">Loading today's quiz...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+        <div className="flex-1 max-w-2xl mx-auto px-4 py-16 text-center">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-200">
+            <AlertCircle className="h-7 w-7" />
+          </div>
+          <h1 className="text-xl font-bold text-slate-900">Unable to Load Quiz</h1>
+          <p className="text-sm text-rose-700 mt-2">{error}</p>
+          <div className="mt-6 flex flex-wrap justify-center gap-3">
+            <button
+              onClick={() => loadQuiz()}
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm transition"
+            >
+              <RotateCw className="h-4 w-4" />
+              Retry Quiz Load
+            </button>
+            <Link
+              href="/current-affairs"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-semibold transition"
+            >
+              <BookOpen className="h-4 w-4" />
+              Current Affairs
+            </Link>
           </div>
         </div>
       </div>

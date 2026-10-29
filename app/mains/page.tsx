@@ -21,6 +21,7 @@ export default function MainsWorkspacePage() {
   const [selectedPaper, setSelectedPaper] = useState("GS1");
   const [questions, setQuestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [activeQuestion, setActiveQuestion] = useState<any | null>(null);
   const [userAnswer, setUserAnswer] = useState("");
   const [timeSeconds, setTimeSeconds] = useState(0);
@@ -39,30 +40,41 @@ export default function MainsWorkspacePage() {
     conclusion: false,
   });
 
-  useEffect(() => {
-    async function loadMainsQuestions() {
-      setLoading(true);
-      try {
-        const res = await fetch(`/api/v1/mains?paper=${selectedPaper}`);
-        const data = await res.json();
-        if (data.success && data.questions.length > 0) {
-          setQuestions(data.questions);
-          const first = data.questions[0];
+  const loadMainsQuestions = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/v1/mains?paper=${selectedPaper}`);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        const qList = data.questions || [];
+        setQuestions(qList);
+        if (qList.length > 0) {
+          const first = qList[0];
           setActiveQuestion(first);
           setUserAnswer(first.userDraft?.userAnswer || "");
           setSelfScore(first.userDraft?.selfEvaluationScore || 7);
           setSelfNotes(first.userDraft?.selfEvaluationNotes || "");
           setTimeSeconds(first.userDraft?.timeSpentSeconds || 0);
         } else {
-          setQuestions([]);
           setActiveQuestion(null);
         }
-      } catch (e) {
-        console.error("Failed to load mains questions:", e);
-      } finally {
-        setLoading(false);
+      } else {
+        setError(data.error || "Failed to load Mains questions.");
+        setQuestions([]);
+        setActiveQuestion(null);
       }
+    } catch (e: any) {
+      console.error("Failed to load mains questions:", e);
+      setError("Network error while connecting to Mains repository.");
+      setQuestions([]);
+      setActiveQuestion(null);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
     loadMainsQuestions();
   }, [selectedPaper]);
 
@@ -147,7 +159,7 @@ export default function MainsWorkspacePage() {
 
         {/* Paper selector tabs */}
         <div className="flex flex-wrap gap-2 mb-6">
-          {["GS1", "GS2", "GS3", "GS4"].map((paper) => (
+          {["GS1", "GS2", "GS3", "GS4", "ESSAY"].map((paper) => (
             <button
               key={paper}
               onClick={() => setSelectedPaper(paper)}
@@ -157,7 +169,7 @@ export default function MainsWorkspacePage() {
                   : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
               }`}
             >
-              Mains {paper}
+              {paper === "ESSAY" ? "Essay Paper" : `Mains ${paper}`}
             </button>
           ))}
         </div>
@@ -168,13 +180,29 @@ export default function MainsWorkspacePage() {
           <div className="lg:col-span-4 space-y-4">
             <div className="bg-white rounded-2xl border border-slate-200 p-4 shadow-sm">
               <h2 className="text-xs font-bold text-slate-500 uppercase tracking-wider mb-3 px-2">
-                Questions ({questions.length})
+                {loading ? "Questions (Loading...)" : `Questions (${questions.length})`}
               </h2>
 
-              {loading ? (
-                <div className="py-12 text-center text-xs text-slate-400">Loading questions...</div>
+              {error ? (
+                <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-xs text-rose-700 text-center">
+                  <p className="font-semibold mb-2">{error}</p>
+                  <button
+                    onClick={() => loadMainsQuestions()}
+                    className="px-3 py-1.5 rounded-lg bg-rose-700 text-white text-[11px] font-bold hover:bg-rose-800 transition"
+                  >
+                    Retry Loading
+                  </button>
+                </div>
+              ) : loading ? (
+                <div className="py-12 text-center text-xs text-slate-400">Loading verified questions...</div>
               ) : questions.length === 0 ? (
-                <div className="p-4 text-xs text-slate-500">No questions found for this paper.</div>
+                <div className="p-4 text-xs text-slate-500 bg-slate-50 rounded-xl border border-slate-100 text-center">
+                  <BookOpen className="h-6 w-6 text-slate-300 mx-auto mb-2" />
+                  <p className="font-semibold text-slate-700">No published questions yet</p>
+                  <p className="text-[11px] text-slate-500 mt-0.5">
+                    Questions for {selectedPaper === "ESSAY" ? "Essay" : selectedPaper} are currently undergoing human editorial review.
+                  </p>
+                </div>
               ) : (
                 <div className="space-y-2">
                   {questions.map((q) => {

@@ -8,6 +8,23 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser(request);
+    const dbUser = await prisma.user.findUnique({
+      where: { id: user.id },
+    });
+
+    if (!dbUser) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "AUTH_REQUIRED",
+            message: "Please sign in or create an account to initiate plan upgrade.",
+          },
+        },
+        { status: 401 }
+      );
+    }
+
     const body = await request.json();
     const { planCode, billingInterval = "ANNUAL" } = body;
 

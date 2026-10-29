@@ -19,28 +19,34 @@ import {
 export default function CurrentAffairsPage() {
   const [stories, setStories] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedPaper, setSelectedPaper] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
 
-  useEffect(() => {
-    async function fetchStories() {
-      setLoading(true);
-      try {
-        const queryParams = new URLSearchParams();
-        if (selectedPaper !== "ALL") queryParams.set("paper", selectedPaper);
-        if (searchQuery) queryParams.set("search", searchQuery);
+  const fetchStories = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const queryParams = new URLSearchParams();
+      if (selectedPaper !== "ALL") queryParams.set("paper", selectedPaper);
+      if (searchQuery) queryParams.set("search", searchQuery);
 
-        const res = await fetch(`/api/v1/current-affairs?${queryParams.toString()}`);
-        const data = await res.json();
-        if (data.success) {
-          setStories(data.stories || []);
-        }
-      } catch (e) {
-        console.error("Failed to load current affairs:", e);
-      } finally {
-        setLoading(false);
+      const res = await fetch(`/api/v1/current-affairs?${queryParams.toString()}`);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setStories(data.stories || []);
+      } else {
+        setError(data.error || "Failed to retrieve verified current affairs from database.");
       }
+    } catch (e: any) {
+      console.error("Failed to load current affairs:", e);
+      setError("Network error while connecting to the current affairs database.");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
     fetchStories();
   }, [selectedPaper, searchQuery]);
 
@@ -58,7 +64,7 @@ export default function CurrentAffairsPage() {
               Daily Current Affairs <span className="text-blue-400">Connected to PYQs</span>
             </h1>
             <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
-              Every story is sourced from authoritative public releases (PIB, RBI, Ministries, PRS), mapped to the UPSC syllabus, and linked directly to historical questions from our verified 1,085+ question bank.
+              Every story is sourced from authoritative public releases (PIB, RBI, Ministries, PRS), mapped to the UPSC syllabus, and linked directly to historical questions from our verified 1,079 question bank (2019–2024 Prelims Series A).
             </p>
 
             <div className="mt-6 flex flex-wrap gap-4 items-center">
@@ -113,7 +119,21 @@ export default function CurrentAffairsPage() {
         </div>
 
         {/* Stories Feed */}
-        {loading ? (
+        {error ? (
+          <div className="bg-white rounded-xl p-8 text-center border border-rose-200 shadow-sm max-w-xl mx-auto my-8">
+            <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 mb-3 border border-rose-100">
+              <BookOpen className="h-6 w-6" />
+            </div>
+            <h3 className="text-base font-bold text-slate-900">Current Affairs Unavailable</h3>
+            <p className="text-xs text-rose-700 mt-1 mb-4">{error}</p>
+            <button
+              onClick={() => fetchStories()}
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-sm"
+            >
+              Retry Loading Stories
+            </button>
+          </div>
+        ) : loading ? (
           <div className="py-20 text-center">
             <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
             <p className="mt-3 text-sm text-slate-500 font-medium">Loading verified current affairs...</p>

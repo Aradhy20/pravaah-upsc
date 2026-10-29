@@ -17,21 +17,28 @@ import {
 export default function DashboardPage() {
   const [data, setData] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const loadDashboard = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/v1/analytics/dashboard");
+      const json = await res.json();
+      if (res.ok && json.success) {
+        setData(json.data);
+      } else {
+        setError(json.error?.message || "Failed to retrieve learning analytics.");
+      }
+    } catch (e: any) {
+      console.error(e);
+      setError("Network error while connecting to analytics service.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    async function loadDashboard() {
-      try {
-        const res = await fetch("/api/v1/analytics/dashboard");
-        const json = await res.json();
-        if (json.success) {
-          setData(json.data);
-        }
-      } catch (e) {
-        console.error(e);
-      } finally {
-        setLoading(false);
-      }
-    }
     loadDashboard();
   }, []);
 
@@ -74,12 +81,43 @@ export default function DashboardPage() {
         </div>
       </div>
 
-      {loading ? (
+      {error ? (
+        <div className="rounded-2xl border border-rose-200 bg-white p-8 text-center max-w-lg mx-auto my-12 shadow-sm">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-100">
+            <BarChart2 className="h-6 w-6" />
+          </div>
+          <h2 className="text-base font-bold text-slate-900">Analytics Service Temporarily Unavailable</h2>
+          <p className="mt-1 text-xs text-rose-700 mb-4">{error}</p>
+          <button
+            onClick={() => loadDashboard()}
+            className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white hover:bg-blue-700 transition shadow"
+          >
+            Retry Analytics
+          </button>
+        </div>
+      ) : loading ? (
         <div className="py-20 text-center text-sm text-slate-400">
-          Loading personal study analytics...
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
+          <p>Loading personal study analytics...</p>
         </div>
       ) : (
         <>
+          {summary.totalAttempted === 0 && (
+            <div className="mb-8 rounded-2xl border border-blue-200 bg-blue-50/70 p-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+              <div>
+                <h3 className="text-sm font-bold text-blue-900">Welcome to your Personal Learning Dashboard!</h3>
+                <p className="text-xs text-blue-800/80 mt-1">
+                  You haven&apos;t solved any questions yet. Attempt previous year questions in Learn Mode or take the Daily Quiz to start tracking your subject accuracy, study hours, and spaced repetition revision queue.
+                </p>
+              </div>
+              <a
+                href="/pyqs"
+                className="shrink-0 rounded-xl bg-blue-700 px-4 py-2 text-xs font-bold text-white shadow hover:bg-blue-800 transition"
+              >
+                Start Practicing PYQs &rarr;
+              </a>
+            </div>
+          )}
 
       {/* Summary Stat Ribbon */}
       <div className="grid grid-cols-2 gap-4 sm:grid-cols-4">

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { ExamPlayer } from "@/components/ExamPlayer";
-import { Loader2, AlertCircle } from "lucide-react";
+import { Loader2, AlertCircle, ShieldAlert } from "lucide-react";
 
 export default function MockTestSessionPage() {
   const params = useParams();
@@ -59,17 +59,44 @@ export default function MockTestSessionPage() {
   }
 
   if (error || !sessionData) {
+    const isSubscriptionError = error?.toLowerCase().includes("requires") || error?.toLowerCase().includes("plan");
     return (
-      <div className="mx-auto max-w-md my-16 rounded-2xl border border-rose-200 bg-rose-50 p-6 text-center text-rose-800">
-        <AlertCircle className="mx-auto h-10 w-10 text-rose-500 mb-2" />
-        <h2 className="text-base font-bold">Session Launch Failed</h2>
-        <p className="mt-1 text-xs text-rose-700">{error || "Unknown session error"}</p>
-        <a
-          href="/mock-tests"
-          className="mt-4 inline-block rounded-lg bg-rose-700 px-4 py-2 text-xs font-bold text-white hover:bg-rose-800"
-        >
-          Return to Mock Tests
-        </a>
+      <div className="mx-auto max-w-md my-16 rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+        {isSubscriptionError ? (
+          <>
+            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-700 border border-blue-200">
+              <ShieldAlert className="h-6 w-6" />
+            </div>
+            <h2 className="text-lg font-extrabold text-slate-900">Subscription Required</h2>
+            <p className="mt-2 text-xs text-slate-600 leading-relaxed">{error}</p>
+            <div className="mt-6 flex flex-col gap-2">
+              <a
+                href="/pricing"
+                className="w-full rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow hover:bg-blue-700 transition"
+              >
+                View Plans & Upgrade
+              </a>
+              <a
+                href="/mock-tests"
+                className="text-xs font-semibold text-slate-500 hover:underline mt-1"
+              >
+                Return to Mock Tests Catalogue
+              </a>
+            </div>
+          </>
+        ) : (
+          <>
+            <AlertCircle className="mx-auto h-10 w-10 text-rose-500 mb-2" />
+            <h2 className="text-base font-bold text-slate-900">Session Launch Failed</h2>
+            <p className="mt-1 text-xs text-slate-600">{error || "Unknown session error"}</p>
+            <a
+              href="/mock-tests"
+              className="mt-4 inline-block rounded-lg bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
+            >
+              Return to Mock Tests
+            </a>
+          </>
+        )}
       </div>
     );
   }

@@ -93,7 +93,7 @@ export default function HomePage() {
           </h1>
 
           <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-            No bloated paywalls or unverified coaching keys. Navigate 10+ years of authentic UPSC General Studies & CSAT papers with statement-by-statement evidence, timed exam simulation, and automated spaced mistake revision.
+            No bloated paywalls or unverified coaching keys. Master 1,079 officially verified UPSC General Studies & CSAT questions (2019–2024 Series A) with statement-by-statement evidence, timed exam simulation, and automated spaced mistake revision.
           </p>
 
           {/* Prominent PYQ Search Box */}
@@ -179,7 +179,7 @@ export default function HomePage() {
               href="/pyqs"
               className="mt-3 sm:mt-0 text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1"
             >
-              <span>View all years (2014-2024)</span>
+              <span>Explore complete archive (2019–2024)</span>
               <ArrowRight className="h-4 w-4" />
             </a>
           </div>
@@ -227,7 +227,7 @@ export default function HomePage() {
               Practise by Subject & Topic
             </h2>
             <p className="text-sm text-slate-500 mt-1">
-              Read your standard textbook, then immediately drill every corresponding PYQ from 2011 to 2024.
+              Read your standard textbook, then immediately drill every corresponding PYQ from 2019 to 2024.
             </p>
           </div>
 

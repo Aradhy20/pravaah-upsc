@@ -32,10 +32,13 @@ export default function PricingPage() {
   const [checkoutSuccess, setCheckoutSuccess] = useState<string | null>(null);
   const [expandedFaq, setExpandedFaq] = useState<number | null>(null);
 
+  const [error, setError] = useState<string | null>(null);
+
   // Fetch plans and user subscription status
   const loadData = async () => {
     try {
       setLoading(true);
+      setError(null);
       const [plansRes, subRes] = await Promise.all([
         fetch("/api/v1/plans"),
         fetch("/api/v1/user/subscription"),
@@ -44,14 +47,17 @@ export default function PricingPage() {
       const plansJson = await plansRes.json();
       const subJson = await subRes.json();
 
-      if (plansJson.success) {
-        setPlans(plansJson.data);
+      if (plansRes.ok && plansJson.success) {
+        setPlans(plansJson.data || []);
+      } else {
+        setError(plansJson.error?.message || "Failed to load pricing catalogue from database.");
       }
-      if (subJson.success) {
+      if (subRes.ok && subJson.success) {
         setUserSubscription(subJson.data);
       }
-    } catch (e) {
+    } catch (e: any) {
       console.error("Failed to load pricing data:", e);
+      setError("Network error while connecting to billing database.");
     } finally {
       setLoading(false);
     }
@@ -259,9 +265,24 @@ export default function PricingPage() {
       </div>
 
       {/* Plan Cards Grid */}
-      {loading ? (
+      {error ? (
+        <div className="my-12 rounded-3xl border border-rose-200 bg-white p-8 text-center max-w-lg mx-auto shadow-sm">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-100">
+            <ShieldCheck className="h-6 w-6" />
+          </div>
+          <h2 className="text-base font-bold text-slate-900">Subscription Plans Unavailable</h2>
+          <p className="mt-1 text-xs text-rose-700 mb-4">{error}</p>
+          <button
+            onClick={() => loadData()}
+            className="rounded-lg bg-blue-600 px-4 py-2 text-xs font-bold text-white hover:bg-blue-700 transition shadow"
+          >
+            Retry Loading Plans
+          </button>
+        </div>
+      ) : loading ? (
         <div className="py-24 text-center text-sm font-semibold text-slate-400">
-          Loading verified subscription plans...
+          <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2"></div>
+          <p>Loading verified subscription plans...</p>
         </div>
       ) : (
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">

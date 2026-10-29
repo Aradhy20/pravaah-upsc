@@ -10,6 +10,11 @@ if (!process.env.DATABASE_URL || !process.env.DATABASE_URL.startsWith("file:")) 
 const nextConfig = {
   reactStrictMode: true,
   poweredByHeader: false,
+  experimental: {
+    outputFileTracingIncludes: {
+      "/**": ["./prisma/dev.db", "./prisma/schema.prisma"],
+    },
+  },
 };
 
 export default nextConfig;

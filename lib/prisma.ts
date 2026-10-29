@@ -1,5 +1,23 @@
+import fs from "fs";
 import path from "path";
 import { PrismaClient } from "@prisma/client";
+
+function findDatabasePath(): string {
+  const candidates = [
+    path.resolve(process.cwd(), "prisma", "dev.db"),
+    path.resolve(process.cwd(), "dev.db"),
+    path.resolve(__dirname, "../../prisma/dev.db"),
+    path.resolve(__dirname, "../prisma/dev.db"),
+    path.resolve(__dirname, "prisma/dev.db"),
+  ];
+
+  for (const candidate of candidates) {
+    if (fs.existsSync(candidate)) {
+      return candidate;
+    }
+  }
+  return path.resolve(process.cwd(), "prisma", "dev.db");
+}
 
 function getResolvedDatabaseUrl(): string {
   const raw = process.env.DATABASE_URL?.trim();
@@ -9,11 +27,11 @@ function getResolvedDatabaseUrl(): string {
     // If it's a bare filename like "dev.db" or "./prisma/dev.db"
     if (raw && (raw.endsWith(".db") || raw.endsWith(".sqlite"))) {
       const cleanPath = raw.includes("prisma") ? raw : path.join("prisma", raw);
-      return `file:${path.resolve(process.cwd(), cleanPath)}`;
+      const absPath = path.resolve(process.cwd(), cleanPath);
+      if (fs.existsSync(absPath)) return `file:${absPath}`;
     }
-    // Otherwise fallback to bundled SQLite database
-    const defaultDbPath = path.resolve(process.cwd(), "prisma", "dev.db");
-    return `file:${defaultDbPath}`;
+    // Otherwise fallback to candidate search
+    return `file:${findDatabasePath()}`;
   }
 
   // If it starts with file: but has a relative path (e.g. file:./dev.db)
@@ -22,7 +40,8 @@ function getResolvedDatabaseUrl(): string {
     const resolved = cleanPath.includes("prisma")
       ? path.resolve(process.cwd(), cleanPath)
       : path.resolve(process.cwd(), "prisma", cleanPath);
-    return `file:${resolved}`;
+    if (fs.existsSync(resolved)) return `file:${resolved}`;
+    return `file:${findDatabasePath()}`;
   }
 
   return raw;
