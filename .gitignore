@@ -22,8 +22,9 @@
 .env
 
 # SQLite database files
-*.db
 *.db-journal
+data/backups/*.db
+!prisma/dev.db
 
 # Vercel
 .vercel
