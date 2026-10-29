@@ -3,6 +3,16 @@ import { prisma } from "@/lib/prisma";
 import { getCurrentUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
+export async function GET() {
+  return NextResponse.json({
+    endpoint: "/api/v1/admin/import/batch",
+    status: "ready",
+    methods: ["POST"],
+    description: "Batch import questions for UPSC examination papers in JSON or CSV format."
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {

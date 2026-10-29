@@ -3,6 +3,9 @@ import { prisma } from "@/lib/prisma";
 import { QuestionCard } from "@/components/QuestionCard";
 import { Calendar, ArrowLeft } from "lucide-react";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 interface YearPageProps {
   params: {
     year: string;
