@@ -22,24 +22,31 @@ export default function CurrentAffairsDetailPage() {
   const slug = params?.slug as string;
   const [story, setStory] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [selectedAnswers, setSelectedAnswers] = useState<{ [qId: string]: string }>({});
   const [revealedKeys, setRevealedKeys] = useState<{ [qId: string]: boolean }>({});
 
-  useEffect(() => {
-    async function fetchDetail() {
-      if (!slug) return;
-      try {
-        const res = await fetch(`/api/v1/current-affairs/${slug}`);
-        const data = await res.json();
-        if (data.success) {
-          setStory(data.story);
-        }
-      } catch (e) {
-        console.error("Failed to fetch story:", e);
-      } finally {
-        setLoading(false);
+  const fetchDetail = async () => {
+    if (!slug) return;
+    setLoading(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/v1/current-affairs/${slug}`);
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setStory(data.story);
+      } else {
+        setError(data.error || "Failed to load current affairs analysis.");
       }
+    } catch (e: any) {
+      console.error("Failed to fetch story:", e);
+      setError("Network error while connecting to current affairs service.");
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
     fetchDetail();
   }, [slug]);
 
@@ -61,6 +68,32 @@ export default function CurrentAffairsDetailPage() {
     );
   }
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+        <div className="flex-1 max-w-4xl mx-auto px-4 py-16 text-center">
+          <AlertCircle className="h-12 w-12 text-amber-500 mx-auto mb-4" />
+          <h1 className="text-xl font-bold text-slate-900">Analysis Temporarily Unavailable</h1>
+          <p className="text-sm text-slate-600 mt-2">{error}</p>
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <button
+              onClick={fetchDetail}
+              className="px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors shadow-sm"
+            >
+              Retry Loading
+            </button>
+            <Link
+              href="/current-affairs"
+              className="px-4 py-2 rounded-lg border border-slate-300 text-slate-700 text-sm font-semibold hover:bg-slate-100 transition-colors"
+            >
+              Back to Current Affairs
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (!story) {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
@@ -70,7 +103,7 @@ export default function CurrentAffairsDetailPage() {
           <p className="text-sm text-slate-500 mt-2">The requested current affairs article is unavailable.</p>
           <Link
             href="/current-affairs"
-            className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold"
+            className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 transition-colors"
           >
             <ArrowLeft className="h-4 w-4" />
             Back to Current Affairs

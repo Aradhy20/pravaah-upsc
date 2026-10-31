@@ -38,11 +38,15 @@ export async function GET(
       );
     }
 
-    // Increment view count
-    await prisma.currentAffairsStory.update({
-      where: { id: story.id },
-      data: { viewCount: { increment: 1 } },
-    });
+    // Increment view count (safely ignore write failures in read-only environments like Vercel SQLite)
+    try {
+      await prisma.currentAffairsStory.update({
+        where: { id: story.id },
+        data: { viewCount: { increment: 1 } },
+      });
+    } catch {
+      // Ignored in read-only serverless environments
+    }
 
     return NextResponse.json({
       success: true,
