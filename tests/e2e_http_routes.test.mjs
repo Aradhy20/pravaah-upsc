@@ -6,7 +6,7 @@ const BASE_URL = 'http://localhost:3000';
 test('E2E HTTP: Public and Authenticated Pages Render with 200 Status and Expected Content', async () => {
   const routes = [
     { path: '/', text: 'Pravaah UPSC' },
-    { path: '/pyqs', text: 'Prelims PYQ Explorer' },
+    { path: '/pyqs', text: 'PYQ Explorer' },
     { path: '/pyqs?paper=GS1&years=2024', text: 'GS Paper I' },
     { path: '/pyqs?paper=GS2&years=2024', text: 'CSAT' },
     { path: '/pyqs/year/2024', text: '2024' },

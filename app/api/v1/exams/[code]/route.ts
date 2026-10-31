@@ -21,9 +21,37 @@ export async function GET(
       );
     }
 
+    // Parse stagesDescription into structured stages array
+    const stages = exam.stagesDescription
+      ? exam.stagesDescription
+          .split(";")
+          .map((s, idx) => {
+            const trimmed = s.trim().replace(/^Three Stages:\s*/i, "").trim();
+            const match = trimmed.match(/^(\d+)\.\s*([^(:]+)(?:[(:](.*)\)?)?/);
+            if (match) {
+              return {
+                id: `${code.toLowerCase()}-stage-${match[1]}`,
+                name: match[2].trim(),
+                orderIndex: parseInt(match[1], 10),
+                details: match[3] ? match[3].replace(/\)$/, "").trim() : trimmed,
+              };
+            }
+            return {
+              id: `${code.toLowerCase()}-stage-${idx + 1}`,
+              name: trimmed,
+              orderIndex: idx + 1,
+              details: trimmed,
+            };
+          })
+          .filter((st) => st.name.length > 0)
+      : [];
+
     return NextResponse.json({
       success: true,
-      exam,
+      exam: {
+        ...exam,
+        stages,
+      },
     });
   } catch (error: any) {
     console.error("Error fetching exam details:", error);

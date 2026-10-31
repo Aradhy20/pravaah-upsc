@@ -32,3 +32,4 @@ data/backups/*.db
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+.neon

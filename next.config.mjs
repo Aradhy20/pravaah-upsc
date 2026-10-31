@@ -1,7 +1,7 @@
 import path from "path";
 
-// For SQLite provider, DATABASE_URL must always start with file:
-if (!process.env.DATABASE_URL || !process.env.DATABASE_URL.startsWith("file:")) {
+// Preserve PostgreSQL / Neon DATABASE_URL if configured
+if (!process.env.DATABASE_URL) {
   const dbPath = path.resolve(process.cwd(), "prisma/dev.db");
   process.env.DATABASE_URL = `file:${dbPath}`;
 }

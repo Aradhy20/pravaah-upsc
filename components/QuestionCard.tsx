@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import {
   Bookmark,
   CheckCircle2,
@@ -15,6 +15,9 @@ import {
   Check,
   Flag,
   AlertTriangle,
+  EyeOff,
+  RotateCcw,
+  ShieldCheck,
 } from "lucide-react";
 
 export interface OptionItem {
@@ -49,6 +52,7 @@ interface QuestionCardProps {
   initialBookmarked?: boolean;
   initialNote?: string;
   onAttemptRecorded?: (isCorrect: boolean) => void;
+  activeKeyboard?: boolean;
 }
 
 export function QuestionCard({
@@ -56,6 +60,7 @@ export function QuestionCard({
   initialBookmarked = false,
   initialNote = "",
   onAttemptRecorded,
+  activeKeyboard = false,
 }: QuestionCardProps) {
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
@@ -69,6 +74,86 @@ export function QuestionCard({
   const [reportDetails, setReportDetails] = useState("");
   const [reportSubmitting, setReportSubmitting] = useState(false);
   const [reportSubmitted, setReportSubmitted] = useState(false);
+  const [eliminatedOptions, setEliminatedOptions] = useState<Record<string, boolean>>({});
+
+  const handleToggleEliminate = (optionCode: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (selectedOption !== null) return;
+    setEliminatedOptions((prev) => ({
+      ...prev,
+      [optionCode]: !prev[optionCode],
+    }));
+  };
+
+  const handleSelectOption = useCallback(async (optionCode: string) => {
+    if (selectedOption !== null) return; // already answered
+    setSelectedOption(optionCode);
+    setShowExplanation(true);
+
+    const isCorrect = optionCode.toUpperCase() === question.correctOption.toUpperCase();
+    if (onAttemptRecorded) onAttemptRecorded(isCorrect);
+
+    // Call Learn attempt API in background
+    try {
+      await fetch("/api/v1/attempts/learn", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          questionId: question.id,
+          selectedOption: optionCode,
+          timeSpentSeconds: 30,
+        }),
+      });
+    } catch (e) {
+      console.error("Failed to record attempt:", e);
+    }
+  }, [selectedOption, question.correctOption, question.id, onAttemptRecorded]);
+
+  const handleToggleBookmark = useCallback(async () => {
+    const nextState = !isBookmarked;
+    setIsBookmarked(nextState);
+    try {
+      await fetch("/api/v1/user/bookmarks", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ questionId: question.id }),
+      });
+    } catch (e) {
+      console.error(e);
+      setIsBookmarked(!nextState); // revert on error
+    }
+  }, [isBookmarked, question.id]);
+
+  // Keyboard navigation when activeKeyboard is enabled (e.g., Focus Mode)
+  useEffect(() => {
+    if (!activeKeyboard) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.target instanceof HTMLInputElement || e.target instanceof HTMLTextAreaElement) return;
+
+      const key = e.key.toUpperCase();
+      if (["A", "B", "C", "D"].includes(key) && selectedOption === null) {
+        e.preventDefault();
+        handleSelectOption(key);
+      } else if (["1", "2", "3", "4"].includes(e.key) && selectedOption === null) {
+        e.preventDefault();
+        const codeMap: Record<string, string> = { "1": "A", "2": "B", "3": "C", "4": "D" };
+        handleSelectOption(codeMap[e.key]);
+      } else if (key === "E") {
+        e.preventDefault();
+        setShowExplanation((prev) => !prev);
+      } else if (key === "S") {
+        e.preventDefault();
+        handleToggleBookmark();
+      } else if (key === "N") {
+        e.preventDefault();
+        setIsEditingNote((prev) => !prev);
+      }
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [activeKeyboard, selectedOption, handleSelectOption, handleToggleBookmark]);
 
   const handleSubmitReport = async () => {
     if (!reportReason || reportSubmitting) return;
@@ -96,45 +181,6 @@ export function QuestionCard({
       console.error("Failed to submit question report:", e);
     } finally {
       setReportSubmitting(false);
-    }
-  };
-
-  const handleSelectOption = async (optionCode: string) => {
-    if (selectedOption !== null) return; // already answered
-    setSelectedOption(optionCode);
-    setShowExplanation(true);
-
-    const isCorrect = optionCode.toUpperCase() === question.correctOption.toUpperCase();
-    if (onAttemptRecorded) onAttemptRecorded(isCorrect);
-
-    // Call Learn attempt API in background
-    try {
-      await fetch("/api/v1/attempts/learn", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          questionId: question.id,
-          selectedOption: optionCode,
-          timeSpentSeconds: 30,
-        }),
-      });
-    } catch (e) {
-      console.error("Failed to record attempt:", e);
-    }
-  };
-
-  const handleToggleBookmark = async () => {
-    const nextState = !isBookmarked;
-    setIsBookmarked(nextState);
-    try {
-      await fetch("/api/v1/user/bookmarks", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ questionId: question.id }),
-      });
-    } catch (e) {
-      console.error(e);
-      setIsBookmarked(!nextState); // revert on error
     }
   };
 
@@ -251,6 +297,7 @@ export function QuestionCard({
           const isSelected = selectedOption === option.code;
           const isCorrect = option.code.toUpperCase() === question.correctOption.toUpperCase();
           const hasAnswered = selectedOption !== null;
+          const isEliminated = Boolean(eliminatedOptions[option.code]);
 
           let optionStyle = "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50 text-slate-700";
 
@@ -262,34 +309,77 @@ export function QuestionCard({
             } else {
               optionStyle = "border-slate-200 bg-slate-50/40 text-slate-400 opacity-80";
             }
+          } else if (isEliminated) {
+            optionStyle = "border-dashed border-slate-300 bg-slate-100/70 text-slate-400 opacity-60";
           }
 
           return (
-            <button
+            <div
               key={option.code}
-              onClick={() => handleSelectOption(option.code)}
-              disabled={hasAnswered}
-              className={`flex w-full items-start gap-3 rounded-lg border p-3 text-left transition duration-150 touch-target ${optionStyle}`}
+              className={`group flex items-start gap-3 rounded-lg border p-3 transition duration-150 touch-target ${optionStyle}`}
             >
-              <span
-                className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
-                  hasAnswered && isCorrect
-                    ? "bg-emerald-600 text-white"
-                    : hasAnswered && isSelected && !isCorrect
-                    ? "bg-rose-600 text-white"
-                    : "border border-slate-300 bg-slate-100 text-slate-600"
-                }`}
+              <button
+                type="button"
+                onClick={() => handleSelectOption(option.code)}
+                disabled={hasAnswered}
+                className="flex flex-1 items-start gap-3 text-left focus:outline-none"
               >
-                {option.code}
-              </span>
-              <span className="flex-1 text-sm leading-normal">{option.text}</span>
-              {hasAnswered && isCorrect && (
-                <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 mt-0.5" />
-              )}
-              {hasAnswered && isSelected && !isCorrect && (
-                <XCircle className="h-5 w-5 shrink-0 text-rose-500 mt-0.5" />
-              )}
-            </button>
+                <span
+                  className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                    hasAnswered && isCorrect
+                      ? "bg-emerald-600 text-white"
+                      : hasAnswered && isSelected && !isCorrect
+                      ? "bg-rose-600 text-white"
+                      : isEliminated
+                      ? "border border-slate-300 bg-slate-200 text-slate-400"
+                      : "border border-slate-300 bg-slate-100 text-slate-600 group-hover:bg-blue-50 group-hover:text-blue-700 group-hover:border-blue-300"
+                  }`}
+                >
+                  {option.code}
+                </span>
+                <span
+                  className={`flex-1 text-sm leading-normal ${
+                    isEliminated ? "line-through text-slate-400" : ""
+                  }`}
+                >
+                  {option.text}
+                </span>
+              </button>
+
+              {/* Status Icons and Option Elimination Control */}
+              <div className="flex shrink-0 items-center gap-1.5 self-center">
+                {hasAnswered && isCorrect && (
+                  <CheckCircle2 className="h-5 w-5 text-emerald-600" />
+                )}
+                {hasAnswered && isSelected && !isCorrect && (
+                  <XCircle className="h-5 w-5 text-rose-500" />
+                )}
+                {!hasAnswered && (
+                  <button
+                    type="button"
+                    onClick={(e) => handleToggleEliminate(option.code, e)}
+                    title={isEliminated ? "Restore option" : "Rule out / Eliminate option"}
+                    className={`rounded p-1 text-xs transition ${
+                      isEliminated
+                        ? "text-blue-600 hover:text-blue-800 bg-blue-50"
+                        : "text-slate-300 hover:text-slate-600 hover:bg-slate-200/60 opacity-0 group-hover:opacity-100 sm:opacity-70"
+                    }`}
+                  >
+                    {isEliminated ? (
+                      <span className="flex items-center gap-1 text-[11px] font-semibold text-blue-700">
+                        <RotateCcw className="h-3.5 w-3.5" />
+                        Restore
+                      </span>
+                    ) : (
+                      <span className="flex items-center gap-1 text-[11px] font-medium text-slate-400 hover:text-rose-600">
+                        <EyeOff className="h-3.5 w-3.5" />
+                        Rule Out
+                      </span>
+                    )}
+                  </button>
+                )}
+              </div>
+            </div>
           );
         })}
       </div>
@@ -403,53 +493,71 @@ export function QuestionCard({
         </button>
 
         {showExplanation && (
-          <div className="mt-3 rounded-lg border border-slate-200 bg-slate-50/80 p-4 text-sm animate-in fade-in duration-200">
-            {/* Correct Answer Badge */}
-            <div className="flex items-center gap-2 pb-2">
-              <span className="rounded bg-emerald-100 px-2 py-0.5 text-xs font-bold text-emerald-800">
-                Official UPSC Key: Option ({question.correctOption})
-              </span>
-              {question.explanation?.relatedConcept && (
-                <span className="text-xs font-medium text-slate-500">
-                  Concept: {question.explanation.relatedConcept}
+          <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50/90 p-4 sm:p-5 text-sm animate-in fade-in duration-200 space-y-4">
+            {/* Header: Answer Key & Metadata */}
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200/80 pb-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <span className="rounded-md bg-emerald-600 px-2.5 py-1 text-xs font-extrabold text-white shadow-xs">
+                  Official UPSC Key: Option ({question.correctOption})
                 </span>
+                <span className="inline-flex items-center gap-1 rounded-md bg-slate-200/70 px-2 py-0.5 text-xs font-medium text-slate-700">
+                  <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+                  Verified Academic Archive
+                </span>
+              </div>
+              <div className="text-xs text-slate-500">
+                {question.subject} {question.topic && `→ ${question.topic}`}
+              </div>
+            </div>
+
+            {/* Core Concept Foundation */}
+            <div>
+              <div className="flex items-center gap-1 text-[11px] font-bold uppercase tracking-wider text-slate-500">
+                <span>Core Concept Foundation</span>
+                {question.explanation?.relatedConcept && (
+                  <span className="text-blue-700 font-semibold">• {question.explanation.relatedConcept}</span>
+                )}
+              </div>
+              {question.explanation?.summary ? (
+                <p className="mt-1 font-semibold text-slate-800 leading-snug">
+                  {question.explanation.summary}
+                </p>
+              ) : (
+                <p className="mt-1 text-xs text-slate-600">
+                  Concept verification derived from UPSC official key syllabus mapping.
+                </p>
               )}
             </div>
 
-            {/* Core Takeaway */}
-            {question.explanation?.summary && (
-              <p className="font-semibold text-slate-800 leading-snug">
-                {question.explanation.summary}
-              </p>
-            )}
-
-            {/* Statement Analysis */}
+            {/* Why Option is Correct & Pedagogical Breakdown */}
             {question.explanation?.detailedExplanation && (
-              <div className="mt-2.5 text-xs text-slate-700 leading-relaxed space-y-1.5 border-t border-slate-200/60 pt-2.5">
+              <div className="rounded-lg border border-slate-200 bg-white p-3.5 text-xs text-slate-700 leading-relaxed space-y-1.5 shadow-xs">
                 <p className="font-bold text-slate-900 uppercase tracking-wide text-[10px]">
-                  Pedagogical Breakdown:
+                  Why Option ({question.correctOption}) is Correct & Statement Breakdown:
                 </p>
-                <p className="whitespace-pre-line">
+                <p className="whitespace-pre-line text-slate-700">
                   {question.explanation.detailedExplanation}
                 </p>
               </div>
             )}
 
-            {/* Elimination Technique */}
+            {/* Distractor Analysis & Elimination Strategy */}
             {question.explanation?.eliminationTechnique && (
-              <div className="mt-2.5 rounded bg-blue-50/60 border border-blue-100 p-2.5 text-xs text-blue-950">
-                <span className="font-bold flex items-center gap-1 text-blue-800">
-                  <Sparkles className="h-3.5 w-3.5 text-blue-600" />
-                  Elimination & Exam Technique:
+              <div className="rounded-lg border border-blue-100 bg-blue-50/70 p-3.5 text-xs text-blue-950 shadow-xs">
+                <span className="font-bold flex items-center gap-1.5 text-blue-900">
+                  <Sparkles className="h-4 w-4 text-blue-600" />
+                  Elimination Strategy & Distractor Analysis:
                 </span>
-                <p className="mt-1 text-slate-700">{question.explanation.eliminationTechnique}</p>
+                <p className="mt-1.5 text-slate-700 leading-relaxed">
+                  {question.explanation.eliminationTechnique}
+                </p>
               </div>
             )}
 
-            {/* Standard Reference Citation */}
+            {/* Verified Source Citation */}
             {question.explanation?.sourceCitation && (
-              <div className="mt-2 text-[11px] font-medium text-slate-500 italic">
-                Source Reference: {question.explanation.sourceCitation}
+              <div className="border-t border-slate-200/60 pt-2 text-[11px] font-medium text-slate-500 italic">
+                Verified Source Reference: {question.explanation.sourceCitation}
               </div>
             )}
           </div>

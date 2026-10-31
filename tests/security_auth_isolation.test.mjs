@@ -290,7 +290,14 @@ test("Content Ingestion: Batch Import with CSV & Duplicate Prevention", async ()
     where: { role: { name: "ADMIN" } },
   });
 
-  const uniqueQNum = 8880 + Math.floor(Math.random() * 1000);
+  const uniqueQNum = 70000 + Math.floor(Math.random() * 20000);
+  const paper = await prisma.paper.findUnique({ where: { code: "GS1" } });
+  if (paper) {
+    await prisma.question.deleteMany({
+      where: { paperId: paper.id, year: 2024, questionNumber: uniqueQNum },
+    });
+  }
+
   const csvContent = `questionNumber,questionText,optionA,optionB,optionC,optionD,correctOption,explanationSummary,difficulty
 ${uniqueQNum},"With reference to Indian history, who founded the Servants of India Society?","Gopal Krishna Gokhale","Bal Gangadhar Tilak","Lala Lajpat Rai","Bipin Chandra Pal","A","Founded in 1905 by Gopal Krishna Gokhale in Pune.","EASY"`;
 
@@ -324,4 +331,11 @@ ${uniqueQNum},"With reference to Indian history, who founded the Servants of Ind
   const reImportJson = await reImportRes.json();
   assert.equal(reImportJson.data.duplicateCount, 1, "Duplicate question must be detected");
   assert.equal(reImportJson.data.importedCount, 0, "Duplicate question must not be re-imported");
+
+  // Cleanup test question
+  if (paper) {
+    await prisma.question.deleteMany({
+      where: { paperId: paper.id, year: 2024, questionNumber: uniqueQNum },
+    });
+  }
 });

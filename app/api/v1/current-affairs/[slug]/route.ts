@@ -90,6 +90,9 @@ export async function GET(
               }
             : null,
         })),
+        get relatedPYQs() {
+          return this.linkedPyqs;
+        },
         practiceQuestions: story.quizQuestions.map((q) => ({
           id: q.id,
           orderIndex: q.orderIndex,

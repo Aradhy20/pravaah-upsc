@@ -20,27 +20,43 @@ function findDatabasePath(): string {
 }
 
 function getResolvedDatabaseUrl(): string {
-  const raw = process.env.DATABASE_URL?.trim();
+  let raw = process.env.DATABASE_URL?.trim();
 
-  // If missing or if set to a non-file URL (e.g. a postgres:// URL configured in Vercel environment variables)
+  // If not yet populated in process.env, scan environment configuration files
+  if (!raw || (!raw.startsWith("postgresql://") && !raw.startsWith("postgres://"))) {
+    for (const envFile of [".env.local", ".env.production", ".env"]) {
+      const p = path.resolve(process.cwd(), envFile);
+      if (fs.existsSync(p)) {
+        const content = fs.readFileSync(p, "utf-8");
+        for (const line of content.split("\n")) {
+          const trimmed = line.trim();
+          if (trimmed.startsWith("DATABASE_URL=") && !trimmed.startsWith("#")) {
+            const val = trimmed.slice(trimmed.indexOf("=") + 1).trim().replace(/^["']|["']$/g, "");
+            if (val.startsWith("postgresql://") || val.startsWith("postgres://")) {
+              raw = val;
+              break;
+            }
+          }
+        }
+        if (raw && (raw.startsWith("postgresql://") || raw.startsWith("postgres://"))) {
+          break;
+        }
+      }
+    }
+  }
+
+  // If PostgreSQL / Neon connection string is provided, use it directly
+  if (raw && (raw.startsWith("postgresql://") || raw.startsWith("postgres://"))) {
+    return raw;
+  }
+
+  // Fallback for bare SQLite files if applicable
   if (!raw || !raw.startsWith("file:")) {
-    // If it's a bare filename like "dev.db" or "./prisma/dev.db"
     if (raw && (raw.endsWith(".db") || raw.endsWith(".sqlite"))) {
       const cleanPath = raw.includes("prisma") ? raw : path.join("prisma", raw);
       const absPath = path.resolve(process.cwd(), cleanPath);
       if (fs.existsSync(absPath)) return `file:${absPath}`;
     }
-    // Otherwise fallback to candidate search
-    return `file:${findDatabasePath()}`;
-  }
-
-  // If it starts with file: but has a relative path (e.g. file:./dev.db)
-  if (raw.startsWith("file:") && !raw.startsWith("file:/")) {
-    const cleanPath = raw.replace(/^file:\.?\/?/, "");
-    const resolved = cleanPath.includes("prisma")
-      ? path.resolve(process.cwd(), cleanPath)
-      : path.resolve(process.cwd(), "prisma", cleanPath);
-    if (fs.existsSync(resolved)) return `file:${resolved}`;
     return `file:${findDatabasePath()}`;
   }
 
