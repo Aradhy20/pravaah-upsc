@@ -104,19 +104,22 @@ export async function POST(request: NextRequest) {
         message: "Question marked as resolved/mastered from revision queue.",
       });
     } else {
-      // Reschedule for 3 days later
+      // Reschedule for configurable interval (1, 3, 7, or 14 days, default 3)
+      const days = Number(body.intervalDays) || 3;
       await prisma.reviewSchedule.updateMany({
         where: whereClause,
         data: {
           repetitionCount: { increment: 1 },
-          nextReviewDate: new Date(Date.now() + 3 * 86400000),
+          intervalDays: days,
+          nextReviewDate: new Date(Date.now() + days * 86400000),
           updatedAt: new Date(),
         },
       });
 
       return NextResponse.json({
         success: true,
-        message: "Question rescheduled for review in 3 days.",
+        message: `Question rescheduled for review in ${days} day(s).`,
+        intervalDays: days,
       });
     }
   } catch (error: any) {

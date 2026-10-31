@@ -14,8 +14,8 @@
 │                                          SEVEN-DAY BETA LAUNCH SPRINT                                                  │
 ├────────────────────┬────────────────────┬────────────────────┬────────────────────┬────────────────────┬───────────────┤
 │ DAY 1: AUDIT &     │ DAY 2: PYQ & LEARN │ DAY 3: MOCK EXAMS  │ DAY 4: DAILY LOOPS │ DAY 5: MAINS &     │ DAY 6: LOAD & │
-│ FOUNDATION         │ MODE POLISH        │ & ANTI-LEAK        │ & SPACED REVISION  │ STUDY PLANNER      │ SECURITY QA   │
-│ [COMPLETED]        │ [IN PROGRESS]      │ [PENDING]          │ [PENDING]          │ [PENDING]          │ [PENDING]     │
+│ FOUNDATION         │ MODE POLISH        │ & SUBSCRIPTION     │ & SPACED REVISION  │ STUDY PLANNER      │ SECURITY QA   │
+│ [COMPLETED]        │ [COMPLETED]        │ [COMPLETED]        │ [PENDING]          │ [PENDING]          │ [PENDING]     │
 ├────────────────────┴────────────────────┴────────────────────┴────────────────────┴────────────────────┴───────────────┤
 │ DAY 7: ZERO-DEFECT SIGN-OFF & PUBLIC BETA RELEASE                                                                      │
 └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
@@ -61,18 +61,22 @@
 
 ---
 
-### Day 3: Mock Examination & Test Simulation Hardening
-* **Objective:** Harden the strict 2-hour examination simulator (`/mock-tests`, `/mock-tests/[testId]`), enforce server-side anti-leak answer protection, and guarantee in-flight session persistence.
-* **Status:** **PENDING VERIFICATION**
-* **Lead:** Full-Stack Security Engineer & Exam Algorithm Specialist
+### Day 3: Professional SaaS Experience, Subscription System, User Onboarding & Mock Examination
+* **Objective:** Establish enterprise-grade SaaS subscription architecture, eliminate role bleed on registration, deliver self-serve billing, enforce anti-leak mock exam simulation, and introduce Pravaah Intelligence (Smart Mistake Journal & Spaced Revision).
+* **Status:** **COMPLETED & VERIFIED**
+* **Lead:** Senior SaaS Architect, Full-Stack Lead & Security Specialist
 
 | Task ID | Priority | Task Description | Acceptance Criteria | Status | Evidence / Verification |
 | :--- | :---: | :--- | :--- | :---: | :--- |
-| **D3-01** | **P0** | Server-Side Anti-Leak Protection | `/api/v1/tests/session/start` explicitly omits `isCorrect`, `correctOption`, and `explanation` | **COMPLETED** | Verified by `security_auth_isolation.test.mjs` |
-| **D3-02** | **P0** | In-Flight `localStorage` Session Recovery | Reloading page during exam restores timer, marked questions, and student responses | **COMPLETED** | Implemented in `components/ExamPlayer.tsx` |
-| **D3-03** | **P0** | Negative Marking Formula Accuracy | GS1: +2.0 / -0.666; CSAT: +2.5 / -0.833 (33% qualifying threshold check) | **COMPLETED** | Verified by node test scoring suite |
-| **D3-04** | **P1** | Comprehensive Scorecard & Solutions Review | Submission generates subject-wise accuracy, net score, and question-by-question review | **COMPLETED** | Verified in POST `/api/v1/tests/session/submit` |
-| **D3-05** | **P1** | Push Mistakes to Spaced Revision | Incorrect responses during mock test automatically seed `ReviewSchedule` records | **COMPLETED** | Tested in test session submission transaction |
+| **D3-01** | **P0** | Authentication & Role UX Segregation | Separate Guest, Aspirant, and Admin navigation states; zero role leak on `/register`; server-side RBAC validation | **COMPLETED** | Implemented in `Header.tsx`, `/register/page.tsx`, and verified by `day3_user_experience.test.mjs` |
+| **D3-02** | **P0** | Authoritative 4-Tier Subscription Model | Full alignment with database plans (`FREE`, `BEGINNER`, `ACHIEVER`, `SCHOLAR`); monthly/annual toggles; clear limitations | **COMPLETED** | Implemented in `/pricing/page.tsx`; documented in `DAY_3_SUBSCRIPTION_AUDIT.md` |
+| **D3-03** | **P0** | Plan Preservation & Registration Flow | Selected plan & interval carry across `/pricing` → `/register` → checkout; duplicate email guard (HTTP 409); password show/hide | **COMPLETED** | Verified in `/register/page.tsx` and automated tests |
+| **D3-04** | **P0** | Dedicated Self-Serve Billing Portal | `/dashboard/billing` with live membership lifecycle states, renewal dates, entitlement audit, invoice history & cancel modal | **COMPLETED** | Authored `app/dashboard/billing/page.tsx` & `/api/v1/user/billing` |
+| **D3-05** | **P0** | Server-Side Feature Entitlement Engine | `lib/entitlements.ts` enforces personal quotas for PYQs and mock tests; Direct API access protected with HTTP 403 `UPGRADE_REQUIRED` | **COMPLETED** | Verified in `day3_subscription_journey.test.mjs` |
+| **D3-06** | **P1** | Smart Mistake Journal & Error Taxonomy | Students tag errors with 5 cognitive categories (`Concept not clear`, `Forgotten fact`, etc.); logged to `ReviewSchedule` | **COMPLETED** | Built `components/QuestionCard.tsx` + `/api/v1/user/mistakes` |
+| **D3-07** | **P1** | Spaced Repetition Queue Foundation | Configurable 1/3/7/14-day intervals; visual error distribution breakdown; quick reschedule controls | **COMPLETED** | Verified in `app/revision/page.tsx` + `/api/v1/user/revision` |
+| **D3-08** | **P0** | Mock Exam Simulator & Anti-Leak Hardening | 100-Q GS1 & 80-Q CSAT; answers strictly omitted in active session; localStorage recovery; exact UPSC negative marking | **COMPLETED** | Verified in `tests/day3_mock_exam_flow.test.mjs` |
+| **D3-09** | **P0** | Comprehensive Test Suite & Build Pass | 63/63 tests pass (100%); 33/33 Next.js routes compile cleanly; visual proof captured across 1440px, 768px, 390px | **COMPLETED** | Documented in `DAY_3_EXECUTION_REPORT.md` |
 
 ---
 

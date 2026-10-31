@@ -75,6 +75,29 @@ export function QuestionCard({
   const [reportSubmitting, setReportSubmitting] = useState(false);
   const [reportSubmitted, setReportSubmitted] = useState(false);
   const [eliminatedOptions, setEliminatedOptions] = useState<Record<string, boolean>>({});
+  const [mistakeReason, setMistakeReason] = useState<string | null>(null);
+  const [mistakeLogged, setMistakeLogged] = useState(false);
+
+  const handleLogMistakeReason = async (reason: string) => {
+    setMistakeReason(reason);
+    try {
+      const res = await fetch("/api/v1/user/mistakes", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          questionId: question.id,
+          mistakeReason: reason,
+          intervalDays: 1,
+        }),
+      });
+      if (res.ok) {
+        setMistakeLogged(true);
+        setTimeout(() => setMistakeLogged(false), 3000);
+      }
+    } catch (e) {
+      console.error("Failed to log mistake reason:", e);
+    }
+  };
 
   const handleToggleEliminate = (optionCode: string, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -383,6 +406,47 @@ export function QuestionCard({
           );
         })}
       </div>
+
+      {/* Smart Mistake Journal Selector */}
+      {selectedOption !== null && selectedOption.toUpperCase() !== question.correctOption.toUpperCase() && (
+        <div className="mt-4 rounded-xl border border-purple-200 bg-purple-50/70 p-3.5 text-xs animate-in fade-in">
+          <div className="flex items-center justify-between">
+            <span className="font-bold text-purple-950 flex items-center gap-1.5">
+              <Sparkles className="h-4 w-4 text-purple-700" />
+              Smart Mistake Journal — Why did you struggle with this question?
+            </span>
+            {mistakeLogged && (
+              <span className="text-emerald-700 font-bold text-[11px] bg-emerald-100 px-2 py-0.5 rounded">
+                Saved to Revision Queue!
+              </span>
+            )}
+          </div>
+          <p className="text-[11px] text-purple-800/80 mt-1">
+            Tagging your root cause calibrates spaced repetition and flags conceptual gaps in your analytics.
+          </p>
+          <div className="mt-2.5 flex flex-wrap gap-1.5">
+            {[
+              "Concept not clear",
+              "Forgotten fact",
+              "Misread question",
+              "Incorrect option elimination",
+              "Guess",
+            ].map((reason) => (
+              <button
+                key={reason}
+                onClick={() => handleLogMistakeReason(reason)}
+                className={`rounded-lg px-2.5 py-1 text-[11px] font-semibold transition border ${
+                  mistakeReason === reason
+                    ? "bg-purple-700 text-white border-purple-800 shadow-sm"
+                    : "bg-white text-purple-900 border-purple-200 hover:bg-purple-100"
+                }`}
+              >
+                {reason}
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Inline Student Note Box (if open or exists) */}
       {(isEditingNote || noteContent) && (
