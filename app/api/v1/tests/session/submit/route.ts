@@ -7,6 +7,10 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
+    const authResult = await requireAuthenticatedUser(request);
+    if ("error" in authResult) return authResult.error;
+    const user = authResult.user;
+
     const body = await request.json();
     const { sessionId, responses = [], totalTimeSpentSeconds = 0 } = body;
 
@@ -60,9 +64,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Security Check: Verify user owns this session
-    const authResult = await requireAuthenticatedUser(request);
-    if ("error" in authResult) return authResult.error;
-    const user = authResult.user;
     if (session.userId !== user.id && user.role !== "ADMIN") {
       return NextResponse.json(
         {

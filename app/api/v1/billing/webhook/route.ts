@@ -1,16 +1,41 @@
 import { NextRequest, NextResponse } from "next/server";
+import crypto from "crypto";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
+function timingSafeEqualStrings(a: string, b: string): boolean {
+  const bufA = Buffer.from(a);
+  const bufB = Buffer.from(b);
+  if (bufA.length !== bufB.length) {
+    return false;
+  }
+  return crypto.timingSafeEqual(bufA, bufB);
+}
+
 export async function POST(request: NextRequest) {
   try {
     const signature = request.headers.get("x-pravaah-webhook-signature");
-    const webhookSecret = process.env.PAYMENT_WEBHOOK_SECRET || "pravaah_webhook_dev_secret_2026";
+    const webhookSecret =
+      process.env.PAYMENT_WEBHOOK_SECRET ||
+      (process.env.NODE_ENV === "production" ? null : "pravaah_webhook_dev_secret_2026");
 
-    // 1. Validate Webhook Authenticity / Signature
-    // In production, verify crypto HMAC against request raw body
-    if (!signature || signature !== webhookSecret) {
+    if (!webhookSecret) {
+      console.error("PAYMENT_WEBHOOK_SECRET is not configured in production environment.");
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "CONFIGURATION_ERROR",
+            message: "Payment webhook secret is not configured.",
+          },
+        },
+        { status: 500 }
+      );
+    }
+
+    // 1. Validate Webhook Authenticity / Signature (Timing-safe comparison)
+    if (!signature || !timingSafeEqualStrings(signature, webhookSecret)) {
       return NextResponse.json(
         { success: false, error: { code: "INVALID_SIGNATURE", message: "Webhook signature verification failed." } },
         { status: 401 }
@@ -18,7 +43,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { event, orderId, planCode, billingInterval = "ANNUAL", status = "SUCCESS", reason } = body;
+    const { event, orderId, planCode, billingInterval = "ANNUAL", status, reason } = body;
 
     if (!orderId) {
       return NextResponse.json(
@@ -40,8 +65,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 3. Idempotency Check: Do not process twice
-    if (payment.status === "SUCCESS" && event === "payment.succeeded") {
+    // 3. Idempotency Check: Do not process twice if payment is already successful
+    if (payment.status === "SUCCESS") {
       return NextResponse.json({
         success: true,
         message: "Payment event already processed idempotently.",
