@@ -15,7 +15,7 @@
 ├────────────────────┬────────────────────┬────────────────────┬────────────────────┬────────────────────┬───────────────┤
 │ DAY 1: AUDIT &     │ DAY 2: PYQ & LEARN │ DAY 3: MOCK EXAMS  │ DAY 4: DAILY LOOPS │ DAY 5: MAINS &     │ DAY 6: LOAD & │
 │ FOUNDATION         │ MODE POLISH        │ & SUBSCRIPTION     │ & SPACED REVISION  │ STUDY PLANNER      │ SECURITY QA   │
-│ [COMPLETED]        │ [COMPLETED]        │ [COMPLETED]        │ [PENDING]          │ [PENDING]          │ [PENDING]     │
+│ [COMPLETED]        │ [COMPLETED]        │ [PREVIEW VERIFIED] │ [PENDING]          │ [PENDING]          │ [PENDING]     │
 ├────────────────────┴────────────────────┴────────────────────┴────────────────────┴────────────────────┴───────────────┤
 │ DAY 7: ZERO-DEFECT SIGN-OFF & PUBLIC BETA RELEASE                                                                      │
 └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
@@ -63,7 +63,7 @@
 
 ### Day 3: Professional SaaS Experience, Subscription System, User Onboarding & Mock Examination
 * **Objective:** Establish enterprise-grade SaaS subscription architecture, eliminate role bleed on registration, deliver self-serve billing, enforce anti-leak mock exam simulation, and introduce Pravaah Intelligence (Smart Mistake Journal & Spaced Revision).
-* **Status:** **COMPLETED & VERIFIED**
+* **Status:** **PREVIEW VERIFIED**
 * **Lead:** Senior SaaS Architect, Full-Stack Lead & Security Specialist
 
 | Task ID | Priority | Task Description | Acceptance Criteria | Status | Evidence / Verification |
