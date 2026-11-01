@@ -25,7 +25,7 @@
 # SQLite database files
 *.db-journal
 data/backups/*.db
-!prisma/dev.db
+*.db
 
 # Vercel
 .vercel
