@@ -148,6 +148,7 @@ export default function DashboardPage() {
       {/* 1. Dashboard Header & Aspirant Badge */}
       <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
+          <span className="sr-only">Aspirant Learning Analytics</span>
           <div className="flex flex-wrap items-center gap-2">
             <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
               Welcome, {aspirant.fullName}

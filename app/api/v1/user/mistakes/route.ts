@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
@@ -16,7 +16,9 @@ type MistakeReason = (typeof VALID_MISTAKE_REASONS)[number];
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const auth = await requireAuthenticatedUser(request);
+    if (auth.error) return auth.error;
+    const user = auth.user;
 
     // Retrieve user's mistake records from review schedules
     const schedules = await prisma.reviewSchedule.findMany({
@@ -109,7 +111,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const auth = await requireAuthenticatedUser(request);
+    if (auth.error) return auth.error;
+    const user = auth.user;
     const body = await request.json();
     const { questionId, mistakeReason, intervalDays = 1, notes } = body;
 

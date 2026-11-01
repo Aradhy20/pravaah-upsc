@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { PrismaClient } from "@prisma/client";
+import { createAuthenticatedTestSession } from "./test_auth_helper.mjs";
 
 const prisma = new PrismaClient();
 const BASE_URL = process.env.TEST_BASE_URL || "http://localhost:3000";
@@ -29,15 +30,17 @@ test("Day 3 UX & Security: Server-Enforced Role-Based Route Protection", async (
     },
   });
 
+  const aspirantSession = await createAuthenticatedTestSession(aspirantUser.id);
+
   // 1. Aspirant attempts to access Admin Questions API -> Must return 403 Forbidden
   const adminRes = await fetch(`${BASE_URL}/api/v1/admin/questions`, {
-    headers: { "x-user-id": aspirantUser.id },
+    headers: aspirantSession.headers,
   });
   assert.strictEqual(adminRes.status, 403, "Aspirants must be rejected from Admin Questions API with 403");
 
   // 2. Aspirant attempts to access Admin Subscriptions API -> Must return 403 Forbidden
   const subAdminRes = await fetch(`${BASE_URL}/api/v1/admin/subscriptions`, {
-    headers: { "x-user-id": aspirantUser.id },
+    headers: aspirantSession.headers,
   });
   assert.strictEqual(subAdminRes.status, 403, "Aspirants must be rejected from Admin Subscriptions API with 403");
 
@@ -47,8 +50,9 @@ test("Day 3 UX & Security: Server-Enforced Role-Based Route Protection", async (
   });
   assert.ok(adminUser, "Admin user must exist");
 
+  const adminSession = await createAuthenticatedTestSession(adminUser.id);
   const legitimateAdminRes = await fetch(`${BASE_URL}/api/v1/admin/questions`, {
-    headers: { "x-user-id": adminUser.id },
+    headers: adminSession.headers,
   });
   assert.strictEqual(legitimateAdminRes.status, 200, "Admin must be granted access with 200");
 
@@ -133,9 +137,11 @@ test("Day 3 UX: Feature Entitlements & Personal Quotas (Free vs Pro)", async () 
     },
   });
 
+  const session = await createAuthenticatedTestSession(user.id);
+
   // Verify free user initial subscription status
   const subRes = await fetch(`${BASE_URL}/api/v1/user/subscription`, {
-    headers: { "x-user-id": user.id },
+    headers: session.headers,
   });
   assert.strictEqual(subRes.status, 200);
   const subJson = await subRes.json();

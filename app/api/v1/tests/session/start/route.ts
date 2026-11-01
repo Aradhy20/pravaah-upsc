@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 import { checkEntitlement } from "@/lib/entitlements";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const auth = await requireAuthenticatedUser(request);
+    if (auth.error) return auth.error;
+    const user = auth.user;
 
     // Server-side Entitlement Check: Timed Exam Mode requires Achiever plan or higher
     const entitlement = await checkEntitlement(user.id, "TIMED_EXAMS");

@@ -13,11 +13,11 @@
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                          SEVEN-DAY BETA LAUNCH SPRINT                                                  │
 ├────────────────────┬────────────────────┬────────────────────┬────────────────────┬────────────────────┬───────────────┤
-│ DAY 1: AUDIT &     │ DAY 2: PYQ & LEARN │ DAY 3: MOCK EXAMS  │ DAY 4: WORKSPACE   │ DAY 5: MAINS &     │ DAY 6: LOAD & │
-│ FOUNDATION         │ MODE POLISH        │ & SUBSCRIPTION     │ & ANALYTICS        │ STUDY PLANNER      │ SECURITY QA   │
-│ [COMPLETED]        │ [COMPLETED]        │ [PULL REQUEST OPEN]│ [COMPLETED]        │ [PENDING]          │ [PENDING]     │
+│ DAY 1: AUDIT &     │ DAY 2: PYQ & LEARN │ DAY 3: MOCK EXAMS  │ DAY 4: WORKSPACE   │ DAY 4.1: SECURITY  │ DAY 5: AI &   │
+│ FOUNDATION         │ MODE POLISH        │ & SUBSCRIPTION     │ & ANALYTICS        │ & HARDENING        │ CURRENT AFFAIR│
+│ [COMPLETED]        │ [COMPLETED]        │ [PULL REQUEST OPEN]│ [COMPLETED]        │ [COMPLETED]        │ [NEXT SPRINT] │
 ├────────────────────┴────────────────────┴────────────────────┴────────────────────┴────────────────────┴───────────────┤
-│ DAY 7: ZERO-DEFECT SIGN-OFF & PUBLIC BETA RELEASE                                                                      │
+│ DAY 6: ADMIN & INGESTION ──▶ DAY 7: FULL QA & E2E ──▶ DAY 8: BETA LAUNCH                                               │
 └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -96,6 +96,24 @@
 | **D4-06** | **P1** | Enhanced Personal Notes Workspace | `/notes` with full-text search, subject filtering, inline note editing, DELETE confirmation, and open-in-explorer direct navigation | **COMPLETED** | Rebuilt in `app/notes/page.tsx` + `/api/v1/user/notes` |
 | **D4-07** | **P1** | Filterable Saved Bookmarks Explorer | `/bookmarks` with search query, subject filter, year filter, paper filter, remove confirmation modal, and direct PYQ Explorer link | **COMPLETED** | Rebuilt in `app/bookmarks/page.tsx` + `/api/v1/user/bookmarks` |
 | **D4-08** | **P0** | Automated Day 4 Test Suite & Regression Run | 6/6 dedicated Day 4 tests pass (100%); zero-data new user graceful state validated; production build succeeds (33/33 routes) | **COMPLETED** | Executed via `node --test tests/day4_dashboard_workspace.test.mjs` (6/6 passed) |
+
+---
+
+### Day 4.1: Critical Authentication, Security and Dashboard Data Integrity Sprint
+* **Objective:** Remediate P0 authentication bypass vulnerabilities, replace weak static SHA-256 password hashing with `scrypt`, eliminate demo-password bypasses, fix GS1 vs. CSAT double counting in dashboard analytics, persist study planner subject selections, enforce strict server-side validation, and correct reporting timezones to `Asia/Kolkata`.
+* **Status:** **COMPLETED & VERIFIED**
+* **Lead:** Principal Application Security Engineer & QA Lead
+
+| Task ID | Priority | Task Description | Acceptance Criteria | Status | Evidence / Verification |
+| :--- | :---: | :--- | :--- | :---: | :--- |
+| **D4.1-01** | **P0** | Cryptographic Server-Side Sessions | Generate 32-byte secure random tokens; store only SHA-256 hashes in database `Session` table; reject `x-user-id` and raw user IDs | **COMPLETED** | Tested in `tests/day4_1_auth_security.test.mjs`; fail-closed 401 on unauthenticated access |
+| **D4.1-02** | **P0** | Secure Password Hashing & Legacy Migration | Replace static SHA-256 with `scrypt` using unique per-password random salts; remove demo-hash bypass; transparently migrate legacy hashes on login | **COMPLETED** | Verified in `tests/day4_1_auth_security.test.mjs` with timing-safe checks |
+| **D4.1-03** | **P0** | Session Revocation & Cookie Hardening | Logout revokes session token in database; HttpOnly, Secure, SameSite=Lax cookie configuration; old user ID cookies expired | **COMPLETED** | Verified in `tests/day4_1_auth_security.test.mjs` |
+| **D4.1-04** | **P1** | Canonical GS1 vs. CSAT Analytics Separation | Eliminate broad `startsWith("GS")` classifier; enforce exact paper code boundaries (GS1 is strictly GS Paper 1, GS2/CSAT is CSAT Paper 2); zero overlap | **COMPLETED** | Verified in `tests/day4_1_dashboard_integrity.test.mjs` |
+| **D4.1-05** | **P1** | Study Planner Subject Persistence | Add `subject String?` to `model StudyGoal` in `prisma/schema.prisma`; validate against 9 canonical UPSC subjects; persist on creation & update; filterable via API | **COMPLETED** | Verified in `tests/day4_1_study_planner_validation.test.mjs` |
+| **D4.1-06** | **P1** | Strict Server-Side Input Validation | Reject invalid target years (<2026 or >2035), invalid daily study targets (<15 or >720 min), empty titles, and invalid dates with HTTP 400 | **COMPLETED** | Verified in `tests/day4_1_study_planner_validation.test.mjs` |
+| **D4.1-07** | **P1** | Dashboard Timezone & Metric Accuracy | Standardize reporting dates on `Asia/Kolkata` (IST); relabel question solving time as "Question Practice Time"; track active study sessions | **COMPLETED** | Verified in `tests/day4_1_dashboard_integrity.test.mjs` |
+| **D4.1-08** | **P0** | Dedicated Day 4.1 Automated Test Suite | 16/16 dedicated Day 4.1 tests pass; all existing regression suites updated to session authentication; 85/85 tests pass; production build succeeds (33/33 routes) | **COMPLETED** | Executed via `node --test` across all suites (100% pass) |
 
 ---
 

@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 import fs from "fs";
 import path from "path";
 
@@ -7,13 +7,9 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
-    if (user.role !== "ADMIN") {
-      return NextResponse.json(
-        { success: false, error: { code: "FORBIDDEN", message: "Admin privileges required" } },
-        { status: 403 }
-      );
-    }
+    const auth = await requireAuthenticatedUser(request, { requiredRole: "ADMIN" });
+    if (auth.error) return auth.error;
+    const user = auth.user;
 
     const { searchParams } = new URL(request.url);
     const fileName = searchParams.get("file") || "question_bank_coverage.csv";

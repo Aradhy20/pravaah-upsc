@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { PrismaClient } from "@prisma/client";
+import { createAuthenticatedTestSession } from "./test_auth_helper.mjs";
 
 const prisma = new PrismaClient();
 const BASE_URL = process.env.TEST_BASE_URL || "http://localhost:3000";
@@ -48,12 +49,14 @@ test("Day 3 Subscription Journey: Server-Side Price Tamper Resistance & Order Ge
     },
   });
 
+  const session = await createAuthenticatedTestSession(user.id);
+
   // Attempt checkout for ACHIEVER plan - client attempts to pass a tampered price
   const checkoutRes = await fetch(`${BASE_URL}/api/v1/billing/checkout`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": user.id,
+      ...session.headers,
     },
     body: JSON.stringify({
       planCode: "ACHIEVER",
@@ -97,12 +100,14 @@ test("Day 3 Subscription Journey: Webhook Signature Guard & Idempotency", async 
     },
   });
 
+  const session = await createAuthenticatedTestSession(user.id);
+
   // 1. Create order
   const checkoutRes = await fetch(`${BASE_URL}/api/v1/billing/checkout`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": user.id,
+      ...session.headers,
     },
     body: JSON.stringify({
       planCode: "ACHIEVER",
@@ -210,12 +215,14 @@ test("Day 3 Subscription Journey: Self-Serve Cancellation Preserves Paid Access"
     },
   });
 
+  const session = await createAuthenticatedTestSession(user.id);
+
   // Cancel subscription via user endpoint
   const cancelRes = await fetch(`${BASE_URL}/api/v1/user/subscription/cancel`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": user.id,
+      ...session.headers,
     },
     body: JSON.stringify({ reason: "Switching study focus" }),
   });

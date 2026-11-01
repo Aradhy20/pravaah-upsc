@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { PrismaClient } from "@prisma/client";
+import { createAuthenticatedTestSession } from "./test_auth_helper.mjs";
 
 const prisma = new PrismaClient();
 const BASE_URL = process.env.TEST_BASE_URL || "http://localhost:3000";
@@ -11,8 +12,9 @@ test("Day 4 Dashboard: Aspirant Analytics API Returns Complete Telemetry", async
   });
   assert.ok(aspirant, "Demo aspirant user must exist");
 
+  const session = await createAuthenticatedTestSession(aspirant.id);
   const res = await fetch(`${BASE_URL}/api/v1/analytics/dashboard`, {
-    headers: { "x-user-id": aspirant.id },
+    headers: session.headers,
   });
   assert.strictEqual(res.status, 200, "Dashboard analytics must return 200 OK");
   const json = await res.json();
@@ -66,8 +68,9 @@ test("Day 4 Dashboard: Graceful Zero-Data Empty State for New User", async () =>
     },
   });
 
+  const session = await createAuthenticatedTestSession(newUser.id);
   const res = await fetch(`${BASE_URL}/api/v1/analytics/dashboard`, {
-    headers: { "x-user-id": newUser.id },
+    headers: session.headers,
   });
   assert.strictEqual(res.status, 200, "Dashboard must return 200 OK for new user without error");
   const json = await res.json();
@@ -96,9 +99,11 @@ test("Day 4 Profile API: GET and PATCH User Target Preferences", async () => {
     },
   });
 
+  const session = await createAuthenticatedTestSession(user.id);
+
   // 1. GET profile
   const getRes = await fetch(`${BASE_URL}/api/v1/user/profile`, {
-    headers: { "x-user-id": user.id },
+    headers: session.headers,
   });
   assert.strictEqual(getRes.status, 200);
   const getJson = await getRes.json();
@@ -110,7 +115,7 @@ test("Day 4 Profile API: GET and PATCH User Target Preferences", async () => {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": user.id,
+      ...session.headers,
     },
     body: JSON.stringify({
       targetYear: 2026,
@@ -148,15 +153,19 @@ test("Day 4 Study Goals: Full CRUD Lifecycle & Cross-User Security Isolation", a
     },
   });
 
+  const sessionA = await createAuthenticatedTestSession(userA.id);
+  const sessionB = await createAuthenticatedTestSession(userB.id);
+
   // 1. User A creates a study task
   const createRes = await fetch(`${BASE_URL}/api/v1/user/goals`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": userA.id,
+      ...sessionA.headers,
     },
     body: JSON.stringify({
-      title: "Polity & Governance: Fundamental Rights Articles 19-22",
+      title: "Fundamental Rights Articles 19-22",
+      subject: "Polity & Governance",
       targetHours: 3.5,
       targetDate: new Date(Date.now() + 86400000 * 2).toISOString(),
     }),
@@ -169,7 +178,7 @@ test("Day 4 Study Goals: Full CRUD Lifecycle & Cross-User Security Isolation", a
 
   // 2. User A fetches goals -> must contain the created goal
   const listRes = await fetch(`${BASE_URL}/api/v1/user/goals`, {
-    headers: { "x-user-id": userA.id },
+    headers: sessionA.headers,
   });
   assert.strictEqual(listRes.status, 200);
   const listJson = await listRes.json();
@@ -180,7 +189,7 @@ test("Day 4 Study Goals: Full CRUD Lifecycle & Cross-User Security Isolation", a
 
   // 3. User B fetches goals -> User A's goal MUST NOT be present
   const listBRes = await fetch(`${BASE_URL}/api/v1/user/goals`, {
-    headers: { "x-user-id": userB.id },
+    headers: sessionB.headers,
   });
   assert.strictEqual(listBRes.status, 200);
   const listBJson = await listBRes.json();
@@ -195,7 +204,7 @@ test("Day 4 Study Goals: Full CRUD Lifecycle & Cross-User Security Isolation", a
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": userB.id,
+      ...sessionB.headers,
     },
     body: JSON.stringify({
       id: goalId,
@@ -213,7 +222,7 @@ test("Day 4 Study Goals: Full CRUD Lifecycle & Cross-User Security Isolation", a
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": userA.id,
+      ...sessionA.headers,
     },
     body: JSON.stringify({
       id: goalId,
@@ -228,7 +237,7 @@ test("Day 4 Study Goals: Full CRUD Lifecycle & Cross-User Security Isolation", a
   // 6. Cross-user deletion attack: User B attempts to delete User A's goal -> Must fail
   const attackDeleteRes = await fetch(`${BASE_URL}/api/v1/user/goals?id=${goalId}`, {
     method: "DELETE",
-    headers: { "x-user-id": userB.id },
+    headers: sessionB.headers,
   });
   assert.strictEqual(
     attackDeleteRes.status,
@@ -239,7 +248,7 @@ test("Day 4 Study Goals: Full CRUD Lifecycle & Cross-User Security Isolation", a
   // 7. User A deletes goal -> Must succeed
   const deleteRes = await fetch(`${BASE_URL}/api/v1/user/goals?id=${goalId}`, {
     method: "DELETE",
-    headers: { "x-user-id": userA.id },
+    headers: sessionA.headers,
   });
   assert.strictEqual(deleteRes.status, 200);
 
@@ -267,6 +276,9 @@ test("Day 4 Notes: CRUD & Strict Cross-User Isolation", async () => {
     },
   });
 
+  const sessionA = await createAuthenticatedTestSession(userA.id);
+  const sessionB = await createAuthenticatedTestSession(userB.id);
+
   // Pick a published question
   const question = await prisma.question.findFirst({
     where: { status: "PUBLISHED" },
@@ -278,7 +290,7 @@ test("Day 4 Notes: CRUD & Strict Cross-User Isolation", async () => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": userA.id,
+      ...sessionA.headers,
     },
     body: JSON.stringify({
       questionId: question.id,
@@ -292,7 +304,7 @@ test("Day 4 Notes: CRUD & Strict Cross-User Isolation", async () => {
 
   // 2. User B lists notes -> User A's note MUST NOT be visible
   const listBRes = await fetch(`${BASE_URL}/api/v1/user/notes`, {
-    headers: { "x-user-id": userB.id },
+    headers: sessionB.headers,
   });
   assert.strictEqual(listBRes.status, 200);
   const listBJson = await listBRes.json();
@@ -305,14 +317,14 @@ test("Day 4 Notes: CRUD & Strict Cross-User Isolation", async () => {
   // 3. User B attempts to DELETE User A's note -> Must fail with 404
   const attackDeleteRes = await fetch(`${BASE_URL}/api/v1/user/notes?id=${noteId}`, {
     method: "DELETE",
-    headers: { "x-user-id": userB.id },
+    headers: sessionB.headers,
   });
   assert.strictEqual(attackDeleteRes.status, 404, "Cross-user note delete must return 404");
 
   // 4. User A deletes note by id -> Must succeed
   const deleteRes = await fetch(`${BASE_URL}/api/v1/user/notes?id=${noteId}`, {
     method: "DELETE",
-    headers: { "x-user-id": userA.id },
+    headers: sessionA.headers,
   });
   assert.strictEqual(deleteRes.status, 200);
 
@@ -340,6 +352,9 @@ test("Day 4 Bookmarks: Tenant Isolation & Toggle", async () => {
     },
   });
 
+  const sessionA = await createAuthenticatedTestSession(userA.id);
+  const sessionB = await createAuthenticatedTestSession(userB.id);
+
   const question = await prisma.question.findFirst({
     where: { status: "PUBLISHED" },
   });
@@ -350,7 +365,7 @@ test("Day 4 Bookmarks: Tenant Isolation & Toggle", async () => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": userA.id,
+      ...sessionA.headers,
     },
     body: JSON.stringify({ questionId: question.id }),
   });
@@ -360,7 +375,7 @@ test("Day 4 Bookmarks: Tenant Isolation & Toggle", async () => {
 
   // 2. User B lists bookmarks -> Must be empty
   const listB = await fetch(`${BASE_URL}/api/v1/user/bookmarks`, {
-    headers: { "x-user-id": userB.id },
+    headers: sessionB.headers,
   });
   const listBJson = await listB.json();
   assert.strictEqual(
@@ -374,7 +389,7 @@ test("Day 4 Bookmarks: Tenant Isolation & Toggle", async () => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": userA.id,
+      ...sessionA.headers,
     },
     body: JSON.stringify({ questionId: question.id }),
   });

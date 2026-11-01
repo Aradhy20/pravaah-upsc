@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { PrismaClient } from "@prisma/client";
+import { createAuthenticatedTestSession } from "./test_auth_helper.mjs";
 
 const prisma = new PrismaClient();
 const BASE_URL = "http://localhost:3000";
@@ -86,6 +87,9 @@ test("Security & Auth: Cross-User Data Isolation (Bookmarks & Notes)", async () 
     },
   });
 
+  const sessionA = await createAuthenticatedTestSession(userA.id);
+  const sessionB = await createAuthenticatedTestSession(userB.id);
+
   const questions = await prisma.question.findMany({ take: 2 });
   assert.ok(questions.length >= 2, "Need at least 2 questions for isolation testing");
 
@@ -93,13 +97,13 @@ test("Security & Auth: Cross-User Data Isolation (Bookmarks & Notes)", async () 
   const noteContentA = `Private research note for User A ${Date.now()}`;
   await fetch(`${BASE_URL}/api/v1/user/bookmarks`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-user-id": userA.id },
+    headers: { "Content-Type": "application/json", ...sessionA.headers },
     body: JSON.stringify({ questionId: questions[0].id }),
   });
 
   await fetch(`${BASE_URL}/api/v1/user/notes`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-user-id": userA.id },
+    headers: { "Content-Type": "application/json", ...sessionA.headers },
     body: JSON.stringify({ questionId: questions[0].id, content: noteContentA }),
   });
 
@@ -107,19 +111,19 @@ test("Security & Auth: Cross-User Data Isolation (Bookmarks & Notes)", async () 
   const noteContentB = `Private research note for User B ${Date.now()}`;
   await fetch(`${BASE_URL}/api/v1/user/bookmarks`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-user-id": userB.id },
+    headers: { "Content-Type": "application/json", ...sessionB.headers },
     body: JSON.stringify({ questionId: questions[1].id }),
   });
 
   await fetch(`${BASE_URL}/api/v1/user/notes`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-user-id": userB.id },
+    headers: { "Content-Type": "application/json", ...sessionB.headers },
     body: JSON.stringify({ questionId: questions[1].id, content: noteContentB }),
   });
 
   // 1. Fetch User A bookmarks -> Must contain Question 0, but NOT Question 1
   const resBookmarksA = await fetch(`${BASE_URL}/api/v1/user/bookmarks`, {
-    headers: { "x-user-id": userA.id },
+    headers: sessionA.headers,
   });
   const jsonBookmarksA = await resBookmarksA.json();
   const bookmarkedIdsA = jsonBookmarksA.data.map((b) => b.question.id);
@@ -128,7 +132,7 @@ test("Security & Auth: Cross-User Data Isolation (Bookmarks & Notes)", async () 
 
   // 2. Fetch User B bookmarks -> Must contain Question 1, but NOT Question 0
   const resBookmarksB = await fetch(`${BASE_URL}/api/v1/user/bookmarks`, {
-    headers: { "x-user-id": userB.id },
+    headers: sessionB.headers,
   });
   const jsonBookmarksB = await resBookmarksB.json();
   const bookmarkedIdsB = jsonBookmarksB.data.map((b) => b.question.id);
@@ -137,7 +141,7 @@ test("Security & Auth: Cross-User Data Isolation (Bookmarks & Notes)", async () 
 
   // 3. Fetch User A notes -> Must contain noteContentA, never noteContentB
   const resNotesA = await fetch(`${BASE_URL}/api/v1/user/notes`, {
-    headers: { "x-user-id": userA.id },
+    headers: sessionA.headers,
   });
   const jsonNotesA = await resNotesA.json();
   const contentsA = jsonNotesA.data.map((n) => n.content);
@@ -146,7 +150,7 @@ test("Security & Auth: Cross-User Data Isolation (Bookmarks & Notes)", async () 
 
   // 4. Fetch User B notes -> Must contain noteContentB, never noteContentA
   const resNotesB = await fetch(`${BASE_URL}/api/v1/user/notes`, {
-    headers: { "x-user-id": userB.id },
+    headers: sessionB.headers,
   });
   const jsonNotesB = await resNotesB.json();
   const contentsB = jsonNotesB.data.map((n) => n.content);
@@ -165,6 +169,9 @@ test("Security & Auth: Role-Based Authorization Enforcement (RBAC)", async () =>
 
   assert.ok(aspirant && admin, "Both aspirant and admin fixtures must exist");
 
+  const aspirantSession = await createAuthenticatedTestSession(aspirant.id);
+  const adminSession = await createAuthenticatedTestSession(admin.id);
+
   // 2. Aspirant calling admin endpoints must receive 403 Forbidden
   const forbiddenRoutes = [
     { url: `${BASE_URL}/api/v1/admin/plans`, method: "GET" },
@@ -176,7 +183,7 @@ test("Security & Auth: Role-Based Authorization Enforcement (RBAC)", async () =>
   for (const route of forbiddenRoutes) {
     const res = await fetch(route.url, {
       method: route.method,
-      headers: { "x-user-id": aspirant.id },
+      headers: aspirantSession.headers,
     });
     assert.equal(
       res.status,
@@ -185,12 +192,12 @@ test("Security & Auth: Role-Based Authorization Enforcement (RBAC)", async () =>
     );
     const json = await res.json();
     assert.equal(json.success, false);
-    assert.ok(json.error.message.includes("Admin"), "Error must state admin privileges required");
+    assert.ok(json.error.message.toLowerCase().includes("admin"), "Error must state admin privileges required");
   }
 
   // 3. Admin calling the same routes must receive 200 OK
   const adminRes = await fetch(`${BASE_URL}/api/v1/admin/plans`, {
-    headers: { "x-user-id": admin.id },
+    headers: adminSession.headers,
   });
   assert.equal(adminRes.status, 200, "Admin must be authorized with 200 OK");
   const adminJson = await adminRes.json();
@@ -227,10 +234,13 @@ test("Security & Anti-Leak: Answer Key Protection and Cross-User Session Submiss
     },
   });
 
+  const sessionA = await createAuthenticatedTestSession(studentA.id);
+  const sessionB = await createAuthenticatedTestSession(studentB.id);
+
   // 2. Start timed session as studentA
   const startRes = await fetch(`${BASE_URL}/api/v1/tests/session/start`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-user-id": studentA.id },
+    headers: { "Content-Type": "application/json", ...sessionA.headers },
     body: JSON.stringify({ paperCode: "GS1", year: 2024 }),
   });
 
@@ -250,7 +260,7 @@ test("Security & Anti-Leak: Answer Key Protection and Cross-User Session Submiss
   // 3. Student B attempts to submit Student A's test session -> Must return 403 Forbidden!
   const tamperRes = await fetch(`${BASE_URL}/api/v1/tests/session/submit`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-user-id": studentB.id },
+    headers: { "Content-Type": "application/json", ...sessionB.headers },
     body: JSON.stringify({
       sessionId: startJson.data.sessionId,
       responses: [],
@@ -268,7 +278,7 @@ test("Security & Anti-Leak: Answer Key Protection and Cross-User Session Submiss
   // 4. Student A submits their own session -> Must succeed
   const submitRes = await fetch(`${BASE_URL}/api/v1/tests/session/submit`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-user-id": studentA.id },
+    headers: { "Content-Type": "application/json", ...sessionA.headers },
     body: JSON.stringify({
       sessionId: startJson.data.sessionId,
       responses: [
@@ -290,6 +300,8 @@ test("Content Ingestion: Batch Import with CSV & Duplicate Prevention", async ()
     where: { role: { name: "ADMIN" } },
   });
 
+  const adminSession = await createAuthenticatedTestSession(admin.id);
+
   const uniqueQNum = 70000 + Math.floor(Math.random() * 20000);
   const paper = await prisma.paper.findUnique({ where: { code: "GS1" } });
   if (paper) {
@@ -304,7 +316,7 @@ ${uniqueQNum},"With reference to Indian history, who founded the Servants of Ind
   // 1. Import via CSV
   const importRes = await fetch(`${BASE_URL}/api/v1/admin/import/batch`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-user-id": admin.id },
+    headers: { "Content-Type": "application/json", ...adminSession.headers },
     body: JSON.stringify({
       paperCode: "GS1",
       year: 2024,
@@ -320,7 +332,7 @@ ${uniqueQNum},"With reference to Indian history, who founded the Servants of Ind
   // 2. Re-import identical CSV -> Duplicate count must be 1, importedCount 0
   const reImportRes = await fetch(`${BASE_URL}/api/v1/admin/import/batch`, {
     method: "POST",
-    headers: { "Content-Type": "application/json", "x-user-id": admin.id },
+    headers: { "Content-Type": "application/json", ...adminSession.headers },
     body: JSON.stringify({
       paperCode: "GS1",
       year: 2024,

@@ -1,6 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { PrismaClient } from "@prisma/client";
+import { createAuthenticatedTestSession } from "./test_auth_helper.mjs";
 
 const prisma = new PrismaClient();
 const BASE_URL = process.env.TEST_BASE_URL || "http://localhost:3000";
@@ -17,12 +18,14 @@ test("Day 3 Mock Exam Flow: Subscription Gate for Free Aspirant", async () => {
     },
   });
 
+  const session = await createAuthenticatedTestSession(user.id);
+
   // Attempt to start a timed exam session without Achiever plan -> Must return 403
   const res = await fetch(`${BASE_URL}/api/v1/tests/session/start`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": user.id,
+      ...session.headers,
     },
     body: JSON.stringify({
       paperCode: "GS1",
@@ -64,12 +67,14 @@ test("Day 3 Mock Exam Flow: Paid Session Launch, Anti-Leak & Submission Lifecycl
     },
   });
 
+  const session = await createAuthenticatedTestSession(user.id);
+
   // 2. Start Exam Session for 2024 GS1
   const startRes = await fetch(`${BASE_URL}/api/v1/tests/session/start`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": user.id,
+      ...session.headers,
     },
     body: JSON.stringify({
       paperCode: "GS1",
@@ -119,7 +124,7 @@ test("Day 3 Mock Exam Flow: Paid Session Launch, Anti-Leak & Submission Lifecycl
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": user.id,
+      ...session.headers,
     },
     body: JSON.stringify({
       sessionId,
@@ -143,7 +148,7 @@ test("Day 3 Mock Exam Flow: Paid Session Launch, Anti-Leak & Submission Lifecycl
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": user.id,
+      ...session.headers,
     },
     body: JSON.stringify({
       sessionId,
@@ -164,6 +169,8 @@ test("Day 3 Mock Exam Flow: Paid Session Launch, Anti-Leak & Submission Lifecycl
     },
   });
 
+  const otherSession = await createAuthenticatedTestSession(otherUser.id);
+
   // Create another session belonging to original user
   const session2 = await prisma.testSession.create({
     data: {
@@ -177,7 +184,7 @@ test("Day 3 Mock Exam Flow: Paid Session Launch, Anti-Leak & Submission Lifecycl
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": otherUser.id,
+      ...otherSession.headers,
     },
     body: JSON.stringify({
       sessionId: session2.id,
@@ -213,12 +220,14 @@ test("Day 3 Mock Exam Flow: Smart Mistake Journal & Spaced Revision Scheduling",
   });
   assert.ok(sampleQuestion);
 
+  const session = await createAuthenticatedTestSession(user.id);
+
   // 1. Log a root-cause mistake for a question
   const mistakeRes = await fetch(`${BASE_URL}/api/v1/user/mistakes`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": user.id,
+      ...session.headers,
     },
     body: JSON.stringify({
       questionId: sampleQuestion.id,
@@ -249,7 +258,7 @@ test("Day 3 Mock Exam Flow: Smart Mistake Journal & Spaced Revision Scheduling",
 
   // 3. Query Mistake Analytics endpoint
   const queryRes = await fetch(`${BASE_URL}/api/v1/user/mistakes`, {
-    headers: { "x-user-id": user.id },
+    headers: session.headers,
   });
   assert.strictEqual(queryRes.status, 200);
   const queryJson = await queryRes.json();
@@ -262,7 +271,7 @@ test("Day 3 Mock Exam Flow: Smart Mistake Journal & Spaced Revision Scheduling",
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "x-user-id": user.id,
+      ...session.headers,
     },
     body: JSON.stringify({
       scheduleId: schedule.id,

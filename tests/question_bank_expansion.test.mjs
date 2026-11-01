@@ -1,6 +1,7 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import { PrismaClient } from "@prisma/client";
+import { createAuthenticatedTestSession } from "./test_auth_helper.mjs";
 
 const prisma = new PrismaClient();
 const BASE_URL = "http://localhost:3000";
@@ -120,10 +121,13 @@ test("Public API Performance: Filtering 1,000+ Question Catalog via API", async 
 });
 
 test("Anti-Leak Protection at Scale: Random Timed Exam Session from 2021 GS1", async () => {
+  const admin = await prisma.user.findFirst({ where: { role: { name: "ADMIN" } } });
+  const session = await createAuthenticatedTestSession(admin.id);
+
   // Start a timed mock test session with 2021 GS1 paper
   const startRes = await fetch(`${BASE_URL}/api/v1/tests/session/start`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json", ...session.headers },
     body: JSON.stringify({ paperCode: "GS1", year: 2021 }),
   });
 

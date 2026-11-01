@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 import { checkQuota } from "@/lib/entitlements";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const auth = await requireAuthenticatedUser(request);
+    if (auth.error) return auth.error;
+    const user = auth.user;
+
     const notes = await prisma.userNote.findMany({
       where: { userId: user.id },
       orderBy: { updatedAt: "desc" },
@@ -53,11 +56,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const auth = await requireAuthenticatedUser(request);
+    if (auth.error) return auth.error;
+    const user = auth.user;
+
     const body = await request.json();
     const { questionId, content } = body;
 
-    if (!questionId || content === undefined) {
+    if (!questionId || content === undefined || typeof content !== "string") {
       return NextResponse.json(
         { success: false, error: { code: "INVALID_PAYLOAD", message: "questionId and content are required" } },
         { status: 400 }
@@ -121,7 +127,10 @@ export async function POST(request: NextRequest) {
 
 export async function DELETE(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const auth = await requireAuthenticatedUser(request);
+    if (auth.error) return auth.error;
+    const user = auth.user;
+
     const { searchParams } = new URL(request.url);
     const noteId = searchParams.get("id");
     const questionId = searchParams.get("questionId");

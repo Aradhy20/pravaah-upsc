@@ -1,10 +1,25 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { createSession, COOKIE_SESSION_TOKEN, COOKIE_USER_ID } from "@/lib/auth";
 import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
+  // Prohibit client-selected role switching in production runtime
+  if (process.env.NODE_ENV === "production") {
+    return NextResponse.json(
+      {
+        success: false,
+        error: {
+          code: "FORBIDDEN",
+          message: "Role switching is strictly disabled in production environments.",
+        },
+      },
+      { status: 403 }
+    );
+  }
+
   try {
     const body = await request.json();
     const targetRole = body.role === "ADMIN" ? "ADMIN" : "ASPIRANT";
@@ -17,18 +32,27 @@ export async function POST(request: NextRequest) {
 
     if (!user) {
       return NextResponse.json(
-        { success: false, error: { code: "USER_NOT_FOUND", message: `Demo user for ${targetRole} not found` } },
+        {
+          success: false,
+          error: { code: "USER_NOT_FOUND", message: `Demo user for ${targetRole} not found` },
+        },
         { status: 404 }
       );
     }
 
+    // Create a real server session for the switched user
+    const { token, expiresAt } = await createSession(user.id);
+
     const cookieStore = cookies();
-    cookieStore.set("pravaah_user_id", user.id, {
+    cookieStore.set(COOKIE_SESSION_TOKEN, token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
+      sameSite: "lax",
       path: "/",
-      maxAge: 60 * 60 * 24 * 30, // 30 days
+      maxAge: 60 * 60 * 24 * 30,
+      expires: expiresAt,
     });
+    cookieStore.delete(COOKIE_USER_ID);
 
     return NextResponse.json({
       success: true,
@@ -37,6 +61,7 @@ export async function POST(request: NextRequest) {
         email: user.email,
         fullName: user.fullName,
         role: user.role.name,
+        sessionToken: token,
       },
     });
   } catch (error: any) {

@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert';
 import { PrismaClient } from '@prisma/client';
+import { createAuthenticatedTestSession } from './test_auth_helper.mjs';
 
 const prisma = new PrismaClient();
 const BASE_URL = 'http://localhost:3000';
@@ -144,10 +145,13 @@ test('Feature Entitlement Service: Access Control & Quota Limits', async () => {
 });
 
 test('Subscription Checkout & Webhook Lifecycle: Idempotency & Signature Guard', async () => {
+  const aspirant = await prisma.user.findFirst({ where: { role: { name: 'ASPIRANT' } } });
+  const session = await createAuthenticatedTestSession(aspirant.id);
+
   // 1. Initialize Checkout for ACHIEVER Annual Plan
   const checkoutRes = await fetch(`${BASE_URL}/api/v1/billing/checkout`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...session.headers },
     body: JSON.stringify({
       planCode: 'ACHIEVER',
       billingInterval: 'ANNUAL',
@@ -220,9 +224,12 @@ test('Subscription Checkout & Webhook Lifecycle: Idempotency & Signature Guard',
 });
 
 test('Subscription Cancellation API: Preserves Current Period Access', async () => {
+  const aspirant = await prisma.user.findFirst({ where: { role: { name: 'ASPIRANT' } } });
+  const session = await createAuthenticatedTestSession(aspirant.id);
+
   const cancelRes = await fetch(`${BASE_URL}/api/v1/user/subscription/cancel`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...session.headers },
     body: JSON.stringify({ reason: 'Automated acceptance test cancellation' }),
   });
 

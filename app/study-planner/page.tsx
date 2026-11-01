@@ -67,10 +67,12 @@ export default function DailyStudyPlannerPage() {
   // Edit Goal State
   const [editingGoal, setEditingGoal] = useState<any | null>(null);
   const [editTitle, setEditTitle] = useState("");
+  const [editSubject, setEditSubject] = useState<string>(UPSC_SUBJECTS[0]);
   const [editHours, setEditHours] = useState(2);
   const [editDueDate, setEditDueDate] = useState("");
   const [savingEdit, setSavingEdit] = useState(false);
   const [deletingGoalId, setDeletingGoalId] = useState<string | null>(null);
+  const [subjectFilter, setSubjectFilter] = useState<string>("All");
 
   // Custom schedule state
   const [targetExam, setTargetExam] = useState("UPSC CSE 2026");
@@ -130,12 +132,12 @@ export default function DailyStudyPlannerPage() {
     if (!newTitle.trim()) return;
     setSubmittingGoal(true);
     try {
-      const fullTitle = `${newSubject}: ${newTitle.trim()}`;
       const res = await fetch("/api/v1/user/goals", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          title: fullTitle,
+          title: newTitle.trim(),
+          subject: newSubject,
           targetHours: Number(newHours) || 2,
           targetDate: newDueDate || null,
         }),
@@ -192,6 +194,7 @@ export default function DailyStudyPlannerPage() {
         body: JSON.stringify({
           id: editingGoal.id,
           title: editTitle.trim(),
+          subject: editSubject,
           targetHours: Number(editHours) || 2,
           targetDate: editDueDate || null,
         }),
@@ -259,30 +262,36 @@ export default function DailyStudyPlannerPage() {
   };
 
   // Filter goals by time view: Daily (due within 2 days or overdue), Weekly (due within 7 days), Monthly (due within 30 days or all)
+  // Filter goals by time view and subject filter
   const filteredGoals = useMemo(() => {
+    let list = goals;
+    if (subjectFilter !== "All") {
+      list = list.filter((g) => g.subject === subjectFilter);
+    }
+
     const now = new Date();
     const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
     if (timeView === "DAILY") {
       // Due today, tomorrow, overdue, or unscheduled
       const dayAfterTomorrow = new Date(startOfToday.getTime() + 2 * 86400000);
-      return goals.filter((g) => {
+      return list.filter((g) => {
         if (!g.targetDate) return true;
         const d = new Date(g.targetDate);
         return d <= dayAfterTomorrow || g.isOverdue;
       });
     } else if (timeView === "WEEKLY") {
       const endOfWeek = new Date(startOfToday.getTime() + 7 * 86400000);
-      return goals.filter((g) => {
+      return list.filter((g) => {
         if (!g.targetDate) return true;
         const d = new Date(g.targetDate);
         return d <= endOfWeek || g.isOverdue;
       });
     } else {
-      // Monthly: all goals
-      return goals;
+      // Monthly / All
+      return list;
     }
-  }, [goals, timeView]);
+  }, [goals, timeView, subjectFilter]);
 
   const activeGoalsCount = goals.filter((g) => !g.isAchieved).length;
   const completedGoalsCount = goals.filter((g) => g.isAchieved).length;
@@ -407,8 +416,8 @@ export default function DailyStudyPlannerPage() {
               </div>
             </div>
 
-            {/* Time View Switcher (Daily, Weekly, Monthly) */}
-            <div className="flex items-center justify-between border-b border-slate-200 pb-3">
+            {/* Time View Switcher (Daily, Weekly, Monthly) & Subject Filter */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
               <div className="flex items-center gap-1.5 bg-slate-200/70 p-1 rounded-xl">
                 <button
                   onClick={() => setTimeView("DAILY")}
@@ -436,9 +445,23 @@ export default function DailyStudyPlannerPage() {
                 </button>
               </div>
 
-              <span className="text-xs text-slate-500 font-semibold">
-                Showing {filteredGoals.length} task{filteredGoals.length !== 1 ? "s" : ""}
-              </span>
+              <div className="flex items-center gap-2">
+                <select
+                  value={subjectFilter}
+                  onChange={(e) => setSubjectFilter(e.target.value)}
+                  className="rounded-xl border border-slate-200 bg-white px-2.5 py-1 text-xs font-bold text-slate-700 shadow-xs focus:outline-none focus:ring-1 focus:ring-blue-600"
+                >
+                  <option value="All">All Subjects ({goals.length})</option>
+                  {UPSC_SUBJECTS.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+                <span className="text-xs text-slate-500 font-semibold">
+                  ({filteredGoals.length} task{filteredGoals.length !== 1 ? "s" : ""})
+                </span>
+              </div>
             </div>
 
             {/* Tasks List */}
@@ -488,13 +511,20 @@ export default function DailyStudyPlannerPage() {
                       </button>
 
                       <div>
-                        <h4
-                          className={`text-sm font-bold ${
-                            g.isAchieved ? "line-through text-slate-500" : "text-slate-900"
-                          }`}
-                        >
-                          {g.title}
-                        </h4>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h4
+                            className={`text-sm font-bold ${
+                              g.isAchieved ? "line-through text-slate-500" : "text-slate-900"
+                            }`}
+                          >
+                            {g.title}
+                          </h4>
+                          {g.subject && (
+                            <span className="rounded-md bg-blue-50 border border-blue-200 text-blue-700 px-2 py-0.5 font-bold text-[10px]">
+                              {g.subject}
+                            </span>
+                          )}
+                        </div>
 
                         <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
                           <span className="flex items-center gap-1 font-semibold text-slate-700">
@@ -532,6 +562,7 @@ export default function DailyStudyPlannerPage() {
                         onClick={() => {
                           setEditingGoal(g);
                           setEditTitle(g.title);
+                          setEditSubject(g.subject || UPSC_SUBJECTS[0]);
                           setEditHours(g.targetHours || 2);
                           setEditDueDate(
                             g.targetDate ? new Date(g.targetDate).toISOString().split("T")[0] : ""
@@ -1078,6 +1109,23 @@ export default function DailyStudyPlannerPage() {
               </div>
 
               <form onSubmit={handleSaveEditGoal} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Subject / Theme
+                  </label>
+                  <select
+                    value={editSubject}
+                    onChange={(e) => setEditSubject(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  >
+                    {UPSC_SUBJECTS.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
                 <div>
                   <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
                     Task Title
