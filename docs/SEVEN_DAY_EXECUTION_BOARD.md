@@ -77,6 +77,7 @@
 | **D3-07** | **P1** | Spaced Repetition Queue Foundation | Configurable 1/3/7/14-day intervals; visual error distribution breakdown; quick reschedule controls | **COMPLETED** | Verified in `app/revision/page.tsx` + `/api/v1/user/revision` |
 | **D3-08** | **P0** | Mock Exam Simulator & Anti-Leak Hardening | 100-Q GS1 & 80-Q CSAT; answers strictly omitted in active session; localStorage recovery; exact UPSC negative marking | **COMPLETED** | Verified in `tests/day3_mock_exam_flow.test.mjs` |
 | **D3-09** | **P0** | Comprehensive Test Suite & Build Pass | 63/63 tests pass (100%); 33/33 Next.js routes compile cleanly; visual proof captured across 1440px, 768px, 390px | **COMPLETED** | Documented in `DAY_3_EXECUTION_REPORT.md` |
+| **D3-10** | **P0** | Security Incident Remediation & Defense | Invalidate exposed credentials; untrack `.env.production`; isolate preview database branch; remove runtime SQLite/fs fallbacks | **COMPLETED** | Documented in `DAY_3_7_SECURITY_REMEDIATION_REPORT.md`; PR #1 diff clean |
 
 ---
 
