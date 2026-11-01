@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 import { exec } from "child_process";
 import { promisify } from "util";
 import path from "path";
@@ -11,13 +11,9 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
-    if (user.role !== "ADMIN") {
-      return NextResponse.json(
-        { success: false, error: { code: "FORBIDDEN", message: "Admin privileges required" } },
-        { status: 403 }
-      );
-    }
+    const authResult = await requireAuthenticatedUser(request, { requiredRole: "ADMIN" });
+    if ("error" in authResult) return authResult.error;
+    const user = authResult.user;
 
     // 1. Registered sources & health
     const sources = await prisma.sourceRegistryRecord.findMany({
@@ -92,13 +88,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
-    if (user.role !== "ADMIN") {
-      return NextResponse.json(
-        { success: false, error: { code: "FORBIDDEN", message: "Admin privileges required" } },
-        { status: 403 }
-      );
-    }
+    const authResult = await requireAuthenticatedUser(request, { requiredRole: "ADMIN" });
+    if ("error" in authResult) return authResult.error;
+    const user = authResult.user;
 
     const body = await request.json().catch(() => ({}));
     const action = body.action || "RUN_SOURCE_CHECK";

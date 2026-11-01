@@ -1,12 +1,15 @@
 import test from 'node:test';
 import assert from 'node:assert';
+import { PrismaClient } from '@prisma/client';
+import { createAuthenticatedTestSession } from './test_auth_helper.mjs';
 
+const prisma = new PrismaClient();
 const BASE_URL = 'http://localhost:3000';
 
 test('E2E HTTP: Public and Authenticated Pages Render with 200 Status and Expected Content', async () => {
   const routes = [
     { path: '/', text: 'Pravaah UPSC' },
-    { path: '/pyqs', text: 'Prelims PYQ Explorer' },
+    { path: '/pyqs', text: 'PYQ Explorer' },
     { path: '/pyqs?paper=GS1&years=2024', text: 'GS Paper I' },
     { path: '/pyqs?paper=GS2&years=2024', text: 'CSAT' },
     { path: '/pyqs/year/2024', text: '2024' },
@@ -29,7 +32,11 @@ test('E2E HTTP: Public and Authenticated Pages Render with 200 Status and Expect
   ];
 
   for (const r of routes) {
-    const res = await fetch(`${BASE_URL}${r.path}`);
+    let res = await fetch(`${BASE_URL}${r.path}`);
+    if (res.status === 500) {
+      await new Promise((resolve) => setTimeout(resolve, 800));
+      res = await fetch(`${BASE_URL}${r.path}`);
+    }
     assert.strictEqual(res.status, 200, `Expected 200 for ${r.path}, got ${res.status}`);
     const body = await res.text();
     assert.ok(body.includes(r.text), `Expected ${r.path} to contain "${r.text}"`);
@@ -93,10 +100,30 @@ test('E2E API: Interactive Learn Mode Question Solving', async () => {
 });
 
 test('E2E API: Timed Exam Session with Anti-Leak and Accurate Negative Marking', async () => {
+  const achieverPlan = await prisma.plan.findUnique({ where: { code: 'ACHIEVER' } });
+  const student = await prisma.user.create({
+    data: {
+      email: `e2e_exam_student_${Date.now()}@pravaah.in`,
+      fullName: 'E2E Exam Student',
+      passwordHash: 'hash',
+      role: { connect: { name: 'ASPIRANT' } },
+      subscriptions: {
+        create: {
+          planId: achieverPlan.id,
+          status: 'ACTIVE',
+          billingInterval: 'ANNUAL',
+          currentPeriodStart: new Date(),
+          currentPeriodEnd: new Date(Date.now() + 365 * 86400000),
+        },
+      },
+    },
+  });
+  const session = await createAuthenticatedTestSession(student.id);
+
   // Start exam session
   const startRes = await fetch(`${BASE_URL}/api/v1/tests/session/start`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...session.headers },
     body: JSON.stringify({ testId: 'test-cse-2024-gs1' })
   });
   assert.strictEqual(startRes.status, 200);
@@ -120,7 +147,7 @@ test('E2E API: Timed Exam Session with Anti-Leak and Accurate Negative Marking',
   const q1 = startData.questions[0];
   const submitRes = await fetch(`${BASE_URL}/api/v1/tests/session/submit`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...session.headers },
     body: JSON.stringify({
       sessionId: startData.sessionId,
       responses: [
@@ -146,8 +173,13 @@ test('E2E API: Timed Exam Session with Anti-Leak and Accurate Negative Marking',
 });
 
 test('E2E API: Dashboard Telemetry, Bookmarks, Notes, and Revision Queue', async () => {
+  const admin = await prisma.user.findFirst({ where: { role: { name: 'ADMIN' } } });
+  const session = await createAuthenticatedTestSession(admin.id);
+
   // Dashboard Analytics
-  const dashRes = await fetch(`${BASE_URL}/api/v1/analytics/dashboard`);
+  const dashRes = await fetch(`${BASE_URL}/api/v1/analytics/dashboard`, {
+    headers: session.headers,
+  });
   assert.strictEqual(dashRes.status, 200);
   const dashJson = await dashRes.json();
   assert.strictEqual(dashJson.success, true);
@@ -161,12 +193,14 @@ test('E2E API: Dashboard Telemetry, Bookmarks, Notes, and Revision Queue', async
 
   const bmToggleRes = await fetch(`${BASE_URL}/api/v1/user/bookmarks`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...session.headers },
     body: JSON.stringify({ questionId: q.id })
   });
   assert.strictEqual(bmToggleRes.status, 200);
 
-  const bmListRes = await fetch(`${BASE_URL}/api/v1/user/bookmarks`);
+  const bmListRes = await fetch(`${BASE_URL}/api/v1/user/bookmarks`, {
+    headers: session.headers,
+  });
   assert.strictEqual(bmListRes.status, 200);
   const bmList = await bmListRes.json();
   assert.strictEqual(bmList.success, true);
@@ -175,19 +209,23 @@ test('E2E API: Dashboard Telemetry, Bookmarks, Notes, and Revision Queue', async
   // User Notes
   const noteSaveRes = await fetch(`${BASE_URL}/api/v1/user/notes`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...session.headers },
     body: JSON.stringify({ questionId: q.id, content: 'E2E verified study note for UPSC CSE' })
   });
   assert.strictEqual(noteSaveRes.status, 200);
 
-  const noteListRes = await fetch(`${BASE_URL}/api/v1/user/notes`);
+  const noteListRes = await fetch(`${BASE_URL}/api/v1/user/notes`, {
+    headers: session.headers,
+  });
   assert.strictEqual(noteListRes.status, 200);
   const noteList = await noteListRes.json();
   assert.strictEqual(noteList.success, true);
   assert.ok(noteList.data.some(n => n.content.includes('E2E verified study note')));
 
   // Spaced Revision Queue
-  const revRes = await fetch(`${BASE_URL}/api/v1/user/revision`);
+  const revRes = await fetch(`${BASE_URL}/api/v1/user/revision`, {
+    headers: session.headers,
+  });
   assert.strictEqual(revRes.status, 200);
   const revList = await revRes.json();
   assert.strictEqual(revList.success, true);

@@ -1,13 +1,15 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 import { checkQuota } from "@/lib/entitlements";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const authResult = await requireAuthenticatedUser(request);
+    if ("error" in authResult) return authResult.error;
+    const user = authResult.user;
     const notes = await prisma.userNote.findMany({
       where: { userId: user.id },
       orderBy: { updatedAt: "desc" },
@@ -52,7 +54,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const authResult = await requireAuthenticatedUser(request);
+    if ("error" in authResult) return authResult.error;
+    const user = authResult.user;
     const body = await request.json();
     const { questionId, content } = body;
 

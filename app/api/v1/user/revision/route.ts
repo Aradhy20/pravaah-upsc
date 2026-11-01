@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const authResult = await requireAuthenticatedUser(request);
+    if ("error" in authResult) return authResult.error;
+    const user = authResult.user;
 
     const items = await prisma.reviewSchedule.findMany({
       where: {
@@ -76,7 +78,9 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const authResult = await requireAuthenticatedUser(request);
+    if ("error" in authResult) return authResult.error;
+    const user = authResult.user;
     const body = await request.json();
     const { scheduleId, questionId, action } = body; // action: "resolve" | "reschedule"
 

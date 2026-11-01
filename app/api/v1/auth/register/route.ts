@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hashPassword, COOKIE_USER_ID } from "@/lib/auth";
+import { hashPassword, createSession, COOKIE_SESSION_TOKEN, COOKIE_USER_ID } from "@/lib/auth";
 import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, password, fullName, targetYear = 2027, optionalSubject = "General" } = body;
+    const { email, password, fullName, targetYear = 2027, optionalSubject = "General Studies", dailyGoalMinutes = 60 } = body;
 
     if (!email || !password || !fullName) {
       return NextResponse.json(
@@ -62,9 +62,9 @@ export async function POST(request: NextRequest) {
         roleId: role.id,
         profile: {
           create: {
-            targetYear: parseInt(targetYear.toString()),
-            optionalSubject,
-            dailyGoalMinutes: 60,
+            targetYear: parseInt(targetYear.toString()) || 2027,
+            optionalSubject: optionalSubject || "General Studies",
+            dailyGoalMinutes: parseInt(dailyGoalMinutes.toString()) || 60,
           },
         },
       },
@@ -74,13 +74,17 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Set authentication session cookie
+    // Create cryptographically secure server-side session
+    const { token: sessionToken, expiresAt } = await createSession(user.id);
+
+    // Set secure HTTP-only session cookie
     const cookieStore = cookies();
-    cookieStore.set(COOKIE_USER_ID, user.id, {
+    cookieStore.set(COOKIE_SESSION_TOKEN, sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 24 * 30, // 30 days
+      sameSite: "lax",
+      expires: expiresAt,
     });
 
     return NextResponse.json(
@@ -92,6 +96,7 @@ export async function POST(request: NextRequest) {
           fullName: user.fullName,
           role: user.role.name,
           profile: user.profile,
+          sessionToken,
         },
       },
       { status: 201 }

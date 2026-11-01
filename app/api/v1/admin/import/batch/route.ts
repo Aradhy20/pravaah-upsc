@@ -1,11 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export async function GET() {
+export async function GET(request: NextRequest) {
+  const authResult = await requireAuthenticatedUser(request, { requiredRole: "ADMIN" });
+  if ("error" in authResult) return authResult.error;
+
   return NextResponse.json({
     endpoint: "/api/v1/admin/import/batch",
     status: "ready",
@@ -16,13 +19,9 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
-    if (user.role !== "ADMIN") {
-      return NextResponse.json(
-        { success: false, error: { code: "FORBIDDEN", message: "Admin privileges required" } },
-        { status: 403 }
-      );
-    }
+    const authResult = await requireAuthenticatedUser(request, { requiredRole: "ADMIN" });
+    if ("error" in authResult) return authResult.error;
+    const user = authResult.user;
 
     const body = await request.json();
     let { paperCode = "GS1", year = 2024, questions = [], csvData } = body;

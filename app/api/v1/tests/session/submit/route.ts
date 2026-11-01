@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { calculateScorecard, QuestionGradingInput } from "@/lib/scoring";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
+    const authResult = await requireAuthenticatedUser(request);
+    if ("error" in authResult) return authResult.error;
+    const user = authResult.user;
+
     const body = await request.json();
     const { sessionId, responses = [], totalTimeSpentSeconds = 0 } = body;
 
@@ -60,7 +64,6 @@ export async function POST(request: NextRequest) {
     }
 
     // Security Check: Verify user owns this session
-    const user = await getCurrentUser(request);
     if (session.userId !== user.id && user.role !== "ADMIN") {
       return NextResponse.json(
         {

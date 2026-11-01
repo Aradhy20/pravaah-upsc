@@ -17,14 +17,15 @@
 .DS_Store
 *.pem
 
-# Local env files
-.env*.local
+# Environment files
 .env
+.env.*
+!.env.example
 
 # SQLite database files
 *.db-journal
 data/backups/*.db
-!prisma/dev.db
+*.db
 
 # Vercel
 .vercel
@@ -32,3 +33,4 @@ data/backups/*.db
 # TypeScript
 *.tsbuildinfo
 next-env.d.ts
+.neon
