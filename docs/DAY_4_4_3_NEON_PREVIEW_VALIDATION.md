@@ -19,7 +19,7 @@ During Day 4.4.3, an important architectural discovery was confirmed: the Vercel
 
 To prevent the application from accidentally connecting to an unpopulated Prisma Postgres database, the runtime database resolution was updated to give **authoritative priority to `NEON_DATABASE_URL`**.
 
-The owner has provided updated credentials (`PGUSER=neondb_owner` and `PGPASSWORD=npg_0zDVqcu4ygwi`) and is preparing the `NEON_DATABASE_URL` environment variable for the Vercel Preview environment. However, the complete endpoint host (`PGHOST` / full connection string) has not yet been designated. Attempting authentication against legacy endpoints (`ep-floral-cloud-b4pxc8uq` and `ep-sweet-butterfly-a187a544`) confirmed password authentication rejection, proving that the new credential belongs to a new Neon endpoint or branch.
+The owner has provided updated credentials (`PGUSER=neondb_owner` and `PGPASSWORD=<REDACTED>`) and is preparing the `NEON_DATABASE_URL` environment variable for the Vercel Preview environment. However, the complete endpoint host (`PGHOST` / full connection string) has not yet been designated. Attempting authentication against legacy endpoints (`ep-floral-cloud-b4pxc8uq` and `ep-sweet-butterfly-a187a544`) confirmed password authentication rejection, proving that the new credential belongs to a new Neon endpoint or branch.
 
 ### Final Status Determination
 **`BLOCKED — NEON CONNECTION NOT VERIFIED`**
@@ -67,7 +67,7 @@ In the Vercel Dashboard (`Settings -> Environment Variables`), add the following
 
 ```
 Key:   NEON_DATABASE_URL
-Value: postgresql://neondb_owner:npg_0zDVqcu4ygwi@<neon-endpoint-host>/neondb?sslmode=require
+Value: postgresql://neondb_owner:<REDACTED_PASSWORD>@<neon-endpoint-host>/neondb?sslmode=require
 ```
 
 Where `<neon-endpoint-host>` is the intended Neon pooled hostname (e.g., `ep-xxxx-pooler.c-6.us-east-2.aws.neon.tech`).
@@ -147,11 +147,12 @@ The security hotfix code on `hotfix/live-analytics-auth-guard` is complete, hard
 ## 7. Outstanding Risks & Next Steps
 
 ### Outstanding Risk:
-- The exact Neon endpoint hostname corresponding to the updated `PGUSER=neondb_owner` / `PGPASSWORD=npg_0zDVqcu4ygwi` credentials must be supplied.
+- The exact Neon endpoint hostname corresponding to the updated `PGUSER=neondb_owner` / `PGPASSWORD=<REDACTED>` credentials must be supplied.
 
 ### Resolution Steps to Finalize:
 1. **Owner Action:** In Vercel Project Settings for Preview (or in local `.env`), supply the full connection string:
-   `NEON_DATABASE_URL="postgresql://neondb_owner:npg_0zDVqcu4ygwi@<neon-host>/neondb?sslmode=require"`
+   `NEON_DATABASE_URL="postgresql://neondb_owner:<REDACTED_PASSWORD>@<neon-host>/neondb?sslmode=require"`
 2. **Verification Step:** Run `node scripts/verify_database_identity.mjs` to confirm Neon identity and verify 49 tables, 296 users, and 203 sessions.
 3. **Preview Promotion:** Deploy commit to Vercel Preview and test live endpoints.
 4. **Cutover Approval:** Once Preview is independently verified, proceed to Day 4.4.4 for security review and human production sign-off.
+
