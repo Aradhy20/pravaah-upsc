@@ -10,7 +10,7 @@ export async function POST(request: NextRequest) {
 
     // 1. Validate Webhook Authenticity / Signature
     // In production, verify crypto HMAC against request raw body
-    if (signature && signature !== webhookSecret) {
+    if (!signature || signature !== webhookSecret) {
       return NextResponse.json(
         { success: false, error: { code: "INVALID_SIGNATURE", message: "Webhook signature verification failed." } },
         { status: 401 }
