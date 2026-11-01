@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hashPassword, COOKIE_USER_ID } from "@/lib/auth";
+import {
+  verifyPassword,
+  hashPassword,
+  createSession,
+  COOKIE_SESSION_TOKEN,
+  COOKIE_USER_ID,
+} from "@/lib/auth";
 import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +16,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, password } = body;
 
-    if (!email || !password) {
+    if (!email || !password || typeof email !== "string" || typeof password !== "string") {
       return NextResponse.json(
         {
           success: false,
@@ -20,8 +26,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
     const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
+      where: { email: normalizedEmail },
       include: {
         role: true,
         profile: true,
@@ -38,13 +45,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const computedHash = hashPassword(password);
-    // Allow either hashed password match or demo password match
-    const isMatch =
-      user.passwordHash === computedHash ||
-      user.passwordHash.startsWith("pravaah_demo_hash_");
+    // Verify password securely using scrypt or legacy SHA-256 fallback
+    // Demo bypasses are completely eliminated
+    const { valid, needsRehash } = verifyPassword(password, user.passwordHash);
 
-    if (!isMatch) {
+    if (!valid) {
       return NextResponse.json(
         {
           success: false,
@@ -54,13 +59,38 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Set authentication session cookie
+    // Transparently upgrade legacy hash to modern scrypt
+    if (needsRehash) {
+      try {
+        const upgradedHash = hashPassword(password);
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { passwordHash: upgradedHash },
+        });
+      } catch (err) {
+        console.error("Non-fatal: failed to transparently rehash password:", err);
+      }
+    }
+
+    // Create cryptographically secure server-side session
+    const { token: sessionToken, expiresAt } = await createSession(user.id);
+
+    // Set secure HTTP-only session cookie
     const cookieStore = cookies();
-    cookieStore.set(COOKIE_USER_ID, user.id, {
+    cookieStore.set(COOKIE_SESSION_TOKEN, sessionToken, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",
-      maxAge: 60 * 60 * 24 * 30, // 30 days
+      sameSite: "lax",
+      expires: expiresAt,
+    });
+
+    // Clear legacy insecure user_id cookie if present
+    cookieStore.set(COOKIE_USER_ID, "", {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: 0,
     });
 
     return NextResponse.json({
@@ -71,6 +101,7 @@ export async function POST(request: NextRequest) {
         fullName: user.fullName,
         role: user.role.name,
         profile: user.profile,
+        sessionToken,
       },
     });
   } catch (error: any) {

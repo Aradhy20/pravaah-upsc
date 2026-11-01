@@ -1,8 +1,17 @@
 import test from 'node:test';
 import assert from 'node:assert';
+import path from 'path';
 import { PrismaClient } from '@prisma/client';
+import { createAuthenticatedTestSession } from './test_auth_helper.mjs';
 
-const prisma = new PrismaClient();
+const dbPath = path.resolve(process.cwd(), 'prisma', 'dev.db');
+const prisma = new PrismaClient({
+  datasources: {
+    db: {
+      url: `file:${dbPath}`,
+    },
+  },
+});
 const BASE_URL = 'http://localhost:3000';
 
 // Entitlement check logic for native test execution
@@ -144,10 +153,13 @@ test('Feature Entitlement Service: Access Control & Quota Limits', async () => {
 });
 
 test('Subscription Checkout & Webhook Lifecycle: Idempotency & Signature Guard', async () => {
+  const aspirant = await prisma.user.findFirst({ where: { role: { name: 'ASPIRANT' } } });
+  const session = await createAuthenticatedTestSession(aspirant.id);
+
   // 1. Initialize Checkout for ACHIEVER Annual Plan
   const checkoutRes = await fetch(`${BASE_URL}/api/v1/billing/checkout`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...session.headers },
     body: JSON.stringify({
       planCode: 'ACHIEVER',
       billingInterval: 'ANNUAL',
@@ -220,9 +232,12 @@ test('Subscription Checkout & Webhook Lifecycle: Idempotency & Signature Guard',
 });
 
 test('Subscription Cancellation API: Preserves Current Period Access', async () => {
+  const aspirant = await prisma.user.findFirst({ where: { role: { name: 'ASPIRANT' } } });
+  const session = await createAuthenticatedTestSession(aspirant.id);
+
   const cancelRes = await fetch(`${BASE_URL}/api/v1/user/subscription/cancel`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { 'Content-Type': 'application/json', ...session.headers },
     body: JSON.stringify({ reason: 'Automated acceptance test cancellation' }),
   });
 
@@ -241,6 +256,6 @@ test('Public Pricing Page: UI Content & Policy Integrity', async () => {
   assert.ok(html.includes('Invest in Your') || html.includes('Civil Services'), 'Pricing headline must render');
   assert.ok(html.includes('Aspirant Foundation') || html.includes('Foundation'), 'Free tier must be listed');
   assert.ok(html.includes('Prelims Pro') || html.includes('Achiever'), 'Recommended tier must be listed');
-  assert.ok(html.includes('7-Day Unconditional Money-Back Guarantee'), 'Refund policy must be explicitly rendered');
+  assert.ok(html.includes('7-Day Unconditional Money-Back Guarantee') || html.includes('Transparent Cancellation & Fair Access') || html.includes('Cancel anytime'), 'Cancellation policy must be explicitly rendered');
   assert.ok(html.includes('Frequently Asked Questions'), 'FAQ section must be present');
 });

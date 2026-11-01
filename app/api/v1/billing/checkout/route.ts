@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import crypto from "crypto";
 
@@ -7,7 +7,9 @@ export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const authResult = await requireAuthenticatedUser(request);
+    if ("error" in authResult) return authResult.error;
+    const user = authResult.user;
     const dbUser = await prisma.user.findUnique({
       where: { id: user.id },
     });
