@@ -31,10 +31,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="min-h-screen bg-slate-50 text-slate-900 flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
+    <html lang="en" className="h-full scroll-smooth">
+      <body className="min-h-full bg-slate-50 text-slate-900 flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900 overflow-x-hidden">
         <Header />
-        <div className="flex-1">{children}</div>
+        <main className="flex-1 w-full max-w-full overflow-x-hidden">{children}</main>
         <Footer />
       </body>
     </html>

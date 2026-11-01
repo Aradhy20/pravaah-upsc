@@ -5,8 +5,8 @@ import { prisma } from "@/lib/prisma";
 export const dynamic = "force-dynamic";
 
 function timingSafeEqualStrings(a: string, b: string): boolean {
-  const bufA = Buffer.from(a);
-  const bufB = Buffer.from(b);
+  const bufA = Buffer.from(a, "utf-8");
+  const bufB = Buffer.from(b, "utf-8");
   if (bufA.length !== bufB.length) {
     return false;
   }
@@ -16,12 +16,13 @@ function timingSafeEqualStrings(a: string, b: string): boolean {
 export async function POST(request: NextRequest) {
   try {
     const signature = request.headers.get("x-pravaah-webhook-signature");
+    const isProduction = process.env.NODE_ENV === "production";
     const webhookSecret =
       process.env.PAYMENT_WEBHOOK_SECRET ||
-      (process.env.NODE_ENV === "production" ? null : "pravaah_webhook_dev_secret_2026");
+      (!isProduction ? "pravaah_webhook_dev_secret_2026" : null);
 
     if (!webhookSecret) {
-      console.error("PAYMENT_WEBHOOK_SECRET is not configured in production environment.");
+      console.error("[Billing Webhook] PAYMENT_WEBHOOK_SECRET is not configured in production environment.");
       return NextResponse.json(
         {
           success: false,
@@ -34,15 +35,47 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // 1. Validate Webhook Authenticity / Signature (Timing-safe comparison)
-    if (!signature || !timingSafeEqualStrings(signature, webhookSecret)) {
+    // 1. Read raw body text for genuine HMAC verification
+    const rawBody = await request.text();
+    if (!rawBody) {
+      return NextResponse.json(
+        { success: false, error: { code: "EMPTY_BODY", message: "Request body cannot be empty." } },
+        { status: 400 }
+      );
+    }
+
+    // 2. Validate Webhook Authenticity: Genuine HMAC-SHA256 of raw request body
+    const computedHmac = crypto
+      .createHmac("sha256", webhookSecret)
+      .update(rawBody)
+      .digest("hex");
+
+    let isValidSignature = false;
+    if (signature) {
+      if (timingSafeEqualStrings(signature, computedHmac)) {
+        isValidSignature = true;
+      } else if (!isProduction && timingSafeEqualStrings(signature, webhookSecret)) {
+        // In development/sandbox testing only: support dev key shortcut for manual UI testing
+        isValidSignature = true;
+      }
+    }
+
+    if (!isValidSignature) {
       return NextResponse.json(
         { success: false, error: { code: "INVALID_SIGNATURE", message: "Webhook signature verification failed." } },
         { status: 401 }
       );
     }
 
-    const body = await request.json();
+    let body: any;
+    try {
+      body = JSON.parse(rawBody);
+    } catch {
+      return NextResponse.json(
+        { success: false, error: { code: "INVALID_JSON", message: "Malformed JSON payload." } },
+        { status: 400 }
+      );
+    }
     const { event, orderId, planCode, billingInterval = "ANNUAL", status, reason } = body;
 
     if (!orderId) {

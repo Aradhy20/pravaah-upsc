@@ -8,7 +8,7 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { email, password, fullName, targetYear = 2027, optionalSubject = "General" } = body;
+    const { email, password, fullName, targetYear = 2027, optionalSubject = "General Studies", dailyGoalMinutes = 60 } = body;
 
     if (!email || !password || !fullName) {
       return NextResponse.json(
@@ -62,9 +62,9 @@ export async function POST(request: NextRequest) {
         roleId: role.id,
         profile: {
           create: {
-            targetYear: parseInt(targetYear.toString()),
-            optionalSubject,
-            dailyGoalMinutes: 60,
+            targetYear: parseInt(targetYear.toString()) || 2027,
+            optionalSubject: optionalSubject || "General Studies",
+            dailyGoalMinutes: parseInt(dailyGoalMinutes.toString()) || 60,
           },
         },
       },
