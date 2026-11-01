@@ -1,50 +1,65 @@
-import fs from "fs";
 import path from "path";
 import { PrismaClient } from "@prisma/client";
 
-function findDatabasePath(): string {
-  const candidates = [
-    path.resolve(process.cwd(), "prisma", "dev.db"),
-    path.resolve(process.cwd(), "dev.db"),
-    path.resolve(__dirname, "../../prisma/dev.db"),
-    path.resolve(__dirname, "../prisma/dev.db"),
-    path.resolve(__dirname, "prisma/dev.db"),
-  ];
-
-  for (const candidate of candidates) {
-    if (fs.existsSync(candidate)) {
-      return candidate;
-    }
+function getSanitizedUrlSummary(rawUrl: string): string {
+  try {
+    const parsed = new URL(rawUrl);
+    return `${parsed.protocol}//${parsed.host}${parsed.pathname}`;
+  } catch {
+    return "[unparseable connection string]";
   }
-  return path.resolve(process.cwd(), "prisma", "dev.db");
 }
 
 function getResolvedDatabaseUrl(): string {
-  const raw = process.env.DATABASE_URL?.trim();
+  const isProduction = process.env.NODE_ENV === "production";
+  const raw = (
+    process.env.DATABASE_URL ||
+    process.env.POSTGRES_PRISMA_URL ||
+    process.env.POSTGRES_URL ||
+    process.env.PRISMA_DATABASE_URL
+  )?.trim();
 
-  // If missing or if set to a non-file URL (e.g. a postgres:// URL configured in Vercel environment variables)
-  if (!raw || !raw.startsWith("file:")) {
-    // If it's a bare filename like "dev.db" or "./prisma/dev.db"
-    if (raw && (raw.endsWith(".db") || raw.endsWith(".sqlite"))) {
-      const cleanPath = raw.includes("prisma") ? raw : path.join("prisma", raw);
-      const absPath = path.resolve(process.cwd(), cleanPath);
-      if (fs.existsSync(absPath)) return `file:${absPath}`;
+  if (!raw) {
+    throw new Error(
+      "[Database Configuration Error] Database connection URL is missing. " +
+      "Configure DATABASE_URL (or POSTGRES_URL) in environment variables."
+    );
+  }
+
+  const isPostgres = raw.startsWith("postgresql://") || raw.startsWith("postgres://");
+  const isSqlite = raw.startsWith("file:");
+
+  if (isProduction) {
+    if (!isPostgres) {
+      const summary = getSanitizedUrlSummary(raw);
+      throw new Error(
+        `[Database Configuration Error] Production database provider must be PostgreSQL. ` +
+        `Received invalid database protocol: ${summary}. SQLite fallback is forbidden in production.`
+      );
     }
-    // Otherwise fallback to candidate search
-    return `file:${findDatabasePath()}`;
+    return raw;
   }
 
-  // If it starts with file: but has a relative path (e.g. file:./dev.db)
-  if (raw.startsWith("file:") && !raw.startsWith("file:/")) {
-    const cleanPath = raw.replace(/^file:\.?\/?/, "");
-    const resolved = cleanPath.includes("prisma")
-      ? path.resolve(process.cwd(), cleanPath)
-      : path.resolve(process.cwd(), "prisma", cleanPath);
-    if (fs.existsSync(resolved)) return `file:${resolved}`;
-    return `file:${findDatabasePath()}`;
+  // Non-production (development or test)
+  if (isPostgres) {
+    return raw;
   }
 
-  return raw;
+  if (isSqlite) {
+    if (!raw.startsWith("file:/")) {
+      const cleanPath = raw.replace(/^file:\.?\/?/, "");
+      const resolved = cleanPath.includes("prisma")
+        ? path.resolve(process.cwd(), cleanPath)
+        : path.resolve(process.cwd(), "prisma", cleanPath);
+      return `file:${resolved}`;
+    }
+    return raw;
+  }
+
+  throw new Error(
+    `[Database Configuration Error] Unsupported database provider protocol. ` +
+    `Expected 'postgresql://' or 'postgres://' (or 'file:' in local development).`
+  );
 }
 
 const dbUrl = getResolvedDatabaseUrl();

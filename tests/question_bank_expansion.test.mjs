@@ -1,17 +1,9 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import path from "path";
 import { PrismaClient } from "@prisma/client";
 import { createAuthenticatedTestSession } from "./test_auth_helper.mjs";
 
-const dbPath = path.resolve(process.cwd(), "prisma", "dev.db");
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: `file:${dbPath}`,
-    },
-  },
-});
+const prisma = new PrismaClient();
 const BASE_URL = "http://localhost:3000";
 
 test("Question Bank Scale: Total and Published Count Exceeds 1,000+ Questions", async () => {

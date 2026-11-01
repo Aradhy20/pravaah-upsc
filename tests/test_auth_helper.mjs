@@ -1,15 +1,7 @@
 import crypto from "crypto";
-import path from "path";
 import { PrismaClient } from "@prisma/client";
 
-const dbPath = path.resolve(process.cwd(), "prisma", "dev.db");
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: `file:${dbPath}`,
-    },
-  },
-});
+const prisma = new PrismaClient();
 
 /**
  * Creates an authentic server-side cryptographic session for test execution.

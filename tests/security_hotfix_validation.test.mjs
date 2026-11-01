@@ -1,18 +1,10 @@
 import { test } from "node:test";
 import assert from "node:assert/strict";
 import crypto from "crypto";
-import path from "path";
 import { PrismaClient } from "@prisma/client";
 import { createAuthenticatedTestSession, hashPassword } from "./test_auth_helper.mjs";
 
-const dbPath = path.resolve(process.cwd(), "prisma", "dev.db");
-const prisma = new PrismaClient({
-  datasources: {
-    db: {
-      url: `file:${dbPath}`,
-    },
-  },
-});
+const prisma = new PrismaClient();
 const BASE_URL = "http://localhost:3000";
 
 test("Scenario 1: Guest requests analytics API -> 401 Unauthorized", async () => {
