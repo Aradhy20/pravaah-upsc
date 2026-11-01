@@ -21,30 +21,29 @@ function findDatabasePath(): string {
 
 function getResolvedDatabaseUrl(): string {
   const raw = process.env.DATABASE_URL?.trim();
+  const isProduction = process.env.NODE_ENV === "production";
 
-  // If missing or if set to a non-file URL (e.g. a postgres:// URL configured in Vercel environment variables)
-  if (!raw || !raw.startsWith("file:")) {
-    // If it's a bare filename like "dev.db" or "./prisma/dev.db"
-    if (raw && (raw.endsWith(".db") || raw.endsWith(".sqlite"))) {
-      const cleanPath = raw.includes("prisma") ? raw : path.join("prisma", raw);
-      const absPath = path.resolve(process.cwd(), cleanPath);
-      if (fs.existsSync(absPath)) return `file:${absPath}`;
+  // Production requirement: DATABASE_URL must be explicitly set to a valid PostgreSQL/Neon URL
+  if (isProduction) {
+    if (!raw || (!raw.startsWith("postgresql://") && !raw.startsWith("postgres://"))) {
+      throw new Error(
+        "[Configuration Error] In production, DATABASE_URL must be explicitly configured as an environment variable with a valid PostgreSQL/Neon connection string. Silent fallback to local storage is strictly prohibited."
+      );
     }
-    // Otherwise fallback to candidate search
-    return `file:${findDatabasePath()}`;
+    return raw;
   }
 
-  // If it starts with file: but has a relative path (e.g. file:./dev.db)
-  if (raw.startsWith("file:") && !raw.startsWith("file:/")) {
-    const cleanPath = raw.replace(/^file:\.?\/?/, "");
-    const resolved = cleanPath.includes("prisma")
-      ? path.resolve(process.cwd(), cleanPath)
-      : path.resolve(process.cwd(), "prisma", cleanPath);
-    if (fs.existsSync(resolved)) return `file:${resolved}`;
-    return `file:${findDatabasePath()}`;
+  // Development & Testing: Use configured PostgreSQL if available
+  if (raw && (raw.startsWith("postgresql://") || raw.startsWith("postgres://"))) {
+    return raw;
   }
 
-  return raw;
+  if (raw && raw.startsWith("file:")) {
+    return raw;
+  }
+
+  // Fallback to local SQLite only during non-production development
+  return `file:${findDatabasePath()}`;
 }
 
 const dbUrl = getResolvedDatabaseUrl();

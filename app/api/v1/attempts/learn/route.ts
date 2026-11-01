@@ -1,12 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { getAuthenticatedUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const user = await getAuthenticatedUser(request);
     const body = await request.json();
     const { questionId, selectedOption, timeSpentSeconds = 30 } = body;
 
@@ -48,53 +48,56 @@ export async function POST(request: NextRequest) {
     const correctOption = correctOptionObj?.optionCode || "A";
     const isCorrect = selectedOption.toUpperCase() === correctOption.toUpperCase();
 
-    // 1. Record Attempt
-    await prisma.userAttempt.create({
-      data: {
-        userId: user.id,
-        questionId: question.id,
-        selectedOption: selectedOption.toUpperCase(),
-        isCorrect,
-        timeSpentSeconds,
-        mode: "LEARN",
-      },
-    });
-
-    // 2. If incorrect, add or update in ReviewSchedule (Mistake Queue)
-    if (!isCorrect) {
-      await prisma.reviewSchedule.upsert({
-        where: {
-          userId_questionId: {
-            userId: user.id,
-            questionId: question.id,
-          },
-        },
-        update: {
-          repetitionCount: { increment: 1 },
-          isResolved: false,
-          nextReviewDate: new Date(Date.now() + 86400000), // Next review in 24 hours
-        },
-        create: {
+    // Only persist attempt records if user is authenticated with a valid session
+    if (user) {
+      // 1. Record Attempt
+      await prisma.userAttempt.create({
+        data: {
           userId: user.id,
           questionId: question.id,
-          repetitionCount: 1,
-          intervalDays: 1,
-          nextReviewDate: new Date(Date.now() + 86400000),
-          isResolved: false,
+          selectedOption: selectedOption.toUpperCase(),
+          isCorrect,
+          timeSpentSeconds,
+          mode: "LEARN",
+        },
+      });
+
+      // 2. If incorrect, add or update in ReviewSchedule (Mistake Queue)
+      if (!isCorrect) {
+        await prisma.reviewSchedule.upsert({
+          where: {
+            userId_questionId: {
+              userId: user.id,
+              questionId: question.id,
+            },
+          },
+          update: {
+            repetitionCount: { increment: 1 },
+            isResolved: false,
+            nextReviewDate: new Date(Date.now() + 86400000), // Next review in 24 hours
+          },
+          create: {
+            userId: user.id,
+            questionId: question.id,
+            repetitionCount: 1,
+            intervalDays: 1,
+            nextReviewDate: new Date(Date.now() + 86400000),
+            isResolved: false,
+          },
+        });
+      }
+
+      // 3. Record Study Activity
+      await prisma.studyActivity.create({
+        data: {
+          userId: user.id,
+          activityType: "mcq_attempted",
+          label: `Solved Q.${question.questionNumber} (${question.year})`,
+          refId: question.id,
+          durationSeconds: timeSpentSeconds,
         },
       });
     }
-
-    // 3. Record Study Activity
-    await prisma.studyActivity.create({
-      data: {
-        userId: user.id,
-        activityType: "mcq_attempted",
-        label: `Solved Q.${question.questionNumber} (${question.year})`,
-        refId: question.id,
-        durationSeconds: timeSpentSeconds,
-      },
-    });
 
     return NextResponse.json({
       success: true,

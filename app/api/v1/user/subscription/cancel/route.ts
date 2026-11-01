@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const auth = await requireAuthenticatedUser(request);
+    if (auth.error) return auth.error;
+    const user = auth.user;
     const body = await request.json().catch(() => ({}));
     const { reason = "User requested cancellation" } = body;
 

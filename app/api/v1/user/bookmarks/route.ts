@@ -1,13 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 import { checkQuota } from "@/lib/entitlements";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const auth = await requireAuthenticatedUser(request);
+    if (auth.error) return auth.error;
+    const user = auth.user;
+
     const bookmarks = await prisma.bookmark.findMany({
       where: { userId: user.id },
       orderBy: { createdAt: "desc" },
@@ -69,11 +72,14 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const auth = await requireAuthenticatedUser(request);
+    if (auth.error) return auth.error;
+    const user = auth.user;
+
     const body = await request.json();
     const { questionId, folderTag = "Default" } = body;
 
-    if (!questionId) {
+    if (!questionId || typeof questionId !== "string") {
       return NextResponse.json(
         { success: false, error: { code: "INVALID_PAYLOAD", message: "questionId is required" } },
         { status: 400 }
@@ -119,7 +125,7 @@ export async function POST(request: NextRequest) {
         data: {
           userId: user.id,
           questionId,
-          folderTag,
+          folderTag: typeof folderTag === "string" ? folderTag.trim().slice(0, 50) : "Default",
         },
       });
       return NextResponse.json({

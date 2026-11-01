@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
 import {
   BookOpen,
@@ -19,31 +19,78 @@ import {
   Sliders,
   Check,
   Edit3,
+  Plus,
+  Trash2,
+  CalendarDays,
+  Target,
+  AlertTriangle,
+  X,
+  ListTodo,
 } from "lucide-react";
 
+const UPSC_SUBJECTS = [
+  "Polity & Governance",
+  "History & Art & Culture",
+  "Geography",
+  "Economy & Social Development",
+  "Environment & Ecology",
+  "Science & Technology",
+  "CSAT & Reasoning",
+  "Current Affairs",
+  "Mains Answer Writing",
+] as const;
+
 export default function DailyStudyPlannerPage() {
+  const [activeTab, setActiveTab] = useState<"MY_TASKS" | "COMPASS" | "CUSTOM_SCHEDULE">("MY_TASKS");
+  const [timeView, setTimeView] = useState<"DAILY" | "WEEKLY" | "MONTHLY">("DAILY");
+
+  // Study Compass & Today Plan State
   const [plan, setPlan] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  // User Goals/Tasks State
+  const [goals, setGoals] = useState<any[]>([]);
+  const [goalsLoading, setGoalsLoading] = useState(false);
+  const [notice, setNotice] = useState<string | null>(null);
+
+  // New Goal Modal State
+  const [isAddingGoal, setIsAddingGoal] = useState(false);
+  const [newSubject, setNewSubject] = useState<string>(UPSC_SUBJECTS[0]);
+  const [newTitle, setNewTitle] = useState("");
+  const [newHours, setNewHours] = useState<number>(2);
+  const [newDueDate, setNewDueDate] = useState<string>(
+    new Date(Date.now() + 86400000).toISOString().split("T")[0]
+  );
+  const [submittingGoal, setSubmittingGoal] = useState(false);
+
+  // Edit Goal State
+  const [editingGoal, setEditingGoal] = useState<any | null>(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editSubject, setEditSubject] = useState<string>(UPSC_SUBJECTS[0]);
+  const [editHours, setEditHours] = useState(2);
+  const [editDueDate, setEditDueDate] = useState("");
+  const [savingEdit, setSavingEdit] = useState(false);
+  const [deletingGoalId, setDeletingGoalId] = useState<string | null>(null);
+  const [subjectFilter, setSubjectFilter] = useState<string>("All");
+
   // Custom schedule state
-  const [targetExam, setTargetExam] = useState("UPSC CSE 2025");
+  const [targetExam, setTargetExam] = useState("UPSC CSE 2026");
   const [stage, setStage] = useState("INTERMEDIATE");
   const [dailyHours, setDailyHours] = useState(6);
-  const [targetDate, setTargetDate] = useState("2025-05-25");
+  const [targetDate, setTargetDate] = useState("2026-05-24");
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([
     "Polity & Governance",
-    "Economy",
-    "Modern History",
+    "Economy & Social Development",
+    "History & Art & Culture",
   ]);
   const [customSchedule, setCustomSchedule] = useState<any | null>(null);
   const [generating, setGenerating] = useState(false);
-  const [activeTab, setActiveTab] = useState<"COMPASS" | "CUSTOM_SCHEDULE">("COMPASS");
 
+  // Load 3-pillar daily plan
   const loadPlan = async () => {
-    setLoading(true);
-    setError(null);
     try {
+      setLoading(true);
       const res = await fetch("/api/v1/study-planner/today");
       const data = await res.json();
       if (res.ok && data.success) {
@@ -59,9 +106,129 @@ export default function DailyStudyPlannerPage() {
     }
   };
 
+  // Load personal user goals/tasks
+  const loadGoals = async () => {
+    try {
+      setGoalsLoading(true);
+      const res = await fetch("/api/v1/user/goals");
+      const json = await res.json();
+      if (json.success) {
+        setGoals(json.data || []);
+      }
+    } catch (e) {
+      console.error("Failed to load user goals:", e);
+    } finally {
+      setGoalsLoading(false);
+    }
+  };
+
   useEffect(() => {
     loadPlan();
+    loadGoals();
   }, []);
+
+  const handleCreateGoal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!newTitle.trim()) return;
+    setSubmittingGoal(true);
+    try {
+      const res = await fetch("/api/v1/user/goals", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          title: newTitle.trim(),
+          subject: newSubject,
+          targetHours: Number(newHours) || 2,
+          targetDate: newDueDate || null,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setNewTitle("");
+        setIsAddingGoal(false);
+        setNotice("Study task added successfully!");
+        setTimeout(() => setNotice(null), 3000);
+        await loadGoals();
+      } else {
+        setNotice(json.error?.message || "Failed to create task.");
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSubmittingGoal(false);
+    }
+  };
+
+  const handleToggleGoal = async (goal: any) => {
+    try {
+      const updatedAchieved = !goal.isAchieved;
+      const res = await fetch("/api/v1/user/goals", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: goal.id,
+          isAchieved: updatedAchieved,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setGoals((prev) =>
+          prev.map((g) => (g.id === goal.id ? { ...g, isAchieved: updatedAchieved } : g))
+        );
+        setNotice(updatedAchieved ? "Task marked complete! Great work." : "Task reopened.");
+        setTimeout(() => setNotice(null), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleSaveEditGoal = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingGoal || !editTitle.trim()) return;
+    setSavingEdit(true);
+    try {
+      const res = await fetch("/api/v1/user/goals", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          id: editingGoal.id,
+          title: editTitle.trim(),
+          subject: editSubject,
+          targetHours: Number(editHours) || 2,
+          targetDate: editDueDate || null,
+        }),
+      });
+      const json = await res.json();
+      if (json.success) {
+        setEditingGoal(null);
+        setNotice("Task updated successfully.");
+        setTimeout(() => setNotice(null), 3000);
+        await loadGoals();
+      }
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setSavingEdit(false);
+    }
+  };
+
+  const handleDeleteGoal = async (goalId: string) => {
+    try {
+      const res = await fetch(`/api/v1/user/goals?id=${encodeURIComponent(goalId)}`, {
+        method: "DELETE",
+      });
+      const json = await res.json();
+      if (json.success) {
+        setGoals((prev) => prev.filter((g) => g.id !== goalId));
+        setDeletingGoalId(null);
+        setNotice("Task deleted.");
+        setTimeout(() => setNotice(null), 3000);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const handleGenerateCustomSchedule = async () => {
     setGenerating(true);
@@ -80,7 +247,6 @@ export default function DailyStudyPlannerPage() {
       const data = await res.json();
       if (data.success) {
         setCustomSchedule(data.data);
-        setActiveTab("CUSTOM_SCHEDULE");
       }
     } catch (e) {
       console.error("Failed to generate schedule:", e);
@@ -95,47 +261,44 @@ export default function DailyStudyPlannerPage() {
     );
   };
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="mt-2 text-sm text-slate-500">Formulating your personalized study plan...</p>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Filter goals by time view: Daily (due within 2 days or overdue), Weekly (due within 7 days), Monthly (due within 30 days or all)
+  // Filter goals by time view and subject filter
+  const filteredGoals = useMemo(() => {
+    let list = goals;
+    if (subjectFilter !== "All") {
+      list = list.filter((g) => g.subject === subjectFilter);
+    }
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
-        <div className="flex-1 max-w-xl mx-auto px-4 py-16 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-200">
-            <AlertCircle className="h-7 w-7" />
-          </div>
-          <h1 className="text-xl font-bold text-slate-900">Study Planner Temporarily Unavailable</h1>
-          <p className="text-sm text-rose-700 mt-2">{error}</p>
-          <div className="mt-6 flex justify-center gap-3">
-            <button
-              onClick={() => loadPlan()}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow"
-            >
-              <RotateCw className="h-3.5 w-3.5" />
-              Retry Formulating Plan
-            </button>
-            <Link
-              href="/current-affairs"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-xs font-semibold transition"
-            >
-              Current Affairs
-            </Link>
-          </div>
-        </div>
-      </div>
-    );
-  }
+    const now = new Date();
+    const startOfToday = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+    if (timeView === "DAILY") {
+      // Due today, tomorrow, overdue, or unscheduled
+      const dayAfterTomorrow = new Date(startOfToday.getTime() + 2 * 86400000);
+      return list.filter((g) => {
+        if (!g.targetDate) return true;
+        const d = new Date(g.targetDate);
+        return d <= dayAfterTomorrow || g.isOverdue;
+      });
+    } else if (timeView === "WEEKLY") {
+      const endOfWeek = new Date(startOfToday.getTime() + 7 * 86400000);
+      return list.filter((g) => {
+        if (!g.targetDate) return true;
+        const d = new Date(g.targetDate);
+        return d <= endOfWeek || g.isOverdue;
+      });
+    } else {
+      // Monthly / All
+      return list;
+    }
+  }, [goals, timeView, subjectFilter]);
+
+  const activeGoalsCount = goals.filter((g) => !g.isAchieved).length;
+  const completedGoalsCount = goals.filter((g) => g.isAchieved).length;
+  const overdueGoalsCount = goals.filter((g) => g.isOverdue).length;
+  const totalPlannedHours = goals
+    .filter((g) => !g.isAchieved)
+    .reduce((acc, curr) => acc + (curr.targetHours || 0), 0);
 
   const todayStudy = plan?.todayStudy;
   const importantPyqs = plan?.importantForUpsc?.connectedPyqs || [];
@@ -144,7 +307,7 @@ export default function DailyStudyPlannerPage() {
   return (
     <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
       <main className="flex-1 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
-        {/* Planner Header */}
+        {/* Planner Header Banner */}
         <div className="bg-gradient-to-r from-slate-900 via-blue-950 to-indigo-950 rounded-2xl p-6 sm:p-10 text-white shadow-sm mb-8">
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-200 text-xs font-semibold mb-4 border border-blue-400/20">
@@ -152,17 +315,38 @@ export default function DailyStudyPlannerPage() {
               Daily Aspirant Compass • {new Date().toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" })}
             </div>
             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-              Your Daily <span className="text-blue-400">Preparation Architecture</span>
+              Aspirant <span className="text-blue-400">Study Workspace & Planner</span>
             </h1>
             <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
-              Every day, Pravaah answers the three vital questions for every serious UPSC aspirant: What to study today, what is important from previous exams, and what to revise based on your mistakes.
+              Organize daily, weekly, and monthly syllabus goals across General Studies, CSAT, and Mains Answer Writing. Stay on track with automated spaced revision cues.
             </p>
           </div>
         </div>
 
+        {/* Notice feedback */}
+        {notice && (
+          <div className="mb-6 rounded-xl border border-blue-200 bg-blue-50 p-3 text-xs font-bold text-blue-900 flex items-center justify-between animate-in fade-in">
+            <span>{notice}</span>
+            <button onClick={() => setNotice(null)} className="text-blue-700 hover:text-blue-900">
+              <X className="h-4 w-4" />
+            </button>
+          </div>
+        )}
+
         {/* View Switcher Tabs */}
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6 bg-white p-3 rounded-xl border border-slate-200 shadow-sm">
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setActiveTab("MY_TASKS")}
+              className={`px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
+                activeTab === "MY_TASKS"
+                  ? "bg-blue-700 text-white shadow-sm"
+                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+              }`}
+            >
+              <ListTodo className="h-4 w-4" />
+              Personal Study Tasks ({activeGoalsCount})
+            </button>
             <button
               onClick={() => setActiveTab("COMPASS")}
               className={`px-4 py-2 rounded-lg text-xs font-bold transition flex items-center gap-1.5 ${
@@ -172,7 +356,7 @@ export default function DailyStudyPlannerPage() {
               }`}
             >
               <Compass className="h-4 w-4" />
-              Today's 3-Pillar Compass
+              Today&apos;s 3-Pillar Compass
             </button>
             <button
               onClick={() => setActiveTab("CUSTOM_SCHEDULE")}
@@ -183,21 +367,269 @@ export default function DailyStudyPlannerPage() {
               }`}
             >
               <Sliders className="h-4 w-4" />
-              Custom Timetable Generator
-              {customSchedule && (
-                <span className="rounded-full bg-emerald-100 text-emerald-800 px-1.5 py-0.2 text-[10px] font-extrabold ml-1">
-                  Active
-                </span>
-              )}
+              Timetable Generator
             </button>
           </div>
 
           <div className="text-xs text-slate-500 font-medium">
-            {customSchedule ? "Customized to your daily hours" : "Standard Foundational Plan"}
+            {activeGoalsCount} active tasks • {overdueGoalsCount} overdue
           </div>
         </div>
 
-        {/* TAB 1: 3-PILLAR DAILY COMPASS */}
+        {/* TAB 1: PERSONAL STUDY TASKS */}
+        {activeTab === "MY_TASKS" && (
+          <div className="space-y-6">
+            {/* Task Management Header Stats & Time Horizon Filter */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <span className="text-[11px] font-bold text-slate-400 uppercase">Active Tasks</span>
+                <p className="text-2xl font-black text-slate-900 mt-1">{activeGoalsCount}</p>
+                <span className="text-xs text-slate-500">{completedGoalsCount} completed</span>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <span className="text-[11px] font-bold text-slate-400 uppercase">Planned Time</span>
+                <p className="text-2xl font-black text-blue-700 mt-1">{totalPlannedHours.toFixed(1)}h</p>
+                <span className="text-xs text-slate-500">Across pending targets</span>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm">
+                <span className="text-[11px] font-bold text-slate-400 uppercase">Overdue Tasks</span>
+                <p
+                  className={`text-2xl font-black mt-1 ${
+                    overdueGoalsCount > 0 ? "text-rose-600" : "text-emerald-600"
+                  }`}
+                >
+                  {overdueGoalsCount}
+                </p>
+                <span className="text-xs text-slate-500">
+                  {overdueGoalsCount > 0 ? "Requires reschedule" : "All on schedule"}
+                </span>
+              </div>
+              <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm flex flex-col justify-between">
+                <span className="text-[11px] font-bold text-slate-400 uppercase">Action</span>
+                <button
+                  onClick={() => setIsAddingGoal(true)}
+                  className="w-full rounded-xl bg-blue-700 px-3 py-2 text-xs font-bold text-white hover:bg-blue-800 transition flex items-center justify-center gap-1.5 shadow-sm"
+                >
+                  <Plus className="h-4 w-4" />
+                  <span>Create Study Task</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Time View Switcher (Daily, Weekly, Monthly) & Subject Filter */}
+            <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+              <div className="flex items-center gap-1.5 bg-slate-200/70 p-1 rounded-xl">
+                <button
+                  onClick={() => setTimeView("DAILY")}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+                    timeView === "DAILY" ? "bg-white text-blue-800 shadow-xs" : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  Daily Horizon
+                </button>
+                <button
+                  onClick={() => setTimeView("WEEKLY")}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+                    timeView === "WEEKLY" ? "bg-white text-blue-800 shadow-xs" : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  Weekly View
+                </button>
+                <button
+                  onClick={() => setTimeView("MONTHLY")}
+                  className={`px-3 py-1 rounded-lg text-xs font-bold transition ${
+                    timeView === "MONTHLY" ? "bg-white text-blue-800 shadow-xs" : "text-slate-600 hover:text-slate-900"
+                  }`}
+                >
+                  Monthly / All View
+                </button>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <select
+                  value={subjectFilter}
+                  onChange={(e) => setSubjectFilter(e.target.value)}
+                  className="rounded-xl border border-slate-200 bg-white px-2.5 py-1 text-xs font-bold text-slate-700 shadow-xs focus:outline-none focus:ring-1 focus:ring-blue-600"
+                >
+                  <option value="All">All Subjects ({goals.length})</option>
+                  {UPSC_SUBJECTS.map((s) => (
+                    <option key={s} value={s}>
+                      {s}
+                    </option>
+                  ))}
+                </select>
+                <span className="text-xs text-slate-500 font-semibold">
+                  ({filteredGoals.length} task{filteredGoals.length !== 1 ? "s" : ""})
+                </span>
+              </div>
+            </div>
+
+            {/* Tasks List */}
+            {goalsLoading ? (
+              <div className="py-16 text-center text-sm text-slate-400">
+                <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mb-2" />
+                <p>Loading your study tasks...</p>
+              </div>
+            ) : filteredGoals.length === 0 ? (
+              <div className="rounded-2xl border border-dashed border-slate-300 bg-white p-12 text-center text-slate-500">
+                <ListTodo className="mx-auto h-12 w-12 text-slate-300 mb-3" />
+                <h3 className="text-base font-bold text-slate-800">No Study Tasks in this Horizon</h3>
+                <p className="mt-1 text-xs text-slate-500 max-w-md mx-auto">
+                  Add concrete study sessions for Polity, Modern History, Geography, CSAT, or Mains Answer Writing to track your daily progress.
+                </p>
+                <button
+                  onClick={() => setIsAddingGoal(true)}
+                  className="mt-4 rounded-xl bg-blue-700 px-4 py-2 text-xs font-bold text-white shadow-sm hover:bg-blue-800"
+                >
+                  + Add First Task
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-3">
+                {filteredGoals.map((g) => (
+                  <div
+                    key={g.id}
+                    className={`rounded-2xl border p-4 sm:p-5 transition flex flex-col sm:flex-row sm:items-center justify-between gap-4 ${
+                      g.isAchieved
+                        ? "bg-slate-50 border-slate-200 opacity-70"
+                        : g.isOverdue
+                        ? "bg-rose-50/50 border-rose-200"
+                        : "bg-white border-slate-200 shadow-xs"
+                    }`}
+                  >
+                    <div className="flex items-start gap-3">
+                      <button
+                        onClick={() => handleToggleGoal(g)}
+                        className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition ${
+                          g.isAchieved
+                            ? "bg-emerald-600 border-emerald-600 text-white"
+                            : "border-slate-300 hover:border-blue-600 bg-white"
+                        }`}
+                        title={g.isAchieved ? "Mark as pending" : "Mark as completed"}
+                      >
+                        {g.isAchieved && <Check className="h-3.5 w-3.5 stroke-[3]" />}
+                      </button>
+
+                      <div>
+                        <div className="flex flex-wrap items-center gap-2">
+                          <h4
+                            className={`text-sm font-bold ${
+                              g.isAchieved ? "line-through text-slate-500" : "text-slate-900"
+                            }`}
+                          >
+                            {g.title}
+                          </h4>
+                          {g.subject && (
+                            <span className="rounded-md bg-blue-50 border border-blue-200 text-blue-700 px-2 py-0.5 font-bold text-[10px]">
+                              {g.subject}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-slate-500">
+                          <span className="flex items-center gap-1 font-semibold text-slate-700">
+                            <Clock className="h-3 w-3 text-blue-600" />
+                            {g.targetHours}h allocated
+                          </span>
+
+                          {g.targetDate && (
+                            <>
+                              <span>•</span>
+                              <span className="flex items-center gap-1">
+                                <CalendarDays className="h-3 w-3 text-slate-400" />
+                                Due {new Date(g.targetDate).toLocaleDateString("en-IN", { month: "short", day: "numeric" })}
+                              </span>
+                            </>
+                          )}
+
+                          {g.isOverdue && (
+                            <span className="rounded bg-rose-100 text-rose-700 px-1.5 py-0.2 font-bold text-[10px]">
+                              Overdue
+                            </span>
+                          )}
+
+                          {g.daysRemaining !== null && g.daysRemaining >= 0 && !g.isAchieved && (
+                            <span className="rounded bg-slate-100 text-slate-600 px-1.5 py-0.2 font-semibold text-[10px]">
+                              {g.daysRemaining === 0 ? "Due Today" : `${g.daysRemaining}d remaining`}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2 self-end sm:self-center shrink-0">
+                      <button
+                        onClick={() => {
+                          setEditingGoal(g);
+                          setEditTitle(g.title);
+                          setEditSubject(g.subject || UPSC_SUBJECTS[0]);
+                          setEditHours(g.targetHours || 2);
+                          setEditDueDate(
+                            g.targetDate ? new Date(g.targetDate).toISOString().split("T")[0] : ""
+                          );
+                        }}
+                        className="rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50"
+                      >
+                        Edit
+                      </button>
+                      <button
+                        onClick={() => setDeletingGoalId(g.id)}
+                        className="rounded-lg border border-rose-200 bg-white px-2.5 py-1 text-xs font-semibold text-rose-600 hover:bg-rose-50"
+                      >
+                        <Trash2 className="h-3.5 w-3.5" />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Upcoming Revision Integration */}
+            {revisionItems.length > 0 && (
+              <div className="mt-8 rounded-2xl border border-purple-200 bg-purple-50/40 p-5 shadow-sm">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-2">
+                    <RotateCw className="h-4 w-4 text-purple-700" />
+                    <h3 className="text-sm font-bold text-slate-900">
+                      Upcoming Spaced Revision Tasks ({revisionItems.length})
+                    </h3>
+                  </div>
+                  <Link
+                    href="/revision"
+                    className="text-xs font-bold text-purple-700 hover:underline flex items-center gap-1"
+                  >
+                    <span>Full Revision Queue</span>
+                    <ArrowRight className="h-3 w-3" />
+                  </Link>
+                </div>
+
+                <div className="space-y-2">
+                  {revisionItems.slice(0, 3).map((item: any) => (
+                    <div
+                      key={item.scheduleId}
+                      className="rounded-xl border border-purple-100 bg-white p-3 flex items-center justify-between text-xs"
+                    >
+                      <div>
+                        <span className="font-bold text-purple-900 block">
+                          UPSC {item.year} {item.paper} • Q#{item.questionNumber}
+                        </span>
+                        <p className="text-slate-600 line-clamp-1">{item.questionText}</p>
+                      </div>
+                      <Link
+                        href="/revision"
+                        className="rounded-lg bg-purple-700 px-3 py-1 font-bold text-white hover:bg-purple-800 shrink-0 ml-3"
+                      >
+                        Revise
+                      </Link>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* TAB 2: 3-PILLAR DAILY COMPASS */}
         {activeTab === "COMPASS" && (
           <div className="space-y-8">
             {/* QUESTION 1: WHAT SHOULD I STUDY TODAY? */}
@@ -235,7 +667,6 @@ export default function DailyStudyPlannerPage() {
                     {todayStudy.summary}
                   </p>
 
-                  {/* Prelims & Mains Takeaway Highlights */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4 pt-4 border-t border-slate-200 text-xs">
                     <div className="bg-white p-3 rounded-lg border border-slate-200">
                       <span className="font-bold text-blue-800 block mb-1">Prelims Core Theme:</span>
@@ -247,14 +678,13 @@ export default function DailyStudyPlannerPage() {
                     </div>
                   </div>
 
-                  {/* Actions */}
                   <div className="mt-5 flex flex-wrap gap-3 items-center">
                     {todayStudy.slug && (
                       <Link
                         href={`/current-affairs/${todayStudy.slug}`}
                         className="px-4 py-2 rounded-lg bg-blue-700 hover:bg-blue-600 text-white text-xs font-bold transition-all shadow flex items-center gap-1.5"
                       >
-                        Read Full News Card & Explanations
+                        Read News Card & Explanations
                         <ArrowRight className="h-3.5 w-3.5" />
                       </Link>
                     )}
@@ -269,11 +699,11 @@ export default function DailyStudyPlannerPage() {
                   </div>
                 </div>
               ) : (
-                <div className="p-4 text-xs text-slate-500">Today's study agenda is being synchronized.</div>
+                <div className="p-4 text-xs text-slate-500">Today&apos;s study agenda is being synchronized.</div>
               )}
             </div>
 
-            {/* QUESTION 2: WHAT IS IMPORTANT FOR UPSC & HOW HAS IT BEEN ASKED? */}
+            {/* QUESTION 2: WHAT IS IMPORTANT FOR UPSC? */}
             <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
               <div className="flex items-center gap-3 mb-4">
                 <span className="flex h-8 w-8 items-center justify-center rounded-xl bg-indigo-100 text-indigo-700 font-black text-sm">
@@ -290,7 +720,7 @@ export default function DailyStudyPlannerPage() {
               </div>
 
               <p className="text-xs text-slate-500 mb-4">
-                Directly connected previous-year questions from our verified 1,079 question database testing the same fundamental principles:
+                Directly connected previous-year questions testing identical foundational concepts:
               </p>
 
               <div className="space-y-4">
@@ -315,7 +745,7 @@ export default function DailyStudyPlannerPage() {
                     <div className="pt-2 border-t border-slate-200/60 flex items-center justify-between">
                       <span className="text-[11px] text-slate-500">Official Series A Verified Answer Available</span>
                       <Link
-                        href={`/pyqs`}
+                        href={`/pyqs?paper=${q.paper}&year=${q.year}`}
                         className="inline-flex items-center gap-1 text-xs font-bold text-blue-700 hover:underline"
                       >
                         Practice in Learn Mode
@@ -344,7 +774,7 @@ export default function DailyStudyPlannerPage() {
               </div>
 
               <p className="text-xs text-slate-600 mb-4 leading-relaxed">
-                {plan?.revisionNext?.instructions}
+                {plan?.revisionNext?.instructions || "Review questions marked incorrect in previous sessions to prevent recurrence."}
               </p>
 
               {revisionItems.length > 0 ? (
@@ -374,7 +804,7 @@ export default function DailyStudyPlannerPage() {
                 <div className="p-6 rounded-xl bg-slate-50 border border-slate-200 text-center text-xs text-slate-500">
                   <CheckCircle className="h-8 w-8 text-emerald-500 mx-auto mb-2" />
                   <span className="font-bold text-slate-800 block text-sm">Zero Overdue Mistakes Today!</span>
-                  Attempt questions in the PYQ Explorer or Daily Quiz. Any missed questions will automatically queue here based on spaced repetition intervals.
+                  All spaced repetition items are up to date.
                 </div>
               )}
 
@@ -394,10 +824,9 @@ export default function DailyStudyPlannerPage() {
           </div>
         )}
 
-        {/* TAB 2: INTERACTIVE CUSTOM TIMETABLE ARCHITECT */}
+        {/* TAB 3: TIMETABLE GENERATOR */}
         {activeTab === "CUSTOM_SCHEDULE" && (
           <div className="space-y-8">
-            {/* Customizer Controls Card */}
             <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm">
               <div className="flex items-center gap-2 mb-6">
                 <Sliders className="h-5 w-5 text-blue-700" />
@@ -416,11 +845,11 @@ export default function DailyStudyPlannerPage() {
                     onChange={(e) => setTargetExam(e.target.value)}
                     className="w-full p-2.5 rounded-xl border border-slate-300 text-xs font-semibold text-slate-800 focus:ring-2 focus:ring-blue-600 focus:outline-none"
                   >
-                    <option value="UPSC CSE 2025">UPSC CSE 2025 (Prelims May 2025)</option>
-                    <option value="UPSC CSE 2026">UPSC CSE 2026 (Foundation)</option>
-                    <option value="UPSC CDS 2025">UPSC Combined Defence Services (CDS)</option>
-                    <option value="UPSC CAPF 2025">UPSC Central Armed Police Forces (CAPF)</option>
-                    <option value="UPSC NDA 2025">UPSC National Defence Academy (NDA)</option>
+                    <option value="UPSC CSE 2026">UPSC CSE 2026 (Foundation & Core)</option>
+                    <option value="UPSC CSE 2027">UPSC CSE 2027 (Long-term Sprint)</option>
+                    <option value="UPSC CDS 2026">UPSC Combined Defence Services (CDS)</option>
+                    <option value="UPSC CAPF 2026">UPSC Central Armed Police Forces (CAPF)</option>
+                    <option value="UPSC NDA 2026">UPSC National Defence Academy (NDA)</option>
                   </select>
                 </div>
 
@@ -466,15 +895,7 @@ export default function DailyStudyPlannerPage() {
                   Focus Subjects for this Phase (Select 2-3)
                 </label>
                 <div className="flex flex-wrap gap-2">
-                  {[
-                    "Polity & Governance",
-                    "Economy",
-                    "Modern History",
-                    "Geography",
-                    "Environment & Ecology",
-                    "Science & Tech",
-                    "CSAT (Quant & Comprehension)",
-                  ].map((subj) => {
+                  {UPSC_SUBJECTS.map((subj) => {
                     const isSelected = selectedSubjects.includes(subj);
                     return (
                       <button
@@ -509,7 +930,6 @@ export default function DailyStudyPlannerPage() {
             {/* Render Custom Schedule Results if generated */}
             {customSchedule ? (
               <div className="space-y-6 animate-fade-in">
-                {/* Strategy Summary */}
                 <div className="bg-gradient-to-br from-indigo-950 to-slate-900 rounded-2xl p-6 text-white shadow-sm flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
                   <div>
                     <span className="text-xs text-indigo-300 font-bold uppercase tracking-wider block mb-1">
@@ -528,7 +948,6 @@ export default function DailyStudyPlannerPage() {
                   </div>
                 </div>
 
-                {/* Daily Slots Table */}
                 <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
                   <h4 className="text-sm font-bold text-slate-900 mb-4 flex items-center gap-2">
                     <Clock className="h-4 w-4 text-blue-700" />
@@ -559,7 +978,6 @@ export default function DailyStudyPlannerPage() {
                   </div>
                 </div>
 
-                {/* Weekly Protocol */}
                 <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm text-xs">
                   <h4 className="text-sm font-bold text-slate-900 mb-3">
                     Weekly Rhythm & Simulation Milestones
@@ -583,6 +1001,221 @@ export default function DailyStudyPlannerPage() {
                 </p>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Modal: Create Study Task */}
+        {isAddingGoal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in">
+            <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-slate-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base font-bold text-slate-900">Create Study Target</h3>
+                <button onClick={() => setIsAddingGoal(false)} className="text-slate-400 hover:text-slate-700">
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateGoal} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Subject / Theme
+                  </label>
+                  <select
+                    value={newSubject}
+                    onChange={(e) => setNewSubject(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  >
+                    {UPSC_SUBJECTS.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Task / Topic Title
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="e.g. Fundamental Rights Articles 14-18 Revision"
+                    value={newTitle}
+                    onChange={(e) => setNewTitle(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                      Target Hours
+                    </label>
+                    <input
+                      type="number"
+                      min={0.5}
+                      max={12}
+                      step={0.5}
+                      value={newHours}
+                      onChange={(e) => setNewHours(Number(e.target.value))}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                      Target Due Date
+                    </label>
+                    <input
+                      type="date"
+                      value={newDueDate}
+                      onChange={(e) => setNewDueDate(e.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6 flex justify-end gap-2 pt-2 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setIsAddingGoal(false)}
+                    className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={submittingGoal}
+                    className="rounded-xl bg-blue-700 px-4 py-2 text-xs font-bold text-white hover:bg-blue-800 disabled:opacity-50"
+                  >
+                    {submittingGoal ? "Adding..." : "Add Study Task"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Modal: Edit Study Task */}
+        {editingGoal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in">
+            <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-xl border border-slate-200">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base font-bold text-slate-900">Edit Study Task</h3>
+                <button onClick={() => setEditingGoal(null)} className="text-slate-400 hover:text-slate-700">
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveEditGoal} className="space-y-4">
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Subject / Theme
+                  </label>
+                  <select
+                    value={editSubject}
+                    onChange={(e) => setEditSubject(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  >
+                    {UPSC_SUBJECTS.map((s) => (
+                      <option key={s} value={s}>
+                        {s}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                    Task Title
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                    className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                      Target Hours
+                    </label>
+                    <input
+                      type="number"
+                      min={0.5}
+                      max={12}
+                      step={0.5}
+                      value={editHours}
+                      onChange={(e) => setEditHours(Number(e.target.value))}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1">
+                      Due Date
+                    </label>
+                    <input
+                      type="date"
+                      value={editDueDate}
+                      onChange={(e) => setEditDueDate(e.target.value)}
+                      className="w-full rounded-xl border border-slate-200 bg-slate-50 p-2.5 text-xs font-semibold text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-blue-600"
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-6 flex justify-end gap-2 pt-2 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => setEditingGoal(null)}
+                    className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    disabled={savingEdit}
+                    className="rounded-xl bg-blue-700 px-4 py-2 text-xs font-bold text-white hover:bg-blue-800 disabled:opacity-50"
+                  >
+                    {savingEdit ? "Saving..." : "Save Changes"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
+        {/* Modal: Delete Confirmation */}
+        {deletingGoalId && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 backdrop-blur-sm p-4 animate-in fade-in">
+            <div className="w-full max-w-sm rounded-2xl bg-white p-6 shadow-xl border border-slate-200 text-center">
+              <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-100">
+                <Trash2 className="h-6 w-6" />
+              </div>
+              <h3 className="text-base font-bold text-slate-900">Delete Study Task?</h3>
+              <p className="mt-1 text-xs text-slate-500 mb-5">
+                This will remove the target from your active schedule.
+              </p>
+
+              <div className="flex justify-center gap-2">
+                <button
+                  onClick={() => setDeletingGoalId(null)}
+                  className="rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-600 hover:bg-slate-50"
+                >
+                  Keep Task
+                </button>
+                <button
+                  onClick={() => handleDeleteGoal(deletingGoalId)}
+                  className="rounded-xl bg-rose-600 px-4 py-2 text-xs font-bold text-white hover:bg-rose-700 shadow-sm"
+                >
+                  Yes, Delete
+                </button>
+              </div>
+            </div>
           </div>
         )}
       </main>

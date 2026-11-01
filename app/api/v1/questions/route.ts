@@ -13,6 +13,7 @@ export async function GET(request: NextRequest) {
     const topicParam = searchParams.get("topic");
     const difficulty = searchParams.get("difficulty");
     const search = searchParams.get("q");
+    const searchMode = searchParams.get("mode") || "smart"; // "smart" | "exact"
     const status = searchParams.get("status") || "PUBLISHED";
     const page = Math.max(1, parseInt(searchParams.get("page") || "1"));
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")));
@@ -42,46 +43,74 @@ export async function GET(request: NextRequest) {
       where.difficulty = difficulty.toUpperCase();
     }
 
+    const topicConditions: any[] = [];
     if (subjectParam) {
-      where.topics = {
-        some: {
-          topic: {
-            subject: {
-              OR: [
-                { slug: subjectParam.toLowerCase() },
-                { name: { contains: subjectParam } },
-              ],
-            },
+      topicConditions.push({
+        topic: {
+          subject: {
+            OR: [
+              { slug: subjectParam.toLowerCase() },
+              { name: { contains: subjectParam } },
+            ],
           },
         },
-      };
+      });
     }
 
     if (topicParam) {
+      topicConditions.push({
+        topic: {
+          OR: [
+            { slug: topicParam.toLowerCase() },
+            { name: { contains: topicParam } },
+          ],
+        },
+      });
+    }
+
+    if (topicConditions.length > 0) {
       where.topics = {
         some: {
-          topic: {
-            OR: [
-              { slug: topicParam.toLowerCase() },
-              { name: { contains: topicParam } },
-            ],
-          },
+          AND: topicConditions,
         },
       };
     }
 
-    if (search) {
-      where.OR = [
-        { questionText: { contains: search } },
-        {
-          explanation: {
-            OR: [
-              { summary: { contains: search } },
-              { detailedExplanation: { contains: search } },
-            ],
+    if (search && search.trim()) {
+      const trimmed = search.trim();
+      if (searchMode === "exact") {
+        where.OR = [
+          { questionText: { contains: trimmed } },
+          { options: { some: { optionText: { contains: trimmed } } } },
+        ];
+      } else {
+        where.OR = [
+          { questionText: { contains: trimmed } },
+          { options: { some: { optionText: { contains: trimmed } } } },
+          {
+            explanation: {
+              OR: [
+                { summary: { contains: trimmed } },
+                { detailedExplanation: { contains: trimmed } },
+                { relatedConcept: { contains: trimmed } },
+                { eliminationTechnique: { contains: trimmed } },
+              ],
+            },
           },
-        },
-      ];
+          {
+            topics: {
+              some: {
+                topic: {
+                  OR: [
+                    { name: { contains: trimmed } },
+                    { subject: { name: { contains: trimmed } } },
+                  ],
+                },
+              },
+            },
+          },
+        ];
+      }
     }
 
     const [total, questions] = await Promise.all([

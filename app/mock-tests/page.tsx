@@ -85,7 +85,7 @@ export default async function MockTestsPage() {
           where: { status: "COMPLETED" },
         },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ year: "desc" }, { createdAt: "desc" }],
     });
 
     if (rawTests && rawTests.length > 0) {

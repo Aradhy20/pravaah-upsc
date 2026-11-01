@@ -17,8 +17,9 @@ function PYQExplorerContent() {
     return y ? y.split(",").map(Number).filter((n) => !isNaN(n)) : [];
   });
   const [selectedSubject, setSelectedSubject] = useState(searchParams?.get("subject") || "");
+  const [selectedTopic, setSelectedTopic] = useState(searchParams?.get("topic") || "");
   const [searchQuery, setSearchQuery] = useState(searchParams?.get("q") || "");
-  const [searchMode, setSearchMode] = useState<"smart" | "exact">("smart");
+  const [searchMode, setSearchMode] = useState<"smart" | "exact">((searchParams?.get("mode") as "smart" | "exact") || "smart");
 
   const [questions, setQuestions] = useState<QuestionData[]>([]);
   const [loading, setLoading] = useState(true);
@@ -62,12 +63,14 @@ function PYQExplorerContent() {
 
   // Sync state to URL
   const updateURL = useCallback(
-    (paper: string, years: number[], subject: string, q: string) => {
+    (paper: string, years: number[], subject: string, topic: string, q: string, mode: string) => {
       const params = new URLSearchParams();
       if (paper) params.set("paper", paper);
       if (years.length > 0) params.set("years", years.join(","));
       if (subject) params.set("subject", subject);
+      if (topic) params.set("topic", topic);
       if (q.trim()) params.set("q", q.trim());
+      if (mode && mode !== "smart") params.set("mode", mode);
 
       router.replace(`/pyqs?${params.toString()}`, { scroll: false });
     },
@@ -84,7 +87,9 @@ function PYQExplorerContent() {
       if (selectedPaper) params.set("paper", selectedPaper);
       if (selectedYears.length > 0) params.set("years", selectedYears.join(","));
       if (selectedSubject) params.set("subject", selectedSubject);
+      if (selectedTopic) params.set("topic", selectedTopic);
       if (searchQuery.trim()) params.set("q", searchQuery.trim());
+      if (searchMode) params.set("mode", searchMode);
       params.set("page", page.toString());
       params.set("limit", "15");
 
@@ -104,18 +109,20 @@ function PYQExplorerContent() {
     } finally {
       setLoading(false);
     }
-  }, [selectedPaper, selectedYears, selectedSubject, searchQuery, page]);
+  }, [selectedPaper, selectedYears, selectedSubject, selectedTopic, searchQuery, searchMode, page]);
 
   useEffect(() => {
     fetchQuestions();
-    updateURL(selectedPaper, selectedYears, selectedSubject, searchQuery);
-  }, [fetchQuestions, selectedPaper, selectedYears, selectedSubject, searchQuery, updateURL]);
+    updateURL(selectedPaper, selectedYears, selectedSubject, selectedTopic, searchQuery, searchMode);
+  }, [fetchQuestions, selectedPaper, selectedYears, selectedSubject, selectedTopic, searchQuery, searchMode, updateURL]);
 
   const handleClearAll = () => {
     setSelectedPaper("GS1");
     setSelectedYears([]);
     setSelectedSubject("");
+    setSelectedTopic("");
     setSearchQuery("");
+    setSearchMode("smart");
     setPage(1);
     router.replace("/pyqs", { scroll: false });
   };
@@ -188,6 +195,11 @@ function PYQExplorerContent() {
           setSelectedSubject(subject);
           setPage(1);
         }}
+        selectedTopic={selectedTopic}
+        onTopicChange={(topic) => {
+          setSelectedTopic(topic);
+          setPage(1);
+        }}
         searchQuery={searchQuery}
         onSearchChange={(q) => {
           setSearchQuery(q);
@@ -240,7 +252,7 @@ function PYQExplorerContent() {
                   Question {(page - 1) * 15 + focusIndex + 1} of {totalQuestions}
                 </span>
                 <span className="text-slate-500 hidden sm:inline">
-                  (Keyboard: [←] Previous, [→] Next)
+                  (Keyboard: [1-4 / A-D] Answer • [E] Explanation • [S] Bookmark • [N] Note • [← / →] Next/Prev)
                 </span>
               </div>
               <div className="flex items-center gap-2">
@@ -261,8 +273,12 @@ function PYQExplorerContent() {
               </div>
             </div>
 
-            {/* Active Question in Focus */}
-            <QuestionCard key={questions[focusIndex].id} question={questions[focusIndex]} />
+            {/* Active Question in Focus with Keyboard Shortcuts Active */}
+            <QuestionCard
+              key={questions[focusIndex].id}
+              question={questions[focusIndex]}
+              activeKeyboard={true}
+            />
 
             {/* Bottom Stepper Bar */}
             <div className="flex items-center justify-between border-t border-slate-200 pt-4">

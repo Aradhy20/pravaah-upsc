@@ -1,12 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { requireAuthenticatedUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const auth = await requireAuthenticatedUser(request);
+    if (auth.error) return auth.error;
+    const user = auth.user;
 
     const items = await prisma.reviewSchedule.findMany({
       where: {
@@ -76,9 +78,12 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const auth = await requireAuthenticatedUser(request);
+    if (auth.error) return auth.error;
+    const user = auth.user;
+
     const body = await request.json();
-    const { scheduleId, questionId, action } = body; // action: "resolve" | "reschedule"
+    const { scheduleId, questionId, action } = body;
 
     const whereClause: any = { userId: user.id };
     if (scheduleId) whereClause.id = scheduleId;
@@ -104,19 +109,21 @@ export async function POST(request: NextRequest) {
         message: "Question marked as resolved/mastered from revision queue.",
       });
     } else {
-      // Reschedule for 3 days later
+      const days = Number(body.intervalDays) || 3;
       await prisma.reviewSchedule.updateMany({
         where: whereClause,
         data: {
           repetitionCount: { increment: 1 },
-          nextReviewDate: new Date(Date.now() + 3 * 86400000),
+          intervalDays: days,
+          nextReviewDate: new Date(Date.now() + days * 86400000),
           updatedAt: new Date(),
         },
       });
 
       return NextResponse.json({
         success: true,
-        message: "Question rescheduled for review in 3 days.",
+        message: `Question rescheduled for review in ${days} day(s).`,
+        intervalDays: days,
       });
     }
   } catch (error: any) {

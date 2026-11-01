@@ -10,6 +10,8 @@ interface FilterBarProps {
   onYearsChange: (years: number[]) => void;
   selectedSubject: string;
   onSubjectChange: (subject: string) => void;
+  selectedTopic: string;
+  onTopicChange: (topic: string) => void;
   searchQuery: string;
   onSearchChange: (query: string) => void;
   searchMode: "smart" | "exact";
@@ -18,19 +20,62 @@ interface FilterBarProps {
   totalFilteredCount?: number;
 }
 
-const AVAILABLE_YEARS = [2024, 2023, 2022, 2021, 2020, 2019, 2018, 2017, 2016, 2015];
+// Authentically verified database years (2019–2024 Prelims cycles)
+const AVAILABLE_YEARS = [2024, 2023, 2022, 2021, 2020, 2019];
 
-const SUBJECTS_LIST = [
-  "Polity & Governance",
-  "Economy & Social Development",
-  "Environment & Biodiversity",
-  "History & Art & Culture",
-  "Geography & Agriculture",
-  "Science & Technology",
-  "CSAT: Quantitative Aptitude",
-  "CSAT: Logical & Analytical Reasoning",
-  "CSAT: Reading Comprehension",
-];
+const SUBJECT_TOPICS_MAP: Record<string, string[]> = {
+  "Polity & Governance": [
+    "Preamble & Constitutional Features",
+    "Fundamental Rights & DPSP",
+    "Parliament & State Legislatures",
+    "Union & State Executive",
+    "Judiciary & Constitutional Bodies",
+  ],
+  "Economy & Social Development": [
+    "National Income & Growth",
+    "Fiscal & Monetary Policy",
+    "Banking & Financial Markets",
+    "External Sector & Trade",
+    "Inclusion & Poverty Alleviation",
+  ],
+  "Environment & Biodiversity": [
+    "Ecology & Ecosystem Dynamics",
+    "Biodiversity & Protected Area Network",
+    "Climate Change & Conventions",
+    "Pollution & Environmental Laws",
+  ],
+  "History & Art & Culture": [
+    "Ancient & Medieval India",
+    "Art, Architecture & Literature",
+    "Modern India & Freedom Struggle",
+  ],
+  "Geography & Agriculture": [
+    "Physical Geography of India & World",
+    "Cropping Patterns & Agriculture",
+    "Resources & Distribution",
+  ],
+  "Science & Technology": [
+    "Space & Satellite Missions",
+    "Biotechnology & Health",
+    "IT, Telecom & Frontier Technologies",
+  ],
+  "CSAT: Quantitative Aptitude": [
+    "Number System & Divisibility",
+    "Percentages, Ratio & Proportions",
+    "Permutations, Combinations & Probability",
+  ],
+  "CSAT: Logical & Analytical Reasoning": [
+    "Syllogisms & Verbal Reasoning",
+    "Puzzles & Seating Arrangements",
+    "Coding-Decoding & Series",
+  ],
+  "CSAT: Reading Comprehension": [
+    "Critical Reasoning & Inferences",
+    "Crucial Message & Assumptions",
+  ],
+};
+
+const SUBJECTS_LIST = Object.keys(SUBJECT_TOPICS_MAP);
 
 export function FilterBar({
   selectedPaper,
@@ -39,6 +84,8 @@ export function FilterBar({
   onYearsChange,
   selectedSubject,
   onSubjectChange,
+  selectedTopic,
+  onTopicChange,
   searchQuery,
   onSearchChange,
   searchMode,
@@ -56,17 +103,23 @@ export function FilterBar({
     }
   };
 
-  const handlePresetYears = (type: "ALL" | "LAST_5" | "LAST_10") => {
+  const handlePresetYears = (type: "ALL" | "LAST_5" | "CURRENT_2024") => {
     if (type === "ALL") onYearsChange([]);
     else if (type === "LAST_5") onYearsChange([2024, 2023, 2022, 2021, 2020]);
-    else if (type === "LAST_10") onYearsChange(AVAILABLE_YEARS);
+    else if (type === "CURRENT_2024") onYearsChange([2024]);
   };
 
   const hasActiveFilters =
     selectedPaper !== "GS1" ||
     selectedYears.length > 0 ||
     selectedSubject !== "" ||
+    selectedTopic !== "" ||
     searchQuery.trim() !== "";
+
+  // Compute available topics based on selected subject
+  const availableTopics = selectedSubject
+    ? SUBJECT_TOPICS_MAP[selectedSubject] || []
+    : [];
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm space-y-4">
@@ -78,7 +131,11 @@ export function FilterBar({
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search keywords, articles, environmental treaties, topics..."
+            placeholder={
+              searchMode === "smart"
+                ? "Smart conceptual search (e.g., 'Governor pleasure', 'Monetary policy stance', 'Ramsar wetland')..."
+                : "Exact phrase search across question stem and answer options..."
+            }
             className="w-full rounded-lg border border-slate-300 bg-slate-50/50 pl-10 pr-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
           />
           {searchQuery && (
@@ -117,7 +174,7 @@ export function FilterBar({
         </div>
       </div>
 
-      {/* Paper Toggle & Subject Select */}
+      {/* Paper Toggle, Subject & Topic Selectors */}
       <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3">
         {/* Paper Toggle Buttons */}
         <div className="flex items-center gap-2">
@@ -143,19 +200,51 @@ export function FilterBar({
           </button>
         </div>
 
-        {/* Subject Dropdown */}
-        <div className="flex items-center gap-2">
+        {/* Subject & Topic Dropdowns */}
+        <div className="flex flex-wrap items-center gap-2">
+          {/* Subject Dropdown */}
           <select
             value={selectedSubject}
-            onChange={(e) => onSubjectChange(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            onChange={(e) => {
+              onSubjectChange(e.target.value);
+              onTopicChange(""); // reset topic when subject changes
+            }}
+            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 max-w-[210px] truncate"
           >
-            <option value="">All Subjects</option>
+            <option value="">All 9 Subjects</option>
             {SUBJECTS_LIST.map((subj) => (
               <option key={subj} value={subj}>
                 {subj}
               </option>
             ))}
+          </select>
+
+          {/* Topic Dropdown */}
+          <select
+            value={selectedTopic}
+            onChange={(e) => onTopicChange(e.target.value)}
+            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500 max-w-[210px] truncate"
+          >
+            <option value="">
+              {selectedSubject ? "All Topics in Subject" : "All 31 Syllabus Topics"}
+            </option>
+            {selectedSubject ? (
+              availableTopics.map((top) => (
+                <option key={top} value={top}>
+                  {top}
+                </option>
+              ))
+            ) : (
+              Object.entries(SUBJECT_TOPICS_MAP).map(([subj, topics]) => (
+                <optgroup key={subj} label={subj}>
+                  {topics.map((top) => (
+                    <option key={top} value={top}>
+                      {top}
+                    </option>
+                  ))}
+                </optgroup>
+              ))
+            )}
           </select>
 
           {hasActiveFilters && (
@@ -171,11 +260,11 @@ export function FilterBar({
         </div>
       </div>
 
-      {/* Year Multi-Select Chips */}
+      {/* Year Multi-Select Chips (Strictly Verified 2019-2024 Cycles) */}
       <div className="border-t border-slate-100 pt-3">
         <div className="flex flex-wrap items-center gap-1.5">
           <span className="text-xs font-bold text-slate-400 uppercase tracking-wide mr-1">
-            Years:
+            Exam Cycles:
           </span>
 
           <button
@@ -186,24 +275,24 @@ export function FilterBar({
                 : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
             }`}
           >
-            All Years
+            All 6 Cycles (2019–2024)
           </button>
           <button
             onClick={() => handlePresetYears("LAST_5")}
             className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition"
           >
-            Last 5 Yrs
+            Recent 5 Yrs (2020–2024)
           </button>
           <button
-            onClick={() => handlePresetYears("LAST_10")}
+            onClick={() => handlePresetYears("CURRENT_2024")}
             className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition"
           >
-            Last 10 Yrs
+            2024 Exam
           </button>
 
           <span className="text-slate-300 mx-1">|</span>
 
-          {AVAILABLE_YEARS.slice(0, 6).map((year) => {
+          {AVAILABLE_YEARS.map((year) => {
             const isSelected = selectedYears.includes(year);
             return (
               <button

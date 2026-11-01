@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hashPassword, COOKIE_USER_ID } from "@/lib/auth";
+import { hashPassword, createSession, COOKIE_SESSION_TOKEN, COOKIE_USER_ID } from "@/lib/auth";
 import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
@@ -20,18 +20,43 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (password.length < 6) {
+    if (typeof fullName !== "string" || fullName.trim().length < 2 || fullName.trim().length > 100) {
       return NextResponse.json(
         {
           success: false,
-          error: { code: "WEAK_PASSWORD", message: "Password must be at least 6 characters long" },
+          error: { code: "INVALID_NAME", message: "Full name must be between 2 and 100 characters." },
         },
         { status: 400 }
       );
     }
 
+    if (typeof password !== "string" || password.length < 8) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "WEAK_PASSWORD", message: "Password must be at least 8 characters long." },
+        },
+        { status: 400 }
+      );
+    }
+
+    const yearNum = Number(targetYear);
+    if (isNaN(yearNum) || yearNum < 2026 || yearNum > 2035) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "INVALID_TARGET_YEAR",
+            message: "Target year must be an upcoming examination cycle between 2026 and 2035.",
+          },
+        },
+        { status: 400 }
+      );
+    }
+
+    const normalizedEmail = email.toLowerCase().trim();
     const existingUser = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
+      where: { email: normalizedEmail },
     });
 
     if (existingUser) {
@@ -54,16 +79,19 @@ export async function POST(request: NextRequest) {
       });
     }
 
+    // Hash password with scrypt and unique random salt
+    const passwordHash = hashPassword(password);
+
     const user = await prisma.user.create({
       data: {
-        email: email.toLowerCase().trim(),
+        email: normalizedEmail,
         fullName: fullName.trim(),
-        passwordHash: hashPassword(password),
+        passwordHash,
         roleId: role.id,
         profile: {
           create: {
-            targetYear: parseInt(targetYear.toString()),
-            optionalSubject,
+            targetYear: yearNum,
+            optionalSubject: optionalSubject ? String(optionalSubject).trim() : null,
             dailyGoalMinutes: 60,
           },
         },
@@ -74,14 +102,21 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // Create session
+    const { token, expiresAt } = await createSession(user.id);
+
     // Set authentication session cookie
     const cookieStore = cookies();
-    cookieStore.set(COOKIE_USER_ID, user.id, {
+    cookieStore.set(COOKIE_SESSION_TOKEN, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 30, // 30 days
+      expires: expiresAt,
     });
+
+    cookieStore.delete(COOKIE_USER_ID);
 
     return NextResponse.json(
       {
@@ -92,6 +127,7 @@ export async function POST(request: NextRequest) {
           fullName: user.fullName,
           role: user.role.name,
           profile: user.profile,
+          sessionToken: token,
         },
       },
       { status: 201 }

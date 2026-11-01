@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hashPassword, COOKIE_USER_ID } from "@/lib/auth";
+import {
+  verifyPassword,
+  hashPassword,
+  createSession,
+  COOKIE_SESSION_TOKEN,
+  COOKIE_USER_ID,
+} from "@/lib/auth";
 import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
@@ -10,7 +16,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
     const { email, password } = body;
 
-    if (!email || !password) {
+    if (!email || !password || typeof email !== "string" || typeof password !== "string") {
       return NextResponse.json(
         {
           success: false,
@@ -20,8 +26,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    const normalizedEmail = email.toLowerCase().trim();
     const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
+      where: { email: normalizedEmail },
       include: {
         role: true,
         profile: true,
@@ -38,13 +45,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const computedHash = hashPassword(password);
-    // Allow either hashed password match or demo password match
-    const isMatch =
-      user.passwordHash === computedHash ||
-      user.passwordHash.startsWith("pravaah_demo_hash_");
+    // Verify password securely using scrypt or legacy SHA-256 fallback
+    // Demo bypasses are completely eliminated
+    const { valid, needsRehash } = verifyPassword(password, user.passwordHash);
 
-    if (!isMatch) {
+    if (!valid) {
       return NextResponse.json(
         {
           success: false,
@@ -54,14 +59,35 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Set authentication session cookie
+    // Transparent password migration: upgrade legacy SHA-256 to salted scrypt immediately
+    if (needsRehash) {
+      try {
+        const upgradedHash = hashPassword(password);
+        await prisma.user.update({
+          where: { id: user.id },
+          data: { passwordHash: upgradedHash },
+        });
+      } catch (migrationError) {
+        console.error("Non-fatal password migration error:", migrationError);
+      }
+    }
+
+    // Generate cryptographically secure server-side session token
+    const { token, expiresAt } = await createSession(user.id);
+
+    // Set secure HttpOnly session cookie
     const cookieStore = cookies();
-    cookieStore.set(COOKIE_USER_ID, user.id, {
+    cookieStore.set(COOKIE_SESSION_TOKEN, token, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
+      sameSite: "lax",
       path: "/",
       maxAge: 60 * 60 * 24 * 30, // 30 days
+      expires: expiresAt,
     });
+
+    // Delete obsolete legacy cookie if present
+    cookieStore.delete(COOKIE_USER_ID);
 
     return NextResponse.json({
       success: true,
@@ -71,12 +97,13 @@ export async function POST(request: NextRequest) {
         fullName: user.fullName,
         role: user.role.name,
         profile: user.profile,
+        sessionToken: token, // Returned for programmatic API / mobile clients
       },
     });
   } catch (error: any) {
     console.error("Error in POST /api/v1/auth/login:", error);
     return NextResponse.json(
-      { success: false, error: { code: "LOGIN_FAILED", message: error.message } },
+      { success: false, error: { code: "LOGIN_FAILED", message: "Authentication service encountered an error" } },
       { status: 500 }
     );
   }
