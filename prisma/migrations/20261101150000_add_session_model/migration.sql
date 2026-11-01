@@ -17,6 +17,9 @@ CREATE TABLE IF NOT EXISTS "Session" (
 -- 2. Create Unique Index on tokenHash
 CREATE UNIQUE INDEX IF NOT EXISTS "Session_tokenHash_key" ON "Session"("tokenHash");
 
+-- 2b. Create Performance Index on tokenHash
+CREATE INDEX IF NOT EXISTS "Session_tokenHash_idx" ON "Session"("tokenHash");
+
 -- 3. Create Performance Index on userId
 CREATE INDEX IF NOT EXISTS "Session_userId_idx" ON "Session"("userId");
 
