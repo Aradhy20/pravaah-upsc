@@ -10,9 +10,31 @@ function getSanitizedUrlSummary(rawUrl: string): string {
   }
 }
 
+export function getSelectedDatabaseSource(): { key: string; sanitizedSummary: string } {
+  const candidates: Array<{ key: string; val: string | undefined }> = [
+    { key: "NEON_DATABASE_URL", val: process.env.NEON_DATABASE_URL },
+    { key: "DATABASE_URL", val: process.env.DATABASE_URL },
+    { key: "POSTGRES_PRISMA_URL", val: process.env.POSTGRES_PRISMA_URL },
+    { key: "POSTGRES_URL", val: process.env.POSTGRES_URL },
+    { key: "PRISMA_DATABASE_URL", val: process.env.PRISMA_DATABASE_URL },
+  ];
+
+  for (const c of candidates) {
+    const trimmed = c.val?.trim();
+    if (trimmed) {
+      return { key: c.key, sanitizedSummary: getSanitizedUrlSummary(trimmed) };
+    }
+  }
+
+  return { key: "NONE", sanitizedSummary: "none" };
+}
+
 function getResolvedDatabaseUrl(): string {
   const isProduction = process.env.NODE_ENV === "production";
+  
+  // Priority 1: NEON_DATABASE_URL takes precedence over Prisma Postgres integration variables
   const raw = (
+    process.env.NEON_DATABASE_URL ||
     process.env.DATABASE_URL ||
     process.env.POSTGRES_PRISMA_URL ||
     process.env.POSTGRES_URL ||
@@ -22,7 +44,7 @@ function getResolvedDatabaseUrl(): string {
   if (!raw) {
     throw new Error(
       "[Database Configuration Error] Database connection URL is missing. " +
-      "Configure DATABASE_URL (or POSTGRES_URL) in environment variables."
+      "Neither NEON_DATABASE_URL nor DATABASE_URL is configured in environment variables."
     );
   }
 
