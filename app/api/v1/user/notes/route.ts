@@ -29,6 +29,7 @@ export async function GET(request: NextRequest) {
       id: n.id,
       content: n.content,
       updatedAt: n.updatedAt,
+      questionId: n.questionId,
       question: {
         id: n.question.id,
         year: n.question.year,
@@ -98,13 +99,13 @@ export async function POST(request: NextRequest) {
         },
       },
       update: {
-        content,
+        content: content.trim(),
         updatedAt: new Date(),
       },
       create: {
         userId: user.id,
         questionId,
-        content,
+        content: content.trim(),
       },
     });
 
@@ -113,6 +114,53 @@ export async function POST(request: NextRequest) {
     console.error("Error in POST /api/v1/user/notes:", error);
     return NextResponse.json(
       { success: false, error: { code: "NOTE_SAVE_FAILED", message: error.message } },
+      { status: 500 }
+    );
+  }
+}
+
+export async function DELETE(request: NextRequest) {
+  try {
+    const user = await getCurrentUser(request);
+    const { searchParams } = new URL(request.url);
+    const noteId = searchParams.get("id");
+    const questionId = searchParams.get("questionId");
+
+    if (!noteId && !questionId) {
+      return NextResponse.json(
+        { success: false, error: { code: "INVALID_PAYLOAD", message: "Note id or questionId is required." } },
+        { status: 400 }
+      );
+    }
+
+    let noteToDelete;
+    if (noteId) {
+      noteToDelete = await prisma.userNote.findUnique({ where: { id: noteId } });
+    } else if (questionId) {
+      noteToDelete = await prisma.userNote.findUnique({
+        where: {
+          userId_questionId: {
+            userId: user.id,
+            questionId,
+          },
+        },
+      });
+    }
+
+    if (!noteToDelete || noteToDelete.userId !== user.id) {
+      return NextResponse.json(
+        { success: false, error: { code: "NOT_FOUND", message: "Note not found or access denied." } },
+        { status: 404 }
+      );
+    }
+
+    await prisma.userNote.delete({ where: { id: noteToDelete.id } });
+
+    return NextResponse.json({ success: true, data: { id: noteToDelete.id, questionId: noteToDelete.questionId } });
+  } catch (error: any) {
+    console.error("Error in DELETE /api/v1/user/notes:", error);
+    return NextResponse.json(
+      { success: false, error: { code: "NOTE_DELETE_FAILED", message: error.message } },
       { status: 500 }
     );
   }

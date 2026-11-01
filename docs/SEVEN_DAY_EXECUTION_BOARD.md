@@ -13,9 +13,9 @@
 ┌────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┐
 │                                          SEVEN-DAY BETA LAUNCH SPRINT                                                  │
 ├────────────────────┬────────────────────┬────────────────────┬────────────────────┬────────────────────┬───────────────┤
-│ DAY 1: AUDIT &     │ DAY 2: PYQ & LEARN │ DAY 3: MOCK EXAMS  │ DAY 4: DAILY LOOPS │ DAY 5: MAINS &     │ DAY 6: LOAD & │
-│ FOUNDATION         │ MODE POLISH        │ & SUBSCRIPTION     │ & SPACED REVISION  │ STUDY PLANNER      │ SECURITY QA   │
-│ [COMPLETED]        │ [COMPLETED]        │ [PULL REQUEST OPEN]│ [PENDING]          │ [PENDING]          │ [PENDING]     │
+│ DAY 1: AUDIT &     │ DAY 2: PYQ & LEARN │ DAY 3: MOCK EXAMS  │ DAY 4: WORKSPACE   │ DAY 5: MAINS &     │ DAY 6: LOAD & │
+│ FOUNDATION         │ MODE POLISH        │ & SUBSCRIPTION     │ & ANALYTICS        │ STUDY PLANNER      │ SECURITY QA   │
+│ [COMPLETED]        │ [COMPLETED]        │ [PULL REQUEST OPEN]│ [COMPLETED]        │ [PENDING]          │ [PENDING]     │
 ├────────────────────┴────────────────────┴────────────────────┴────────────────────┴────────────────────┴───────────────┤
 │ DAY 7: ZERO-DEFECT SIGN-OFF & PUBLIC BETA RELEASE                                                                      │
 └────────────────────────────────────────────────────────────────────────────────────────────────────────────────────────┘
@@ -81,17 +81,21 @@
 
 ---
 
-### Day 4: Daily Aspirant Workflows & Spaced Mistake Revision
-* **Objective:** Connect daily aspirant retention habits: PIB/RBI Current Affairs to PYQ mapping, Daily 5-question challenge, and Spaced Mistake Revision queue.
-* **Status:** **PENDING VERIFICATION**
-* **Lead:** Growth Engineer & Content Operations Lead
+### Day 4: Aspirant Dashboard, Personal Study Workspace & Learning Analytics
+* **Objective:** Deliver personalized aspirant learning analytics, full study planner task management (Daily/Weekly/Monthly horizons), enhanced private notes with editing and search, filterable bookmarks with direct explorer links, and strict cross-user data isolation.
+* **Status:** **COMPLETED & VERIFIED**
+* **Lead:** Senior Full-Stack Engineer, Product Architect & UX Specialist
 
 | Task ID | Priority | Task Description | Acceptance Criteria | Status | Evidence / Verification |
 | :--- | :---: | :--- | :--- | :---: | :--- |
-| **D4-01** | **P0** | Current Affairs Syllabus & PYQ Linking | Stories show GS paper tags (GS1-4) and direct links to historical PYQs | **COMPLETED** | Verified in `app/current-affairs/[slug]/page.tsx` |
-| **D4-02** | **P0** | Daily Practice Quiz Engine | 5-question high-yield test; negative marking; double-submission lock | **COMPLETED** | Tested in `/api/v1/quiz/daily` and `/submit` |
-| **D4-03** | **P0** | Spaced Repetition Queue (`/revision`) | Tracks repetition interval, ease factors, overdue items, and "Mark as Mastered" | **COMPLETED** | Tested via `/api/v1/user/revision` (HTTP 200) |
-| **D4-04** | **P1** | Personal Study Notes & Bookmarks Sync | Notes editor on question cards; tenant-isolated bookmark folders | **COMPLETED** | Verified across 41 notes and 41 bookmarks in Neon |
+| **D4-01** | **P0** | Aspirant Learning Analytics Engine | `/api/v1/analytics/dashboard` computes today progress, 7-day activity, GS1 vs CSAT accuracy, syllabus coverage, weak/strong topics, and mock score progression | **COMPLETED** | Verified via test suite and live endpoint returns HTTP 200 with complete authenticated telemetry |
+| **D4-02** | **P0** | Personal Aspirant Dashboard UI | `/dashboard` renders welcome banner, target year badge, preparation stage, today & weekly target bars, 7-day activity chart, paper comparison, and quick-action hub | **COMPLETED** | Authored in `app/dashboard/page.tsx`; includes target goal customization modal |
+| **D4-03** | **P0** | User Target Preferences API | `/api/v1/user/profile` allows GET and PATCH of target exam year, optional subject, and daily goal minutes with validation | **COMPLETED** | Verified in `app/api/v1/user/profile/route.ts` & `tests/day4_dashboard_workspace.test.mjs` |
+| **D4-04** | **P0** | Personal Study Planner & Tasks Workspace | `/study-planner` with Daily, Weekly, and Monthly task horizon views; full CRUD for personal study goals; subject taxonomy tags; overdue tracking; planned vs actual hours | **COMPLETED** | Built in `app/study-planner/page.tsx` and backed by `/api/v1/user/goals` |
+| **D4-05** | **P0** | Study Goals CRUD & Security Engine | `/api/v1/user/goals` with GET, POST, PATCH, and DELETE; strict user ownership checks prevent cross-user mutations | **COMPLETED** | Tested and verified: 100% tenant isolation enforcement |
+| **D4-06** | **P1** | Enhanced Personal Notes Workspace | `/notes` with full-text search, subject filtering, inline note editing, DELETE confirmation, and open-in-explorer direct navigation | **COMPLETED** | Rebuilt in `app/notes/page.tsx` + `/api/v1/user/notes` |
+| **D4-07** | **P1** | Filterable Saved Bookmarks Explorer | `/bookmarks` with search query, subject filter, year filter, paper filter, remove confirmation modal, and direct PYQ Explorer link | **COMPLETED** | Rebuilt in `app/bookmarks/page.tsx` + `/api/v1/user/bookmarks` |
+| **D4-08** | **P0** | Automated Day 4 Test Suite & Regression Run | 6/6 dedicated Day 4 tests pass (100%); zero-data new user graceful state validated; production build succeeds (33/33 routes) | **COMPLETED** | Executed via `node --test tests/day4_dashboard_workspace.test.mjs` (6/6 passed) |
 
 ---
 
