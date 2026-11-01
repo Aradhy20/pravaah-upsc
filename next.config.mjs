@@ -1,7 +1,7 @@
 import path from "path";
 
-// Preserve PostgreSQL / Neon DATABASE_URL if configured
-if (!process.env.DATABASE_URL) {
+// In local development, fall back to SQLite only if DATABASE_URL is not set
+if (process.env.NODE_ENV !== "production" && !process.env.DATABASE_URL) {
   const dbPath = path.resolve(process.cwd(), "prisma/dev.db");
   process.env.DATABASE_URL = `file:${dbPath}`;
 }

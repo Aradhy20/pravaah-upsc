@@ -17,9 +17,10 @@
 .DS_Store
 *.pem
 
-# Local env files
-.env*.local
+# Environment files
 .env
+.env.*
+!.env.example
 
 # SQLite database files
 *.db-journal

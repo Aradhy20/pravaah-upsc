@@ -20,47 +20,30 @@ function findDatabasePath(): string {
 }
 
 function getResolvedDatabaseUrl(): string {
-  let raw = process.env.DATABASE_URL?.trim();
+  const raw = process.env.DATABASE_URL?.trim();
+  const isProduction = process.env.NODE_ENV === "production";
 
-  // If not yet populated in process.env, scan environment configuration files
-  if (!raw || (!raw.startsWith("postgresql://") && !raw.startsWith("postgres://"))) {
-    for (const envFile of [".env.local", ".env.production", ".env"]) {
-      const p = path.resolve(process.cwd(), envFile);
-      if (fs.existsSync(p)) {
-        const content = fs.readFileSync(p, "utf-8");
-        for (const line of content.split("\n")) {
-          const trimmed = line.trim();
-          if (trimmed.startsWith("DATABASE_URL=") && !trimmed.startsWith("#")) {
-            const val = trimmed.slice(trimmed.indexOf("=") + 1).trim().replace(/^["']|["']$/g, "");
-            if (val.startsWith("postgresql://") || val.startsWith("postgres://")) {
-              raw = val;
-              break;
-            }
-          }
-        }
-        if (raw && (raw.startsWith("postgresql://") || raw.startsWith("postgres://"))) {
-          break;
-        }
-      }
+  // Production requirement: DATABASE_URL must be explicitly set to a valid PostgreSQL/Neon URL
+  if (isProduction) {
+    if (!raw || (!raw.startsWith("postgresql://") && !raw.startsWith("postgres://"))) {
+      throw new Error(
+        "[Configuration Error] In production, DATABASE_URL must be explicitly configured as an environment variable with a valid PostgreSQL/Neon connection string. Silent fallback to local storage is strictly prohibited."
+      );
     }
+    return raw;
   }
 
-  // If PostgreSQL / Neon connection string is provided, use it directly
+  // Development & Testing: Use configured PostgreSQL if available
   if (raw && (raw.startsWith("postgresql://") || raw.startsWith("postgres://"))) {
     return raw;
   }
 
-  // Fallback for bare SQLite files if applicable
-  if (!raw || !raw.startsWith("file:")) {
-    if (raw && (raw.endsWith(".db") || raw.endsWith(".sqlite"))) {
-      const cleanPath = raw.includes("prisma") ? raw : path.join("prisma", raw);
-      const absPath = path.resolve(process.cwd(), cleanPath);
-      if (fs.existsSync(absPath)) return `file:${absPath}`;
-    }
-    return `file:${findDatabasePath()}`;
+  if (raw && raw.startsWith("file:")) {
+    return raw;
   }
 
-  return raw;
+  // Fallback to local SQLite only during non-production development
+  return `file:${findDatabasePath()}`;
 }
 
 const dbUrl = getResolvedDatabaseUrl();
