@@ -27,9 +27,19 @@ function RegisterContent() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  // Dynamically compute upcoming examination cycles based on current system date
+  const currentYear = new Date().getFullYear();
+  const nextAttemptYear = currentYear < 2027 ? 2027 : currentYear;
+  const targetYearOptions = [
+    { value: String(nextAttemptYear), label: `${nextAttemptYear} (Target Attempt)` },
+    { value: String(nextAttemptYear + 1), label: `${nextAttemptYear + 1} (Next Cycle)` },
+    { value: String(nextAttemptYear + 2), label: `${nextAttemptYear + 2} (Two-Year Foundation)` },
+    { value: String(nextAttemptYear + 3), label: `${nextAttemptYear + 3} (Long-Term Foundation)` },
+  ];
+
   const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
-  const [targetYear, setTargetYear] = useState("2026");
+  const [targetYear, setTargetYear] = useState(String(nextAttemptYear));
   const [optionalSubject, setOptionalSubject] = useState("");
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -350,10 +360,11 @@ function RegisterContent() {
                 onChange={(e) => setTargetYear(e.target.value)}
                 className="w-full px-3 py-2 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent bg-white"
               >
-                <option value="2025">2025</option>
-                <option value="2026">2026</option>
-                <option value="2027">2027</option>
-                <option value="2028">2028</option>
+                {targetYearOptions.map((opt) => (
+                  <option key={opt.value} value={opt.value}>
+                    {opt.label}
+                  </option>
+                ))}
               </select>
             </div>
             <div>

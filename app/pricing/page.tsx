@@ -212,8 +212,8 @@ function PricingContent() {
       a: "The displayed prices are inclusive of applicable goods & services tax (GST). There are no hidden fees or automatic surcharges during checkout.",
     },
     {
-      q: "What is your refund policy?",
-      a: "We offer an unconditional 7-day money-back guarantee on all quarterly and annual subscriptions. If Pravaah does not substantially improve your UPSC PYQ learning experience, contact support within 7 days for a 100% refund.",
+      q: "Can I cancel my subscription at any time?",
+      a: "Yes. You can cancel your subscription at any time directly from your Billing Dashboard. When you cancel, you retain full access to all features until the conclusion of your current billing period with zero renewal charges.",
     },
   ];
 
@@ -612,9 +612,9 @@ function PricingContent() {
               <RotateCw className="h-5 w-5" />
             </div>
             <div>
-              <h4 className="text-sm font-bold text-slate-900">7-Day Unconditional Money-Back Guarantee</h4>
+              <h4 className="text-sm font-bold text-slate-900">Transparent Cancellation & Fair Access</h4>
               <p className="mt-1 text-xs text-slate-600 leading-relaxed">
-                If Pravaah does not measurably sharpen your conceptual accuracy, request a full refund within 7 days.
+                Cancel anytime directly from your billing dashboard. Paid access is preserved until the end of your billing cycle.
               </p>
             </div>
           </div>
