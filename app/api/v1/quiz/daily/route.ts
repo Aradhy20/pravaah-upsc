@@ -5,12 +5,42 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const today = new Date();
-    today.setUTCHours(0, 0, 0, 0);
+    const { searchParams } = new URL(request.url);
+    const archive = searchParams.get("archive") === "true";
+    const quizId = searchParams.get("quizId");
+    const dateStr = searchParams.get("date");
 
-    // Find the latest published daily quiz
+    // If caller requests the archive catalog of daily quizzes
+    if (archive) {
+      const pastQuizzes = await prisma.dailyQuiz.findMany({
+        where: { isPublished: true },
+        orderBy: { quizDate: "desc" },
+        take: 30,
+        select: {
+          id: true,
+          quizDate: true,
+          title: true,
+          description: true,
+          totalQuestions: true,
+        },
+      });
+
+      return NextResponse.json({
+        success: true,
+        archive: pastQuizzes,
+      });
+    }
+
+    const where: any = { isPublished: true };
+    if (quizId) {
+      where.id = quizId;
+    } else if (dateStr) {
+      where.quizDate = new Date(dateStr);
+    }
+
+    // Find the requested or latest published daily quiz
     const quiz = await prisma.dailyQuiz.findFirst({
-      where: { isPublished: true },
+      where,
       orderBy: { quizDate: "desc" },
       include: {
         questions: {

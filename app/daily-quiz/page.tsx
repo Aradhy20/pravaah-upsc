@@ -17,6 +17,8 @@ import {
 
 export default function DailyQuizPage() {
   const [quiz, setQuiz] = useState<any | null>(null);
+  const [archive, setArchive] = useState<any[]>([]);
+  const [selectedQuizId, setSelectedQuizId] = useState<string>("");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -25,18 +27,25 @@ export default function DailyQuizPage() {
   const [submitting, setSubmitting] = useState(false);
   const [result, setResult] = useState<any | null>(null);
 
-  const loadQuiz = async () => {
+  const loadQuiz = async (quizId?: string) => {
     setLoading(true);
     setError(null);
+    setCurrentIndex(0);
+    setAnswers({});
+    setSubmitted(false);
+    setResult(null);
+
     try {
-      const res = await fetch("/api/v1/quiz/daily");
+      const url = quizId ? `/api/v1/quiz/daily?quizId=${encodeURIComponent(quizId)}` : "/api/v1/quiz/daily";
+      const res = await fetch(url);
       const data = await res.json();
       if (res.ok && data.success) {
         setQuiz(data.quiz);
+        if (quizId) setSelectedQuizId(quizId);
       } else if (res.status === 404) {
         setQuiz(null);
       } else {
-        setError(data.error || "Failed to load today's daily quiz.");
+        setError(data.error || "Failed to load daily quiz.");
       }
     } catch (e: any) {
       console.error("Failed to load daily quiz:", e);
@@ -46,8 +55,21 @@ export default function DailyQuizPage() {
     }
   };
 
+  const loadArchive = async () => {
+    try {
+      const res = await fetch("/api/v1/quiz/daily?archive=true");
+      const data = await res.json();
+      if (res.ok && data.success && Array.isArray(data.archive)) {
+        setArchive(data.archive);
+      }
+    } catch (e) {
+      console.error("Failed to load quiz archive:", e);
+    }
+  };
+
   useEffect(() => {
     loadQuiz();
+    loadArchive();
   }, []);
 
   const handleSelect = (qId: string, optionCode: string) => {
@@ -163,6 +185,27 @@ export default function DailyQuizPage() {
             <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">
               {quiz.title}
             </h1>
+            {archive.length > 0 && (
+              <div className="mt-2.5 flex items-center gap-2">
+                <span className="text-xs font-semibold text-slate-500">Select Date:</span>
+                <select
+                  value={selectedQuizId || quiz.id}
+                  onChange={(e) => loadQuiz(e.target.value)}
+                  className="text-xs bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 font-medium text-slate-700 hover:border-blue-500 transition-colors cursor-pointer"
+                >
+                  {archive.map((item) => (
+                    <option key={item.id} value={item.id}>
+                      {new Date(item.quizDate).toLocaleDateString("en-IN", {
+                        day: "numeric",
+                        month: "short",
+                        year: "numeric",
+                      })}{" "}
+                      — {item.title.replace("Daily Prelims Diagnostic: ", "")}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            )}
           </div>
 
           {!submitted ? (

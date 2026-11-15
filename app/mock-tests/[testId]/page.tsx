@@ -3,7 +3,8 @@
 import React, { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { ExamPlayer } from "@/components/ExamPlayer";
-import { Loader2, AlertCircle, ShieldAlert } from "lucide-react";
+import { UpgradeModal } from "@/components/UpgradeModal";
+import { Loader2, AlertCircle, ShieldAlert, Zap } from "lucide-react";
 
 export default function MockTestSessionPage() {
   const params = useParams();
@@ -12,6 +13,7 @@ export default function MockTestSessionPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [sessionData, setSessionData] = useState<any | null>(null);
+  const [showUpgradeModal, setShowUpgradeModal] = useState(false);
 
   useEffect(() => {
     async function startSession() {
@@ -30,6 +32,9 @@ export default function MockTestSessionPage() {
           setSessionData(json.data);
         } else {
           setError(json.error?.message || "Failed to initialize test session");
+          if (res.status === 403) {
+            setShowUpgradeModal(true);
+          }
         }
       } catch (e: any) {
         console.error(e);
@@ -61,21 +66,22 @@ export default function MockTestSessionPage() {
   if (error || !sessionData) {
     const isSubscriptionError = error?.toLowerCase().includes("requires") || error?.toLowerCase().includes("plan");
     return (
-      <div className="mx-auto max-w-md my-16 rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+      <div className="mx-auto max-w-md my-16 rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-lg">
         {isSubscriptionError ? (
           <>
-            <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-50 text-blue-700 border border-blue-200">
-              <ShieldAlert className="h-6 w-6" />
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 shadow-sm">
+              <ShieldAlert className="h-7 w-7" />
             </div>
-            <h2 className="text-lg font-extrabold text-slate-900">Subscription Required</h2>
-            <p className="mt-2 text-xs text-slate-600 leading-relaxed">{error}</p>
-            <div className="mt-6 flex flex-col gap-2">
-              <a
-                href="/pricing"
-                className="w-full rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow hover:bg-blue-700 transition"
+            <h2 className="text-xl font-black text-slate-900">Achiever Pro Required</h2>
+            <p className="mt-2 text-xs text-slate-600 leading-relaxed font-normal">{error}</p>
+            <div className="mt-6 flex flex-col gap-2.5">
+              <button
+                onClick={() => setShowUpgradeModal(true)}
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-3 text-xs font-bold text-white shadow-md hover:bg-blue-800 transition"
               >
-                View Plans & Upgrade
-              </a>
+                <Zap className="h-4 w-4" />
+                <span>Unlock 2-Hour Exam Simulator Now</span>
+              </button>
               <a
                 href="/mock-tests"
                 className="text-xs font-semibold text-slate-500 hover:underline mt-1"
@@ -83,6 +89,14 @@ export default function MockTestSessionPage() {
                 Return to Mock Tests Catalogue
               </a>
             </div>
+
+            <UpgradeModal
+              isOpen={showUpgradeModal}
+              onClose={() => setShowUpgradeModal(false)}
+              featureTitle="Timed 2-Hour Examination Simulator"
+              featureDescription="Experience authentic UPSC Prelims conditions with real-time negative marking (-0.66) and syllabus weakness analysis."
+              recommendedPlanCode="ACHIEVER"
+            />
           </>
         ) : (
           <>

@@ -28,23 +28,23 @@ export async function GET(request: NextRequest) {
 
     if (mode === "exact") {
       where.OR = [
-        { questionText: { contains: query } },
+        { questionText: { contains: query, mode: "insensitive" } },
         {
           options: {
-            some: { optionText: { contains: query } },
+            some: { optionText: { contains: query, mode: "insensitive" } },
           },
         },
       ];
     } else {
       // Smart Concept search: stems, explanations, topics, and subjects
       where.OR = [
-        { questionText: { contains: query } },
+        { questionText: { contains: query, mode: "insensitive" } },
         {
           explanation: {
             OR: [
-              { summary: { contains: query } },
-              { detailedExplanation: { contains: query } },
-              { relatedConcept: { contains: query } },
+              { summary: { contains: query, mode: "insensitive" } },
+              { detailedExplanation: { contains: query, mode: "insensitive" } },
+              { relatedConcept: { contains: query, mode: "insensitive" } },
             ],
           },
         },
@@ -53,8 +53,8 @@ export async function GET(request: NextRequest) {
             some: {
               topic: {
                 OR: [
-                  { name: { contains: query } },
-                  { subject: { name: { contains: query } } },
+                  { name: { contains: query, mode: "insensitive" } },
+                  { subject: { name: { contains: query, mode: "insensitive" } } },
                 ],
               },
             },

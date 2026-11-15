@@ -21,10 +21,12 @@
 .env*.local
 .env
 
-# SQLite database files
+# Database files
+*.db
+*.sqlite
+*.sqlite3
 *.db-journal
 data/backups/*.db
-!prisma/dev.db
 
 # Vercel
 .vercel

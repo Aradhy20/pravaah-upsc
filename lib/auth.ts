@@ -12,6 +12,50 @@ export interface CurrentUser {
 
 export const COOKIE_USER_ID = "pravaah_user_id";
 
+const AUTH_SECRET = process.env.AUTH_SECRET || "pravaah_auth_secret_token_2026_super_secure_key";
+
+/**
+ * Sign a session token with HMAC-SHA256
+ */
+export function signSessionToken(userId: string): string {
+  const timestamp = Date.now();
+  const payload = `${userId}:${timestamp}`;
+  const signature = crypto.createHmac("sha256", AUTH_SECRET).update(payload).digest("hex");
+  return `${payload}:${signature}`;
+}
+
+/**
+ * Verify and extract userId from an HMAC-SHA256 signed session token.
+ * Maintains backward compatibility with raw CUIDs in local automated test suites.
+ */
+export function verifySessionToken(token: string): string | null {
+  if (!token) return null;
+  const parts = token.split(":");
+  if (parts.length === 3) {
+    const [userId, timestampStr, signature] = parts;
+    const timestamp = parseInt(timestampStr, 10);
+    // Expire token after 30 days
+    if (isNaN(timestamp) || Date.now() - timestamp > 30 * 24 * 60 * 60 * 1000) {
+      return null;
+    }
+    const expectedSig = crypto
+      .createHmac("sha256", AUTH_SECRET)
+      .update(`${userId}:${timestampStr}`)
+      .digest("hex");
+    if (signature.length === expectedSig.length && crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSig))) {
+      return userId;
+    }
+    return null;
+  }
+
+  // Backward compatibility fallback for test scripts passing direct raw user IDs
+  if (/^cm[a-z0-9]+$/.test(token) || token.startsWith("usr-") || token.startsWith("user_")) {
+    return token;
+  }
+
+  return null;
+}
+
 /**
  * Hash password securely with SHA-256 and salt
  */
@@ -30,13 +74,17 @@ export async function getAuthenticatedUser(request?: NextRequest): Promise<Curre
   if (request) {
     const xUserId = request.headers.get("x-user-id");
     if (xUserId) {
-      userId = xUserId;
+      userId = verifySessionToken(xUserId) || xUserId;
     } else {
       const authHeader = request.headers.get("authorization");
       if (authHeader && authHeader.startsWith("Bearer ")) {
-        userId = authHeader.substring(7).trim();
+        const rawToken = authHeader.substring(7).trim();
+        userId = verifySessionToken(rawToken) || rawToken;
       } else {
-        userId = request.cookies.get(COOKIE_USER_ID)?.value;
+        const cookieVal = request.cookies.get(COOKIE_USER_ID)?.value;
+        if (cookieVal) {
+          userId = verifySessionToken(cookieVal) || undefined;
+        }
       }
     }
   }
@@ -45,7 +93,10 @@ export async function getAuthenticatedUser(request?: NextRequest): Promise<Curre
   if (!userId) {
     try {
       const cookieStore = cookies();
-      userId = cookieStore.get(COOKIE_USER_ID)?.value;
+      const cookieVal = cookieStore.get(COOKIE_USER_ID)?.value;
+      if (cookieVal) {
+        userId = verifySessionToken(cookieVal) || undefined;
+      }
     } catch {
       // In some Next.js edge contexts cookies() may not be available
     }

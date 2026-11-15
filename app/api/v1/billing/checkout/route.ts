@@ -103,17 +103,27 @@ export async function POST(request: NextRequest) {
       },
     });
 
+    // 4. Calculate 18% Indian GST for digital SaaS compliance
+    const totalAmount = amountRupees;
+    const baseAmount = Math.round((totalAmount / 1.18) * 100) / 100;
+    const gstAmount = Math.round((totalAmount - baseAmount) * 100) / 100;
+
     return NextResponse.json({
       success: true,
       data: {
         orderId: payment.providerTxId,
+        orderReference: payment.providerTxId,
         paymentId: payment.id,
         planCode: plan.code,
         planName: plan.name,
         billingInterval,
-        amount: amountRupees,
+        amount: totalAmount,
         currency,
         discountPercent: priceConfig.discountPercent,
+        gstRatePercent: 18,
+        baseAmount,
+        gstAmount,
+        razorpayKeyId: process.env.RAZORPAY_KEY_ID || "rzp_test_pravaah_2026",
         user: {
           id: user.id,
           email: user.email,

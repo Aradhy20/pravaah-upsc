@@ -1,11 +1,23 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { cookies } from "next/headers";
+import { signSessionToken, COOKIE_USER_ID, getAuthenticatedUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function POST(request: NextRequest) {
   try {
+    // In production, block arbitrary unauthenticated role switching
+    if (process.env.NODE_ENV === "production") {
+      const caller = await getAuthenticatedUser(request);
+      if (!caller || caller.role !== "ADMIN") {
+        return NextResponse.json(
+          { success: false, error: { code: "FORBIDDEN", message: "Role switching is disabled in production." } },
+          { status: 403 }
+        );
+      }
+    }
+
     const body = await request.json();
     const targetRole = body.role === "ADMIN" ? "ADMIN" : "ASPIRANT";
 
@@ -23,7 +35,7 @@ export async function POST(request: NextRequest) {
     }
 
     const cookieStore = cookies();
-    cookieStore.set("pravaah_user_id", user.id, {
+    cookieStore.set(COOKIE_USER_ID, signSessionToken(user.id), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",

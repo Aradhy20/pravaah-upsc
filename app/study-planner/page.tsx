@@ -61,6 +61,20 @@ export default function DailyStudyPlannerPage() {
 
   useEffect(() => {
     loadPlan();
+    try {
+      const saved = localStorage.getItem("pravaah_custom_schedule");
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setCustomSchedule(parsed);
+        if (parsed.targetExam) setTargetExam(parsed.targetExam);
+        if (parsed.preparationStage) setStage(parsed.preparationStage);
+        if (parsed.dailyHours) setDailyHours(parsed.dailyHours);
+        if (parsed.targetDate) setTargetDate(parsed.targetDate);
+        if (parsed.prioritySubjects) setSelectedSubjects(parsed.prioritySubjects);
+      }
+    } catch (e) {
+      // LocalStorage access fallback
+    }
   }, []);
 
   const handleGenerateCustomSchedule = async () => {
@@ -81,6 +95,11 @@ export default function DailyStudyPlannerPage() {
       if (data.success) {
         setCustomSchedule(data.data);
         setActiveTab("CUSTOM_SCHEDULE");
+        try {
+          localStorage.setItem("pravaah_custom_schedule", JSON.stringify(data.data));
+        } catch (e) {
+          // LocalStorage save fallback
+        }
       }
     } catch (e) {
       console.error("Failed to generate schedule:", e);

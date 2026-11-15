@@ -30,6 +30,8 @@ export default function MainsWorkspacePage() {
   const [saveSuccess, setSaveSuccess] = useState(false);
   const [selfScore, setSelfScore] = useState<number>(7);
   const [selfNotes, setSelfNotes] = useState("");
+  const [evaluating, setEvaluating] = useState(false);
+  const [aiEvaluation, setAiEvaluation] = useState<any | null>(null);
 
   // Checklist states
   const [checklist, setChecklist] = useState({
@@ -99,6 +101,16 @@ export default function MainsWorkspacePage() {
     setTimeSeconds(q.userDraft?.timeSpentSeconds || 0);
     setTimerRunning(false);
     setSaveSuccess(false);
+
+    try {
+      if (q.userDraft?.aiFeedbackJson) {
+        setAiEvaluation(JSON.parse(q.userDraft.aiFeedbackJson));
+      } else {
+        setAiEvaluation(null);
+      }
+    } catch {
+      setAiEvaluation(null);
+    }
   };
 
   const wordCount = userAnswer.trim().split(/\s+/).filter(Boolean).length;
@@ -129,6 +141,37 @@ export default function MainsWorkspacePage() {
       console.error("Failed to save draft:", e);
     } finally {
       setSaving(false);
+    }
+  };
+
+  const handleEvaluateWithAI = async () => {
+    if (!activeQuestion || evaluating) return;
+    if (wordCount < 30) {
+      alert("Please write at least 30 words before requesting AI evaluation.");
+      return;
+    }
+    setEvaluating(true);
+    try {
+      const res = await fetch("/api/v1/mains/evaluate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          mainsQuestionId: activeQuestion.id,
+          userAnswer,
+        }),
+      });
+      const data = await res.json();
+      if (data.success && data.evaluation) {
+        setAiEvaluation(data.evaluation);
+        setSelfScore(data.evaluation.totalScore);
+      } else {
+        alert(data.error || "Failed to evaluate answer.");
+      }
+    } catch (e) {
+      console.error("Failed to evaluate with AI:", e);
+      alert("Network error evaluating Mains answer.");
+    } finally {
+      setEvaluating(false);
     }
   };
 
@@ -393,8 +436,65 @@ export default function MainsWorkspacePage() {
                   </div>
                 </div>
 
-                {/* Save controls */}
-                <div className="mt-6 flex items-center justify-between">
+                {/* AI Evaluation Scorecard */}
+                {aiEvaluation && (
+                  <div className="mt-6 p-5 bg-gradient-to-br from-indigo-50/70 via-blue-50/40 to-white rounded-2xl border-2 border-indigo-200 shadow-sm animate-in fade-in-50">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-indigo-100 pb-3 mb-4">
+                      <div className="flex items-center gap-2">
+                        <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-600 text-white shadow-sm">
+                          <Sparkles className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <h4 className="text-sm font-black text-slate-900">UPSC AI Pedagogical Evaluation</h4>
+                          <span className="text-[11px] font-medium text-slate-500">
+                            Evaluated against official UPSC CSE Mains rubrics
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="text-right">
+                        <span className="text-xl font-black text-indigo-700">
+                          {aiEvaluation.totalScore} / {activeQuestion.marks}
+                        </span>
+                        <span className="text-[10px] text-slate-400 block font-bold">UPSC ESTIMATED MARKS</span>
+                      </div>
+                    </div>
+
+                    <p className="text-xs text-slate-700 leading-relaxed font-normal mb-4">
+                      {aiEvaluation.summaryCritique}
+                    </p>
+
+                    {/* 4 Dimension Breakdowns */}
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-4">
+                      {aiEvaluation.dimensions?.map((dim: any, idx: number) => (
+                        <div key={idx} className="bg-white p-3 rounded-xl border border-indigo-100/80 shadow-xs">
+                          <div className="flex items-center justify-between text-xs mb-1">
+                            <span className="font-bold text-slate-800">{dim.name}</span>
+                            <span className="font-black text-indigo-700">
+                              {dim.score} / {dim.maxScore}
+                            </span>
+                          </div>
+                          <p className="text-[11px] text-slate-500 leading-snug">{dim.feedback}</p>
+                        </div>
+                      ))}
+                    </div>
+
+                    {/* Missing points to include */}
+                    {aiEvaluation.missingPoints?.length > 0 && (
+                      <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs">
+                        <span className="font-bold text-amber-900 block mb-1">Recommended Value Additions:</span>
+                        <ul className="list-disc list-inside space-y-0.5 text-amber-800 text-[11px]">
+                          {aiEvaluation.missingPoints.map((pt: string, idx: number) => (
+                            <li key={idx}>{pt}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Save & AI Evaluate Controls */}
+                <div className="mt-6 flex flex-wrap items-center justify-between gap-3">
                   <div className="flex items-center gap-2 text-xs">
                     {saveSuccess && (
                       <span className="text-emerald-600 font-bold flex items-center gap-1">
@@ -403,14 +503,35 @@ export default function MainsWorkspacePage() {
                     )}
                   </div>
 
-                  <button
-                    onClick={handleSaveDraft}
-                    disabled={saving}
-                    className="px-6 py-2.5 rounded-lg bg-blue-700 hover:bg-blue-600 text-white text-xs font-bold transition-all shadow flex items-center gap-2 disabled:opacity-50"
-                  >
-                    <Save className="h-4 w-4" />
-                    {saving ? "Saving Draft..." : "Save Answer Draft"}
-                  </button>
+                  <div className="flex items-center gap-2.5">
+                    <button
+                      onClick={handleEvaluateWithAI}
+                      disabled={evaluating || wordCount < 30}
+                      className="px-5 py-2.5 rounded-xl bg-gradient-to-r from-indigo-700 to-blue-700 hover:from-indigo-600 hover:to-blue-600 text-white text-xs font-bold transition-all shadow-md flex items-center gap-2 disabled:opacity-50"
+                      title={wordCount < 30 ? "Write at least 30 words" : "Get instant AI grading and feedback"}
+                    >
+                      {evaluating ? (
+                        <>
+                          <RotateCw className="h-4 w-4 animate-spin" />
+                          <span>Evaluating Draft...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="h-4 w-4" />
+                          <span>Evaluate with AI</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      onClick={handleSaveDraft}
+                      disabled={saving}
+                      className="px-5 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold transition-all shadow flex items-center gap-2 disabled:opacity-50"
+                    >
+                      <Save className="h-4 w-4" />
+                      {saving ? "Saving..." : "Save Draft"}
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : (

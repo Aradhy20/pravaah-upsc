@@ -1,5 +1,5 @@
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -38,6 +38,8 @@ model User {
   refunds       RefundRecord[]
   dailyQuizAttempts DailyQuizAttempt[]
   mainsDrafts   MainsDraft[]
+  sessions      Session[]
+  paymentOrders PaymentOrder[]
   createdAt    DateTime          @default(now())
   updatedAt    DateTime          @updatedAt
 }
@@ -148,6 +150,8 @@ model Question {
   updatedAt      DateTime           @updatedAt
 
   @@unique([paperId, year, questionNumber])
+  @@index([year, paperId, status])
+  @@index([status])
 }
 
 model QuestionOption {
@@ -272,6 +276,8 @@ model UserAttempt {
   timeSpentSeconds Int      @default(0)
   mode             String   @default("LEARN") // LEARN, EXAM
   createdAt        DateTime @default(now())
+
+  @@index([userId, createdAt])
 }
 
 model UserResponse {
@@ -289,6 +295,9 @@ model UserResponse {
   isMarkedReview   Boolean         @default(false)
   timeSpentSeconds Int             @default(0)
   createdAt        DateTime        @default(now())
+
+  @@index([sessionId])
+  @@index([userId])
 }
 
 model Bookmark {
@@ -301,6 +310,7 @@ model Bookmark {
   createdAt  DateTime @default(now())
 
   @@unique([userId, questionId])
+  @@index([userId, folderTag])
 }
 
 model UserNote {
@@ -314,6 +324,7 @@ model UserNote {
   updatedAt  DateTime @updatedAt
 
   @@unique([userId, questionId])
+  @@index([userId])
 }
 
 model ReviewSchedule {
@@ -331,17 +342,29 @@ model ReviewSchedule {
   updatedAt       DateTime  @updatedAt
 
   @@unique([userId, questionId])
+  @@index([userId, isResolved, nextReviewDate])
 }
 
 model StudyGoal {
-  id          String   @id @default(cuid())
+  id          String    @id @default(cuid())
   userId      String
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   title       String
+  subject     String?
   targetDate  DateTime?
-  targetHours Float    @default(50.0)
-  isAchieved  Boolean  @default(false)
-  createdAt   DateTime @default(now())
+  targetHours Float     @default(50.0)
+  isAchieved  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String
+  isRevoked Boolean  @default(false)
+  expiresAt DateTime
+  createdAt DateTime @default(now())
 }
 
 model StudyActivity {
@@ -458,8 +481,11 @@ model Subscription {
   providerSubId      String?
   events             SubscriptionEvent[]
   payments           PaymentRecord[]
+  paymentOrders      PaymentOrder[]
   createdAt          DateTime            @default(now())
   updatedAt          DateTime            @updatedAt
+
+  @@index([userId, status, currentPeriodEnd])
 }
 
 model SubscriptionEvent {
@@ -506,6 +532,65 @@ model RefundRecord {
 }
 
 // ==========================================
+// UPI GATEWAY INTEGRATION MODELS
+// ==========================================
+
+model PaymentOrder {
+  id                String                @id @default(cuid())
+  clientOrderId     String                @unique // Internal unique reference, e.g. "UPICHECKOUT_1731718000_abc"
+  gatewayOrderId    String?               @unique // External UPI Gateway order_id, e.g. "ORD20261115ABC12345"
+  userId            String
+  user              User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productType       String                @default("SUBSCRIPTION") // "SUBSCRIPTION", "TEST_SERIES", "MAINS_EVALUATION", "COURSE"
+  productId         String?               // Plan code ("ACHIEVER") or Test ID
+  subscriptionId    String?
+  subscription      Subscription?         @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  amount            Float                 // Amount in INR rupees (e.g. 5499.00)
+  amountPaise       Int                   // Amount in integer paise (e.g. 549900)
+  currency          String                @default("INR")
+  status            String                @default("PENDING") // "PENDING", "PROCESSING", "PAID", "FAILED", "EXPIRED", "UNDER_REVIEW", "REFUNDED"
+  environment       String                @default("sandbox") // "live" or "sandbox"
+  isTest            Boolean               @default(true)
+  paymentUrl        String?
+  upiIntent         String?
+  utr               String?               // Bank transaction reference / UTR
+  metadataJson      String?               // JSON metadata (e.g. billing interval, items)
+  expiresAt         DateTime?
+  paidAt            DateTime?
+  verifiedAt        DateTime?
+  lastCheckedAt     DateTime?
+  webhookEvents     PaymentWebhookEvent[]
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
+
+  @@index([userId, status])
+  @@index([status, createdAt])
+  @@index([gatewayOrderId])
+  @@index([clientOrderId])
+}
+
+model PaymentWebhookEvent {
+  id             String        @id @default(cuid())
+  eventId        String        @unique // UUID from X-Event-Id header and payload event_id
+  eventSequence  Int?          // Monotonically increasing sequence number from outbox
+  eventType      String        // e.g. "order.paid", "order.expired", "order.under_review"
+  orderId        String?       // Gateway order_id
+  paymentOrderId String?
+  paymentOrder   PaymentOrder? @relation(fields: [paymentOrderId], references: [id], onDelete: SetNull)
+  environment    String        @default("sandbox") // "live" or "sandbox"
+  signature      String?       // X-Signature header
+  rawPayload     String        // Exact raw JSON body
+  status         String        @default("PROCESSED") // "PROCESSED", "IGNORED", "FAILED"
+  errorDetails   String?
+  occurredAt     DateTime?
+  processedAt    DateTime      @default(now())
+  createdAt      DateTime      @default(now())
+
+  @@index([orderId, eventType])
+  @@index([eventId])
+}
+
+// ==========================================
 // CURRENT AFFAIRS & DAILY QUIZ PIPELINE
 // ==========================================
 
@@ -531,6 +616,8 @@ model CurrentAffairsStory {
   quizQuestions    DailyQuizQuestion[]
   createdAt        DateTime             @default(now())
   updatedAt        DateTime             @updatedAt
+
+  @@index([status, publishedAt])
 }
 
 model StoryTopic {
@@ -642,6 +729,7 @@ model MainsQuestion {
   createdAt         DateTime     @default(now())
 
   @@unique([paperCode, year, questionNumber])
+  @@index([paperCode, year])
 }
 
 model MainsDraft {
@@ -661,6 +749,7 @@ model MainsDraft {
   updatedAt            DateTime      @updatedAt
 
   @@unique([userId, mainsQuestionId])
+  @@index([userId, isSubmitted])
 }
 
 // ==========================================

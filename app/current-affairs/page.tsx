@@ -18,6 +18,7 @@ import {
 
 export default function CurrentAffairsPage() {
   const [stories, setStories] = useState<any[]>([]);
+  const [total, setTotal] = useState<number>(0);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [selectedPaper, setSelectedPaper] = useState("ALL");
@@ -28,6 +29,7 @@ export default function CurrentAffairsPage() {
     setError(null);
     try {
       const queryParams = new URLSearchParams();
+      queryParams.set("limit", "50");
       if (selectedPaper !== "ALL") queryParams.set("paper", selectedPaper);
       if (searchQuery) queryParams.set("search", searchQuery);
 
@@ -35,6 +37,7 @@ export default function CurrentAffairsPage() {
       const data = await res.json();
       if (res.ok && data.success) {
         setStories(data.stories || []);
+        setTotal(data.meta?.total || data.total || data.stories?.length || 0);
       } else {
         setError(data.error || "Failed to retrieve verified current affairs from database.");
       }
@@ -145,7 +148,16 @@ export default function CurrentAffairsPage() {
             <p className="text-sm text-slate-500 mt-1">Try adjusting your syllabus filter or search query.</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="space-y-4">
+            <div className="flex flex-wrap items-center justify-between gap-2 px-1">
+              <span className="text-xs font-semibold text-slate-500">
+                Displaying <span className="text-slate-800 font-bold">{stories.length}</span> {stories.length === total ? "curated stories" : `of ${total} total stories`}
+              </span>
+              <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+                ● 100% Sourced from Official Portals (PIB, RBI, MoEFCC, PRS)
+              </span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {stories.map((story) => (
               <div
                 key={story.id}
@@ -229,6 +241,7 @@ export default function CurrentAffairsPage() {
                 </div>
               </div>
             ))}
+            </div>
           </div>
         )}
       </main>

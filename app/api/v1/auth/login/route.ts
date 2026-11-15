@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { hashPassword, COOKIE_USER_ID } from "@/lib/auth";
+import { hashPassword, COOKIE_USER_ID, signSessionToken } from "@/lib/auth";
 import { cookies } from "next/headers";
 
 export const dynamic = "force-dynamic";
@@ -54,9 +54,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Set authentication session cookie
+    // Set cryptographically signed authentication session cookie
     const cookieStore = cookies();
-    cookieStore.set(COOKIE_USER_ID, user.id, {
+    cookieStore.set(COOKIE_USER_ID, signSessionToken(user.id), {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       path: "/",

@@ -122,6 +122,8 @@ export async function POST(request: NextRequest) {
 
     const gradingInputs: QuestionGradingInput[] = [];
     const detailedResults: any[] = [];
+    const userResponsesData: any[] = [];
+    const incorrectQuestionIds: string[] = [];
 
     for (const q of dbQuestions) {
       const resp = responseMap.get(q.id);
@@ -140,41 +142,17 @@ export async function POST(request: NextRequest) {
 
       const isCorrect = selectedOption !== null && selectedOption === correctOption;
 
-      // Save UserResponse in DB
-      await prisma.userResponse.create({
-        data: {
-          sessionId: session.id,
-          userId: session.userId,
-          questionId: q.id,
-          selectedCode: selectedOption,
-          isCorrect,
-          timeSpentSeconds: resp?.timeSpent || 0,
-        },
+      userResponsesData.push({
+        sessionId: session.id,
+        userId: session.userId,
+        questionId: q.id,
+        selectedCode: selectedOption,
+        isCorrect,
+        timeSpentSeconds: resp?.timeSpent || 0,
       });
 
-      // If incorrect attempt, queue in mistake bank
       if (selectedOption !== null && !isCorrect) {
-        await prisma.reviewSchedule.upsert({
-          where: {
-            userId_questionId: {
-              userId: session.userId,
-              questionId: q.id,
-            },
-          },
-          update: {
-            repetitionCount: { increment: 1 },
-            isResolved: false,
-            nextReviewDate: new Date(Date.now() + 86400000),
-          },
-          create: {
-            userId: session.userId,
-            questionId: q.id,
-            repetitionCount: 1,
-            intervalDays: 1,
-            nextReviewDate: new Date(Date.now() + 86400000),
-            isResolved: false,
-          },
-        });
+        incorrectQuestionIds.push(q.id);
       }
 
       detailedResults.push({
@@ -207,32 +185,84 @@ export async function POST(request: NextRequest) {
     const paperCode = session.test.paper.code;
     const scorecard = calculateScorecard(paperCode, gradingInputs);
 
-    // Update Session in DB
-    await prisma.testSession.update({
-      where: { id: session.id },
-      data: {
-        status: "COMPLETED",
-        submittedAt: new Date(),
-        totalTimeSpentSeconds,
-        attemptedCount: scorecard.attemptedCount,
-        correctCount: scorecard.correctCount,
-        incorrectCount: scorecard.incorrectCount,
-        unattemptedCount: scorecard.unattemptedCount,
-        rawScore: scorecard.rawScore,
-        negativeMarks: scorecard.negativeMarks,
-        netScore: scorecard.netScore,
-      },
-    });
+    // Atomic High-Performance Transaction Batching (eliminates 100+ sequential roundtrips)
+    await prisma.$transaction(async (tx) => {
+      // 1. Batch insert all user responses
+      if (userResponsesData.length > 0) {
+        await tx.userResponse.createMany({
+          data: userResponsesData,
+        });
+      }
 
-    // Record Study Activity
-    await prisma.studyActivity.create({
-      data: {
-        userId: session.userId,
-        activityType: "test_completed",
-        label: `Completed ${session.test.title} (Score: ${scorecard.netScore})`,
-        refId: session.id,
-        durationSeconds: totalTimeSpentSeconds,
-      },
+      // 2. Batch upsert incorrect questions into ReviewSchedule (Mistake Bank)
+      if (incorrectQuestionIds.length > 0) {
+        const existingSchedules = await tx.reviewSchedule.findMany({
+          where: {
+            userId: session.userId,
+            questionId: { in: incorrectQuestionIds },
+          },
+          select: { questionId: true },
+        });
+
+        const existingSet = new Set(existingSchedules.map((s) => s.questionId));
+        const toUpdateIds = incorrectQuestionIds.filter((id) => existingSet.has(id));
+        const toCreateIds = incorrectQuestionIds.filter((id) => !existingSet.has(id));
+
+        if (toUpdateIds.length > 0) {
+          await tx.reviewSchedule.updateMany({
+            where: {
+              userId: session.userId,
+              questionId: { in: toUpdateIds },
+            },
+            data: {
+              repetitionCount: { increment: 1 },
+              isResolved: false,
+              nextReviewDate: new Date(Date.now() + 86400000),
+            },
+          });
+        }
+
+        if (toCreateIds.length > 0) {
+          await tx.reviewSchedule.createMany({
+            data: toCreateIds.map((qId) => ({
+              userId: session.userId,
+              questionId: qId,
+              repetitionCount: 1,
+              intervalDays: 1,
+              nextReviewDate: new Date(Date.now() + 86400000),
+              isResolved: false,
+            })),
+          });
+        }
+      }
+
+      // 3. Mark TestSession completed with authoritative score
+      await tx.testSession.update({
+        where: { id: session.id },
+        data: {
+          status: "COMPLETED",
+          submittedAt: new Date(),
+          totalTimeSpentSeconds,
+          attemptedCount: scorecard.attemptedCount,
+          correctCount: scorecard.correctCount,
+          incorrectCount: scorecard.incorrectCount,
+          unattemptedCount: scorecard.unattemptedCount,
+          rawScore: scorecard.rawScore,
+          negativeMarks: scorecard.negativeMarks,
+          netScore: scorecard.netScore,
+        },
+      });
+
+      // 4. Record Study Activity
+      await tx.studyActivity.create({
+        data: {
+          userId: session.userId,
+          activityType: "test_completed",
+          label: `Completed ${session.test.title} (Score: ${scorecard.netScore})`,
+          refId: session.id,
+          durationSeconds: totalTimeSpentSeconds,
+        },
+      });
     });
 
     return NextResponse.json({

@@ -77,7 +77,24 @@ export default function PricingPage() {
       setCheckoutLoading(true);
       setCheckoutSuccess(null);
 
-      // 1. Create Checkout Session
+      // 1. Attempt Real-time UPI Payment Order Initiation
+      const upiRes = await fetch("/api/v1/payments/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          productType: "SUBSCRIPTION",
+          productId: plan.code,
+          billingInterval,
+        }),
+      });
+
+      const upiJson = await upiRes.json();
+      if (upiRes.ok && upiJson.success && upiJson.data?.orderId) {
+        window.location.href = `/checkout/${upiJson.data.orderId}`;
+        return;
+      }
+
+      // 2. Fallback to Sandbox Checkout
       const checkoutRes = await fetch("/api/v1/billing/checkout", {
         method: "POST",
         headers: { "Content-Type": "application/json" },

@@ -9,6 +9,7 @@ import {
   Layers,
   ArrowRight,
   TrendingUp,
+  CreditCard,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -56,6 +57,13 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <a
+            href="/admin/payments"
+            className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700"
+          >
+            <CreditCard className="h-4 w-4" />
+            <span>UPI Financial Ledger</span>
+          </a>
           <a
             href="/admin/ingestion"
             className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-indigo-700"

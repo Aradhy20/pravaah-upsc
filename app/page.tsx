@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import {
   Compass,
   Layers,
@@ -12,96 +14,301 @@ import {
   ShieldCheck,
   BookOpen,
   RotateCcw,
+  Zap,
+  Award,
+  Lock,
+  ChevronRight,
+  HelpCircle,
+  BarChart2,
+  Sliders,
+  Check,
+  X,
 } from "lucide-react";
 
 export default function HomePage() {
+  const [interactiveOption, setInteractiveOption] = useState<string | null>(null);
+  const [showInteractiveExplanation, setShowInteractiveExplanation] = useState(false);
+  const [pricingInterval, setPricingInterval] = useState<"MONTHLY" | "ANNUAL">("ANNUAL");
+
   const popularKeywords = [
     "Fundamental Rights",
     "Monetary Policy Committee",
     "Indian Ocean Dipole",
-    "Swamp Deer (Barasingha)",
     "Lagrange Point (L1)",
     "Mitakshara and Dayabhaga",
   ];
 
-  const recentPapers = [
-    { year: 2024, paper: "GS Paper 1", code: "GS1", count: 100, solvedCount: 100 },
-    { year: 2024, paper: "CSAT Paper 2", code: "GS2", count: 80, solvedCount: 80 },
-    { year: 2023, paper: "GS Paper 1", code: "GS1", count: 100, solvedCount: 100 },
-    { year: 2023, paper: "CSAT Paper 2", code: "GS2", count: 80, solvedCount: 80 },
-    { year: 2022, paper: "GS Paper 1", code: "GS1", count: 100, solvedCount: 100 },
+  const comparisonData = [
+    {
+      feature: "Answer Key Accuracy",
+      coaching: "Conflicting, unofficial keys with 8-12 disputed questions yearly",
+      pravaah: "100% Verified against official UPSC Series A Master Keys with statement evidence",
+    },
+    {
+      feature: "Mistake Retention (Revise)",
+      coaching: "Manual physical notebook; easily forgotten after 2 weeks",
+      pravaah: "Automated SuperMemo-2 spaced repetition queue on Day 1, 3, and 7",
+    },
+    {
+      feature: "Current Affairs Integration",
+      coaching: "Bloated 150-page monthly magazine dumps",
+      pravaah: "Daily official PIB & Ministry briefs linked directly to historical PYQs",
+    },
+    {
+      feature: "Mains Answer Evaluation",
+      coaching: "Turnaround time of 10-15 days from coaching institutes",
+      pravaah: "Instant AI dimensional scoring (Intro, Multi-body, Articles, Way Forward)",
+    },
+    {
+      feature: "Examination Simulator",
+      coaching: "Unformatted Google forms or slow offline test centers",
+      pravaah: "Full 2-hour anti-leak simulation with live negative marking (-0.66)",
+    },
   ];
 
   const subjectCards = [
     {
       title: "Polity & Governance",
       desc: "Constitutional articles, Parliament, Executive, Judiciary & Statutory bodies.",
-      slug: "polity-governance",
       tag: "15-18 Qs / yr",
       color: "border-blue-200 bg-blue-50/40 text-blue-900",
     },
     {
       title: "Economy & Development",
       desc: "Monetary policy, fiscal deficits, banking, external trade & national accounts.",
-      slug: "economy-development",
       tag: "14-16 Qs / yr",
       color: "border-emerald-200 bg-emerald-50/40 text-emerald-900",
     },
     {
       title: "Environment & Ecology",
       desc: "Protected area network, national parks, Ramsar sites, climate conventions.",
-      slug: "environment-biodiversity",
       tag: "16-20 Qs / yr",
       color: "border-teal-200 bg-teal-50/40 text-teal-900",
     },
     {
       title: "History & Art & Culture",
       desc: "Ancient sites, temple architecture, freedom struggle & social movements.",
-      slug: "history-culture",
       tag: "14-16 Qs / yr",
       color: "border-amber-200 bg-amber-50/40 text-amber-900",
     },
     {
       title: "Geography & Agriculture",
       desc: "Physical systems, rivers, monsoon circulation & cropping patterns.",
-      slug: "geography-agriculture",
       tag: "10-12 Qs / yr",
       color: "border-indigo-200 bg-indigo-50/40 text-indigo-900",
     },
     {
       title: "CSAT Aptitude & Logic",
       desc: "Number systems, syllogisms, permutations & reading comprehension.",
-      slug: "csat-quant",
       tag: "80 Qs (Qualifying)",
       color: "border-purple-200 bg-purple-50/40 text-purple-900",
     },
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen font-sans selection:bg-blue-100 selection:text-blue-900">
       {/* 1. Hero Section */}
-      <section className="relative overflow-hidden border-b border-slate-200 bg-white px-4 pt-12 pb-16 sm:px-6 sm:pt-20 sm:pb-24">
-        <div className="mx-auto max-w-4xl text-center">
-          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50/80 px-3.5 py-1 text-xs font-bold text-blue-700 mb-6 shadow-sm">
-            <Sparkles className="h-3.5 w-3.5 text-blue-600" />
-            <span>High-Fidelity UPSC CSE Prelims PYQ Learning Platform</span>
+      <section className="relative overflow-hidden border-b border-slate-200 bg-gradient-to-b from-slate-50 via-white to-white px-4 pt-12 pb-16 sm:px-6 sm:pt-20 sm:pb-24">
+        <div className="mx-auto max-w-5xl text-center">
+          {/* Trust pill */}
+          <div className="inline-flex items-center gap-2 rounded-full border border-blue-200 bg-blue-50/90 px-4 py-1.5 text-xs font-bold text-blue-700 mb-6 shadow-sm">
+            <Sparkles className="h-4 w-4 text-blue-600" />
+            <span>The AI & Spaced Repetition Operating System for UPSC Civil Services</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl font-extrabold tracking-tight text-slate-900 leading-[1.2]">
-            Find the PYQ. Understand the concept.{" "}
-            <span className="text-blue-700">Learn from every mistake.</span>
+          {/* Main Headline */}
+          <h1 className="text-3xl sm:text-6xl font-black tracking-tight text-slate-900 leading-[1.15]">
+            Master Every UPSC PYQ. <br className="hidden sm:inline" />
+            <span className="text-blue-700">Retain Every Mistake.</span> Grade Mains with AI.
           </h1>
 
-          <p className="mx-auto mt-4 max-w-2xl text-base sm:text-lg text-slate-600 leading-relaxed font-normal">
-            No bloated paywalls or unverified coaching keys. Master 1,079 officially verified UPSC General Studies & CSAT questions (2019–2024 Series A) with statement-by-statement evidence, timed exam simulation, and automated spaced mistake revision.
+          {/* Subtitle */}
+          <p className="mx-auto mt-5 max-w-3xl text-base sm:text-xl text-slate-600 leading-relaxed font-normal">
+            Stop losing 200+ hours on disputed coaching keys and forgotten mistakes. Practice{" "}
+            <span className="font-semibold text-slate-900">1,104 verified Prelims questions</span> with
+            statement-by-statement evidence, automated SuperMemo-2 mistake queues, and instant dimensional
+            Mains answer grading.
           </p>
 
-          {/* Prominent PYQ Search Box */}
-          <div className="mt-8 mx-auto max-w-2xl">
+          {/* Primary Action Buttons */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-4">
+            <a
+              href="/register"
+              className="rounded-2xl bg-blue-700 hover:bg-blue-800 px-7 py-3.5 text-sm sm:text-base font-bold text-white shadow-lg shadow-blue-700/25 hover:shadow-xl transition flex items-center gap-2"
+            >
+              <span>Start Free Practice (No Card Required)</span>
+              <ArrowRight className="h-4 w-4" />
+            </a>
+
+            <a
+              href="/pricing"
+              className="rounded-2xl border-2 border-slate-200 hover:border-slate-300 bg-white px-6 py-3.5 text-sm sm:text-base font-bold text-slate-800 shadow-sm hover:bg-slate-50 transition flex items-center gap-2"
+            >
+              <Zap className="h-4 w-4 text-amber-500" />
+              <span>Explore Plans (Save 42%)</span>
+            </a>
+          </div>
+
+          {/* Proof Bar */}
+          <div className="mt-8 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-xs font-medium text-slate-500">
+            <span className="flex items-center gap-1.5">
+              <CheckCircle className="h-4 w-4 text-emerald-600" /> 100% Official Series A Keys
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle className="h-4 w-4 text-emerald-600" /> 1,104 Prelims Questions
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle className="h-4 w-4 text-emerald-600" /> 80 Authentic Mains Frameworks
+            </span>
+            <span className="flex items-center gap-1.5">
+              <CheckCircle className="h-4 w-4 text-emerald-600" /> 38 Daily Prelims Diagnostic Banks
+            </span>
+          </div>
+
+          {/* Visual Trust Hero Showcase */}
+          <div className="mt-12 mx-auto max-w-4xl relative rounded-3xl overflow-hidden border-2 border-slate-200/80 shadow-2xl bg-slate-900 group">
+            <div className="relative aspect-[16/9] w-full overflow-hidden">
+              <img
+                src="/images/upsc_trust_hero.jpg"
+                alt="Pravaah UPSC Official Preparation Platform - Serious Academic Rigor & Verified Ground Truth"
+                className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-slate-950/85 via-slate-950/20 to-black/30" />
+
+              {/* Floating Trust Badges */}
+              <div className="absolute top-4 left-4 flex items-center gap-2 rounded-xl bg-slate-900/85 backdrop-blur-md border border-white/20 px-3.5 py-1.5 text-xs font-bold text-white shadow-lg">
+                <ShieldCheck className="h-4 w-4 text-emerald-400" />
+                <span>100% UPSC Official Series A Ground Truth</span>
+              </div>
+
+              <div className="absolute top-4 right-4 hidden sm:flex items-center gap-2 rounded-xl bg-slate-900/85 backdrop-blur-md border border-white/20 px-3.5 py-1.5 text-xs font-bold text-blue-200 shadow-lg">
+                <Sparkles className="h-4 w-4 text-amber-400" />
+                <span>SuperMemo-2 Adaptive Retention Engine</span>
+              </div>
+
+              <div className="absolute bottom-4 left-4 right-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-left">
+                <div className="text-white">
+                  <div className="text-xs font-extrabold uppercase tracking-wider text-blue-300">
+                    Trusted By Serious Aspirants Across India
+                  </div>
+                  <div className="text-sm sm:text-base font-bold text-white">
+                    Pedagogical Statement-by-Statement Evidence & Zero Disputed Coaching Keys
+                  </div>
+                </div>
+                <a
+                  href="/syllabus"
+                  className="shrink-0 rounded-xl bg-blue-600 hover:bg-blue-500 px-4 py-2 text-xs font-bold text-white shadow-md transition flex items-center gap-1.5"
+                >
+                  <span>Explore Syllabus Vault</span>
+                  <ArrowRight className="h-3.5 w-3.5" />
+                </a>
+              </div>
+            </div>
+
+            {/* High-Impact Trust Metric Strip */}
+            <div className="grid grid-cols-2 sm:grid-cols-4 divide-x divide-slate-800 bg-slate-950 py-4 px-6 text-center text-white">
+              <div>
+                <div className="text-xl sm:text-2xl font-black text-blue-400">1,079+</div>
+                <div className="text-[11px] font-semibold text-slate-400 mt-0.5">Verified Prelims Questions</div>
+              </div>
+              <div>
+                <div className="text-xl sm:text-2xl font-black text-emerald-400">80 Qs</div>
+                <div className="text-[11px] font-semibold text-slate-400 mt-0.5">Mains GS1–GS4 Frameworks</div>
+              </div>
+              <div>
+                <div className="text-xl sm:text-2xl font-black text-amber-400">100%</div>
+                <div className="text-[11px] font-semibold text-slate-400 mt-0.5">Official Answer Provenance</div>
+              </div>
+              <div>
+                <div className="text-xl sm:text-2xl font-black text-purple-400">0</div>
+                <div className="text-[11px] font-semibold text-slate-400 mt-0.5">Disputed Coaching Errors</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Interactive Live Preview Diagnostic Card */}
+          <div className="mt-12 mx-auto max-w-2xl bg-white rounded-3xl border-2 border-slate-200 p-6 sm:p-8 text-left shadow-xl shadow-slate-100 relative">
+            <div className="flex items-center justify-between pb-3 mb-4 border-b border-slate-100 text-xs">
+              <span className="font-extrabold uppercase tracking-wider text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md">
+                Interactive Learn Mode Sample • UPSC CSE 2024 GS1
+              </span>
+              <span className="text-slate-400 font-semibold">Marks: +2.0 / -0.66</span>
+            </div>
+
+            <p className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+              With reference to the Central Bank Digital Currency (CBDC) issued by the RBI, consider the following statements:
+            </p>
+            <ol className="mt-2 text-xs sm:text-sm text-slate-700 space-y-1 list-decimal list-inside leading-relaxed">
+              <li>It is a sovereign digital currency appearing as a direct liability on the RBI balance sheet.</li>
+              <li>It requires an underlying commercial bank deposit account for offline peer-to-peer transfers.</li>
+            </ol>
+            <p className="mt-2 text-xs sm:text-sm font-semibold text-slate-800">Which of the statements given above is/are correct?</p>
+
+            {/* Options */}
+            <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2.5 text-xs font-semibold">
+              {[
+                { code: "A", text: "1 only", correct: true },
+                { code: "B", text: "2 only", correct: false },
+                { code: "C", text: "Both 1 and 2", correct: false },
+                { code: "D", text: "Neither 1 nor 2", correct: false },
+              ].map((opt) => (
+                <button
+                  key={opt.code}
+                  onClick={() => {
+                    setInteractiveOption(opt.code);
+                    setShowInteractiveExplanation(true);
+                  }}
+                  className={`flex items-center gap-2 p-3 rounded-xl border text-left transition-all ${
+                    interactiveOption === opt.code
+                      ? opt.correct
+                        ? "bg-emerald-50 border-emerald-500 text-emerald-900 shadow-sm"
+                        : "bg-rose-50 border-rose-500 text-rose-900 shadow-sm"
+                      : "bg-slate-50 border-slate-200 hover:bg-slate-100 text-slate-800"
+                  }`}
+                >
+                  <span
+                    className={`flex h-6 w-6 shrink-0 items-center justify-center rounded-lg font-bold text-xs ${
+                      interactiveOption === opt.code
+                        ? opt.correct
+                          ? "bg-emerald-600 text-white"
+                          : "bg-rose-600 text-white"
+                        : "bg-white text-slate-700 border border-slate-300"
+                    }`}
+                  >
+                    {opt.code}
+                  </span>
+                  <span>{opt.text}</span>
+                </button>
+              ))}
+            </div>
+
+            {/* Instant Pedagogical Feedback */}
+            {showInteractiveExplanation && (
+              <div className="mt-4 p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 text-xs text-emerald-900 leading-relaxed animate-in fade-in duration-200">
+                <div className="font-extrabold flex items-center gap-1.5 text-emerald-800 mb-1">
+                  <CheckCircle className="h-4 w-4" /> Correct Answer: Option A (1 only)
+                </div>
+                <p>
+                  <strong>Statement 1 is correct:</strong> Digital Rupee (e₹) is sovereign currency appearing as a direct central bank liability. 
+                  <br />
+                  <strong>Statement 2 is incorrect:</strong> Retail CBDC acts as a tokenized digital bearer instrument that can be transacted offline without requiring an active commercial bank account.
+                </p>
+                <div className="mt-2.5 pt-2 border-t border-emerald-200/60 flex items-center justify-between text-[11px] text-emerald-800 font-bold">
+                  <span>Elimination Tip: Cross-check bearer vs account-based instruments.</span>
+                  <a href="/pyqs" className="underline hover:text-emerald-950">
+                    Solve more like this →
+                  </a>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Clean Search Box */}
+          <div className="mt-12 mx-auto max-w-2xl">
             <form
               action="/pyqs"
               method="GET"
-              className="flex items-center rounded-2xl border-2 border-slate-300 bg-white p-2 shadow-md transition focus-within:border-blue-600 focus-within:ring-4 focus-within:ring-blue-100"
+              className="flex items-center rounded-2xl border-2 border-slate-200 bg-white p-2 shadow-sm transition focus-within:border-blue-600 focus-within:ring-4 focus-within:ring-blue-100"
             >
               <Search className="ml-3 h-5 w-5 text-slate-400 shrink-0" />
               <input
@@ -112,151 +319,141 @@ export default function HomePage() {
               />
               <button
                 type="submit"
-                className="shrink-0 rounded-xl bg-blue-600 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-blue-700 transition"
+                className="shrink-0 rounded-xl bg-blue-700 px-5 py-2.5 text-sm font-bold text-white shadow-sm hover:bg-blue-800 transition"
               >
                 Search PYQs
               </button>
             </form>
 
-            {/* Keyword Suggestions */}
             <div className="mt-3 flex flex-wrap items-center justify-center gap-1.5 text-xs text-slate-500">
-              <span className="font-semibold text-slate-400 mr-1">Popular Topics:</span>
+              <span className="font-semibold text-slate-400 mr-1">High-Yield Topics:</span>
               {popularKeywords.map((kw) => (
                 <a
                   key={kw}
                   href={`/pyqs?q=${encodeURIComponent(kw)}`}
-                  className="rounded-full border border-slate-200 bg-slate-50 px-2.5 py-1 text-slate-600 hover:border-blue-300 hover:text-blue-700 hover:bg-white transition"
+                  className="rounded-full border border-slate-200 bg-white px-2.5 py-0.5 text-slate-600 hover:border-blue-400 hover:text-blue-700 transition"
                 >
                   {kw}
                 </a>
               ))}
             </div>
           </div>
-
-          {/* Quick Entry CTAs */}
-          <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-            <a
-              href="/pyqs?paper=GS1"
-              className="rounded-xl border border-blue-600 bg-blue-600 px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-blue-700 transition flex items-center gap-2"
-            >
-              <Compass className="h-4 w-4" />
-              <span>Explore GS Paper 1 PYQs</span>
-            </a>
-            <a
-              href="/pyqs?paper=GS2"
-              className="rounded-xl border border-teal-600 bg-teal-600 px-5 py-3 text-sm font-bold text-white shadow-sm hover:bg-teal-700 transition flex items-center gap-2"
-            >
-              <BrainCircuit className="h-4 w-4" />
-              <span>Explore CSAT Paper 2 PYQs</span>
-            </a>
-            <a
-              href="/mock-tests"
-              className="rounded-xl border border-slate-300 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm hover:bg-slate-50 transition flex items-center gap-2"
-            >
-              <Clock className="h-4 w-4" />
-              <span>Start Timed Exam</span>
-            </a>
-          </div>
-
-          {/* Daily Workflow Shortcuts */}
-          <div className="mt-4 flex flex-wrap items-center justify-center gap-2 text-xs">
-            <a
-              href="/daily-quiz"
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 font-semibold text-slate-700 hover:bg-blue-50 hover:text-blue-700 hover:border-blue-200 transition shadow-xs"
-            >
-              <CheckCircle className="h-3.5 w-3.5 text-blue-600" />
-              <span>Today's Daily Quiz</span>
-            </a>
-            <a
-              href="/current-affairs"
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 font-semibold text-slate-700 hover:bg-teal-50 hover:text-teal-700 hover:border-teal-200 transition shadow-xs"
-            >
-              <TrendingUp className="h-3.5 w-3.5 text-teal-600" />
-              <span>Current Affairs & Syllabus Links</span>
-            </a>
-            <a
-              href="/mains"
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 font-semibold text-slate-700 hover:bg-indigo-50 hover:text-indigo-700 hover:border-indigo-200 transition shadow-xs"
-            >
-              <BookOpen className="h-3.5 w-3.5 text-indigo-600" />
-              <span>Mains & Essay Writing</span>
-            </a>
-            <a
-              href="/exams"
-              className="inline-flex items-center gap-1.5 rounded-full border border-slate-200 bg-slate-50 px-3 py-1.5 font-semibold text-slate-700 hover:bg-amber-50 hover:text-amber-700 hover:border-amber-200 transition shadow-xs"
-            >
-              <Layers className="h-3.5 w-3.5 text-amber-600" />
-              <span>Official UPSC Exams Directory</span>
-            </a>
-          </div>
         </div>
       </section>
 
-      {/* 2. Year-Wise Practice Entry */}
-      <section className="py-12 px-4 sm:px-6 bg-slate-50 border-b border-slate-200">
+      {/* 2. The 3 Core SaaS Pillars (The Moat) */}
+      <section className="py-16 px-4 sm:px-6 bg-slate-50 border-b border-slate-200">
         <div className="mx-auto max-w-7xl">
-          <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6">
-            <div>
-              <span className="text-xs font-bold uppercase tracking-wider text-blue-700">
-                Official Archives
-              </span>
-              <h2 className="text-2xl font-bold text-slate-900 mt-1">
-                Year-Wise Historical Papers
-              </h2>
-              <p className="text-sm text-slate-500 mt-0.5">
-                Complete, officially verified papers with authentic UPSC answer keys
-              </p>
-            </div>
-            <a
-              href="/pyqs"
-              className="mt-3 sm:mt-0 text-sm font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1"
-            >
-              <span>Explore complete archive (2019–2024)</span>
-              <ArrowRight className="h-4 w-4" />
-            </a>
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-700">
+              The Pravaah Architecture
+            </span>
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 mt-1">
+              Why Serious Aspirants Choose Pravaah
+            </h2>
+            <p className="text-sm text-slate-500 mt-2">
+              Replacing fragmented coaching PDFs with cognitive science, authentic data, and AI feedback.
+            </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-            {recentPapers.map((p, idx) => (
-              <a
-                key={idx}
-                href={`/pyqs?paper=${p.code}&years=${p.year}`}
-                className="group rounded-xl border border-slate-200 bg-white p-4 shadow-sm hover:border-blue-400 hover:shadow-md transition"
-              >
-                <div className="flex items-center justify-between">
-                  <span className="text-xl font-extrabold text-slate-900 group-hover:text-blue-700 transition">
-                    {p.year}
-                  </span>
-                  <span
-                    className={`rounded text-[10px] font-bold px-1.5 py-0.5 ${
-                      p.code === "GS2" ? "bg-teal-100 text-teal-800" : "bg-blue-100 text-blue-800"
-                    }`}
-                  >
-                    {p.code}
-                  </span>
-                </div>
-                <p className="mt-1 text-xs font-medium text-slate-600">{p.paper}</p>
-                <div className="mt-3 pt-2 border-t border-slate-100 flex items-center justify-between text-[11px] text-slate-400">
-                  <span>{p.count} Questions</span>
-                  <span className="text-emerald-600 font-semibold flex items-center gap-0.5">
-                    <CheckCircle className="h-3 w-3" /> 100% Keyed
-                  </span>
-                </div>
-              </a>
-            ))}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:shadow-md transition">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-blue-100 text-blue-700 mb-5 font-black">
+                <ShieldCheck className="h-6 w-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900">100% Official Series A Ground Truth</h3>
+              <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">
+                Never second-guess with disputed coaching answer keys. Every question is mapped to official UPSC Series A keys, verified against government gazettes, PIB releases, and Supreme Court judgements.
+              </p>
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-1 text-xs font-bold text-blue-700">
+                <span>1,104 Questions Fully Verified</span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:shadow-md transition">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-amber-100 text-amber-700 mb-5 font-black">
+                <RotateCcw className="h-6 w-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900">SuperMemo-2 Automated Mistake Notebook</h3>
+              <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">
+                Physical "Mistake Registers" gather dust. Pravaah automatically schedules every missed question in an adaptive spaced repetition queue on Day 1, Day 3, and Day 7 until permanent retention.
+              </p>
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-1 text-xs font-bold text-amber-700">
+                <span>Adaptive Spaced Intervals</span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </div>
+            </div>
+
+            <div className="rounded-3xl border border-slate-200 bg-white p-7 shadow-sm hover:shadow-md transition">
+              <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-indigo-100 text-indigo-700 mb-5 font-black">
+                <Sparkles className="h-6 w-6" />
+              </div>
+              <h3 className="text-lg font-bold text-slate-900">AI Mains Answer Dimensional Grader</h3>
+              <p className="mt-2 text-xs sm:text-sm leading-relaxed text-slate-600">
+                Don't wait 2 weeks for coaching test series evaluation. Receive instant scores across Introduction clarity, multi-dimensional body arguments, Supreme Court precedents, and pragmatic Way Forward.
+              </p>
+              <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-1 text-xs font-bold text-indigo-700">
+                <span>80 Authentic Mains Questions</span>
+                <ChevronRight className="h-3.5 w-3.5" />
+              </div>
+            </div>
           </div>
         </div>
       </section>
 
-      {/* 3. Subject-Wise Silos */}
-      <section className="py-14 px-4 sm:px-6 bg-white border-b border-slate-200">
+      {/* 3. Comparison Matrix: Coaching vs Pravaah SaaS */}
+      <section className="py-16 px-4 sm:px-6 bg-white border-b border-slate-200">
+        <div className="mx-auto max-w-5xl">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <span className="text-xs font-bold uppercase tracking-wider text-blue-700">
+              Direct Comparison
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-1">
+              Traditional Coaching PDFs vs. Pravaah SaaS
+            </h2>
+          </div>
+
+          <div className="rounded-3xl border border-slate-200 overflow-hidden shadow-sm">
+            <table className="w-full text-left border-collapse text-xs sm:text-sm">
+              <thead>
+                <tr className="bg-slate-100/80 border-b border-slate-200 text-slate-800">
+                  <th className="p-4 font-bold w-1/4">Feature Dimension</th>
+                  <th className="p-4 font-bold text-slate-500 w-3/8">Traditional Coaching PDFs</th>
+                  <th className="p-4 font-black text-blue-800 bg-blue-50/60 w-3/8">Pravaah UPSC SaaS</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {comparisonData.map((row, idx) => (
+                  <tr key={idx} className="hover:bg-slate-50/60 transition">
+                    <td className="p-4 font-bold text-slate-800">{row.feature}</td>
+                    <td className="p-4 text-slate-500 flex items-start gap-1.5">
+                      <X className="h-4 w-4 text-rose-500 shrink-0 mt-0.5" />
+                      <span>{row.coaching}</span>
+                    </td>
+                    <td className="p-4 text-slate-800 font-semibold bg-blue-50/20">
+                      <div className="flex items-start gap-1.5">
+                        <Check className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+                        <span>{row.pravaah}</span>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Subject Silos Grid */}
+      <section className="py-16 px-4 sm:px-6 bg-slate-50 border-b border-slate-200">
         <div className="mx-auto max-w-7xl">
           <div className="text-center max-w-2xl mx-auto mb-10">
             <span className="text-xs font-bold uppercase tracking-wider text-blue-700">
               Syllabus Mapping
             </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">
-              Practise by Subject & Topic
+            <h2 className="text-2xl sm:text-3xl font-black text-slate-900 mt-1">
+              Practise by UPSC Subject Domain
             </h2>
             <p className="text-sm text-slate-500 mt-1">
               Read your standard textbook, then immediately drill every corresponding PYQ from 2019 to 2024.
@@ -266,7 +463,7 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
             {subjectCards.map((subj) => (
               <a
-                key={subj.slug}
+                key={subj.title}
                 href={`/pyqs?subject=${encodeURIComponent(subj.title)}`}
                 className={`group rounded-2xl border p-5 transition shadow-sm hover:shadow-md ${subj.color}`}
               >
@@ -274,7 +471,7 @@ export default function HomePage() {
                   <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-700 transition">
                     {subj.title}
                   </h3>
-                  <span className="rounded-full bg-white/80 px-2.5 py-0.5 text-[11px] font-bold text-slate-700 border border-slate-200 shadow-sm">
+                  <span className="rounded-full bg-white/90 px-2.5 py-0.5 text-[11px] font-bold text-slate-700 border border-slate-200 shadow-xs">
                     {subj.tag}
                   </span>
                 </div>
@@ -286,82 +483,209 @@ export default function HomePage() {
               </a>
             ))}
           </div>
-        </div>
-      </section>
 
-      {/* 4. How Pravaah Works */}
-      <section className="py-14 px-4 sm:px-6 bg-slate-50 border-b border-slate-200">
-        <div className="mx-auto max-w-7xl">
-          <div className="text-center max-w-2xl mx-auto mb-12">
-            <span className="text-xs font-bold uppercase tracking-wider text-blue-700">
-              The Learning Engine
-            </span>
-            <h2 className="text-2xl sm:text-3xl font-bold text-slate-900 mt-1">
-              Built on Cognitive Retention Principles
-            </h2>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-blue-700 mb-4 font-bold text-lg">
-                1
+          {/* New UPSC Crack Engine & High-Yield Vault Feature Banner */}
+          <div className="mt-12 rounded-3xl bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 p-8 sm:p-10 text-white shadow-xl relative overflow-hidden">
+            <div className="flex flex-col lg:flex-row items-center justify-between gap-6 relative z-10">
+              <div className="max-w-2xl">
+                <div className="inline-flex items-center gap-2 rounded-full bg-blue-500/20 px-3.5 py-1 text-xs font-bold text-blue-200 mb-3 border border-blue-400/30">
+                  <Sparkles className="h-3.5 w-3.5" />
+                  Free Aspirant Resource Hub
+                </div>
+                <h3 className="text-2xl sm:text-3xl font-black tracking-tight text-white">
+                  The Complete UPSC Crack Engine & High-Yield Vault
+                </h3>
+                <p className="mt-2 text-sm text-slate-300 leading-relaxed">
+                  Everything you search Google for in one authoritative place: 53 micro-topic syllabus breakdowns (Prelims + Mains), standard NCERT chapter mapping, Laxmikanth & Spectrum booklists, high-yield static cheat sheets (Constitutional Articles, Amendments, Rivers, National Parks), and the 365-day preparation blueprint.
+                </p>
               </div>
-              <h3 className="text-base font-bold text-slate-900">
-                Interactive Learn Mode
-              </h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600">
-                Pick your answer and instantly discover why it is right or wrong. Every question features a statement-by-statement breakdown, elimination technique, and textbook reference.
-              </p>
-            </div>
 
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 mb-4 font-bold text-lg">
-                2
+              <div className="shrink-0 flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+                <a
+                  href="/syllabus"
+                  className="rounded-2xl bg-blue-600 hover:bg-blue-500 px-6 py-3.5 text-center text-sm font-bold text-white shadow-lg shadow-blue-600/30 transition flex items-center justify-center gap-2"
+                >
+                  <span>Explore Crack Vault</span>
+                  <ArrowRight className="h-4 w-4" />
+                </a>
               </div>
-              <h3 className="text-base font-bold text-slate-900">
-                Strict UPSC Exam Simulation
-              </h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600">
-                Experience realistic 2-hour pressure with standard UPSC negative marking (+2.0/-0.666 for GS1, +2.5/-0.833 for CSAT). Keys are protected server-side until final submission.
-              </p>
-            </div>
-
-            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-purple-50 text-purple-700 mb-4 font-bold text-lg">
-                3
-              </div>
-              <h3 className="text-base font-bold text-slate-900">
-                Automated Mistake Bank
-              </h3>
-              <p className="mt-2 text-xs leading-relaxed text-slate-600">
-                Every question answered incorrectly is automatically scheduled in your personal Revision Queue. Re-test missed questions until full mastery is achieved.
-              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 5. Call to Action Banner */}
-      <section className="bg-gradient-to-br from-blue-700 to-indigo-900 py-16 px-4 sm:px-6 text-white text-center">
-        <div className="mx-auto max-w-3xl">
-          <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
-            Start Your Concept-Driven UPSC Practice Today
+      {/* 5. Pricing Preview Section */}
+      <section className="py-16 px-4 sm:px-6 bg-white border-b border-slate-200">
+        <div className="mx-auto max-w-6xl text-center">
+          <span className="text-xs font-bold uppercase tracking-wider text-blue-700">
+            Transparent Subscription
+          </span>
+          <h2 className="text-2xl sm:text-4xl font-black text-slate-900 mt-1">
+            Invest in High-Yield UPSC Precision
           </h2>
-          <p className="mt-3 text-sm sm:text-base text-blue-100 max-w-xl mx-auto">
-            Zero friction, zero paywalls. Begin solving authentic UPSC Civil Services questions now.
+          <p className="text-sm text-slate-500 mt-2 max-w-xl mx-auto">
+            Choose a plan that matches your current preparation stage. Annual plans include a 42% discount.
+          </p>
+
+          {/* Billing toggle */}
+          <div className="mt-6 inline-flex p-1 bg-slate-100 rounded-xl">
+            <button
+              onClick={() => setPricingInterval("MONTHLY")}
+              className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                pricingInterval === "MONTHLY" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600"
+              }`}
+            >
+              Monthly Billing
+            </button>
+            <button
+              onClick={() => setPricingInterval("ANNUAL")}
+              className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+                pricingInterval === "ANNUAL"
+                  ? "bg-blue-600 text-white shadow-sm"
+                  : "text-slate-600 hover:text-slate-900"
+              }`}
+            >
+              <span>Annual Plan</span>
+              <span className="rounded bg-amber-400 text-slate-900 px-1.5 py-0.2 text-[10px] font-black">
+                SAVE 42%
+              </span>
+            </button>
+          </div>
+
+          {/* Cards */}
+          <div className="mt-10 grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+            {/* Foundation Free */}
+            <div className="rounded-3xl border border-slate-200 p-6 flex flex-col justify-between bg-white shadow-sm">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">Foundation</h3>
+                <p className="text-xs text-slate-500 mt-1">Free forever for casual practice</p>
+                <div className="mt-4 text-3xl font-black text-slate-900">₹0</div>
+                <div className="mt-6 space-y-2 text-xs text-slate-700">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> 1,104 PYQs in Learn Mode
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> 5 Daily Quiz questions / day
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> Daily PIB Current Affairs briefs
+                  </div>
+                  <div className="flex items-center gap-2 text-slate-400">
+                    <X className="h-4 w-4 text-slate-300" /> Timed 2-Hour Examination Simulator
+                  </div>
+                </div>
+              </div>
+              <a
+                href="/register"
+                className="mt-8 w-full text-center py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 hover:bg-slate-50 transition"
+              >
+                Start Free Practice
+              </a>
+            </div>
+
+            {/* Achiever Pro (Featured) */}
+            <div className="rounded-3xl border-2 border-blue-600 p-6 flex flex-col justify-between bg-blue-50/30 shadow-lg relative">
+              <div className="absolute -top-3 right-6 rounded-full bg-blue-700 px-3 py-0.5 text-[10px] font-black text-white uppercase tracking-wider">
+                Recommended
+              </div>
+              <div>
+                <h3 className="text-base font-black text-slate-900">Achiever (Prelims Pro)</h3>
+                <p className="text-xs text-slate-600 mt-1">Targeting CSE Prelims 2025/2026</p>
+                <div className="mt-4">
+                  <span className="text-3xl font-black text-slate-900">
+                    {pricingInterval === "ANNUAL" ? "₹5,499" : "₹799"}
+                  </span>
+                  <span className="text-xs text-slate-500 ml-1">
+                    {pricingInterval === "ANNUAL" ? "/ year (₹458/mo)" : "/ month"}
+                  </span>
+                </div>
+                <div className="mt-6 space-y-2 text-xs text-slate-700 font-medium">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> Unlimited Timed 2-Hour Mocks
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> Automated SM-2 Mistake Queue
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> Negative Marking Telemetry
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> Unlimited Notes & Bookmarks
+                  </div>
+                </div>
+              </div>
+              <a
+                href="/pricing"
+                className="mt-8 w-full text-center py-3 rounded-xl bg-blue-700 hover:bg-blue-800 text-xs font-bold text-white shadow transition"
+              >
+                Upgrade to Achiever Pro
+              </a>
+            </div>
+
+            {/* Scholar All-Access */}
+            <div className="rounded-3xl border border-slate-200 p-6 flex flex-col justify-between bg-white shadow-sm">
+              <div>
+                <h3 className="text-base font-bold text-slate-900">Scholar (Mains & AI)</h3>
+                <p className="text-xs text-slate-500 mt-1">Prelims + Mains comprehensive</p>
+                <div className="mt-4">
+                  <span className="text-3xl font-black text-slate-900">
+                    {pricingInterval === "ANNUAL" ? "₹8,999" : "₹1,299"}
+                  </span>
+                  <span className="text-xs text-slate-500 ml-1">
+                    {pricingInterval === "ANNUAL" ? "/ year (₹749/mo)" : "/ month"}
+                  </span>
+                </div>
+                <div className="mt-6 space-y-2 text-xs text-slate-700">
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> Everything in Achiever Pro
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> Instant AI Mains Answer Grading
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> 80 Authentic Mains Model Frameworks
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> PDF Model Answer Exports
+                  </div>
+                </div>
+              </div>
+              <a
+                href="/pricing"
+                className="mt-8 w-full text-center py-2.5 rounded-xl border border-slate-300 text-xs font-bold text-slate-800 hover:bg-slate-50 transition"
+              >
+                Get Scholar All-Access
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 6. Call to Action Banner */}
+      <section className="bg-gradient-to-br from-blue-800 via-indigo-900 to-slate-900 py-16 px-4 sm:px-6 text-white text-center">
+        <div className="mx-auto max-w-3xl">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 text-blue-200 text-xs font-bold mb-4 border border-white/10">
+            <Sparkles className="h-3.5 w-3.5" />
+            Clear UPSC CSE with Evidence & Retention
+          </div>
+          <h2 className="text-3xl sm:text-5xl font-black tracking-tight leading-tight">
+            Stop Guessing. Start Mastering Every PYQ.
+          </h2>
+          <p className="mt-3 text-sm sm:text-base text-blue-100 max-w-xl mx-auto font-normal">
+            Join thousands of serious civil services aspirants preparing with verified Series A data, spaced repetition, and AI evaluation.
           </p>
           <div className="mt-8 flex flex-wrap justify-center gap-3">
             <a
-              href="/pyqs"
-              className="rounded-full bg-white px-6 py-3 text-sm font-bold text-blue-900 shadow-lg hover:bg-blue-50 transition"
+              href="/register"
+              className="rounded-2xl bg-white px-7 py-3.5 text-sm font-bold text-blue-900 shadow-xl hover:bg-blue-50 transition"
             >
-              Launch PYQ Explorer
+              Create Free Aspirant Account
             </a>
             <a
-              href="/mock-tests"
-              className="rounded-full border border-white/40 bg-white/10 px-6 py-3 text-sm font-bold text-white hover:bg-white/20 transition"
+              href="/system-flow"
+              className="rounded-2xl border border-white/30 bg-white/10 px-6 py-3.5 text-sm font-bold text-white hover:bg-white/20 transition"
             >
-              Take a Timed Test
+              View Daily Operating Routine
             </a>
           </div>
         </div>
