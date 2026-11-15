@@ -229,6 +229,73 @@ export default function AdminIngestionDashboardPage() {
         </div>
       </div>
 
+      {/* NCERT Knowledge Base & Central Exam Category Matrix */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+            <h2 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <BookOpen className="h-4 w-4 text-emerald-600" />
+              NCERT Knowledge Base & Relational Mapping
+            </h2>
+            <a href="/ncert" className="text-xs font-bold text-blue-600 hover:underline">
+              View Public Catalog &rarr;
+            </a>
+          </div>
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div className="rounded-xl bg-slate-50 p-3">
+              <div className="text-xl font-black text-slate-900">{metrics.ncertBooksCount || 9}</div>
+              <div className="text-[10px] font-semibold text-slate-500 uppercase mt-0.5">Books Indexed</div>
+            </div>
+            <div className="rounded-xl bg-slate-50 p-3">
+              <div className="text-xl font-black text-slate-900">{metrics.ncertChaptersCount || 44}</div>
+              <div className="text-[10px] font-semibold text-slate-500 uppercase mt-0.5">Chapters Mapped</div>
+            </div>
+            <div className="rounded-xl bg-slate-50 p-3">
+              <div className="text-xl font-black text-emerald-600">{metrics.ncertLinksCount || 12}</div>
+              <div className="text-[10px] font-semibold text-slate-500 uppercase mt-0.5">PYQs Linked</div>
+            </div>
+          </div>
+          <p className="text-[11px] text-slate-400 mt-3 leading-relaxed">
+            Classes 6–12 textbooks across Polity, History, Geography, Economy & Science. Deep links preserved to ncert.nic.in & epathshala.nic.in without raw PDF re-hosting.
+          </p>
+        </div>
+
+        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div className="flex items-center justify-between pb-3 mb-3 border-b border-slate-100">
+            <h2 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <ShieldCheck className="h-4 w-4 text-blue-600" />
+              Examination Category Distribution
+            </h2>
+            <span className="text-xs font-semibold text-slate-400">1,122 Total Questions</span>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <div className="flex-1 min-w-[100px] rounded-xl bg-blue-50/70 border border-blue-200 p-2.5 text-center">
+              <div className="text-base font-black text-blue-800">1,117</div>
+              <div className="text-[10px] font-bold text-blue-600 uppercase">UPSC CSE</div>
+            </div>
+            <div className="flex-1 min-w-[70px] rounded-xl bg-slate-50 border border-slate-200 p-2.5 text-center">
+              <div className="text-base font-black text-slate-800">2</div>
+              <div className="text-[10px] font-bold text-slate-500 uppercase">CDS</div>
+            </div>
+            <div className="flex-1 min-w-[70px] rounded-xl bg-slate-50 border border-slate-200 p-2.5 text-center">
+              <div className="text-base font-black text-slate-800">1</div>
+              <div className="text-[10px] font-bold text-slate-500 uppercase">NDA</div>
+            </div>
+            <div className="flex-1 min-w-[70px] rounded-xl bg-slate-50 border border-slate-200 p-2.5 text-center">
+              <div className="text-base font-black text-slate-800">1</div>
+              <div className="text-[10px] font-bold text-slate-500 uppercase">CAPF</div>
+            </div>
+            <div className="flex-1 min-w-[70px] rounded-xl bg-slate-50 border border-slate-200 p-2.5 text-center">
+              <div className="text-base font-black text-slate-800">1</div>
+              <div className="text-[10px] font-bold text-slate-500 uppercase">EPFO</div>
+            </div>
+          </div>
+          <p className="text-[11px] text-slate-400 mt-3 leading-relaxed">
+            Historical periods covered: 1979–2010 (Kothari), 2011–2014 (CSAT counted), 2015–Present (CSAT qualifying). Other examinations are strictly partitioned to prevent dataset contamination.
+          </p>
+        </div>
+      </div>
+
       {/* CSV Export Downloads & Documentation Links */}
       <div className="mb-8 rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
         <h2 className="text-base font-extrabold text-slate-900 mb-2 flex items-center gap-2">

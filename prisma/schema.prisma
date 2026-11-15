@@ -146,6 +146,9 @@ model Question {
   notes          UserNote[]
   schedules      ReviewSchedule[]
   storyLinks     StoryQuestionLink[]
+  ncertLinks     NCERTChapterQuestionLink[]
+  verificationStatus String @default("OFFICIALLY_VERIFIED") // OFFICIALLY_VERIFIED, INDEPENDENTLY_CORROBORATED, EXPERT_REVIEWED, PENDING_VERIFICATION, DISPUTED
+  examCategory   String             @default("CSE") // CSE, CDS, NDA, CAPF, EPFO, ESE
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
 
@@ -772,12 +775,119 @@ model SourceRegistryRecord {
   sourceId         String    @unique
   sourceName       String
   canonicalDomain  String
-  sourceType       String
-  collectionMethod String
+  sourceType       String    // "OFFICIAL_GOVERNMENT", "EDUCATIONAL_CORROBORATION", "SEARCH_DISCOVERY"
+  priority         Int       @default(1) // 1: Highest (Official), 2: Educational, 3: Search
+  collectionMethod String    // "DOCUMENT_DOWNLOAD", "INDEX_ONLY", "METADATA_DEEP_LINK"
+  termsUrl         String?
+  robotsStatus     String    @default("ALLOWED") // "ALLOWED", "DISALLOWED", "RESTRICTED"
   lastStatusCode   Int       @default(200)
   lastCheckedAt    DateTime  @default(now())
   lastSuccessAt    DateTime?
   isHealthy        Boolean   @default(true)
   errorMessage     String?
+  createdAt        DateTime  @default(now())
 }
+
+// ==========================================
+// NCERT KNOWLEDGE BASE & TEXTBOOK CATALOG
+// ==========================================
+
+model NCERTBook {
+  id                String         @id @default(cuid())
+  classNumber       Int            // 6, 7, 8, 9, 10, 11, 12
+  subject           String         // "History", "Geography", "Polity", "Economy", "Science", "Sociology"
+  bookTitle         String         // e.g. "Indian Constitution at Work", "Themes in Indian History - Part I"
+  medium            String         @default("English")
+  coverUrl          String?
+  officialPortalUrl String         // Link to official portal at ncert.nic.in / epathshala.nic.in
+  copyrightNotice   String         @default("Copyright © National Council of Educational Research and Training (NCERT), New Delhi. Links provided for educational navigation under fair dealing.")
+  chapters          NCERTChapter[]
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  @@unique([classNumber, subject, bookTitle])
+  @@index([classNumber, subject])
+}
+
+model NCERTChapter {
+  id                String                     @id @default(cuid())
+  bookId            String
+  book              NCERTBook                  @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  chapterNumber     Int
+  chapterTitle      String
+  slug              String
+  officialPdfUrl    String                     // Official NCERT reader URL
+  keyTopics         String                     // Key syllabus concepts covered
+  summary           String?                    // Independently authored educational summary
+  questionLinks     NCERTChapterQuestionLink[]
+  createdAt         DateTime                   @default(now())
+  updatedAt         DateTime                   @updatedAt
+
+  @@unique([bookId, chapterNumber])
+  @@index([chapterTitle])
+}
+
+model NCERTChapterQuestionLink {
+  id            String       @id @default(cuid())
+  chapterId     String
+  chapter       NCERTChapter @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  questionId    String
+  question      Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  relevanceNote String?
+  createdAt     DateTime     @default(now())
+
+  @@unique([chapterId, questionId])
+  @@index([chapterId])
+  @@index([questionId])
+}
+
+// ==========================================
+// HISTORICAL EXAMINATION PERIODS & PATTERNS
+// ==========================================
+
+model HistoricalExamPeriod {
+  id                 String   @id @default(cuid())
+  examCode           String   // "CSE", "CDS", "NDA", etc.
+  periodLabel        String   // e.g. "1979-2010 (Kothari Pattern - Optional in Prelims)"
+  startYear          Int
+  endYear            Int?
+  patternDescription String
+  qualifyingRules    String
+  createdAt          DateTime @default(now())
+}
+
+// ==========================================
+// BACKGROUND EXTRACTION JOBS & QUALITY REPORTS
+// ==========================================
+
+model ExtractionJob {
+  id              String    @id @default(cuid())
+  jobType         String    // "PDF_EXTRACTION", "OCR_SCAN", "ANSWER_KEY_SYNC", "CLASSIFICATION"
+  targetSource    String    // "UPSC_OFFICIAL", "NCERT_PORTAL", "ARCHIVE"
+  examCode        String
+  year            Int
+  paperCode       String
+  status          String    @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  totalFound      Int       @default(0)
+  extractedCount  Int       @default(0)
+  failedCount     Int       @default(0)
+  confidenceScore Float     @default(0.95)
+  errorLog        String?
+  startedAt       DateTime  @default(now())
+  completedAt     DateTime?
+
+  @@index([status, examCode, year])
+}
+
+model DataQualityReport {
+  id                  String   @id @default(cuid())
+  reportType          String   // "DUPLICATE_CHECK", "OCR_AUDIT", "ANSWER_VERIFICATION"
+  totalAudited        Int      @default(0)
+  duplicatesFound     Int      @default(0)
+  missingOptionsFound Int      @default(0)
+  ocrConfidenceAvg    Float    @default(0.98)
+  issuesSummary       String?
+  createdAt           DateTime @default(now())
+}
+
 

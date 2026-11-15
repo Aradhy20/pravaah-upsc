@@ -102,6 +102,7 @@ export function Header() {
     pathname?.startsWith("/mains") ||
     pathname?.startsWith("/study-planner") ||
     pathname?.startsWith("/exams") ||
+    pathname?.startsWith("/ncert") ||
     pathname?.startsWith("/syllabus");
 
   return (
@@ -244,6 +245,22 @@ export function Header() {
                       <div className="text-xs font-bold text-slate-900">UPSC Crack Engine & Vault</div>
                       <div className="text-[11px] text-slate-500 leading-tight mt-0.5">
                         Detailed micro-syllabus, booklist, static cheat sheets
+                      </div>
+                    </div>
+                  </a>
+
+                  <a
+                    href="/ncert"
+                    onClick={() => setPrepOpen(false)}
+                    className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-slate-50 transition"
+                  >
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-emerald-100 text-emerald-700">
+                      <BookOpen className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">NCERT Knowledge Base</div>
+                      <div className="text-[11px] text-slate-500 leading-tight mt-0.5">
+                        Classes 6–12 textbooks, chapters & linked PYQs
                       </div>
                     </div>
                   </a>
@@ -529,6 +546,14 @@ export function Header() {
                 >
                   <Sparkles className="h-4 w-4 text-blue-600" />
                   <span>UPSC Crack Engine & Vault</span>
+                </a>
+                <a
+                  href="/ncert"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-bold text-emerald-700 bg-emerald-50/50 hover:bg-emerald-50"
+                >
+                  <BookOpen className="h-4 w-4 text-emerald-600" />
+                  <span>NCERT Knowledge Base</span>
                 </a>
                 <a
                   href="/current-affairs"

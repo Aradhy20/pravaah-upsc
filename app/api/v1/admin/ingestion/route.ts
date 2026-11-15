@@ -48,7 +48,26 @@ export async function GET(request: NextRequest) {
       where: { status: "PUBLISHED" },
     });
 
-    // 5. Recent background jobs & retries
+    // 5. NCERT and Historical Question Engine counts
+    const [
+      ncertBooksCount,
+      ncertChaptersCount,
+      ncertLinksCount,
+      historicalPeriodsCount,
+      extractionJobs,
+      dataQualityReports,
+      categoryDistribution,
+    ] = await Promise.all([
+      prisma.nCERTBook.count(),
+      prisma.nCERTChapter.count(),
+      prisma.nCERTChapterQuestionLink.count(),
+      prisma.historicalExamPeriod.count(),
+      prisma.extractionJob.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
+      prisma.dataQualityReport.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
+      prisma.question.groupBy({ by: ["examCategory"], _count: true }),
+    ]);
+
+    // 6. Recent background jobs & retries
     const backgroundJobs = await prisma.backgroundJob.findMany({
       orderBy: { startedAt: "desc" },
       take: 10,
@@ -76,9 +95,16 @@ export async function GET(request: NextRequest) {
           retryQueueCount: failedJobsCount,
           processingErrors: 0,
           totalProcessingTimeMs: 1250,
+          ncertBooksCount,
+          ncertChaptersCount,
+          ncertLinksCount,
+          historicalPeriodsCount,
+          categoryDistribution,
         },
         sources,
         recentJobs: backgroundJobs,
+        extractionJobs,
+        dataQualityReports,
       },
     });
   } catch (error: any) {
