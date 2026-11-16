@@ -1,0 +1,24 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:17-alpine
+    container_name: pravaah-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: pravaah_upsc
+    ports:
+      - "5432:5432"
+    volumes:
+      - pravaah_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d pravaah_upsc"]
+      interval: 3s
+      timeout: 3s
+      retries: 10
+
+volumes:
+  pravaah_postgres_data:
+    name: pravaah_postgres_data
