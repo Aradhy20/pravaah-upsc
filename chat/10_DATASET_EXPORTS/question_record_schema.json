@@ -1,0 +1,155 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pravaah UPSC Question Record",
+  "type": "object",
+  "required": [
+    "question_id",
+    "exam_family",
+    "exam_year",
+    "stage",
+    "paper",
+    "question_text",
+    "language",
+    "source_url",
+    "source_type",
+    "verification_status"
+  ],
+  "properties": {
+    "question_id": {
+      "type": "string"
+    },
+    "question_group_id": {
+      "type": "string",
+      "description": "Shared ID to connect English/Hindi variants or translations."
+    },
+    "exam_family": {
+      "type": "string"
+    },
+    "exam_year": {
+      "type": "integer",
+      "minimum": 1995,
+      "maximum": 2026
+    },
+    "stage": {
+      "type": "string"
+    },
+    "paper": {
+      "type": "string"
+    },
+    "subject": {
+      "type": "string"
+    },
+    "topic": {
+      "type": "string"
+    },
+    "subtopic": {
+      "type": "string"
+    },
+    "question_number": {
+      "type": [
+        "string",
+        "integer"
+      ]
+    },
+    "question_text": {
+      "type": "string"
+    },
+    "question_text_original": {
+      "type": "string"
+    },
+    "language": {
+      "enum": [
+        "English",
+        "Hindi",
+        "Other",
+        "Bilingual"
+      ]
+    },
+    "options": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "label": {
+            "type": "string"
+          },
+          "text": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "correct_answer": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "answer_source": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "explanation_en": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "explanation_hi": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "difficulty": {
+      "enum": [
+        "Easy",
+        "Moderate",
+        "Difficult",
+        "Unrated"
+      ]
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "source_type": {
+      "enum": [
+        "UPSC_Official",
+        "Government_Official",
+        "Secondary_Provider",
+        "Original_Pravaah"
+      ]
+    },
+    "source_page": {
+      "type": [
+        "integer",
+        "null"
+      ]
+    },
+    "source_pdf_sha256": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "verification_status": {
+      "enum": [
+        "Not_Verified",
+        "Verified_Against_Official_Paper",
+        "Official_Key_Matched",
+        "Unofficial_Answer",
+        "Needs_Review"
+      ]
+    },
+    "rights_status": {
+      "type": "string"
+    },
+    "retrieved_at": {
+      "type": "string",
+      "format": "date-time"
+    }
+  }
+}

@@ -20,28 +20,50 @@ import {
 export interface OptionItem {
   id?: string;
   code: string;
+  label?: string;
   text: string;
+  textEn?: string;
+  textHi?: string | null;
   isCorrect?: boolean;
 }
 
 export interface QuestionData {
   id: string;
+  recordId?: string;
+  questionGroupId?: string | null;
   year: number;
   questionNumber: number;
   paperCode: string;
   questionText: string;
+  questionTextEn?: string;
+  questionTextHi?: string | null;
+  language?: string;
   difficulty?: string;
   subject?: string;
   topic?: string;
   options: OptionItem[];
   correctOption: string;
+  answerKeyType?: string;
+  verificationStatus?: string;
+  answerProvenance?: string;
   explanation?: {
     summary: string;
     detailedExplanation: string;
+    explanationEn?: string;
+    explanationHi?: string | null;
     eliminationTechnique?: string | null;
     sourceCitation?: string | null;
     relatedConcept?: string | null;
   } | null;
+  citations?: Array<{
+    id?: string;
+    sourceName: string;
+    publisher?: string;
+    sourceUrl?: string;
+    evidenceType?: string;
+    pageNumber?: string;
+    citationText?: string;
+  }>;
 }
 
 interface QuestionCardProps {
@@ -64,6 +86,7 @@ export function QuestionCard({
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [noteSaved, setNoteSaved] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [langMode, setLangMode] = useState<"EN" | "HI" | "BOTH">("EN");
   const [isReporting, setIsReporting] = useState(false);
   const [reportReason, setReportReason] = useState("Discrepancy with official key");
   const [reportDetails, setReportDetails] = useState("");
@@ -195,10 +218,49 @@ export function QuestionCard({
               {question.topic}
             </span>
           )}
+          {question.answerKeyType && (
+            <span
+              className={`rounded-md px-2 py-0.5 text-[10px] font-bold border ${
+                question.answerKeyType === "UPSC_FINAL_KEY"
+                  ? "bg-emerald-50 text-emerald-800 border-emerald-200"
+                  : "bg-amber-50 text-amber-800 border-amber-200"
+              }`}
+            >
+              {question.answerKeyType === "UPSC_FINAL_KEY" ? "Official UPSC Key" : "Faculty Key"}
+            </span>
+          )}
         </div>
 
-        {/* Card Utility Actions */}
-        <div className="flex items-center gap-1">
+        {/* Card Utility Actions & Bilingual Switcher */}
+        <div className="flex items-center gap-1.5">
+          {question.questionTextHi && (
+            <div className="flex items-center rounded-lg border border-slate-200 bg-slate-50 p-0.5 text-[10px] font-bold mr-1">
+              <button
+                onClick={() => setLangMode("EN")}
+                className={`rounded px-1.5 py-0.5 transition ${
+                  langMode === "EN" ? "bg-white text-blue-700 shadow-xs" : "text-slate-500 hover:text-slate-900"
+                }`}
+              >
+                EN
+              </button>
+              <button
+                onClick={() => setLangMode("HI")}
+                className={`rounded px-1.5 py-0.5 transition ${
+                  langMode === "HI" ? "bg-white text-blue-700 shadow-xs" : "text-slate-500 hover:text-slate-900"
+                }`}
+              >
+                हि
+              </button>
+              <button
+                onClick={() => setLangMode("BOTH")}
+                className={`rounded px-1.5 py-0.5 transition ${
+                  langMode === "BOTH" ? "bg-white text-blue-700 shadow-xs" : "text-slate-500 hover:text-slate-900"
+                }`}
+              >
+                Both
+              </button>
+            </div>
+          )}
           <button
             onClick={handleToggleBookmark}
             title={isBookmarked ? "Remove Bookmark" : "Save for Revision"}
@@ -238,11 +300,18 @@ export function QuestionCard({
         </div>
       </div>
 
-      {/* Question Body */}
-      <div className="mt-4">
-        <p className="whitespace-pre-line text-base font-medium leading-relaxed text-slate-800">
-          {question.questionText}
-        </p>
+      {/* Question Body (Bilingual Aware) */}
+      <div className="mt-4 space-y-3">
+        {(langMode === "EN" || langMode === "BOTH" || !question.questionTextHi) && (
+          <p className="whitespace-pre-line text-base font-medium leading-relaxed text-slate-800">
+            {question.questionTextEn || question.questionText}
+          </p>
+        )}
+        {(langMode === "HI" || langMode === "BOTH") && question.questionTextHi && (
+          <p className={`whitespace-pre-line text-base font-medium leading-relaxed text-slate-800 ${langMode === "BOTH" ? "border-t border-slate-100 pt-3 text-slate-700 italic" : ""}`}>
+            {question.questionTextHi}
+          </p>
+        )}
       </div>
 
       {/* Multiple Choice Options */}
@@ -264,6 +333,9 @@ export function QuestionCard({
             }
           }
 
+          const optTextEn = option.textEn || option.text;
+          const optTextHi = option.textHi;
+
           return (
             <button
               key={option.code}
@@ -282,7 +354,16 @@ export function QuestionCard({
               >
                 {option.code}
               </span>
-              <span className="flex-1 text-sm leading-normal">{option.text}</span>
+              <div className="flex-1 text-sm leading-normal">
+                {(langMode === "EN" || langMode === "BOTH" || !optTextHi) && (
+                  <div>{optTextEn}</div>
+                )}
+                {(langMode === "HI" || langMode === "BOTH") && optTextHi && (
+                  <div className={langMode === "BOTH" ? "text-xs text-slate-500 mt-0.5" : ""}>
+                    {optTextHi}
+                  </div>
+                )}
+              </div>
               {hasAnswered && isCorrect && (
                 <CheckCircle2 className="h-5 w-5 shrink-0 text-emerald-600 mt-0.5" />
               )}
@@ -446,10 +527,29 @@ export function QuestionCard({
               </div>
             )}
 
-            {/* Standard Reference Citation */}
+            {/* Standard Reference Citation & Official Gazette Evidence */}
             {question.explanation?.sourceCitation && (
               <div className="mt-2 text-[11px] font-medium text-slate-500 italic">
                 Source Reference: {question.explanation.sourceCitation}
+              </div>
+            )}
+
+            {/* Official Citations & Provenance Links */}
+            {question.citations && question.citations.length > 0 && (
+              <div className="mt-3 border-t border-slate-200/60 pt-2 text-[11px] text-slate-500 flex flex-wrap items-center gap-2">
+                <span className="font-bold text-slate-700">Official Evidence:</span>
+                {question.citations.map((c, i) => (
+                  <a
+                    key={i}
+                    href={c.sourceUrl || "https://www.upsc.gov.in/examinations/previous-question-papers"}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1 rounded bg-slate-200/70 px-2 py-0.5 text-blue-700 hover:text-blue-900 hover:underline"
+                  >
+                    <span>{c.sourceName}</span>
+                    {c.pageNumber && <span className="text-slate-400">({c.pageNumber})</span>}
+                  </a>
+                ))}
               </div>
             )}
           </div>

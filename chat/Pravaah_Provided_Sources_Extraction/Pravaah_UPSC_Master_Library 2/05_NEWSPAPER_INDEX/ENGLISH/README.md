@@ -1,0 +1,1 @@
+Record: publication_date, publisher, headline, author, URL, section, syllabus_paper, subject, topic, original_summary, keywords, access_status. Do not store full copyrighted articles or e-paper PDFs without permission.

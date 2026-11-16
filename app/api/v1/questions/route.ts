@@ -97,9 +97,13 @@ export async function GET(request: NextRequest) {
             orderBy: { optionCode: "asc" },
           },
           explanation: true,
-          answerKeys: {
+          answers: {
             take: 1,
             orderBy: { createdAt: "desc" },
+          },
+          citations: {
+            take: 2,
+            include: { source: true },
           },
           topics: {
             include: {
@@ -118,15 +122,21 @@ export async function GET(request: NextRequest) {
     const formatted = questions.map((q) => {
       const primaryTopic = q.topics[0]?.topic;
       const primarySubject = primaryTopic?.subject;
-      const correctOption = q.options.find((o) => o.isCorrect)?.optionCode || "A";
+      const primaryAnswer = (q as any).answers?.[0];
+      const correctOption = primaryAnswer?.answerOption || q.options.find((o) => o.isCorrect)?.optionCode || "A";
 
       return {
         id: q.id,
+        recordId: (q as any).recordId || `REC-${q.year}-${q.paper.code}-${q.questionNumber}`,
+        questionGroupId: (q as any).questionGroupId || null,
         year: q.year,
         questionNumber: q.questionNumber,
         paperCode: q.paper.code,
         paperName: q.paper.name,
         questionText: q.questionText,
+        questionTextEn: (q as any).questionTextEn || q.questionText,
+        questionTextHi: (q as any).questionTextHi || null,
+        language: (q as any).language || ((q as any).questionTextHi ? "Bilingual" : "English"),
         difficulty: q.difficulty,
         isStatic: q.isStatic,
         status: q.status,
@@ -136,19 +146,36 @@ export async function GET(request: NextRequest) {
         options: q.options.map((opt) => ({
           id: opt.id,
           code: opt.optionCode,
+          label: (opt as any).optionLabel || opt.optionCode,
           text: opt.optionText,
+          textEn: (opt as any).optionTextEn || opt.optionText,
+          textHi: (opt as any).optionTextHi || null,
           isCorrect: opt.isCorrect,
         })),
         correctOption,
+        answerKeyType: primaryAnswer?.answerKeyType || "UPSC_FINAL_KEY",
+        verificationStatus: primaryAnswer?.verificationStatus || "OFFICIALLY_VERIFIED",
+        answerProvenance: primaryAnswer?.answerProvenance || "UPSC_OFFICIAL_FINAL",
         explanation: q.explanation
           ? {
               summary: q.explanation.summary,
               detailedExplanation: q.explanation.detailedExplanation,
+              explanationEn: (q.explanation as any).explanationEn || q.explanation.detailedExplanation,
+              explanationHi: (q.explanation as any).explanationHi || null,
               eliminationTechnique: q.explanation.eliminationTechnique,
               sourceCitation: q.explanation.sourceCitation,
               relatedConcept: q.explanation.relatedConcept,
             }
           : null,
+        citations: ((q as any).citations || []).map((c: any) => ({
+          id: c.id,
+          sourceName: c.source?.sourceName || "UPSC Official Key",
+          publisher: c.source?.publisher || "UPSC",
+          sourceUrl: c.sourceUrl || c.source?.canonicalUrl || "https://www.upsc.gov.in",
+          evidenceType: c.evidenceType || "OFFICIAL_GAZETTE",
+          pageNumber: c.pageNumber,
+          citationText: c.citationText,
+        })),
       };
     });
 

@@ -24,6 +24,7 @@ import {
   ArrowRight,
   Sliders,
 } from "lucide-react";
+import { AILearningAssistantModal } from "@/components/AILearningAssistantModal";
 
 export function Header() {
   const pathname = usePathname();
@@ -31,6 +32,7 @@ export function Header() {
   const [practiceOpen, setPracticeOpen] = useState(false);
   const [prepOpen, setPrepOpen] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
+  const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
 
   const [currentUser, setCurrentUser] = useState<any | null>(null);
   const [userTier, setUserTier] = useState<string>("Free");
@@ -328,6 +330,22 @@ export function Header() {
                       </div>
                     </div>
                   </a>
+
+                  <a
+                    href="/coverage"
+                    onClick={() => setPrepOpen(false)}
+                    className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-slate-50 transition border-t border-slate-100 mt-1 pt-2"
+                  >
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-indigo-100 text-indigo-700">
+                      <Layers className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">Coverage & Harvest Matrix</div>
+                      <div className="text-[11px] text-slate-500 leading-tight mt-0.5">
+                        14 exams, 1995–2026 archives & completeness
+                      </div>
+                    </div>
+                  </a>
                 </div>
               )}
             </div>
@@ -364,7 +382,16 @@ export function Header() {
         </div>
 
         {/* Right Section: Search & Auth Actions */}
-        <div className="hidden sm:flex items-center gap-3">
+        <div className="hidden sm:flex items-center gap-2.5">
+          {/* Ask AI Grounded Assistant */}
+          <button
+            onClick={() => setIsAiAssistantOpen(true)}
+            className="flex items-center gap-1.5 text-xs font-bold text-indigo-700 bg-indigo-50 border border-indigo-200/80 px-2.5 py-1.5 rounded-lg hover:bg-indigo-100 transition shadow-xs"
+          >
+            <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
+            <span>Ask AI</span>
+          </button>
+
           {/* Quick Practise Link */}
           <a
             href="/pyqs"
@@ -647,6 +674,11 @@ export function Header() {
           </div>
         </div>
       )}
+
+      <AILearningAssistantModal
+        isOpen={isAiAssistantOpen}
+        onClose={() => setIsAiAssistantOpen(false)}
+      />
     </header>
   );
 }

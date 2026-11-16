@@ -1,0 +1,19 @@
+﻿publisher,resource,url,source_type,use,verification_or_rights_notes
+UPSC,Previous question papers,https://www.upsc.gov.in/examinations/previous-question-papers,Official,Primary papers,Scrape connection failures in initial pass; use archive page and manual/browser fallback.
+UPSC,Previous question paper archives,https://www.upsc.gov.in/examinations/previous-question-papers/archives,Official,Historical papers,Automated connection closed during initial pass.
+UPSC,Official portal,https://www.upsc.gov.in/,Official,"Notifications, syllabus, results, notices",Use as canonical source.
+UPSC Online,Previous exam details / answer keys entry point,https://upsconline.nic.in/,Official,Answer keys and exam services,Locate year/exam-specific key; preserve upload date.
+NCERT,Textbooks catalogue,https://ncert.nic.in/textbook.php,Official,"Foundation textbooks, classes I–XII",English and Hindi selector observed. Copyright: do not republish or redistribute.
+ePathshala,Digital textbooks and resources,https://epathshala.nic.in/,Official,Textbooks and learning resources,Link out; check resource terms.
+PIB,Press Information Bureau,https://pib.gov.in/,Official,Government releases and explainers,Bilingual/multilingual versions may be available per release.
+PRS India,Legislative research,https://prsindia.org/,Independent research organisation,"Bills, acts, budget and policy analysis",Use for analysis; verify legal text with Gazette/India Code.
+Yojana,Yojana magazine,https://yojana.gov.in/,Government publication,Thematic essays and development topics,Link to authorised issues; do not mirror without permission.
+Kurukshetra,Publication Division,https://publicationsdivision.nic.in/,Government publication,Rural development themes,Locate authorised issues.
+News on AIR,All India Radio news,https://newsonair.gov.in/,Public broadcaster,News and audio,Create dated link index and original summaries.
+Sansad TV,Parliamentary broadcaster,https://sansadtv.nic.in/,Public broadcaster,"Debates, interviews, explainers",Link to programme/video; create original notes.
+India Budget,Union Budget documents,https://www.indiabudget.gov.in/,Government,"Budget, receipts, expenditure, documents",Use original government documents.
+Economic Survey,Economic Survey documents,https://www.indiabudget.gov.in/economicsurvey/,Government,Economic Survey and statistical appendices,Use original reports; cite chapter/page.
+The Hindu,Newspaper / editorial index,https://www.thehindu.com/,Copyrighted publisher,Editorial and issue index,"Store metadata, URL and original summary only; no full-article mirroring."
+Indian Express,Newspaper / Explained index,https://indianexpress.com/,Copyrighted publisher,Explained and editorial index,"Store metadata, URL and original summary only; no full-article mirroring."
+UnlockIAS,Secondary PYQ index,https://www.unlockias.in/upsc-prelims-pyq,Secondary provider,Potential PYQ discovery and taxonomy,Not authoritative; independently verify against UPSC originals and rights.
+UnlockIAS Mains,Secondary Mains PYQ index,https://www.unlockias.in/upsc-mains-pyq,Secondary provider,Potential Mains question discovery,Not authoritative; independently verify and check reuse rights.

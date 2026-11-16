@@ -110,6 +110,7 @@ model Topic {
   description String?
   parentId    String?
   questions   QuestionTopic[]
+  subtopics   Subtopic[]
   createdAt   DateTime        @default(now())
 }
 
@@ -125,18 +126,38 @@ model SyllabusNode {
 
 model Question {
   id             String             @id @default(cuid())
+  recordId       String?
+  questionGroupId String?           // Shared ID linking English and Hindi equivalents
+  examId         String?
+  examYearId     String?
+  stageId        String?
   paperId        String
   paper          Paper              @relation(fields: [paperId], references: [id], onDelete: Cascade)
   year           Int
   questionNumber Int
+  questionType   String             @default("MCQ") // MCQ, SUBJECTIVE_MAINS, ESSAY
   questionText   String
+  questionTextEn String?
+  questionTextHi String?
   difficulty     String             @default("MEDIUM") // EASY, MEDIUM, HARD
+  difficultyLevel String?           @default("MEDIUM")
+  subjectId      String?
+  topicId        String?
+  subtopicId     String?
+  marks          Float?             @default(2.0)
+  negativeMarks  Float?             @default(0.666)
+  sourceId       String?
+  sourcePage     String?
+  language       String             @default("English") // English, Hindi, Bilingual
   isStatic       Boolean            @default(true)
   status         String             @default("DRAFT") // DRAFT, NEEDS_REVIEW, VERIFIED, PUBLISHED, ARCHIVED
   verifiedAt     DateTime?
   options        QuestionOption[]
   explanation    Explanation?
   answerKeys     AnswerKeyVersion[]
+  answers        QuestionAnswer[]
+  syllabusMappings QuestionSyllabusMapping[]
+  citations      SourceCitation[]
   topics         QuestionTopic[]
   sources        QuestionSource[]
   testQuestions  TestQuestion[]
@@ -147,13 +168,15 @@ model Question {
   schedules      ReviewSchedule[]
   storyLinks     StoryQuestionLink[]
   ncertLinks     NCERTChapterQuestionLink[]
-  verificationStatus String @default("OFFICIALLY_VERIFIED") // OFFICIALLY_VERIFIED, INDEPENDENTLY_CORROBORATED, EXPERT_REVIEWED, PENDING_VERIFICATION, DISPUTED
+  verificationStatus String         @default("OFFICIALLY_VERIFIED") // OFFICIALLY_VERIFIED, INDEPENDENTLY_CORROBORATED, EXPERT_REVIEWED, PENDING_VERIFICATION, DISPUTED
   examCategory   String             @default("CSE") // CSE, CDS, NDA, CAPF, EPFO, ESE
   createdAt      DateTime           @default(now())
   updatedAt      DateTime           @updatedAt
 
   @@unique([paperId, year, questionNumber])
   @@index([year, paperId, status])
+  @@index([questionGroupId])
+  @@index([examCategory, year])
   @@index([status])
 }
 
@@ -162,7 +185,11 @@ model QuestionOption {
   questionId   String
   question     Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
   optionCode   String       // A, B, C, D
+  optionLabel  String?      // A, B, C, D
   optionText   String
+  optionTextEn String?
+  optionTextHi String?
+  optionOrder  Int          @default(1)
   isCorrect    Boolean      @default(false)
   responses    UserResponse[]
   createdAt    DateTime     @default(now())
@@ -171,16 +198,39 @@ model QuestionOption {
 }
 
 model Explanation {
-  id                   String   @id @default(cuid())
-  questionId           String   @unique
-  question             Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  id                   String    @id @default(cuid())
+  questionId           String    @unique
+  question             Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
   summary              String
   detailedExplanation  String
   eliminationTechnique String?
   sourceCitation       String?
   relatedConcept       String?
-  createdAt            DateTime @default(now())
-  updatedAt            DateTime @updatedAt
+  explanationEn        String?
+  explanationHi        String?
+  explanationSource    String?
+  explanationType      String?   @default("PEDAGOGICAL")
+  verifiedAt           DateTime?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+}
+
+model QuestionAnswer {
+  id                 String    @id @default(cuid())
+  questionId         String
+  question           Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  answerText         String?
+  answerOption       String    // A, B, C, D, or DROPPED
+  answerType         String    @default("FINAL") // FINAL, PROVISIONAL, AMBIGUOUS, DROPPED
+  answerKeyType      String    @default("UPSC_FINAL_KEY") // UPSC_FINAL_KEY, UPSC_PROVISIONAL_KEY, PROVIDER_DERIVED, FACULTY_DERIVED, UNVERIFIED, NO_KEY_FOUND
+  answerProvenance   String    @default("UPSC_OFFICIAL_FINAL")
+  verificationStatus String    @default("OFFICIALLY_VERIFIED")
+  sourceId           String?
+  publishedAt        DateTime?
+  createdAt          DateTime  @default(now())
+
+  @@index([questionId])
+  @@index([answerKeyType])
 }
 
 model AnswerKeyVersion {
@@ -888,6 +938,147 @@ model DataQualityReport {
   ocrConfidenceAvg    Float    @default(0.98)
   issuesSummary       String?
   createdAt           DateTime @default(now())
+}
+
+// ==========================================
+// MASTER LIBRARY NORMALIZED ENTITIES
+// ==========================================
+
+model ExamYear {
+  id                 String   @id @default(cuid())
+  examFamily         String   // e.g. "Civil Services Examination (CSE)", "Combined Defence Services (CDS)"
+  year               Int      // 1995 to 2026
+  paperOrStage       String?  // e.g. "Prelims GS I; Prelims CSAT", "GS1-GS4 and Essay"
+  language           String   @default("English/Hindi")
+  officialSourceUrl  String?
+  downloadStatus     String   @default("NOT_HARVESTED") // NOT_HARVESTED, DISCOVERED, DOWNLOADED, EXTRACTED, VERIFIED, ACCESS_BLOCKED
+  verificationStatus String   @default("NOT_VERIFIED")  // NOT_VERIFIED, OFFICIALLY_VERIFIED, SECONDARY_CORROBORATED
+  notes              String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@unique([examFamily, year, paperOrStage])
+  @@index([examFamily, year])
+  @@index([downloadStatus])
+}
+
+model Subtopic {
+  id             String          @id @default(cuid())
+  topicId        String
+  topic          Topic           @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  subtopicName   String
+  description    String?
+  syllabusTopics SyllabusTopic[]
+  createdAt      DateTime        @default(now())
+
+  @@unique([topicId, subtopicName])
+  @@index([topicId])
+}
+
+model SyllabusTopic {
+  id                 String                    @id @default(cuid())
+  examId             String?
+  paperId            String?
+  subjectId          String?
+  topicId            String?
+  subtopicId         String?
+  subtopic           Subtopic?                 @relation(fields: [subtopicId], references: [id], onDelete: SetNull)
+  syllabusVersion    String                    @default("2024-2026")
+  syllabusText       String
+  officialSourceUrl  String?
+  questionMappings   QuestionSyllabusMapping[]
+  createdAt          DateTime                  @default(now())
+
+  @@index([paperId, subjectId])
+}
+
+model QuestionSyllabusMapping {
+  id              String        @id @default(cuid())
+  questionId      String
+  question        Question      @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  syllabusTopicId String
+  syllabusTopic   SyllabusTopic @relation(fields: [syllabusTopicId], references: [id], onDelete: Cascade)
+  mappingType     String        @default("PRIMARY") // PRIMARY, SECONDARY, CONTEXTUAL
+  confidenceScore Float         @default(0.95)
+  mappingMethod   String        @default("MANUAL_VERIFIED") // MANUAL_VERIFIED, SYLLABUS_TAXONOMY, AI_ASSISTED
+  reviewedStatus  String        @default("REVIEWED") // REVIEWED, PENDING_REVIEW
+  createdAt       DateTime      @default(now())
+
+  @@unique([questionId, syllabusTopicId])
+  @@index([questionId])
+  @@index([syllabusTopicId])
+}
+
+model KnowledgeSource {
+  id               String           @id @default(cuid())
+  sourceName       String
+  sourceType       String           // OFFICIAL, SECONDARY_PROVIDER, RESEARCH, NEWS, STATUTORY
+  canonicalUrl     String           @unique
+  publisher        String
+  contentType      String           // PYQ, SYLLABUS, CURRENT_AFFAIRS, ANSWER_KEY, STUDY_MATERIAL
+  language         String           @default("English")
+  rightsStatus     String           @default("PUBLIC_DOMAIN") // PUBLIC_DOMAIN, FAIR_DEALING_INDEX, COPYRIGHT_RESTRICTED
+  accessStatus     String           @default("ACCESSIBLE") // ACCESSIBLE, LOGIN_REQUIRED, ACCESS_BLOCKED
+  reliabilityLevel String           @default("PRIMARY_OFFICIAL") // PRIMARY_OFFICIAL, SECONDARY_VERIFIED, UNVERIFIED
+  retrievedAt      DateTime         @default(now())
+  lastCheckedAt    DateTime         @default(now())
+  sourceRecords    SourceRecord[]
+  citations        SourceCitation[]
+  createdAt        DateTime         @default(now())
+
+  @@index([sourceType])
+  @@index([rightsStatus])
+}
+
+model SourceRecord {
+  id                 String          @id @default(cuid())
+  sourceId           String
+  source             KnowledgeSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  externalRecordId   String?
+  originalUrl        String
+  originalTitle      String
+  sourcePage         String?
+  extractionStatus   String          @default("DISCOVERED") // DISCOVERED, FETCHED, EXTRACTED, PARTIALLY_EXTRACTED, VERIFIED, ACCESS_BLOCKED, NOT_FOUND, NOT_PUBLISHED, NEEDS_MANUAL_REVIEW, REJECTED
+  checksum           String?
+  verificationStatus String          @default("PENDING_VERIFICATION")
+  createdAt          DateTime        @default(now())
+
+  @@index([sourceId])
+  @@index([extractionStatus])
+}
+
+model SourceCitation {
+  id           String          @id @default(cuid())
+  questionId   String
+  question     Question        @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  sourceId     String
+  source       KnowledgeSource @relation(fields: [sourceId], references: [id], onDelete: Cascade)
+  sourceUrl    String
+  pageNumber   String?
+  evidenceType String          @default("OFFICIAL_GAZETTE") // OFFICIAL_GAZETTE, STATUTE, SUPREME_COURT, PIB, NCERT, TEXTBOOK
+  citationText String
+  createdAt    DateTime        @default(now())
+
+  @@index([questionId])
+  @@index([sourceId])
+}
+
+model IngestionJobAudit {
+  id              String    @id @default(cuid())
+  sourceId        String?
+  jobType         String    // HARVEST_SYNC, BATCH_IMPORT, OCR_DIGITIZATION, DUPLICATE_DETECTION
+  status          String    @default("RUNNING") // RUNNING, COMPLETED, FAILED, PARTIAL
+  startedAt       DateTime  @default(now())
+  completedAt     DateTime?
+  totalDiscovered Int       @default(0)
+  totalFetched    Int       @default(0)
+  totalExtracted  Int       @default(0)
+  totalVerified   Int       @default(0)
+  totalFailed     Int       @default(0)
+  errorLog        String?
+  createdAt       DateTime  @default(now())
+
+  @@index([jobType, status])
 }
 
 

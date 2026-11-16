@@ -124,6 +124,15 @@ export default function AdminIngestionDashboardPage() {
         {/* Global Action Ribbon */}
         <div className="flex flex-wrap items-center gap-2">
           <button
+            onClick={() => handleAction("RUN_MASTER_LIBRARY_INGESTION")}
+            disabled={actionLoading !== null}
+            className="flex items-center gap-1.5 rounded-lg bg-amber-600 px-3 py-2 text-xs font-bold text-white shadow-sm hover:bg-amber-700 disabled:opacity-50"
+          >
+            <Database className={`h-3.5 w-3.5 ${actionLoading === "RUN_MASTER_LIBRARY_INGESTION" ? "animate-spin" : ""}`} />
+            Run Master Library Sync
+          </button>
+
+          <button
             onClick={() => handleAction("RUN_SOURCE_CHECK")}
             disabled={actionLoading !== null}
             className="flex items-center gap-1.5 rounded-lg bg-indigo-600 px-3 py-2 text-xs font-bold text-white shadow-sm hover:bg-indigo-700 disabled:opacity-50"

@@ -1,0 +1,56 @@
+{
+  "source_record": [
+    "source_id",
+    "source_name",
+    "canonical_url",
+    "page_title",
+    "content_type",
+    "retrieved_at",
+    "language",
+    "rights_status",
+    "access_status"
+  ],
+  "question_record": [
+    "question_id",
+    "exam",
+    "year",
+    "stage",
+    "paper",
+    "subject",
+    "topic",
+    "question_number",
+    "question_text",
+    "language",
+    "options",
+    "answer",
+    "answer_provenance",
+    "explanation",
+    "source_url",
+    "source_page",
+    "verification_status"
+  ],
+  "current_affairs_record": [
+    "story_id",
+    "date",
+    "headline",
+    "publisher",
+    "source_url",
+    "category",
+    "gs_paper",
+    "prelims_tags",
+    "mains_tags",
+    "summary_en",
+    "summary_hi",
+    "facts",
+    "primary_source_urls",
+    "rights_status"
+  ],
+  "answer_key_provenance_values": [
+    "UPSC_FINAL_KEY",
+    "UPSC_PROVISIONAL_KEY",
+    "PROVIDER_DERIVED",
+    "FACULTY_DERIVED",
+    "UNVERIFIED",
+    "NO_KEY_FOUND"
+  ]
+}

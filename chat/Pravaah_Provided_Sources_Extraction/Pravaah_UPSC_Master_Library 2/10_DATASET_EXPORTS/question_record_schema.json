@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Pravaah UPSC Question Record",
+  "type": "object",
+  "required": [
+    "record_id",
+    "exam_name",
+    "stage",
+    "year",
+    "paper",
+    "question_number",
+    "source_url",
+    "verification_status"
+  ],
+  "properties": {
+    "record_id": {
+      "type": "string"
+    },
+    "exam_name": {
+      "type": "string",
+      "examples": [
+        "Civil Services Examination"
+      ]
+    },
+    "stage": {
+      "type": "string",
+      "enum": [
+        "Prelims",
+        "Mains",
+        "Essay",
+        "Optional",
+        "Qualifying Language",
+        "Personality Test",
+        "Other"
+      ]
+    },
+    "year": {
+      "type": "integer"
+    },
+    "paper": {
+      "type": "string"
+    },
+    "language": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "English",
+          "Hindi",
+          "Bilingual",
+          "Other"
+        ]
+      }
+    },
+    "question_number": {
+      "type": [
+        "integer",
+        "string"
+      ]
+    },
+    "question_text_en": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "question_text_hi": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "options_en": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "options_hi": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "official_answer": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "answer_key_type": {
+      "type": "string",
+      "enum": [
+        "Official Final",
+        "Official Provisional",
+        "Unofficial",
+        "Not Available"
+      ]
+    },
+    "explanation_en": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "explanation_hi": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "subject": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "topic": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "subtopic": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "source_url": {
+      "type": "string",
+      "format": "uri"
+    },
+    "source_publisher": {
+      "type": "string"
+    },
+    "retrieved_at": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "Pending",
+        "Verified Against Original",
+        "Verified Against Final Key",
+        "Needs Review",
+        "Rejected"
+      ]
+    },
+    "rights_status": {
+      "type": "string",
+      "enum": [
+        "Publicly Linkable",
+        "Permission Required",
+        "Unknown",
+        "User Supplied Licensed Copy"
+      ]
+    },
+    "notes": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  }
+}

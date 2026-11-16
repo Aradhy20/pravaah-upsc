@@ -57,6 +57,10 @@ export async function GET(request: NextRequest) {
       extractionJobs,
       dataQualityReports,
       categoryDistribution,
+      knowledgeSourcesCount,
+      examYearsCount,
+      knowledgeSources,
+      ingestionJobAudits,
     ] = await Promise.all([
       prisma.nCERTBook.count(),
       prisma.nCERTChapter.count(),
@@ -65,6 +69,10 @@ export async function GET(request: NextRequest) {
       prisma.extractionJob.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
       prisma.dataQualityReport.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
       prisma.question.groupBy({ by: ["examCategory"], _count: true }),
+      prisma.knowledgeSource.count(),
+      prisma.examYear.count(),
+      prisma.knowledgeSource.findMany({ take: 50, orderBy: { sourceType: "asc" } }),
+      prisma.ingestionJobAudit.findMany({ take: 10, orderBy: { createdAt: "desc" } }),
     ]);
 
     // 6. Recent background jobs & retries
@@ -100,8 +108,12 @@ export async function GET(request: NextRequest) {
           ncertLinksCount,
           historicalPeriodsCount,
           categoryDistribution,
+          knowledgeSourcesCount,
+          examYearsCount,
         },
         sources,
+        knowledgeSources,
+        ingestionJobAudits,
         recentJobs: backgroundJobs,
         extractionJobs,
         dataQualityReports,
@@ -146,6 +158,15 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({
         success: true,
         data: { message: "Paper discovery completed successfully.", log: stdout.slice(-500) },
+      });
+    }
+
+    if (action === "RUN_MASTER_LIBRARY_INGESTION") {
+      const scriptPath = path.join(projectRoot, "scripts", "ingest_master_library.mjs");
+      const { stdout } = await execAsync(`node "${scriptPath}"`);
+      return NextResponse.json({
+        success: true,
+        data: { message: "Master library ingestion run completed successfully.", log: stdout.slice(-500) },
       });
     }
 
