@@ -9,6 +9,7 @@ const RESTORE_ORDER = [
   "User",
   "UserProfile",
   "Exam",
+  "ExamDirectory",
   "ExamStage",
   "Paper",
   "Subject",

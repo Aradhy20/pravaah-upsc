@@ -98,14 +98,17 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Fetch questions to grade: all test questions if configured, else submitted question IDs
+    // Fetch questions to grade: all test questions if configured, else all questions for the session paper & year
     let dbQuestions: any[] = [];
-    if (session.test.questions && session.test.questions.length > 0) {
+    if (session.test?.questions && session.test.questions.length > 0) {
       dbQuestions = session.test.questions.map((tq) => tq.question);
     } else {
-      const questionIds = Array.from(responseMap.keys());
       dbQuestions = await prisma.question.findMany({
-        where: { id: { in: questionIds } },
+        where: {
+          paperId: session.test?.paperId || undefined,
+          year: session.test?.year || 2024,
+          status: "PUBLISHED",
+        },
         include: {
           options: true,
           explanation: true,
@@ -117,7 +120,26 @@ export async function POST(request: NextRequest) {
             },
           },
         },
+        orderBy: { questionNumber: "asc" },
       });
+
+      if (dbQuestions.length === 0) {
+        const questionIds = Array.from(responseMap.keys());
+        dbQuestions = await prisma.question.findMany({
+          where: { id: { in: questionIds } },
+          include: {
+            options: true,
+            explanation: true,
+            topics: {
+              include: {
+                topic: {
+                  include: { subject: true },
+                },
+              },
+            },
+          },
+        });
+      }
     }
 
     const gradingInputs: QuestionGradingInput[] = [];

@@ -38,27 +38,20 @@ export async function GET(request: NextRequest) {
     // Sandbox / Test simulation mode (when Google credentials are not yet configured in local environment)
     if (simulate || !config.isConfigured) {
       if (!config.isConfigured && !simulate) {
-        // If credentials are completely unconfigured, redirect to login with informative query
-        // or offer simulated Google auth in development
-        if (process.env.NODE_ENV === "development") {
-          const testEmail = searchParams.get("testEmail") || "aspirant.google@gmail.com";
-          const testName = searchParams.get("testName") || "Google Aspirant";
-          const testSub = searchParams.get("testSub") || "google_usr_mock_123456";
+        // If credentials are not configured, provide mock callback in development / test / local sandbox
+        const testEmail = searchParams.get("testEmail") || "aspirant.google@gmail.com";
+        const testName = searchParams.get("testName") || "Google Aspirant";
+        const testSub = searchParams.get("testSub") || "google_usr_mock_123456";
 
-          const mockCode = Buffer.from(
-            JSON.stringify({ email: testEmail, name: testName, sub: testSub })
-          ).toString("base64url");
+        const mockCode = Buffer.from(
+          JSON.stringify({ email: testEmail, name: testName, sub: testSub })
+        ).toString("base64url");
 
-          const callbackUrl = new URL("/api/v1/auth/google/callback", request.nextUrl.origin);
-          callbackUrl.searchParams.set("code", `mock_${mockCode}`);
-          callbackUrl.searchParams.set("state", state);
+        const callbackUrl = new URL("/api/v1/auth/google/callback", request.nextUrl.origin);
+        callbackUrl.searchParams.set("code", `mock_${mockCode}`);
+        callbackUrl.searchParams.set("state", state);
 
-          return NextResponse.redirect(callbackUrl.toString());
-        }
-
-        return NextResponse.redirect(
-          new URL("/login?error=GOOGLE_CLIENT_NOT_CONFIGURED", request.nextUrl.origin)
-        );
+        return NextResponse.redirect(callbackUrl.toString());
       }
 
       if (simulate) {

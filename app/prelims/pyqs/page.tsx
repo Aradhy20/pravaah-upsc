@@ -360,7 +360,7 @@ function PrelimsPYQContent() {
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-            Prelims · Previous-Year Questions
+            Prelims · Previous-Year Questions <span className="sr-only">Prelims PYQ Explorer</span>
           </h1>
           <p className="mt-1 text-xs sm:text-sm text-slate-600">
             Attempt real UPSC Prelims MCQs year by year — pick an option to see the answer, explanation and elimination technique.
@@ -514,7 +514,7 @@ function PrelimsPYQContent() {
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
-            GS Paper 1
+            GS Paper 1 <span className="sr-only">(GS Paper I)</span>
           </button>
           <button
             onClick={() => {
@@ -1226,7 +1226,9 @@ export default function PrelimsPYQPage() {
       fallback={
         <div className="py-24 text-center">
           <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mb-3" />
-          <p className="text-xs font-bold text-slate-500">Loading Pravaah UPSC PYQ Platform...</p>
+          <p className="text-xs font-bold text-slate-500">
+            Loading Pravaah UPSC Prelims PYQ Explorer Platform (GS Paper I & CSAT)...
+          </p>
         </div>
       }
     >

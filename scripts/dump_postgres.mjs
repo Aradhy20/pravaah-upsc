@@ -9,6 +9,7 @@ const MODELS = [
   "User",
   "UserProfile",
   "Exam",
+  "ExamDirectory",
   "ExamStage",
   "Paper",
   "Subject",

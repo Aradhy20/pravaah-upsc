@@ -23,16 +23,25 @@ async function setup() {
     return;
   }
 
-  // 1. Push schema to database
-  console.log("📦 Synchronizing Prisma schema to database...");
+  // 1. Deploy controlled migrations to database
+  console.log("📦 Deploying Prisma migrations to database...");
   try {
-    execSync("npx prisma db push --skip-generate --accept-data-loss", {
+    execSync("npx prisma migrate deploy", {
       stdio: "inherit",
       env: { ...process.env, DATABASE_URL: dbUrl },
     });
-    console.log("✅ Prisma schema synchronized successfully!");
+    console.log("✅ Prisma migrations deployed successfully!");
   } catch (err) {
-    console.warn("⚠️ Prisma db push warning / skip:", err.message);
+    console.warn("⚠️ Prisma migrate deploy warning, falling back to db push sync:", err.message);
+    try {
+      execSync("npx prisma db push --skip-generate --accept-data-loss", {
+        stdio: "inherit",
+        env: { ...process.env, DATABASE_URL: dbUrl },
+      });
+      console.log("✅ Prisma schema synchronized via db push!");
+    } catch (pushErr) {
+      console.warn("⚠️ Schema sync warning:", pushErr.message);
+    }
   }
 
   // 2. Check and Seed Data if empty

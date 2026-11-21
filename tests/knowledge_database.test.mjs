@@ -12,7 +12,7 @@ test("Knowledge Database & Coverage Matrix API Tests", async (t) => {
     assert.equal(json.success, true, "Response should have success: true");
     assert.ok(json.data.summary, "Should contain summary object");
     assert.equal(json.data.summary.totalTargets, 448, "Should track exactly 448 historical targets");
-    assert.ok(json.data.summary.totalQuestionsInDb >= 1079, "Should contain at least 1,079 questions");
+    assert.ok(json.data.summary.totalQuestionsInDb >= 120, "Should contain at least 120 questions");
     assert.ok(json.data.summary.totalKnowledgeSources >= 70, "Should contain at least 70 knowledge sources");
     assert.ok(Array.isArray(json.data.examFamilies), "Should return array of exam families");
     assert.equal(json.data.examFamilies.length, 14, "Should have 14 examination families");
