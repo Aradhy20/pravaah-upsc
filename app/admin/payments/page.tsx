@@ -18,6 +18,10 @@ import {
   ChevronLeft,
   ChevronRight,
   TrendingUp,
+  Check,
+  X,
+  Smartphone,
+  Building,
 } from "lucide-react";
 
 export default function AdminPaymentsPage() {
@@ -26,7 +30,9 @@ export default function AdminPaymentsPage() {
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [page, setPage] = useState(1);
-  const [syncingOrderId, setSyncingOrderId] = useState<string | null>(null);
+  const [processingOrderId, setProcessingOrderId] = useState<string | null>(null);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
   const fetchPayments = async () => {
     setLoading(true);
@@ -62,18 +68,65 @@ export default function AdminPaymentsPage() {
     fetchPayments();
   };
 
-  const handleSyncStatus = async (orderId: string) => {
-    setSyncingOrderId(orderId);
+  const handleVerifyOrder = async (orderId: string, utr?: string) => {
+    setProcessingOrderId(orderId);
+    setActionMessage(null);
+    setActionError(null);
+
     try {
-      const res = await fetch(`/api/v1/payments/orders/${orderId}/status`);
+      const res = await fetch("/api/v1/admin/payments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "verify_utr",
+          orderId,
+          utr,
+        }),
+      });
+
       const json = await res.json();
       if (res.ok && json.success) {
+        setActionMessage(json.message || "Order verified and subscription activated!");
         await fetchPayments();
+      } else {
+        setActionError(json.error || "Failed to verify order.");
       }
-    } catch (e) {
-      console.error(e);
+    } catch (err: any) {
+      setActionError("Error connecting to server.");
     } finally {
-      setSyncingOrderId(null);
+      setProcessingOrderId(null);
+    }
+  };
+
+  const handleRejectOrder = async (orderId: string) => {
+    if (!confirm(`Are you sure you want to mark order ${orderId} as FAILED?`)) return;
+
+    setProcessingOrderId(orderId);
+    setActionMessage(null);
+    setActionError(null);
+
+    try {
+      const res = await fetch("/api/v1/admin/payments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          action: "reject_order",
+          orderId,
+          reason: "Rejected by admin review: transaction not verified in bank account.",
+        }),
+      });
+
+      const json = await res.json();
+      if (res.ok && json.success) {
+        setActionMessage(json.message || "Order marked as rejected.");
+        await fetchPayments();
+      } else {
+        setActionError(json.error || "Failed to reject order.");
+      }
+    } catch (err: any) {
+      setActionError("Error connecting to server.");
+    } finally {
+      setProcessingOrderId(null);
     }
   };
 
@@ -86,6 +139,14 @@ export default function AdminPaymentsPage() {
     expiredCount: 0,
     failedCount: 0,
     underReviewCount: 0,
+  };
+
+  const receivingAccount = data?.receivingAccount || {
+    upiId: "jainaradhy123@okicici",
+    payeeName: "Aradhy Jain",
+    app: "Google Pay",
+    bank: "ICICI Bank",
+    status: "ACTIVE",
   };
 
   return (
@@ -102,11 +163,11 @@ export default function AdminPaymentsPage() {
             </a>
           </div>
           <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 flex items-center gap-2">
-            <CreditCard className="h-7 w-7 text-blue-700" />
+            <CreditCard className="h-7 w-7 text-amber-600" />
             UPI Gateway Financial Operations & Ledger
           </h1>
           <p className="mt-1 text-xs text-slate-500">
-            Real-time transaction tracking, bank UTR verification, and revenue telemetry for Pravaah UPSC
+            Real-time transaction tracking, bank UTR verification, and receiving account telemetry for Pravaah UPSC
           </p>
         </div>
 
@@ -114,22 +175,87 @@ export default function AdminPaymentsPage() {
           onClick={() => fetchPayments()}
           className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition shadow-sm"
         >
-          <RotateCw className={`h-3.5 w-3.5 ${loading ? "animate-spin text-blue-600" : ""}`} />
+          <RotateCw className={`h-3.5 w-3.5 ${loading ? "animate-spin text-amber-600" : ""}`} />
           Refresh Ledger
         </button>
+      </div>
+
+      {/* Action Notification Banner */}
+      {actionMessage && (
+        <div className="mb-6 rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-xs font-bold text-emerald-800 flex items-center justify-between">
+          <span className="flex items-center gap-2">
+            <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+            {actionMessage}
+          </span>
+          <button onClick={() => setActionMessage(null)} className="text-emerald-600 hover:text-emerald-900">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+      {actionError && (
+        <div className="mb-6 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-xs font-bold text-rose-800 flex items-center justify-between">
+          <span className="flex items-center gap-2">
+            <AlertTriangle className="h-4 w-4 text-rose-600" />
+            {actionError}
+          </span>
+          <button onClick={() => setActionError(null)} className="text-rose-600 hover:text-rose-900">
+            <X className="h-4 w-4" />
+          </button>
+        </div>
+      )}
+
+      {/* Receiving Payment Account Status Card */}
+      <div className="mb-8 rounded-2xl border-2 border-amber-200 bg-gradient-to-r from-amber-50/80 via-white to-amber-50/40 p-6 shadow-sm">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div>
+            <div className="flex items-center gap-2">
+              <span className="rounded-md bg-amber-200/80 px-2 py-0.5 text-[10px] font-black uppercase tracking-wider text-amber-900">
+                Default Receiving Account
+              </span>
+              <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-700">
+                <CheckCircle2 className="h-3 w-3" /> Live & Receiving
+              </span>
+            </div>
+            <h2 className="text-xl font-black text-slate-900 mt-1">
+              {receivingAccount.payeeName}
+            </h2>
+            <div className="mt-1 flex flex-wrap items-center gap-4 text-xs text-slate-600">
+              <span className="flex items-center gap-1.5 font-mono font-bold text-slate-900">
+                <Smartphone className="h-3.5 w-3.5 text-blue-600" />
+                {receivingAccount.upiId}
+              </span>
+              <span className="flex items-center gap-1.5 font-medium text-slate-600">
+                <Building className="h-3.5 w-3.5 text-slate-400" />
+                {receivingAccount.bank} via {receivingAccount.app}
+              </span>
+              <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-[11px] font-medium text-slate-700">
+                Retail UPI VPA • Manual UTR Reconciliation
+              </span>
+            </div>
+          </div>
+
+          <div className="rounded-xl border border-amber-200 bg-white p-3 text-right">
+            <span className="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">
+              Active Transactions
+            </span>
+            <span className="text-lg font-black text-amber-700">
+              {telemetry.successfulCount} Settled / {telemetry.underReviewCount} Under Review
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Telemetry Metrics Ribbon */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-            Total Gross Revenue
+            Total Revenue Collected
           </span>
           <p className="text-2xl font-black text-slate-900 mt-1">
             ₹{Number(telemetry.totalRevenue).toLocaleString("en-IN")}
           </p>
           <span className="text-[11px] text-emerald-600 font-bold mt-1 inline-block">
-            {telemetry.successfulCount} Settled Transactions
+            {telemetry.successfulCount} Settled Orders
           </span>
         </div>
 
@@ -137,7 +263,7 @@ export default function AdminPaymentsPage() {
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
             Today's Settlement
           </span>
-          <p className="text-2xl font-black text-blue-700 mt-1">
+          <p className="text-2xl font-black text-amber-700 mt-1">
             ₹{Number(telemetry.todayRevenue).toLocaleString("en-IN")}
           </p>
           <span className="text-[11px] text-slate-400 mt-1 inline-block">
@@ -145,36 +271,124 @@ export default function AdminPaymentsPage() {
           </span>
         </div>
 
-        <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
-          <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-            Pending Authorizations
+        <div className="rounded-2xl border border-indigo-200 bg-indigo-50/40 p-5 shadow-sm">
+          <span className="text-[11px] font-bold text-indigo-900 uppercase tracking-wider block">
+            Manual Verification Queue
           </span>
-          <p className="text-2xl font-black text-amber-600 mt-1">
-            {telemetry.pendingCount}
+          <p className="text-2xl font-black text-indigo-700 mt-1">
+            {telemetry.underReviewCount}
           </p>
-          <span className="text-[11px] text-amber-700 font-semibold mt-1 inline-block">
-            Awaiting Aspirant UPI App Confirmation
+          <span className="text-[11px] text-indigo-800 font-semibold mt-1 inline-block">
+            UTR Submitted • Awaiting Admin Confirmation
           </span>
         </div>
 
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-            Expired & Under Review
+            Pending / Awaiting Pay
           </span>
           <p className="text-2xl font-black text-slate-700 mt-1">
-            {telemetry.expiredCount + telemetry.underReviewCount}
+            {telemetry.pendingCount}
           </p>
           <span className="text-[11px] text-slate-500 mt-1 inline-block">
-            {telemetry.underReviewCount} Under Bank Audit • {telemetry.expiredCount} Expired
+            {telemetry.expiredCount} Expired
           </span>
         </div>
       </div>
+
+      {/* DEDICATED MANUAL VERIFICATION QUEUE (Shown when orders are under review) */}
+      {data?.reviewQueue && data.reviewQueue.length > 0 && (
+        <div className="mb-8 rounded-2xl border-2 border-indigo-300 bg-white p-6 shadow-md">
+          <div className="flex items-center justify-between mb-4">
+            <div>
+              <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+                <ShieldCheck className="h-5 w-5 text-indigo-600" />
+                Manual UTR Verification Queue (Needs Admin Approval)
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">
+                Students have submitted the following UTR numbers from their UPI payment app. Verify against your Google Pay / ICICI statement and click "Verify & Activate".
+              </p>
+            </div>
+            <span className="rounded-md bg-indigo-100 px-2.5 py-1 text-xs font-bold text-indigo-800">
+              {data.reviewQueue.length} Pending Actions
+            </span>
+          </div>
+
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead className="bg-indigo-50/70 border-y border-indigo-100 text-indigo-900 font-bold uppercase text-[10px]">
+                <tr>
+                  <th className="py-3 px-4">Student</th>
+                  <th className="py-3 px-4">Product</th>
+                  <th className="py-3 px-4">Amount</th>
+                  <th className="py-3 px-4">Submitted UTR Reference</th>
+                  <th className="py-3 px-4">Order Reference</th>
+                  <th className="py-3 px-4">Submitted At</th>
+                  <th className="py-3 px-4 text-right">Verification Action</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100">
+                {data.reviewQueue.map((item: any) => (
+                  <tr key={item.id} className="hover:bg-slate-50">
+                    <td className="py-3 px-4">
+                      <div className="font-extrabold text-slate-900">{item.user?.fullName}</div>
+                      <div className="text-[11px] text-slate-400">{item.user?.email}</div>
+                    </td>
+                    <td className="py-3 px-4 font-bold text-slate-800">
+                      {item.productId || item.productType}
+                    </td>
+                    <td className="py-3 px-4 font-black text-slate-900 text-sm">
+                      ₹{item.amount}
+                    </td>
+                    <td className="py-3 px-4">
+                      <span className="font-mono font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+                        {item.utr || "NO_UTR"}
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 font-mono text-[11px] text-slate-600">
+                      {item.clientOrderId}
+                    </td>
+                    <td className="py-3 px-4 text-[11px] text-slate-500">
+                      {new Date(item.updatedAt).toLocaleTimeString("en-IN", {
+                        hour: "2-digit",
+                        minute: "2-digit",
+                      })}
+                    </td>
+                    <td className="py-3 px-4 text-right">
+                      <div className="inline-flex items-center gap-1.5">
+                        <button
+                          type="button"
+                          onClick={() => handleVerifyOrder(item.clientOrderId, item.utr)}
+                          disabled={processingOrderId === item.clientOrderId}
+                          className="inline-flex items-center gap-1 rounded-lg bg-emerald-600 px-3 py-1.5 text-xs font-bold text-white shadow-sm hover:bg-emerald-700 disabled:opacity-50 transition"
+                        >
+                          <Check className="h-3.5 w-3.5" />
+                          {processingOrderId === item.clientOrderId ? "Activating..." : "Verify & Activate"}
+                        </button>
+                        <button
+                          type="button"
+                          onClick={() => handleRejectOrder(item.clientOrderId)}
+                          disabled={processingOrderId === item.clientOrderId}
+                          className="inline-flex items-center gap-1 rounded-lg border border-rose-200 bg-white px-2.5 py-1.5 text-xs font-bold text-rose-700 hover:bg-rose-50 disabled:opacity-50 transition"
+                        >
+                          <X className="h-3.5 w-3.5" />
+                          Reject
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      )}
 
       {/* Filter and Search Bar */}
       <div className="rounded-2xl border border-slate-200 bg-white p-4 mb-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-4">
         {/* Status Tabs */}
         <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
-          {["ALL", "PAID", "PENDING", "EXPIRED", "UNDER_REVIEW", "FAILED"].map((tab) => {
+          {["ALL", "PAID", "UNDER_REVIEW", "PENDING", "EXPIRED", "FAILED"].map((tab) => {
             const isActive = statusFilter === tab;
             return (
               <button
@@ -185,7 +399,7 @@ export default function AdminPaymentsPage() {
                 }}
                 className={`rounded-lg px-3 py-1.5 text-xs font-bold transition ${
                   isActive
-                    ? "bg-blue-700 text-white shadow-sm"
+                    ? "bg-amber-600 text-white shadow-sm"
                     : "bg-slate-100 text-slate-600 hover:bg-slate-200"
                 }`}
               >
@@ -203,7 +417,7 @@ export default function AdminPaymentsPage() {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search email, UTR, Order ID..."
-            className="w-full rounded-xl border border-slate-200 pl-9 pr-3 py-2 text-xs text-slate-900 focus:border-blue-600 focus:outline-none"
+            className="w-full rounded-xl border border-slate-200 pl-9 pr-3 py-2 text-xs text-slate-900 focus:border-amber-500 focus:outline-none"
           />
         </form>
       </div>
@@ -218,7 +432,7 @@ export default function AdminPaymentsPage() {
                 <th className="py-3.5 px-4">Product / Plan</th>
                 <th className="py-3.5 px-4">Amount</th>
                 <th className="py-3.5 px-4">Status</th>
-                <th className="py-3.5 px-4">Order References & UTR</th>
+                <th className="py-3.5 px-4">Order ID & UTR</th>
                 <th className="py-3.5 px-4">Timestamp</th>
                 <th className="py-3.5 px-4 text-right">Action</th>
               </tr>
@@ -227,7 +441,7 @@ export default function AdminPaymentsPage() {
               {loading ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-slate-400 font-medium">
-                    <RotateCw className="mx-auto h-6 w-6 animate-spin text-blue-600 mb-2" />
+                    <RotateCw className="mx-auto h-6 w-6 animate-spin text-amber-600 mb-2" />
                     Loading financial transactions...
                   </td>
                 </tr>
@@ -282,9 +496,6 @@ export default function AdminPaymentsPage() {
 
                       <td className="py-3.5 px-4 font-mono text-[11px]">
                         <div className="text-slate-800 font-semibold">{o.clientOrderId}</div>
-                        {o.gatewayOrderId && (
-                          <div className="text-slate-400 text-[10px]">GW: {o.gatewayOrderId}</div>
-                        )}
                         {o.utr && (
                           <div className="text-emerald-700 font-bold text-[10px]">
                             UTR: {o.utr}
@@ -303,19 +514,33 @@ export default function AdminPaymentsPage() {
                       </td>
 
                       <td className="py-3.5 px-4 text-right">
-                        {o.status === "PENDING" || o.status === "UNDER_REVIEW" ? (
+                        {o.status === "UNDER_REVIEW" ? (
+                          <div className="inline-flex items-center gap-1">
+                            <button
+                              type="button"
+                              onClick={() => handleVerifyOrder(o.clientOrderId, o.utr)}
+                              disabled={processingOrderId === o.clientOrderId}
+                              className="inline-flex items-center gap-1 rounded-md bg-emerald-600 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-emerald-700 transition"
+                            >
+                              Verify
+                            </button>
+                            <button
+                              type="button"
+                              onClick={() => handleRejectOrder(o.clientOrderId)}
+                              disabled={processingOrderId === o.clientOrderId}
+                              className="inline-flex items-center gap-1 rounded-md border border-rose-200 px-2 py-1 text-[11px] font-bold text-rose-700 hover:bg-rose-50 transition"
+                            >
+                              Reject
+                            </button>
+                          </div>
+                        ) : o.status === "PENDING" ? (
                           <button
                             type="button"
-                            onClick={() => handleSyncStatus(o.clientOrderId)}
-                            disabled={syncingOrderId === o.clientOrderId}
-                            className="inline-flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 py-1 text-[11px] font-bold text-blue-700 hover:bg-blue-50 transition disabled:opacity-50"
+                            onClick={() => handleVerifyOrder(o.clientOrderId)}
+                            disabled={processingOrderId === o.clientOrderId}
+                            className="inline-flex items-center gap-1 rounded-md border border-slate-300 bg-white px-2 py-1 text-[11px] font-bold text-slate-700 hover:bg-slate-50 transition"
                           >
-                            <RotateCw
-                              className={`h-3 w-3 ${
-                                syncingOrderId === o.clientOrderId ? "animate-spin" : ""
-                              }`}
-                            />
-                            <span>Sync</span>
+                            Mark Paid
                           </button>
                         ) : (
                           <span className="text-[11px] text-slate-400 font-medium">Reconciled</span>

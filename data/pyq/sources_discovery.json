@@ -1,0 +1,133 @@
+[
+  {
+    "id": "examgoal_pdf_archive",
+    "name": "ExamGOAL UPSC Civil Services PDF Archive",
+    "url": "https://pdf.questions.examgoal.com/past-years/year-wise/civil-services/upsc-civil-service",
+    "category": "PDF_ARCHIVE",
+    "status": "ACCESSIBLE",
+    "httpStatus": 200,
+    "availableYears": [
+      2026,
+      2025,
+      2024,
+      2023,
+      2022,
+      2021
+    ],
+    "discoveredItemsCount": 12,
+    "licenseTerms": "Free PDF distribution of official past papers with QR codes. Derivative solutions are proprietary; original question papers are official public domain examination records.",
+    "reusePermissionStatus": "AUTHORIZED_OFFICIAL_RECORDS_ONLY",
+    "discoveredMetadata": {
+      "contentLength": 69783,
+      "contentType": "text/html; charset=utf-8",
+      "papersDiscovered": [
+        "upsc-civil-service-prelims-paper-ii-2026-csat",
+        "upsc-civil-service-prelims-paper-i-2026-general-studies",
+        "upsc-civil-service-prelims-paper-ii-2025-csat",
+        "upsc-civil-service-prelims-paper-i-2025-general-studies",
+        "upsc-civil-service-prelims-paper-ii-2024-csat",
+        "upsc-civil-service-prelims-paper-i-2024-general-studies",
+        "upsc-civil-service-prelims-paper-ii-2023-csat",
+        "upsc-civil-service-prelims-paper-i-2023-general-studies",
+        "upsc-civil-service-prelims-paper-ii-2022-csat",
+        "upsc-civil-service-prelims-paper-i-2022-general-studies",
+        "upsc-civil-service-prelims-paper-ii-2021-csat",
+        "upsc-civil-service-prelims-paper-i-2021"
+      ]
+    },
+    "lastRetrievedAt": "2026-11-21T19:24:16.073Z"
+  },
+  {
+    "id": "examside_year_wise",
+    "name": "ExamSIDE UPSC CSE Year-Wise Practice",
+    "url": "https://questions.examside.com/past-years/year-wise/civil-services/upsc-civil-service",
+    "category": "YEAR_WISE_PRACTICE",
+    "status": "ACCESSIBLE",
+    "httpStatus": 200,
+    "availableYears": [
+      2026,
+      2025,
+      2024,
+      2023,
+      2022,
+      2021
+    ],
+    "discoveredItemsCount": 0,
+    "licenseTerms": "Web practice platform. Practice interface and custom explanations are proprietary; underlying UPSC questions and syllabus mapping reference official gazettes.",
+    "reusePermissionStatus": "AUTHORIZED_OFFICIAL_RECORDS_ONLY",
+    "discoveredMetadata": {
+      "contentLength": 107216,
+      "contentType": "text/html",
+      "yearLinksCount": 0
+    },
+    "lastRetrievedAt": "2026-11-21T19:24:16.130Z"
+  },
+  {
+    "id": "examside_chapter_wise",
+    "name": "ExamSIDE UPSC CSE Chapter-Wise Classification",
+    "url": "https://questions.examside.com/past-years/civil-services/upsc-civil-service",
+    "category": "CHAPTER_TAXONOMY",
+    "status": "ACCESSIBLE",
+    "httpStatus": 200,
+    "availableYears": [
+      2026
+    ],
+    "discoveredItemsCount": 8,
+    "licenseTerms": "Publicly visible educational taxonomy and topic categorization for UPSC CSE. Used for academic cross-referencing and topic tagging.",
+    "reusePermissionStatus": "METADATA_AND_TAXONOMY_ONLY",
+    "discoveredMetadata": {
+      "contentLength": 124368,
+      "contentType": "text/html",
+      "categoriesDiscovered": [
+        "science-and-technology",
+        "ecology-and-environment",
+        "economy",
+        "current-affairs",
+        "comprehension",
+        "basic-numeracy",
+        "logical-reasoning-and-general-mental-ability",
+        "data-interpretation"
+      ]
+    },
+    "lastRetrievedAt": "2026-11-21T19:24:16.151Z"
+  },
+  {
+    "id": "human_peritus_csat",
+    "name": "Human Peritus UPSC CSAT Strategic Analysis & Public Syllabus",
+    "url": "https://humanperitus.in/upsc-csat/",
+    "category": "INSTITUTE_SYLLABUS",
+    "status": "ACCESSIBLE",
+    "httpStatus": 200,
+    "availableYears": [
+      2026,
+      2025,
+      2024,
+      2023,
+      2022,
+      2020,
+      2019,
+      2017,
+      2012,
+      2002,
+      2000
+    ],
+    "discoveredItemsCount": 24,
+    "licenseTerms": "Strictly proprietary commercial test series and coaching material. Public syllabus coverage and topic distribution reused for taxonomy guidance only. Paid mock tests and course notes are strictly excluded.",
+    "reusePermissionStatus": "RESTRICTED_PAID_CONTENT",
+    "discoveredMetadata": {
+      "contentLength": 324070,
+      "contentType": "text/html; charset=UTF-8",
+      "publicSectionHeadings": [
+        "Human Peritus",
+        "Get in Touch for 1 day free trial",
+        "Recorded online classes",
+        "* Make sure to read all FAQs before payment",
+        "Meet your Coach",
+        "Nitesh Duhan",
+        "Check out quality of teaching in Classes....",
+        "CSAT 2024"
+      ]
+    },
+    "lastRetrievedAt": "2026-11-21T19:24:16.296Z"
+  }
+]

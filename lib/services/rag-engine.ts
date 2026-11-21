@@ -246,7 +246,7 @@ export class RAGEngine {
     const formattedSyllabus = matchedSyllabusNodes.map((n) => ({
       code: n.code,
       title: n.title,
-      stage: n.stage,
+      stage: (n as any).stage || n.paperCode,
     }));
 
     // Confidence Calculation based on grounding availability

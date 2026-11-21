@@ -20,8 +20,10 @@ import {
   Check,
   Edit3,
 } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/context";
 
 export default function DailyStudyPlannerPage() {
+  const { language, t } = useLanguage();
   const [plan, setPlan] = useState<any | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);

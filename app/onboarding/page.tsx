@@ -13,7 +13,10 @@ import {
   Award,
   Zap,
   TrendingUp,
+  Globe,
+  AlertTriangle,
 } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/context";
 
 const OPTIONAL_SUBJECTS = [
   "Political Science & IR (PSIR)",
@@ -28,8 +31,9 @@ const OPTIONAL_SUBJECTS = [
   "Commerce & Accountancy",
   "Agriculture",
   "Mathematics",
+  "Hindi Literature (हिंदी साहित्य)",
   "Literature of an Indian Language",
-  "Yet to Decide",
+  "General Studies / Yet to Decide",
 ];
 
 const TARGET_YEARS = [
@@ -56,17 +60,27 @@ const TARGET_YEARS = [
   },
 ];
 
+const WEAK_AREAS_OPTIONS = [
+  { id: "CSAT", label: "CSAT Paper II (Maths & Comprehension)" },
+  { id: "ECONOMY", label: "Indian Economy & Budget/Banking" },
+  { id: "POLITY", label: "Indian Polity, Articles & Judiciary" },
+  { id: "ENVIRONMENT", label: "Environment, Ecology & Biodiversity" },
+  { id: "HISTORY", label: "Modern Indian History & Art/Culture" },
+  { id: "ETHICS", label: "GS4 Ethics & Case Studies" },
+  { id: "CURRENT_AFFAIRS", label: "Current Affairs & Government Schemes" },
+];
+
 const DAILY_COMMITMENTS = [
   {
     minutes: 45,
-    title: "Working Professional",
-    desc: "15 targeted PYQs + 1 Current Affairs deep-dive daily. Ideal for aspirants managing a full-time job.",
+    title: "Working Professional / College",
+    desc: "15 targeted PYQs + 1 Current Affairs deep-dive daily. Ideal for aspirants managing a full-time job or college.",
     weeklyPyqTarget: 90,
   },
   {
     minutes: 90,
     title: "Focused Aspirant",
-    desc: "30 PYQs with detailed concept breakdown + Daily 5-question test. Standard preparation pace.",
+    desc: "30 PYQs with detailed concept breakdown + Daily 5-question test. Balanced standard preparation pace.",
     weeklyPyqTarget: 200,
   },
   {
@@ -78,16 +92,18 @@ const DAILY_COMMITMENTS = [
 ];
 
 export default function OnboardingPage() {
+  const { language, setLanguage } = useLanguage();
   const [step, setStep] = useState(1);
   const [selectedYear, setSelectedYear] = useState(2026);
+  const [selectedMedium, setSelectedMedium] = useState<"en" | "hi">("en");
   const [selectedOptional, setSelectedOptional] = useState("Political Science & IR (PSIR)");
+  const [selectedWeakAreas, setSelectedWeakAreas] = useState<string[]>(["CSAT", "ECONOMY"]);
   const [selectedCommitment, setSelectedCommitment] = useState(90);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [completed, setCompleted] = useState(false);
 
   useEffect(() => {
-    // Fetch initial profile if user is already logged in
     fetch("/api/v1/user/profile")
       .then((res) => (res.ok ? res.json() : null))
       .then((data) => {
@@ -97,22 +113,35 @@ export default function OnboardingPage() {
             setSelectedOptional(data.data.optionalSubject);
           }
           if (data.data.dailyGoalMinutes) setSelectedCommitment(data.data.dailyGoalMinutes);
+          if (data.data.preferredLanguage) setSelectedMedium(data.data.preferredLanguage as "en" | "hi");
         }
       })
       .catch(() => {});
   }, []);
 
+  const toggleWeakArea = (id: string) => {
+    setSelectedWeakAreas((prev) =>
+      prev.includes(id) ? prev.filter((item) => item !== id) : [...prev, id]
+    );
+  };
+
   const handleFinish = async () => {
     setSubmitting(true);
     setError(null);
     try {
+      setLanguage(selectedMedium);
       const res = await fetch("/api/v1/user/profile", {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           targetYear: selectedYear,
+          targetExam: "UPSC_CSE",
           optionalSubject: selectedOptional,
           dailyGoalMinutes: selectedCommitment,
+          dailyStudyHours: selectedCommitment / 60,
+          preferredLanguage: selectedMedium,
+          weakSubjects: selectedWeakAreas.join(", "),
+          preparationStage: selectedYear === 2025 ? "ADVANCED" : "INTERMEDIATE",
         }),
       });
 
@@ -144,11 +173,17 @@ export default function OnboardingPage() {
           </span>
 
           <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
-            You're Set for UPSC CSE {selectedYear}
+            {selectedMedium === "hi"
+              ? `UPSC CSE ${selectedYear} हेतु आपका रोडमैप तैयार है!`
+              : `You're Set for UPSC CSE ${selectedYear}!`}
           </h1>
 
           <p className="mt-3 text-sm text-slate-600 leading-relaxed">
-            Your personalized learning track has been generated. Target:{" "}
+            Your personalized learning track has been generated. Medium:{" "}
+            <span className="font-bold text-slate-900">
+              {selectedMedium === "hi" ? "हिंदी माध्यम (Hindi)" : "English Medium"}
+            </span>
+            , Target Optional:{" "}
             <span className="font-bold text-slate-900">{selectedOptional}</span> with{" "}
             <span className="font-bold text-slate-900">{selectedCommitment} mins/day</span> of deliberate practice.
           </p>
@@ -160,24 +195,27 @@ export default function OnboardingPage() {
               <p className="text-xs text-slate-500 mt-1">Spaced repetition queue & Daily 5-Q Quiz</p>
             </div>
             <div className="rounded-xl border border-slate-100 bg-slate-50 p-4">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Exam Syllabus</span>
-              <p className="text-base font-extrabold text-slate-800 mt-0.5">GS Paper 1 & CSAT</p>
-              <p className="text-xs text-slate-500 mt-1">1,079+ Officially Verified PYQs</p>
+              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Priority Focus</span>
+              <p className="text-base font-extrabold text-slate-800 mt-0.5">
+                {selectedWeakAreas.length > 0 ? selectedWeakAreas.join(", ") : "All Core Subjects"}
+              </p>
+              <p className="text-xs text-slate-500 mt-1">High-yield targeted practice sets</p>
             </div>
           </div>
 
-          <div className="mt-8 flex flex-col sm:flex-row gap-3">
+          <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-3">
             <a
-              href="/study-planner"
-              className="flex-1 inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-6 py-3.5 text-sm font-bold text-white shadow-lg shadow-blue-700/20 hover:bg-blue-800 transition"
+              href="/dashboard"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-6 py-3.5 text-xs font-bold text-white shadow-md shadow-blue-700/20 hover:bg-blue-800 transition"
             >
-              Open Daily Study Plan <ArrowRight className="h-4 w-4" />
+              <span>Go to My Dashboard</span>
+              <ArrowRight className="h-4 w-4" />
             </a>
             <a
-              href="/pyqs"
-              className="inline-flex items-center justify-center rounded-xl border border-slate-200 bg-white px-5 py-3.5 text-sm font-bold text-slate-700 hover:bg-slate-50 transition"
+              href="/daily-quiz"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-6 py-3.5 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
             >
-              Start PYQ Practice
+              <span>Take Diagnostic Quiz</span>
             </a>
           </div>
         </div>
@@ -186,29 +224,32 @@ export default function OnboardingPage() {
   }
 
   return (
-    <div className="min-h-[85vh] bg-slate-50 py-12 px-4 sm:px-6">
-      <div className="mx-auto max-w-3xl">
-        {/* Step Indicator Header */}
+    <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-2xl">
+        {/* Onboarding Header */}
         <div className="text-center mb-8">
-          <span className="inline-flex items-center gap-1.5 rounded-full bg-blue-100/80 px-3 py-1 text-xs font-bold text-blue-800 mb-3">
-            <Target className="h-3.5 w-3.5 text-blue-600" /> Step {step} of 3 • Personalized Aspirant Onboarding
-          </span>
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-            {step === 1 && "Which UPSC Civil Services cycle are you targeting?"}
-            {step === 2 && "What is your Mains Optional Subject?"}
-            {step === 3 && "Set your daily deliberate practice commitment"}
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-50 text-blue-700 text-xs font-bold mb-3 border border-blue-200/60">
+            <Target className="h-3.5 w-3.5" />
+            <span>Step {step} of 4: Personalized Diagnostic</span>
+          </div>
+          <h1 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
+            {step === 1 && "Select Your Target Examination Year"}
+            {step === 2 && "Choose Your Preparation Medium & Optional"}
+            {step === 3 && "Identify Your Priority Focus / Weak Areas"}
+            {step === 4 && "Set Your Daily Available Study Time"}
           </h1>
           <p className="mt-2 text-sm text-slate-500 max-w-md mx-auto">
-            {step === 1 && "Pravaah tailors high-yield topic weightage and revision urgency based on your target exam year."}
-            {step === 2 && "We link historical Prelims questions and Mains analytical prompts to your subject specialization."}
-            {step === 3 && "Consistency beats intensity. Pravaah will schedule optimal question sets for your time budget."}
+            {step === 1 && "Pravaah tailors high-yield topic weightage and revision urgency based on your target cycle."}
+            {step === 2 && "We present verified bilingual questions and official terminology tuned to your medium."}
+            {step === 3 && "We will prioritize diagnostic sets and spaced repetitions to close your highest score gaps."}
+            {step === 4 && "Consistency beats intensity. Pravaah will schedule optimal daily task sets for your budget."}
           </p>
 
           {/* Progress bar */}
           <div className="mx-auto mt-6 max-w-xs h-2 bg-slate-200 rounded-full overflow-hidden">
             <div
               className="h-full bg-blue-600 transition-all duration-300 rounded-full"
-              style={{ width: `${(step / 3) * 100}%` }}
+              style={{ width: `${(step / 4) * 100}%` }}
             />
           </div>
         </div>
@@ -262,38 +303,110 @@ export default function OnboardingPage() {
           </div>
         )}
 
-        {/* STEP 2: Optional Subject */}
+        {/* STEP 2: Medium & Optional Subject */}
         {step === 2 && (
-          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
-            <h3 className="text-sm font-bold text-slate-700 mb-3">Select your Mains Optional:</h3>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[360px] overflow-y-auto pr-1">
-              {OPTIONAL_SUBJECTS.map((opt) => {
-                const isSelected = selectedOptional === opt;
+          <div className="space-y-6">
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+              <h3 className="text-sm font-bold text-slate-800 mb-3 flex items-center gap-2">
+                <Globe className="h-4 w-4 text-blue-600" />
+                <span>Primary Preparation Medium:</span>
+              </h3>
+              <div className="grid grid-cols-2 gap-3">
+                <button
+                  type="button"
+                  onClick={() => setSelectedMedium("en")}
+                  className={`p-4 rounded-xl border text-center transition ${
+                    selectedMedium === "en"
+                      ? "border-blue-600 bg-blue-50/70 text-blue-900 ring-1 ring-blue-600 font-bold"
+                      : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  <div className="text-sm font-black">English Medium</div>
+                  <div className="text-[11px] text-slate-500 mt-0.5">Standard English terminology</div>
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => setSelectedMedium("hi")}
+                  className={`p-4 rounded-xl border text-center transition ${
+                    selectedMedium === "hi"
+                      ? "border-amber-600 bg-amber-50/70 text-amber-900 ring-1 ring-amber-600 font-bold"
+                      : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                  }`}
+                >
+                  <div className="text-sm font-black">हिंदी माध्यम (Hindi)</div>
+                  <div className="text-[11px] text-slate-500 mt-0.5">प्रामाणिक देवनागरी शब्दावली</div>
+                </button>
+              </div>
+            </div>
+
+            <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm">
+              <h3 className="text-sm font-bold text-slate-700 mb-3">Select your Mains Optional:</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-[260px] overflow-y-auto pr-1">
+                {OPTIONAL_SUBJECTS.map((opt) => {
+                  const isSelected = selectedOptional === opt;
+                  return (
+                    <button
+                      key={opt}
+                      type="button"
+                      onClick={() => setSelectedOptional(opt)}
+                      className={`flex items-center justify-between rounded-xl border p-3 text-left text-xs font-semibold transition ${
+                        isSelected
+                          ? "border-blue-600 bg-blue-50/70 text-blue-900 ring-1 ring-blue-600"
+                          : "border-slate-200 hover:border-slate-300 text-slate-700 bg-white hover:bg-slate-50/50"
+                      }`}
+                    >
+                      <span className="truncate">{opt}</span>
+                      {isSelected && <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0 ml-2" />}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* STEP 3: Weak / Priority Areas */}
+        {step === 3 && (
+          <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm space-y-4">
+            <div>
+              <h3 className="text-sm font-bold text-slate-800">Select subjects you want to strengthen first:</h3>
+              <p className="text-xs text-slate-500 mt-1">
+                Select 1 to 4 areas where your confidence is lowest. We will calibrate your first diagnostic milestones around them.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 gap-2.5">
+              {WEAK_AREAS_OPTIONS.map((area) => {
+                const isSelected = selectedWeakAreas.includes(area.id);
                 return (
                   <button
-                    key={opt}
+                    key={area.id}
                     type="button"
-                    onClick={() => setSelectedOptional(opt)}
-                    className={`flex items-center justify-between rounded-xl border p-3.5 text-left text-xs font-semibold transition ${
+                    onClick={() => toggleWeakArea(area.id)}
+                    className={`flex items-center justify-between rounded-xl border p-3.5 text-left text-xs font-bold transition ${
                       isSelected
-                        ? "border-blue-600 bg-blue-50/70 text-blue-900 ring-1 ring-blue-600"
-                        : "border-slate-200 hover:border-slate-300 text-slate-700 bg-white hover:bg-slate-50/50"
+                        ? "border-amber-500 bg-amber-50/60 text-amber-950 ring-1 ring-amber-500 shadow-xs"
+                        : "border-slate-200 hover:border-slate-300 text-slate-700 bg-white"
                     }`}
                   >
-                    <span>{opt}</span>
-                    {isSelected && <CheckCircle2 className="h-4 w-4 text-blue-600 shrink-0 ml-2" />}
+                    <span>{area.label}</span>
+                    <div
+                      className={`w-5 h-5 rounded-md flex items-center justify-center border ${
+                        isSelected ? "bg-amber-600 border-amber-600 text-white" : "border-slate-300 bg-slate-50"
+                      }`}
+                    >
+                      {isSelected && <CheckCircle2 className="w-3.5 h-3.5" />}
+                    </div>
                   </button>
                 );
               })}
             </div>
-            <p className="mt-4 text-[11px] text-slate-400">
-              * You can easily update your optional subject anytime from your Profile settings.
-            </p>
           </div>
         )}
 
-        {/* STEP 3: Daily Commitment */}
-        {step === 3 && (
+        {/* STEP 4: Daily Commitment */}
+        {step === 4 && (
           <div className="space-y-4">
             {DAILY_COMMITMENTS.map((item) => {
               const isSelected = selectedCommitment === item.minutes;
@@ -352,7 +465,7 @@ export default function OnboardingPage() {
             <div />
           )}
 
-          {step < 3 ? (
+          {step < 4 ? (
             <button
               type="button"
               onClick={() => setStep((s) => s + 1)}

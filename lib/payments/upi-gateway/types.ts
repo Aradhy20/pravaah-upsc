@@ -23,6 +23,10 @@ export interface UpiGatewayConfig {
   webhookSecret: string;
   sandboxMode: boolean;
   timeoutMs: number;
+  receivingUpiId: string;
+  payeeName: string;
+  upiApp: string;
+  upiBank: string;
 }
 
 export interface CreateGatewayOrderRequest {
@@ -84,6 +88,9 @@ export interface CheckoutResultData {
   gstRatePercent: number;
   paymentUrl?: string;
   upiIntent?: string;
+  receivingUpiId?: string;
+  payeeName?: string;
+  qrPayload?: string;
   expiresAt?: string;
   isSandbox: boolean;
 }

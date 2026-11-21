@@ -1,0 +1,126 @@
+{
+  "overallAvgMs": 31,
+  "results": [
+    {
+      "name": "PYQs Default Paginated List",
+      "path": "/api/v1/pyqs",
+      "method": "GET",
+      "statusCode": 200,
+      "success": true,
+      "payloadBytes": 73689,
+      "avgLatencyMs": 72,
+      "minLatencyMs": 18,
+      "maxLatencyMs": 272
+    },
+    {
+      "name": "PYQs Filtered (GS1, 2024)",
+      "path": "/api/v1/pyqs?paper=GS1&year=2024",
+      "method": "GET",
+      "statusCode": 200,
+      "success": true,
+      "payloadBytes": 78750,
+      "avgLatencyMs": 19,
+      "minLatencyMs": 16,
+      "maxLatencyMs": 29
+    },
+    {
+      "name": "PYQs Subject Filtered (Polity)",
+      "path": "/api/v1/pyqs?subject=polity",
+      "method": "GET",
+      "statusCode": 200,
+      "success": true,
+      "payloadBytes": 76514,
+      "avgLatencyMs": 18,
+      "minLatencyMs": 16,
+      "maxLatencyMs": 21
+    },
+    {
+      "name": "Keyword Search (governance)",
+      "path": "/api/v1/search?q=governance",
+      "method": "GET",
+      "statusCode": 200,
+      "success": true,
+      "payloadBytes": 16748,
+      "avgLatencyMs": 32,
+      "minLatencyMs": 16,
+      "maxLatencyMs": 94
+    },
+    {
+      "name": "Syllabus Tree Hierarchy",
+      "path": "/api/v1/syllabus/tree",
+      "method": "GET",
+      "statusCode": 200,
+      "success": true,
+      "payloadBytes": 26127,
+      "avgLatencyMs": 28,
+      "minLatencyMs": 10,
+      "maxLatencyMs": 94
+    },
+    {
+      "name": "Coverage Summary & Matrix",
+      "path": "/api/v1/coverage",
+      "method": "GET",
+      "statusCode": 200,
+      "success": true,
+      "payloadBytes": 138480,
+      "avgLatencyMs": 41,
+      "minLatencyMs": 15,
+      "maxLatencyMs": 114
+    },
+    {
+      "name": "Multi-Exam Directory",
+      "path": "/api/v1/exams",
+      "method": "GET",
+      "statusCode": 200,
+      "success": true,
+      "payloadBytes": 37,
+      "avgLatencyMs": 26,
+      "minLatencyMs": 7,
+      "maxLatencyMs": 87
+    },
+    {
+      "name": "Current Affairs Feed",
+      "path": "/api/v1/current-affairs",
+      "method": "GET",
+      "statusCode": 200,
+      "success": true,
+      "payloadBytes": 9185,
+      "avgLatencyMs": 26,
+      "minLatencyMs": 8,
+      "maxLatencyMs": 89
+    },
+    {
+      "name": "Mains Questions (GS1)",
+      "path": "/api/v1/mains?paper=GS1",
+      "method": "GET",
+      "statusCode": 200,
+      "success": true,
+      "payloadBytes": 14119,
+      "avgLatencyMs": 10,
+      "minLatencyMs": 6,
+      "maxLatencyMs": 17
+    },
+    {
+      "name": "Pricing Plans & Tiers",
+      "path": "/api/v1/plans",
+      "method": "GET",
+      "statusCode": 200,
+      "success": true,
+      "payloadBytes": 5095,
+      "avgLatencyMs": 31,
+      "minLatencyMs": 9,
+      "maxLatencyMs": 113
+    },
+    {
+      "name": "AI Assistant Grounded Query",
+      "path": "/api/v1/ai/assistant",
+      "method": "POST",
+      "statusCode": 200,
+      "success": true,
+      "payloadBytes": 9365,
+      "avgLatencyMs": 36,
+      "minLatencyMs": 27,
+      "maxLatencyMs": 62
+    }
+  ]
+}

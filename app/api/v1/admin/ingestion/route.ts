@@ -66,7 +66,7 @@ export async function GET(request: NextRequest) {
       prisma.nCERTChapter.count(),
       prisma.nCERTChapterQuestionLink.count(),
       prisma.historicalExamPeriod.count(),
-      prisma.extractionJob.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
+      prisma.extractionJob.findMany({ orderBy: { startedAt: "desc" }, take: 5 }),
       prisma.dataQualityReport.findMany({ orderBy: { createdAt: "desc" }, take: 5 }),
       prisma.question.groupBy({ by: ["examCategory"], _count: true }),
       prisma.knowledgeSource.count(),

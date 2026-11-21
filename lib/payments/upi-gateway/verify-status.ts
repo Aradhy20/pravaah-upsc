@@ -16,6 +16,10 @@ export interface StatusCheckResult {
   expiresAt?: string;
   entitlementActive: boolean;
   planCode?: string;
+  upiIntent?: string;
+  paymentUrl?: string;
+  receivingUpiId?: string;
+  payeeName?: string;
 }
 
 /**
@@ -43,6 +47,9 @@ export async function verifyOrderStatus(
     throw new OrderNotFoundError(orderIdentifier);
   }
 
+  const receivingUpiId = process.env.UPI_RECEIVING_ID || "jainaradhy123@okicici";
+  const payeeName = process.env.UPI_PAYEE_NAME || "Aradhy Jain";
+
   // 2. If already in terminal state PAID or REFUNDED, return current DB state
   if (order.status === "PAID" || order.status === "REFUNDED") {
     return {
@@ -59,6 +66,10 @@ export async function verifyOrderStatus(
       expiresAt: order.expiresAt?.toISOString(),
       entitlementActive: order.status === "PAID",
       planCode: order.productId || undefined,
+      upiIntent: order.upiIntent || undefined,
+      paymentUrl: order.paymentUrl || undefined,
+      receivingUpiId,
+      payeeName,
     };
   }
 
@@ -95,6 +106,8 @@ export async function verifyOrderStatus(
           paidAt: new Date().toISOString(),
           entitlementActive: true,
           planCode: order.productId || undefined,
+          receivingUpiId,
+          payeeName,
         };
       }
 
@@ -136,6 +149,10 @@ export async function verifyOrderStatus(
     expiresAt: order.expiresAt?.toISOString(),
     entitlementActive: order.status === "PAID",
     planCode: order.productId || undefined,
+    upiIntent: order.upiIntent || undefined,
+    paymentUrl: order.paymentUrl || undefined,
+    receivingUpiId,
+    payeeName,
   };
 }
 

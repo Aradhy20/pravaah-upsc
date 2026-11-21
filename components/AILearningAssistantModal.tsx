@@ -13,6 +13,7 @@ import {
   AlertCircle,
   Compass,
 } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/context";
 
 interface AILearningAssistantModalProps {
   isOpen: boolean;
@@ -20,6 +21,7 @@ interface AILearningAssistantModalProps {
 }
 
 export function AILearningAssistantModal({ isOpen, onClose }: AILearningAssistantModalProps) {
+  const { language, t } = useLanguage();
   const [query, setQuery] = useState("");
   const [loading, setLoading] = useState(false);
   const [response, setResponse] = useState<any | null>(null);
@@ -55,12 +57,20 @@ export function AILearningAssistantModal({ isOpen, onClose }: AILearningAssistan
     }
   };
 
-  const samplePrompts = [
-    "Attorney General powers and parliamentary rights",
-    "Biosphere Reserves in UNESCO WNBR list",
-    "Monetary Policy Committee constitution and mandate",
-    "Fundamental Rights under Article 21",
-  ];
+  const samplePrompts =
+    language === "hi"
+      ? [
+          "महान्यायवादी की शक्तियां एवं संसदीय विशेषाधिकार",
+          "यूनेस्को बायोस्फीयर रिजर्व (WNBR) सूची",
+          "मौद्रिक नीति समिति का गठन एवं अधिदेश",
+          "अनुच्छेद 21 के अंतर्गत जीवन एवं व्यक्तिगत स्वतंत्रता का अधिकार",
+        ]
+      : [
+          "Attorney General powers and parliamentary rights",
+          "Biosphere Reserves in UNESCO WNBR list",
+          "Monetary Policy Committee constitution and mandate",
+          "Fundamental Rights under Article 21",
+        ];
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm p-4 animate-in fade-in duration-150">

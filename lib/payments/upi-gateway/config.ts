@@ -11,6 +11,12 @@ export function getUpiGatewayConfig(): UpiGatewayConfig {
   const sandboxMode = process.env.UPI_GATEWAY_SANDBOX_MODE !== "false";
   const timeoutMs = parseInt(process.env.UPI_GATEWAY_TIMEOUT_MS || "10000", 10);
 
+  // Personal Receiving Account Configuration
+  const receivingUpiId = process.env.UPI_RECEIVING_ID || "jainaradhy123@okicici";
+  const payeeName = process.env.UPI_PAYEE_NAME || "Aradhy Jain";
+  const upiApp = process.env.UPI_APPLICATION || "Google Pay";
+  const upiBank = process.env.UPI_BANK || "ICICI Bank";
+
   return {
     baseUrl,
     apiKey,
@@ -18,6 +24,25 @@ export function getUpiGatewayConfig(): UpiGatewayConfig {
     webhookSecret,
     sandboxMode,
     timeoutMs,
+    receivingUpiId,
+    payeeName,
+    upiApp,
+    upiBank,
+  };
+}
+
+/**
+ * Returns public receiving UPI account coordinates for student checkouts
+ */
+export function getReceivingAccountInfo() {
+  const cfg = getUpiGatewayConfig();
+  return {
+    upiId: cfg.receivingUpiId,
+    payeeName: cfg.payeeName,
+    app: cfg.upiApp,
+    bank: cfg.upiBank,
+    isPersonalAccount: true,
+    verificationMethod: "MANUAL_UTR_AND_WEBHOOK",
   };
 }
 

@@ -49,8 +49,14 @@ export async function GET(request: NextRequest) {
         fullName: user.fullName,
         role: user.role.name,
         targetYear: user.profile?.targetYear || 2026,
+        targetExam: user.profile?.targetExam || "UPSC_CSE",
         optionalSubject: user.profile?.optionalSubject || "Not Selected",
         dailyGoalMinutes: user.profile?.dailyGoalMinutes || 60,
+        dailyStudyHours: user.profile?.dailyStudyHours || 4.0,
+        preferredLanguage: user.profile?.preferredLanguage || "en",
+        weakSubjects: user.profile?.weakSubjects || null,
+        preparationStage: user.profile?.preparationStage || "BEGINNER",
+        readinessIndex: user.profile?.readinessIndex || 0.0,
         planCode: activeSub?.plan?.code || "FREE",
         planName: activeSub?.plan?.name || "Foundation",
       },
@@ -76,7 +82,17 @@ export async function PUT(request: NextRequest) {
     const userId = userAuth.id;
 
     const body = await request.json();
-    const { targetYear, optionalSubject, dailyGoalMinutes, fullName } = body;
+    const {
+      targetYear,
+      targetExam,
+      optionalSubject,
+      dailyGoalMinutes,
+      dailyStudyHours,
+      preferredLanguage,
+      weakSubjects,
+      preparationStage,
+      fullName,
+    } = body;
 
     const updatedUser = await prisma.user.update({
       where: { id: userId },
@@ -86,13 +102,23 @@ export async function PUT(request: NextRequest) {
           upsert: {
             create: {
               targetYear: targetYear ? parseInt(targetYear.toString()) : 2026,
+              targetExam: targetExam || "UPSC_CSE",
               optionalSubject: optionalSubject || "General Studies",
               dailyGoalMinutes: dailyGoalMinutes ? parseInt(dailyGoalMinutes.toString()) : 60,
+              dailyStudyHours: dailyStudyHours ? parseFloat(dailyStudyHours.toString()) : 4.0,
+              preferredLanguage: preferredLanguage || "en",
+              weakSubjects: weakSubjects ? String(weakSubjects) : null,
+              preparationStage: preparationStage || "BEGINNER",
             },
             update: {
               ...(targetYear !== undefined ? { targetYear: parseInt(targetYear.toString()) } : {}),
+              ...(targetExam !== undefined ? { targetExam: String(targetExam) } : {}),
               ...(optionalSubject !== undefined ? { optionalSubject: String(optionalSubject) } : {}),
               ...(dailyGoalMinutes !== undefined ? { dailyGoalMinutes: parseInt(dailyGoalMinutes.toString()) } : {}),
+              ...(dailyStudyHours !== undefined ? { dailyStudyHours: parseFloat(dailyStudyHours.toString()) } : {}),
+              ...(preferredLanguage !== undefined ? { preferredLanguage: String(preferredLanguage) } : {}),
+              ...(weakSubjects !== undefined ? { weakSubjects: String(weakSubjects) } : {}),
+              ...(preparationStage !== undefined ? { preparationStage: String(preparationStage) } : {}),
             },
           },
         },
@@ -109,8 +135,13 @@ export async function PUT(request: NextRequest) {
         id: updatedUser.id,
         fullName: updatedUser.fullName,
         targetYear: updatedUser.profile?.targetYear,
+        targetExam: updatedUser.profile?.targetExam,
         optionalSubject: updatedUser.profile?.optionalSubject,
         dailyGoalMinutes: updatedUser.profile?.dailyGoalMinutes,
+        dailyStudyHours: updatedUser.profile?.dailyStudyHours,
+        preferredLanguage: updatedUser.profile?.preferredLanguage,
+        weakSubjects: updatedUser.profile?.weakSubjects,
+        preparationStage: updatedUser.profile?.preparationStage,
       },
     });
   } catch (error: any) {

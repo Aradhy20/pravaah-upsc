@@ -143,6 +143,10 @@ export async function createPaymentOrder(
     },
   });
 
+  const config = (gatewayClient as any).config || {};
+  const receivingUpiId = config.receivingUpiId || process.env.UPI_RECEIVING_ID || "jainaradhy123@okicici";
+  const payeeName = config.payeeName || process.env.UPI_PAYEE_NAME || "Aradhy Jain";
+
   return {
     orderId: updatedOrder.clientOrderId,
     gatewayOrderId: updatedOrder.gatewayOrderId || undefined,
@@ -156,6 +160,9 @@ export async function createPaymentOrder(
     gstRatePercent: 18,
     paymentUrl: updatedOrder.paymentUrl || undefined,
     upiIntent: updatedOrder.upiIntent || undefined,
+    receivingUpiId,
+    payeeName,
+    qrPayload: updatedOrder.upiIntent || undefined,
     expiresAt: updatedOrder.expiresAt?.toISOString(),
     isSandbox: updatedOrder.isTest,
   };

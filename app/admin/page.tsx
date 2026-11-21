@@ -10,6 +10,7 @@ import {
   ArrowRight,
   TrendingUp,
   CreditCard,
+  Compass,
 } from "lucide-react";
 
 export default function AdminDashboardPage() {
@@ -57,6 +58,13 @@ export default function AdminDashboardPage() {
         </div>
 
         <div className="flex flex-wrap items-center gap-2">
+          <a
+            href="/admin/data-integrity"
+            className="flex items-center gap-1.5 rounded-lg bg-amber-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-amber-700"
+          >
+            <ShieldCheck className="h-4 w-4" />
+            <span>Data Integrity Audit</span>
+          </a>
           <a
             href="/admin/payments"
             className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700"
@@ -128,6 +136,25 @@ export default function AdminDashboardPage() {
 
       {/* Admin Modules Navigation */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        <a
+          href="/admin/pyqs"
+          className="group rounded-2xl border border-purple-200 bg-purple-50/40 p-6 shadow-sm hover:border-purple-400 hover:shadow-md transition"
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-purple-100 text-purple-700 mb-4">
+            <Compass className="h-5 w-5" />
+          </div>
+          <h3 className="font-bold text-base text-slate-900 group-hover:text-purple-700 transition">
+            PYQ Ingestion & Verification
+          </h3>
+          <p className="mt-1 text-xs text-slate-500 leading-relaxed">
+            1995–2024 Master PYQs, batch publish, duplicate scan, CSV/JSON export, and UPSC marking.
+          </p>
+          <div className="mt-4 flex items-center gap-1 text-xs font-bold text-purple-700">
+            <span>Open PYQ console</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </div>
+        </a>
+
         <a
           href="/admin/questions"
           className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:border-blue-400 hover:shadow-md transition"

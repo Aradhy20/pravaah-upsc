@@ -16,6 +16,7 @@ import {
   Flag,
   AlertTriangle,
 } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/context";
 
 export interface OptionItem {
   id?: string;
@@ -79,6 +80,7 @@ export function QuestionCard({
   initialNote = "",
   onAttemptRecorded,
 }: QuestionCardProps) {
+  const { language: globalLang } = useLanguage();
   const [selectedOption, setSelectedOption] = useState<string | null>(null);
   const [showExplanation, setShowExplanation] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(initialBookmarked);
@@ -86,7 +88,17 @@ export function QuestionCard({
   const [isEditingNote, setIsEditingNote] = useState(false);
   const [noteSaved, setNoteSaved] = useState(false);
   const [copied, setCopied] = useState(false);
-  const [langMode, setLangMode] = useState<"EN" | "HI" | "BOTH">("EN");
+  const [langMode, setLangMode] = useState<"EN" | "HI" | "BOTH">(
+    globalLang === "hi" && question.questionTextHi ? "HI" : "EN"
+  );
+
+  React.useEffect(() => {
+    if (globalLang === "hi" && question.questionTextHi) {
+      setLangMode("HI");
+    } else if (globalLang === "en") {
+      setLangMode("EN");
+    }
+  }, [globalLang, question.questionTextHi]);
   const [isReporting, setIsReporting] = useState(false);
   const [reportReason, setReportReason] = useState("Discrepancy with official key");
   const [reportDetails, setReportDetails] = useState("");

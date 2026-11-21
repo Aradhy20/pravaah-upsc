@@ -11,7 +11,13 @@
     "lint": "next lint",
     "db:push": "prisma db push",
     "db:seed": "node scripts/seed_neon.mjs",
-    "test": "node --test tests/*.test.mjs"
+    "pyq:discover": "npx tsx scripts/pyq/discover-sources.ts",
+    "pyq:manifest": "npx tsx scripts/pyq/build-paper-manifest.ts",
+    "pyq:extract": "npx tsx scripts/pyq/extract-pdf.ts",
+    "pyq:validate": "npx tsx scripts/pyq/validate-records.ts",
+    "pyq:import": "npx tsx scripts/pyq/import-questions.ts",
+    "pyq:report": "npx tsx scripts/pyq/generate-import-report.ts",
+    "test": "npx tsx --test tests/*.test.mjs"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",
@@ -28,6 +34,7 @@
     "postcss": "^8.4.49",
     "prisma": "^5.22.0",
     "tailwindcss": "^3.4.15",
+    "tsx": "^4.23.15",
     "typescript": "^5.6.3"
   }
 }

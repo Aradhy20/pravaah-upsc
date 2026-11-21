@@ -16,8 +16,10 @@ import {
   Eye,
   CheckSquare,
 } from "lucide-react";
+import { useLanguage } from "@/lib/i18n/context";
 
 export default function MainsWorkspacePage() {
+  const { language, t } = useLanguage();
   const [selectedPaper, setSelectedPaper] = useState("GS1");
   const [questions, setQuestions] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -189,13 +191,19 @@ export default function MainsWorkspacePage() {
           <div className="max-w-3xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-200 text-xs font-semibold mb-4 border border-indigo-400/20">
               <FileText className="h-3.5 w-3.5" />
-              Official GS Mains Answer-Writing Workspace
+              {language === "hi" ? "आधिकारिक GS मुख्य परीक्षा उत्तर लेखन कार्यक्षेत्र" : "Official GS Mains Answer-Writing Workspace"}
             </div>
             <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-              Mains Practice & <span className="text-blue-400">Answer Frameworks</span>
+              {language === "hi" ? (
+                <>मुख्य परीक्षा अभ्यास एवं <span className="text-blue-400">उत्तर संरचना</span></>
+              ) : (
+                <>Mains Practice & <span className="text-blue-400">Answer Frameworks</span></>
+              )}
             </h1>
             <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
-              Practice authentic previous-year questions from GS I, GS II, GS III, GS IV Ethics, and Essay. Track your speed with timed practice, stay within official word limits, and evaluate structure with standard UPSC rubrics.
+              {language === "hi"
+                ? "GS 1, GS 2, GS 3, GS 4 नीतिशास्त्र एवं निबंध के प्रामाणिक विगत वर्ष प्रश्नों का अभ्यास करें। टाइमर के साथ गति ट्रैक करें, शब्द सीमा में रहें और मानक 10-आयामी UPSC रूब्रिक्स द्वारा मूल्यांकन प्राप्त करें।"
+                : "Practice authentic previous-year questions from GS I, GS II, GS III, GS IV Ethics, and Essay. Track your speed with timed practice, stay within official word limits, and evaluate structure with standard UPSC rubrics."}
             </p>
           </div>
         </div>

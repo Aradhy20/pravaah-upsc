@@ -96,8 +96,8 @@ export async function GET(
         answerKeyType: a.answerKeyType,
         answerProvenance: a.answerProvenance,
         verificationStatus: a.verificationStatus,
-        sourceName: a.source?.sourceName || "UPSC Official Key",
-        sourceUrl: a.source?.canonicalUrl,
+        sourceName: (a as any).source?.sourceName || "UPSC Official Key",
+        sourceUrl: (a as any).source?.canonicalUrl || null,
         publishedAt: a.publishedAt,
       })),
       verifiedAnswer: primaryAnswer
@@ -107,7 +107,7 @@ export async function GET(
             answerKeyType: primaryAnswer.answerKeyType,
             answerProvenance: primaryAnswer.answerProvenance,
             verificationStatus: primaryAnswer.verificationStatus,
-            sourceName: primaryAnswer.source?.sourceName || "UPSC Official Key",
+            sourceName: (primaryAnswer as any).source?.sourceName || "UPSC Official Key",
             publishedAt: primaryAnswer.publishedAt,
           }
         : {

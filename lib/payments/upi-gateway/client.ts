@@ -163,6 +163,10 @@ export class UpiGatewayClient {
     const expiresAt = new Date(Date.now() + 15 * 60 * 1000).toISOString();
     const formattedAmount = Number(request.amount).toFixed(2);
 
+    const payeeParam = encodeURIComponent(this.config.payeeName || "Aradhy Jain");
+    const upiId = this.config.receivingUpiId || "jainaradhy123@okicici";
+    const noteParam = encodeURIComponent(`Pravaah UPSC ${request.client_order_id}`);
+
     return {
       order_id: orderId,
       client_order_id: request.client_order_id,
@@ -172,7 +176,7 @@ export class UpiGatewayClient {
       environment: "sandbox",
       test: true,
       payment_url: `${this.config.baseUrl}/pay/${orderId}`,
-      upi_intent: `upi://pay?pa=pravaah.sandbox@upi&pn=Pravaah+UPSC+Sandbox&am=${formattedAmount}&tr=${orderId}&cu=INR`,
+      upi_intent: `upi://pay?pa=${upiId}&pn=${payeeParam}&am=${formattedAmount}&tr=${request.client_order_id}&tn=${noteParam}&cu=INR`,
       expires_at: expiresAt,
     };
   }

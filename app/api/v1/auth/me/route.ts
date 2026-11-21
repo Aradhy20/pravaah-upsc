@@ -37,6 +37,8 @@ export async function GET(request: NextRequest) {
           email: user.email,
           fullName: user.fullName,
           role: user.role,
+          avatarUrl: user.avatarUrl,
+          googleId: user.googleId,
           profile: userRecord?.profile || null,
         },
         subscription,

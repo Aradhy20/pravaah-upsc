@@ -35,8 +35,8 @@ export async function GET(request: NextRequest) {
         questionsCount: t._count.questions,
         subtopics: t.subtopics.map((st) => ({
           id: st.id,
-          name: st.name,
-          slug: st.slug,
+          name: st.subtopicName,
+          slug: (st as any).slug || st.subtopicName.toLowerCase().replace(/[^a-z0-9]+/g, "-"),
         })),
       })),
     }));

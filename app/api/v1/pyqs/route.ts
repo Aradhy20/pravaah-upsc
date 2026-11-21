@@ -175,8 +175,8 @@ export async function GET(request: NextRequest) {
         questionTextHi: q.questionTextHi || null,
         difficulty: q.difficulty,
         difficultyLevel: q.difficultyLevel || q.difficulty,
-        marks: q.marks,
-        negativeMarks: q.negativeMarks,
+        marks: q.paper?.code === "GS2" ? 2.5 : (q.marks || 2.0),
+        negativeMarks: q.paper?.code === "GS2" ? 0.833 : (q.negativeMarks || 0.666),
         subject: primarySubject?.name || "General Studies",
         subjectSlug: primarySubject?.slug || "general-studies",
         topic: primaryTopic?.name || "Concept",
@@ -196,7 +196,7 @@ export async function GET(request: NextRequest) {
               answerKeyType: primaryAnswer.answerKeyType,
               answerProvenance: primaryAnswer.answerProvenance,
               verificationStatus: primaryAnswer.verificationStatus,
-              sourceName: primaryAnswer.source?.sourceName || "UPSC Official Key",
+              sourceName: (primaryAnswer as any).source?.sourceName || "UPSC Official Key",
               publishedAt: primaryAnswer.publishedAt,
             }
           : {

@@ -47,7 +47,7 @@ export async function GET(request: NextRequest) {
     };
 
     examYears.forEach((ey) => {
-      const s = ey.harvestStatus || "NOT_HARVESTED";
+      const s = ey.downloadStatus || "NOT_HARVESTED";
       statusBreakdown[s] = (statusBreakdown[s] || 0) + 1;
     });
 
@@ -75,15 +75,20 @@ export async function GET(request: NextRequest) {
       }
 
       entry.targetYearsCount++;
-      if (ey.harvestStatus === "COMPLETED" || ey.harvestStatus === "EXTRACTED") {
+      if (
+        ey.downloadStatus === "COMPLETED" ||
+        ey.downloadStatus === "EXTRACTED" ||
+        ey.downloadStatus === "DOWNLOADED" ||
+        ey.downloadStatus === "VERIFIED"
+      ) {
         entry.completedYearsCount++;
       }
-      entry.harvestedQuestions += ey.extractedCount || 0;
+      entry.harvestedQuestions += (ey as any).extractedCount || 0;
 
       entry.years.push({
         year: ey.year,
         paperOrStage: ey.paperOrStage,
-        status: ey.harvestStatus,
+        status: ey.downloadStatus,
         notes: ey.notes,
         officialSourceUrl: ey.officialSourceUrl,
       });

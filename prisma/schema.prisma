@@ -20,6 +20,8 @@ model User {
   email        String            @unique
   passwordHash String
   fullName     String
+  avatarUrl    String?
+  googleId     String?           @unique
   roleId       String
   role         Role              @relation(fields: [roleId], references: [id])
   profile      UserProfile?
@@ -38,6 +40,7 @@ model User {
   refunds       RefundRecord[]
   dailyQuizAttempts DailyQuizAttempt[]
   mainsDrafts   MainsDraft[]
+  videoProgress VideoProgress[]
   sessions      Session[]
   paymentOrders PaymentOrder[]
   createdAt    DateTime          @default(now())
@@ -49,8 +52,14 @@ model UserProfile {
   userId            String   @unique
   user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   targetYear        Int?     @default(2027)
+  targetExam        String?  @default("UPSC_CSE")
   optionalSubject   String?
   dailyGoalMinutes  Int      @default(60)
+  dailyStudyHours   Float    @default(4.0)
+  preferredLanguage String   @default("en") // "en" | "hi"
+  weakSubjects      String?  // JSON string of weak subjects
+  preparationStage  String?  @default("BEGINNER") // BEGINNER, INTERMEDIATE, ADVANCED
+  readinessIndex    Float    @default(0.0)
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 }
@@ -1080,5 +1089,70 @@ model IngestionJobAudit {
 
   @@index([jobType, status])
 }
+
+// ==========================================
+// VIDEO ACADEMY & MULTIMEDIA LEARNING
+// ==========================================
+
+model VideoLesson {
+  id              String          @id @default(cuid())
+  title           String
+  titleHi         String?
+  description     String?         @db.Text
+  descriptionHi   String?         @db.Text
+  youtubeUrl      String
+  youtubeId       String
+  durationMinutes Int             @default(15)
+  paperCode       String          // GS1, GS2, GS3, GS4, CSAT, ESSAY
+  subject         String          // Polity, Economy, History, Geography, Environment, Ethics, etc.
+  topic           String
+  facultyName     String?         @default("Pravaah Senior Faculty")
+  thumbnailUrl    String?
+  orderIndex      Int             @default(1)
+  isFree          Boolean         @default(false)
+  progress        VideoProgress[]
+  createdAt       DateTime        @default(now())
+
+  @@index([paperCode, subject])
+}
+
+model VideoProgress {
+  id             String      @id @default(cuid())
+  userId         String
+  user           User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  videoLessonId  String
+  videoLesson    VideoLesson @relation(fields: [videoLessonId], references: [id], onDelete: Cascade)
+  isCompleted    Boolean     @default(false)
+  watchedSeconds Int         @default(0)
+  updatedAt      DateTime    @updatedAt
+
+  @@unique([userId, videoLessonId])
+}
+
+// ==========================================
+// TOPPER ANSWER ARCHIVE & COPY INTELLIGENCE
+// ==========================================
+
+model TopperCopy {
+  id              String   @id @default(cuid())
+  topperName      String
+  rank            Int
+  year            Int
+  examType        String   @default("UPSC_CSE")
+  paperCode       String   // GS1, GS2, GS3, GS4, ESSAY, OPTIONAL
+  optionalSubject String?
+  title           String
+  titleHi         String?
+  description     String?  @db.Text
+  pdfUrl          String?
+  sampleAnswerUrl String?
+  keyTakeaways    String?  @db.Text // Bullet points / annotations on diagrams & structuring
+  scoreMarks      String?  // e.g. "124/250"
+  createdAt       DateTime @default(now())
+
+  @@index([paperCode, year])
+  @@index([rank])
+}
+
 
 

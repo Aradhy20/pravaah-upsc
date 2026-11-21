@@ -23,11 +23,16 @@ import {
   Zap,
   ArrowRight,
   Sliders,
+  Video,
+  Award,
 } from "lucide-react";
 import { AILearningAssistantModal } from "@/components/AILearningAssistantModal";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { useLanguage } from "@/lib/i18n/context";
 
 export function Header() {
   const pathname = usePathname();
+  const { t, language } = useLanguage();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [practiceOpen, setPracticeOpen] = useState(false);
   const [prepOpen, setPrepOpen] = useState(false);
@@ -94,6 +99,7 @@ export function Header() {
   };
 
   const isPracticeActive =
+    pathname?.startsWith("/prelims/pyqs") ||
     pathname?.startsWith("/pyqs") ||
     pathname?.startsWith("/mock-tests") ||
     pathname?.startsWith("/daily-quiz") ||
@@ -105,7 +111,9 @@ export function Header() {
     pathname?.startsWith("/study-planner") ||
     pathname?.startsWith("/exams") ||
     pathname?.startsWith("/ncert") ||
-    pathname?.startsWith("/syllabus");
+    pathname?.startsWith("/syllabus") ||
+    pathname?.startsWith("/video-academy") ||
+    pathname?.startsWith("/topper-copies");
 
   return (
     <header className="sticky top-0 z-50 border-b border-slate-200 bg-white/95 backdrop-blur-md">
@@ -149,7 +157,7 @@ export function Header() {
               {practiceOpen && (
                 <div className="absolute left-0 mt-2 w-72 rounded-2xl border border-slate-200 bg-white p-2 shadow-xl animate-in fade-in-50 zoom-in-95">
                   <a
-                    href="/pyqs"
+                    href="/prelims/pyqs"
                     onClick={() => setPracticeOpen(false)}
                     className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-slate-50 transition"
                   >
@@ -300,6 +308,38 @@ export function Header() {
                   </a>
 
                   <a
+                    href="/video-academy"
+                    onClick={() => setPrepOpen(false)}
+                    className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-slate-50 transition"
+                  >
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-red-100 text-red-700">
+                      <Video className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">{t("nav.videoAcademy", "Video Academy")}</div>
+                      <div className="text-[11px] text-slate-500 leading-tight mt-0.5">
+                        {t("nav.videoAcademySub", "Curated topic-wise video lectures")}
+                      </div>
+                    </div>
+                  </a>
+
+                  <a
+                    href="/topper-copies"
+                    onClick={() => setPrepOpen(false)}
+                    className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-slate-50 transition"
+                  >
+                    <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-amber-100 text-amber-700">
+                      <Award className="h-5 w-5" />
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-slate-900">{t("nav.topperCopies", "Topper Answer Library")}</div>
+                      <div className="text-[11px] text-slate-500 leading-tight mt-0.5">
+                        {t("nav.topperCopiesSub", "Annotated answer copies from UPSC toppers")}
+                      </div>
+                    </div>
+                  </a>
+
+                  <a
                     href="/study-planner"
                     onClick={() => setPrepOpen(false)}
                     className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-slate-50 transition"
@@ -383,6 +423,9 @@ export function Header() {
 
         {/* Right Section: Search & Auth Actions */}
         <div className="hidden sm:flex items-center gap-2.5">
+          {/* Language Switcher (EN / HI) */}
+          <LanguageSwitcher />
+
           {/* Ask AI Grounded Assistant */}
           <button
             onClick={() => setIsAiAssistantOpen(true)}
@@ -412,8 +455,16 @@ export function Header() {
                 <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-black text-blue-800 uppercase">
                   {userTier}
                 </span>
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-700 text-white font-bold text-xs">
-                  {currentUser.fullName?.[0] || "A"}
+                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-blue-700 text-white font-bold text-xs overflow-hidden">
+                  {currentUser.avatarUrl ? (
+                    <img
+                      src={currentUser.avatarUrl}
+                      alt={currentUser.fullName}
+                      className="h-full w-full object-cover"
+                    />
+                  ) : (
+                    currentUser.fullName?.[0] || "A"
+                  )}
                 </div>
               </button>
 
@@ -521,6 +572,12 @@ export function Header() {
       {mobileMenuOpen && (
         <div className="border-b border-slate-200 bg-white px-4 py-5 lg:hidden animate-in slide-in-from-top-2 max-h-[85vh] overflow-y-auto">
           <div className="flex flex-col gap-4">
+            {/* Mobile Language Switcher */}
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <span className="text-xs font-bold text-slate-500">Language / भाषा:</span>
+              <LanguageSwitcher />
+            </div>
+
             <div>
               <p className="text-[11px] font-black uppercase tracking-wider text-slate-400 mb-2 px-2">
                 Practice Hub
@@ -597,6 +654,22 @@ export function Header() {
                 >
                   <BarChart2 className="h-4 w-4 text-rose-600" />
                   <span>Mains Answer Studio (80 Qs)</span>
+                </a>
+                <a
+                  href="/video-academy"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50"
+                >
+                  <Video className="h-4 w-4 text-red-600" />
+                  <span>{t("nav.videoAcademy", "Video Academy")}</span>
+                </a>
+                <a
+                  href="/topper-copies"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-bold text-slate-700 hover:bg-slate-50"
+                >
+                  <Award className="h-4 w-4 text-amber-600" />
+                  <span>{t("nav.topperCopies", "Topper Answer Library")}</span>
                 </a>
                 <a
                   href="/study-planner"

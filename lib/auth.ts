@@ -8,6 +8,8 @@ export interface CurrentUser {
   email: string;
   fullName: string;
   role: "ASPIRANT" | "ADMIN";
+  avatarUrl?: string | null;
+  googleId?: string | null;
 }
 
 export const COOKIE_USER_ID = "pravaah_user_id";
@@ -120,6 +122,8 @@ export async function getAuthenticatedUser(request?: NextRequest): Promise<Curre
     email: user.email,
     fullName: user.fullName,
     role: user.role.name as "ASPIRANT" | "ADMIN",
+    avatarUrl: user.avatarUrl,
+    googleId: user.googleId,
   };
 }
 
@@ -148,6 +152,8 @@ export async function getCurrentUser(
         email: defaultAspirant.email,
         fullName: defaultAspirant.fullName,
         role: defaultAspirant.role.name as "ASPIRANT" | "ADMIN",
+        avatarUrl: defaultAspirant.avatarUrl,
+        googleId: defaultAspirant.googleId,
       };
     }
   }
@@ -158,6 +164,8 @@ export async function getCurrentUser(
     email: "guest@pravaah.in",
     fullName: "Guest Aspirant",
     role: "ASPIRANT",
+    avatarUrl: null,
+    googleId: null,
   };
 }
 
