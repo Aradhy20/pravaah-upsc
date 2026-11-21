@@ -133,7 +133,7 @@ export default function HomePage() {
               {/* Subtitle */}
               <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
                 No bloated paywalls or unverified coaching keys. Master{" "}
-                <span className="font-bold text-slate-900">1,108+ officially verified</span> UPSC General Studies & CSAT questions (Series A) with statement-by-statement evidence, timed exam simulation, NCERT chapter links, and automated spaced mistake revision.
+                <span className="font-bold text-slate-900">1,079+ officially verified</span> UPSC General Studies & CSAT questions (Series A) with statement-by-statement evidence, timed exam simulation, NCERT chapter links, and automated spaced mistake revision.
               </p>
 
               {/* Prominent PYQ Search Box */}
@@ -490,7 +490,7 @@ export default function HomePage() {
               Practise by UPSC Subject Domain
             </h2>
             <p className="text-sm text-slate-500 mt-1">
-              Read your standard textbook, then immediately drill every corresponding PYQ from 2011 to 2024.
+              Read your standard textbook, then immediately drill every corresponding PYQ from 2019 to 2024.
             </p>
           </div>
 
@@ -596,7 +596,7 @@ export default function HomePage() {
                 <div className="mt-4 text-3xl font-black text-slate-900">₹0</div>
                 <div className="mt-6 space-y-2 text-xs text-slate-700">
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-emerald-600" /> 1,108+ PYQs in Learn Mode
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> 1,079+ PYQs in Learn Mode
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-emerald-600" /> 5 Daily Quiz questions / day

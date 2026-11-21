@@ -1,26 +1,40 @@
 import React from "react";
 import { prisma } from "@/lib/prisma";
 import { Layers, ArrowRight, BookOpen, CheckCircle } from "lucide-react";
+import { getFallbackSubjects } from "@/lib/data-fallback";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
 export default async function SubjectsPage() {
-  const subjects = await prisma.subject.findMany({
-    include: {
-      paper: true,
-      topics: {
-        include: {
-          questions: {
-            where: {
-              question: { status: "PUBLISHED" },
+  let subjects: any[] = [];
+
+  try {
+    const dbSubjects = await prisma.subject.findMany({
+      include: {
+        paper: true,
+        topics: {
+          include: {
+            questions: {
+              where: {
+                question: { status: "PUBLISHED" },
+              },
             },
           },
         },
       },
-    },
-    orderBy: { name: "asc" },
-  });
+      orderBy: { name: "asc" },
+    });
+
+    if (dbSubjects && dbSubjects.length > 0) {
+      subjects = dbSubjects;
+    } else {
+      subjects = getFallbackSubjects();
+    }
+  } catch (err) {
+    console.warn("Using fallback subjects in /subjects:", err);
+    subjects = getFallbackSubjects();
+  }
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
@@ -39,9 +53,11 @@ export default async function SubjectsPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
         {subjects.map((s) => {
           let totalSubjectQs = 0;
-          s.topics.forEach((t) => {
-            totalSubjectQs += t.questions.length;
+          (s.topics || []).forEach((t: any) => {
+            totalSubjectQs += (t.questions || []).length;
           });
+
+          const paperCode = s.paper?.code || "GS1";
 
           return (
             <div
@@ -52,12 +68,12 @@ export default async function SubjectsPage() {
                 <div className="flex items-center justify-between">
                   <span
                     className={`rounded px-2 py-0.5 text-[10px] font-bold ${
-                      s.paper.code === "GS2"
+                      paperCode === "GS2"
                         ? "bg-teal-100 text-teal-800"
                         : "bg-blue-100 text-blue-800"
                     }`}
                   >
-                    {s.paper.code === "GS2" ? "CSAT Paper II" : "GS Paper I"}
+                    {paperCode === "GS2" ? "CSAT Paper II" : "GS Paper I"}
                   </span>
                   <span className="text-xs font-semibold text-slate-400">
                     {totalSubjectQs} PYQs
@@ -72,20 +88,20 @@ export default async function SubjectsPage() {
                     Syllabus Topics:
                   </span>
                   <ul className="space-y-1 text-xs text-slate-600">
-                    {s.topics.slice(0, 4).map((t) => (
+                    {(s.topics || []).slice(0, 4).map((t: any) => (
                       <li key={t.id} className="flex items-center justify-between">
                         <a
-                          href={`/pyqs?subject=${encodeURIComponent(s.name)}&topic=${encodeURIComponent(t.name)}`}
+                          href={`/prelims/pyqs?subject=${encodeURIComponent(s.name)}&topic=${encodeURIComponent(t.name)}`}
                           className="hover:text-blue-600 transition truncate max-w-[200px]"
                         >
                           • {t.name}
                         </a>
                         <span className="text-slate-400 text-[10px]">
-                          {t.questions.length} Qs
+                          {(t.questions || []).length} Qs
                         </span>
                       </li>
                     ))}
-                    {s.topics.length > 4 && (
+                    {(s.topics || []).length > 4 && (
                       <li className="text-[11px] text-slate-400 italic">
                         +{s.topics.length - 4} more topics
                       </li>
@@ -99,7 +115,7 @@ export default async function SubjectsPage() {
                   href={`/subjects/${s.slug}`}
                   className="flex items-center justify-between text-xs font-bold text-blue-600 hover:text-blue-800 transition"
                 >
-                  <span>Explore Subject Archive</span>
+                  <span>Explore Subject PYQs</span>
                   <ArrowRight className="h-4 w-4" />
                 </a>
               </div>

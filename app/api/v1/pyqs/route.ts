@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getFallbackPYQs } from "@/lib/data-fallback";
 
 export const dynamic = "force-dynamic";
 
@@ -238,6 +239,20 @@ export async function GET(request: NextRequest) {
       };
     });
 
+    if (formatted.length === 0) {
+      const fallback = getFallbackPYQs({
+        paperCode,
+        years: yearsParam ? yearsParam.split(",").map((y) => parseInt(y.trim())).filter((y) => !isNaN(y)) : undefined,
+        subject: subjectParam,
+        q: search,
+        page,
+        limit,
+      });
+      if (fallback.data.length > 0) {
+        return NextResponse.json(fallback);
+      }
+    }
+
     return NextResponse.json({
       success: true,
       data: formatted,
@@ -251,17 +266,14 @@ export async function GET(request: NextRequest) {
     });
   } catch (error: any) {
     console.warn("Graceful fallback in GET /api/v1/pyqs:", error.message);
-    return NextResponse.json({
-      success: true,
-      data: [],
-      meta: {
-        total: 0,
-        page: 1,
-        limit: 20,
-        totalPages: 0,
-        hasMore: false,
-      },
-      warning: error.message || "Failed to retrieve PYQs",
+    const { searchParams } = new URL(request.url);
+    const fallback = getFallbackPYQs({
+      paperCode: searchParams.get("paper"),
+      subject: searchParams.get("subject"),
+      q: searchParams.get("q") || searchParams.get("search"),
+      page: Math.max(1, parseInt(searchParams.get("page") || "1")),
+      limit: Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20"))),
     });
+    return NextResponse.json(fallback);
   }
 }

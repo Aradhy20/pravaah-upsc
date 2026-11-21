@@ -275,7 +275,7 @@ export default function AdminIngestionDashboardPage() {
               <ShieldCheck className="h-4 w-4 text-blue-600" />
               Examination Category Distribution
             </h2>
-            <span className="text-xs font-semibold text-slate-400">1,122 Total Questions</span>
+            <span className="text-xs font-semibold text-slate-400">1,079+ Verified Questions</span>
           </div>
           <div className="flex flex-wrap gap-2">
             <div className="flex-1 min-w-[100px] rounded-xl bg-blue-50/70 border border-blue-200 p-2.5 text-center">

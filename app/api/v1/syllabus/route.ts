@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { prisma } from '@/lib/prisma';
+import { getFallbackSyllabusNodes } from '@/lib/data-fallback';
 
 export const dynamic = 'force-dynamic';
 
@@ -39,6 +40,10 @@ export async function GET(request: Request) {
       subjectGroup.nodes.push(node);
     }
 
+    if (nodes.length === 0) {
+      return NextResponse.json(getFallbackSyllabusNodes(paper, subject));
+    }
+
     return NextResponse.json({
       success: true,
       data: {
@@ -48,17 +53,10 @@ export async function GET(request: Request) {
       },
     });
   } catch (error: any) {
-    console.error('Error in /api/v1/syllabus:', error);
+    console.warn('Graceful fallback in /api/v1/syllabus:', error.message);
+    const { searchParams } = new URL(request.url);
     return NextResponse.json(
-      {
-        success: false,
-        error: {
-          code: 'INTERNAL_SERVER_ERROR',
-          message: 'Failed to retrieve syllabus nodes.',
-          details: error.message,
-        },
-      },
-      { status: 500 }
+      getFallbackSyllabusNodes(searchParams.get('paper'), searchParams.get('subject'))
     );
   }
 }

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getFallbackPYQInventory } from "@/lib/data-fallback";
 
 export const dynamic = "force-dynamic";
 
@@ -76,6 +77,11 @@ export async function GET(request: NextRequest) {
       };
     });
 
+    if (years.length === 0) {
+      const fallback = getFallbackPYQInventory(paperCode);
+      return NextResponse.json(fallback);
+    }
+
     return NextResponse.json({
       success: true,
       data: {
@@ -90,17 +96,8 @@ export async function GET(request: NextRequest) {
     });
   } catch (error: any) {
     console.warn("Graceful fallback in GET /api/v1/pyqs/inventory:", error.message);
-    return NextResponse.json({
-      success: true,
-      data: {
-        total: 0,
-        papers: {
-          GS1: 0,
-          GS2: 0,
-        },
-        years: [],
-        subjects: [],
-      },
-    });
+    const { searchParams } = new URL(request.url);
+    const fallback = getFallbackPYQInventory(searchParams.get("paper"));
+    return NextResponse.json(fallback);
   }
 }

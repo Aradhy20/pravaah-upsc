@@ -108,23 +108,28 @@ export async function getAuthenticatedUser(request?: NextRequest): Promise<Curre
     return null;
   }
 
-  const user = await prisma.user.findUnique({
-    where: { id: userId },
-    include: { role: true },
-  });
+  try {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: { role: true },
+    });
 
-  if (!user) {
+    if (!user) {
+      return null;
+    }
+
+    return {
+      id: user.id,
+      email: user.email,
+      fullName: user.fullName,
+      role: user.role.name as "ASPIRANT" | "ADMIN",
+      avatarUrl: user.avatarUrl,
+      googleId: user.googleId,
+    };
+  } catch (e) {
+    console.warn("Could not query user from database:", e);
     return null;
   }
-
-  return {
-    id: user.id,
-    email: user.email,
-    fullName: user.fullName,
-    role: user.role.name as "ASPIRANT" | "ADMIN",
-    avatarUrl: user.avatarUrl,
-    googleId: user.googleId,
-  };
 }
 
 /**
@@ -141,20 +146,24 @@ export async function getCurrentUser(
 
   if (options.allowDemoFallback) {
     // Fallback to default demo aspirant for frictionless evaluation
-    const defaultAspirant = await prisma.user.findUnique({
-      where: { email: "aspirant@pravaah.in" },
-      include: { role: true },
-    });
+    try {
+      const defaultAspirant = await prisma.user.findUnique({
+        where: { email: "aspirant@pravaah.in" },
+        include: { role: true },
+      });
 
-    if (defaultAspirant) {
-      return {
-        id: defaultAspirant.id,
-        email: defaultAspirant.email,
-        fullName: defaultAspirant.fullName,
-        role: defaultAspirant.role.name as "ASPIRANT" | "ADMIN",
-        avatarUrl: defaultAspirant.avatarUrl,
-        googleId: defaultAspirant.googleId,
-      };
+      if (defaultAspirant) {
+        return {
+          id: defaultAspirant.id,
+          email: defaultAspirant.email,
+          fullName: defaultAspirant.fullName,
+          role: defaultAspirant.role.name as "ASPIRANT" | "ADMIN",
+          avatarUrl: defaultAspirant.avatarUrl,
+          googleId: defaultAspirant.googleId,
+        };
+      }
+    } catch (e) {
+      // Database not ready or user table missing
     }
   }
 

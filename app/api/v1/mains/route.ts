@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthenticatedUser } from "@/lib/auth";
+import { getFallbackMainsQuestions } from "@/lib/data-fallback";
 
 export const dynamic = "force-dynamic";
 
@@ -32,6 +33,11 @@ export async function GET(request: NextRequest) {
         : undefined,
     });
 
+    if (questions.length === 0) {
+      const yr = yearStr ? parseInt(yearStr, 10) : null;
+      return NextResponse.json(getFallbackMainsQuestions(paper, isNaN(yr as number) ? null : yr));
+    }
+
     return NextResponse.json({
       success: true,
       total: questions.length,
@@ -49,10 +55,11 @@ export async function GET(request: NextRequest) {
       })),
     });
   } catch (error: any) {
-    console.error("Error fetching Mains questions:", error);
+    console.warn("Graceful fallback in GET /api/v1/mains:", error.message);
+    const { searchParams } = new URL(request.url);
+    const yr = searchParams.get("year") ? parseInt(searchParams.get("year")!, 10) : null;
     return NextResponse.json(
-      { success: false, error: "Failed to fetch Mains questions" },
-      { status: 500 }
+      getFallbackMainsQuestions(searchParams.get("paper"), isNaN(yr as number) ? null : yr)
     );
   }
 }

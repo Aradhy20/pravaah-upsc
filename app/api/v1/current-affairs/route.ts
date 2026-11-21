@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getFallbackCurrentAffairs } from "@/lib/data-fallback";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +58,10 @@ export async function GET(request: NextRequest) {
       }),
     ]);
 
+    if (stories.length === 0) {
+      return NextResponse.json(getFallbackCurrentAffairs(paper, search, skip, limit));
+    }
+
     return NextResponse.json({
       success: true,
       meta: {
@@ -84,17 +89,20 @@ export async function GET(request: NextRequest) {
         linkedPyqs: s.questionLinks.map((ql) => ({
           questionId: ql.questionId,
           year: ql.question.year,
-          paper: ql.question.paper.code,
+          paper: ql.question.paper?.code || "GS1",
           questionNumber: ql.question.questionNumber,
           rationale: ql.relationshipRationale,
         })),
       })),
     });
   } catch (error: any) {
-    console.error("Error fetching current affairs:", error);
+    console.warn("Graceful fallback in GET /api/v1/current-affairs:", error.message);
+    const { searchParams } = new URL(request.url);
+    const limit = Math.min(parseInt(searchParams.get("limit") || "10", 10), 50);
+    const page = Math.max(parseInt(searchParams.get("page") || "1", 10), 1);
+    const skip = (page - 1) * limit;
     return NextResponse.json(
-      { success: false, error: "Failed to fetch current affairs stories" },
-      { status: 500 }
+      getFallbackCurrentAffairs(searchParams.get("paper"), searchParams.get("search"), skip, limit)
     );
   }
 }

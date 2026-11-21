@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { getFallbackDailyQuiz } from "@/lib/data-fallback";
 
 export const dynamic = "force-dynamic";
 
@@ -59,10 +60,7 @@ export async function GET(request: NextRequest) {
     });
 
     if (!quiz) {
-      return NextResponse.json(
-        { success: false, error: "No published daily quiz available for today." },
-        { status: 404 }
-      );
+      return NextResponse.json(getFallbackDailyQuiz(quizId, dateStr));
     }
 
     // Do not reveal correctOption or explanation before submission
@@ -94,10 +92,10 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error: any) {
-    console.error("Error fetching daily quiz:", error);
+    console.warn("Graceful fallback in GET /api/v1/quiz/daily:", error.message);
+    const { searchParams } = new URL(request.url);
     return NextResponse.json(
-      { success: false, error: "Failed to fetch daily quiz" },
-      { status: 500 }
+      getFallbackDailyQuiz(searchParams.get("quizId"), searchParams.get("date"))
     );
   }
 }
