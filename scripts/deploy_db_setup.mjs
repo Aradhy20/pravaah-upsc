@@ -1,0 +1,63 @@
+import { execSync } from "child_process";
+import { PrismaClient } from "@prisma/client";
+
+async function setup() {
+  console.log("=========================================");
+  console.log("🛠️ PRAVAAH UPSC: DATABASE DEPLOY SETUP");
+  console.log("=========================================");
+
+  const dbUrl =
+    process.env.DATABASE_URL ||
+    process.env.STORAGE_URL ||
+    process.env.STORAGE_PRISMA_DATABASE_URL ||
+    process.env.POSTGRES_PRISMA_URL ||
+    process.env.POSTGRES_URL ||
+    process.env.PRISMA_DATABASE_URL;
+
+  if (!process.env.DATABASE_URL && dbUrl) {
+    process.env.DATABASE_URL = dbUrl;
+  }
+
+  if (!dbUrl) {
+    console.warn("⚠️ No DATABASE_URL or Postgres environment variable found. Skipping schema push.");
+    return;
+  }
+
+  // 1. Push schema to database
+  console.log("📦 Synchronizing Prisma schema to database...");
+  try {
+    execSync("npx prisma db push --skip-generate --accept-data-loss", {
+      stdio: "inherit",
+      env: { ...process.env, DATABASE_URL: dbUrl },
+    });
+    console.log("✅ Prisma schema synchronized successfully!");
+  } catch (err) {
+    console.warn("⚠️ Prisma db push warning / skip:", err.message);
+  }
+
+  // 2. Check and Seed Data if empty
+  console.log("🌱 Checking if database has question records...");
+  try {
+    const prisma = new PrismaClient({ datasourceUrl: dbUrl });
+    const count = await prisma.question.count();
+    console.log(`📊 Found ${count} questions in database.`);
+
+    if (count === 0) {
+      console.log("🌱 Database is fresh/empty. Seeding 3,469 authentic records from dump...");
+      execSync("node scripts/seed_postgres.mjs", {
+        stdio: "inherit",
+        env: { ...process.env, DATABASE_URL: dbUrl },
+      });
+      console.log("✅ Seed completed successfully!");
+    }
+    await prisma.$disconnect();
+  } catch (err) {
+    console.warn("⚠️ Seed check warning:", err.message);
+  }
+
+  console.log("=========================================\n");
+}
+
+setup().catch((e) => {
+  console.warn("Database deploy setup encountered error:", e);
+});

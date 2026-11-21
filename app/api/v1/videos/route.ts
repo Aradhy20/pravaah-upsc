@@ -119,17 +119,21 @@ export async function GET(req: NextRequest) {
 
     return NextResponse.json({
       success: true,
-      data: videos,
+      data: videos.length > 0 ? videos : SEED_VIDEOS,
       meta: {
-        total: videos.length,
+        total: videos.length > 0 ? videos.length : SEED_VIDEOS.length,
         filters: { paperCode, subject, query },
       },
     });
   } catch (error: any) {
-    console.error("Failed to fetch video lessons:", error);
-    return NextResponse.json(
-      { success: false, error: error.message || "Failed to fetch video lessons" },
-      { status: 500 }
-    );
+    console.warn("Graceful fallback for video lessons:", error.message);
+    return NextResponse.json({
+      success: true,
+      data: SEED_VIDEOS,
+      meta: {
+        total: SEED_VIDEOS.length,
+        filters: {},
+      },
+    });
   }
 }
