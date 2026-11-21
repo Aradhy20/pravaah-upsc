@@ -26,10 +26,10 @@ In strict compliance with architectural constraints:
 ### 2.1 Technology Stack & Versions
 - **Framework**: Next.js 14.2.18 (App Router architecture, React Server Components + Client Components).
 - **Runtime & Language**: Node.js v20+, TypeScript 5.6.3.
-- **ORM & Database**: Prisma ORM 5.22.0, PostgreSQL hosted on Neon Serverless (`neondb`).
+- **ORM & Database**: Prisma ORM 5.22.0, PostgreSQL 17 hosted on Docker (`pravaah-postgres`).
 - **Styling**: Tailwind CSS 3.4.15, Lucide React icons.
 - **Testing**: Node.js Native Test Runner (`node:test`, `node:assert`), 46 automated integration & E2E tests.
-- **Hosting / Deployment**: Vercel (Next.js frontend & serverless API routes), Neon (PostgreSQL database).
+- **Hosting / Deployment**: Local / Containerized (Next.js frontend & serverless API routes), Docker PostgreSQL.
 
 ### 2.2 Authentication & Authorization (RBAC)
 - **Token Architecture**: Cryptographically signed HMAC-SHA256 session tokens stored in HTTP-only `pravaah_user_id` cookies with 30-day expiry (`lib/auth.ts`).

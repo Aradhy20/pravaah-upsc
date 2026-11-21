@@ -19,7 +19,7 @@ graph TD
         FULFILL[Entitlement & Subscription Activator]
     end
 
-    subgraph Database Tier [Neon PostgreSQL]
+    subgraph Database Tier [Docker PostgreSQL]
         DB_PO[(PaymentOrder)]
         DB_WE[(PaymentWebhookEvent)]
         DB_SUB[(Subscription)]
@@ -106,7 +106,7 @@ sequenceDiagram
     actor Student as Aspirant
     participant Client as Next.js Checkout UI
     participant Backend as Pravaah Backend API
-    participant DB as Neon PostgreSQL
+    participant DB as Docker PostgreSQL
     participant Gateway as UPI Gateway Service
     participant Bank as UPI / NPCI Network
 

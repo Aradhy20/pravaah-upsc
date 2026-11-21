@@ -34,7 +34,7 @@ Pravaah UPSC communicates with the gateway exclusively via authenticated server-
 +-------------------------------+                     +-------------------------------+
                 |                                                     |
                 v                                                     v
-        [ Neon PostgreSQL ]                                   [ Bank UPI Network ]
+        [ Docker PostgreSQL ]                                 [ Bank UPI Network ]
 ```
 
 ---

@@ -4,7 +4,7 @@
 
 - **Run ID**: `RUN-MASTER-INGEST-20261116-01`
 - **Script Executed**: `node scripts/ingest_master_library.mjs`
-- **Environment**: Production Staging (Neon PostgreSQL Pooled Instance)
+- **Environment**: Docker PostgreSQL 17 Instance (`pravaah-postgres`)
 - **Start Timestamp**: `2026-11-16T14:01:44.575Z`
 - **Completion Timestamp**: `2026-11-16T14:03:13.911Z`
 - **Total Duration**: `89,336 ms (~1.48 minutes)`

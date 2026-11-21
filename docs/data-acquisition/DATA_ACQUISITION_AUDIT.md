@@ -2,7 +2,7 @@
 
 **Audit Date**: November 2026  
 **Platform**: Pravaah UPSC ([https://pravaah-upsc.vercel.app](https://pravaah-upsc.vercel.app))  
-**Database**: PostgreSQL on Neon  
+**Database**: PostgreSQL 17 (Docker)  
 **Document Code**: `DOC-ACQ-AUDIT-01`  
 
 ---
@@ -19,7 +19,7 @@ This document identifies those gaps, analyzes source repositories, establishes l
 
 ## 2. Current Database Inventory & Statistics
 
-A live audit of the Neon PostgreSQL database yields the following exact metrics:
+A live audit of the Docker PostgreSQL database yields the following exact metrics:
 
 | Entity | Current DB Count | Status / Coverage |
 |---|---|---|
@@ -126,7 +126,7 @@ A live audit of the Neon PostgreSQL database yields the following exact metrics:
 1. **Phase 1: Project Audit & Data Ingestion Specs** *(Completed in this document)*.
 2. **Phase 2: Database Schema Expansion**:
    - Add `NCERTBook`, `NCERTChapter`, `NCERTChapterQuestionLink`, `SourceRegistryRecord`, `ExtractionJob`, and `DataQualityReport` models in Prisma.
-   - Deploy to Neon PostgreSQL with `npx prisma db push`.
+   - Deploy to Docker PostgreSQL with `npx prisma db push`.
 3. **Phase 3: Source Registry Seeding**:
    - Deploy comprehensive registry of official and educational endpoints with licensing terms.
 4. **Phase 4: NCERT Knowledge Base Construction**:

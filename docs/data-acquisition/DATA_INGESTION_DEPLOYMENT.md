@@ -6,7 +6,7 @@ The ingestion pipeline runs alongside the Pravaah UPSC Next.js 14 / Prisma runti
 
 Required Environment Variables:
 ```env
-DATABASE_URL="postgresql://neondb_owner:***@ep-***.ap-southeast-1.aws.neon.tech/neondb?sslmode=require"
+DATABASE_URL="postgresql://postgres:postgres@localhost:5432/pravaah_upsc?schema=public"
 JWT_SECRET="pravaah-upsc-production-jwt-secret-***"
 UPI_GATEWAY_API_KEY="test_api_key_***"
 UPI_GATEWAY_API_SECRET="test_api_secret_***"

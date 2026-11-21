@@ -72,8 +72,8 @@ Before implementing the expansion of Pravaah UPSC into an intelligence and daily
 
 | Dimension | Development Environment (Current) | Production Target (Configured) | Migration Plan |
 | :--- | :--- | :--- | :--- |
-| **Database Engine** | SQLite 3 (`prisma/dev.db`) | Managed PostgreSQL 15+ (Neon / Supabase / AWS RDS) | Dual-configured Prisma datasource with direct URL |
-| **Connection Pooling** | Single-threaded file locking | `pgbouncer` / Neon serverless connection pool | Supported via `PRISMA_CLIENT_ENGINE_TYPE` |
+| **Database Engine** | PostgreSQL 17 (Docker `pravaah-postgres`) | PostgreSQL 17 Container / Cluster | Native PostgreSQL datasource with Prisma ORM |
+| **Connection Pooling** | Container pooled connections | PostgreSQL connection pool | Supported via Prisma Client connection management |
 | **Full-Text Search** | SQLite `LIKE` / In-Memory substring | PostgreSQL `tsvector`, `tsquery`, GIN indexes | Trigram (`pg_trgm`) index on question text and story headlines |
 | **Data Types** | Text, Integer, Real | Native Enums, UUID, JSONB, Timestamptz | Prisma handles schema type mapping transparently |
 | **Concurrency Target** | Single developer / local test runner | 100,000+ registered users, 1,000+ concurrent learners | Connection pooling (max 20 pool), Redis caching, CDN edge delivery |

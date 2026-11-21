@@ -17,7 +17,7 @@ The platform includes:
 
 | Dimension / Metric | Live Database Value | Status |
 |:---|:---|:---|
-| **Total Question Bank Size** | **1,122 Questions** | Verified on Neon PostgreSQL |
+| **Total Question Bank Size** | **1,122 Questions** | Verified on Docker PostgreSQL |
 | **Total Question Options** | **4,488 Options** (Exact 4 choices A-D per question) | Verified |
 | **Pedagogical Explanations** | **1,122 Explanations** (100% statement-by-statement) | Verified |
 | **CSE Prelims Questions** | **1,117 Questions** | Verified |

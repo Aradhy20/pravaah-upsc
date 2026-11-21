@@ -201,8 +201,8 @@ export default function SystemFlowPage() {
       ],
     },
     {
-      layer: "4. PostgreSQL Storage & Neon Pooling",
-      description: "Robust relational data models with PgBouncer connection pooling.",
+      layer: "4. PostgreSQL Storage Tier (Docker Container)",
+      description: "Robust relational data models running on PostgreSQL 17 with high-availability container pooling.",
       badge: "Database Tier",
       color: "border-amber-300 bg-amber-50/50",
       items: [

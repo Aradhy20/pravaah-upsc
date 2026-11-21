@@ -9,7 +9,7 @@ sequenceDiagram
     participant Student as Aspirant / Student UI
     participant API as /api/v1/ai/assistant
     participant RAG as RAGEngine (lib/services)
-    participant DB as Neon PostgreSQL (Prisma)
+    participant DB as PostgreSQL (Docker / Prisma)
     participant Citations as Official UPSC / NCERT Repositories
 
     Student->>API: Query: "Attorney General powers and parliamentary rights"

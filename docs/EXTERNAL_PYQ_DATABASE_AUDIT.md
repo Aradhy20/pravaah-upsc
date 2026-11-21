@@ -8,7 +8,7 @@
 
 ## 1. DATABASE CONNECTION & ENVIRONMENT
 
-- **Database Engine:** PostgreSQL 17 (Dockerized local production replica / Neon PostgreSQL compatible)
+- **Database Engine:** PostgreSQL 17 (Docker containerized instance: `pravaah-postgres`)
 - **ORM / Schema Manager:** Prisma 5.22.0
 - **Connection Variable:** `DATABASE_URL` configured in `.env`
 - **Integrity Rule:** Strict append-only and idempotent updates. Never reset, truncate, or overwrite verified records.

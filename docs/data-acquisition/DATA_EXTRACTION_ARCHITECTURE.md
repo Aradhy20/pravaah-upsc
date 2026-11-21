@@ -18,7 +18,7 @@ flowchart TD
     I --> J["Deduplication Engine (Exact + Sorensen-Dice)"]
     J -->|"New Unique Question"| K["Prisma Ingestion & Transaction"]
     J -->|"Duplicate Found"| L["DataQualityReport / Duplicate Candidate Log"]
-    K --> M["PostgreSQL Database (Neon)"]
+    K --> M["PostgreSQL Database (Docker)"]
 ```
 
 ---

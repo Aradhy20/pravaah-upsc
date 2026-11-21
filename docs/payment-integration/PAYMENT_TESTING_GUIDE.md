@@ -6,7 +6,7 @@ This guide covers the testing methodology, test suite execution, coverage matrix
 
 ## 1. Overview of Test Architecture
 
-The payment test harness tests end-to-end payment flows without requiring live bank transactions or real UPI apps. It runs against the local Next.js server (`http://localhost:3000`) and the Neon PostgreSQL staging/test database.
+The payment test harness tests end-to-end payment flows without requiring live bank transactions or real UPI apps. It runs against the local Next.js server (`http://localhost:3000`) and the Docker PostgreSQL database.
 
 ### Key Components Under Test
 1. **Authoritative Order Creation** (`POST /api/v1/payments/create-order`):

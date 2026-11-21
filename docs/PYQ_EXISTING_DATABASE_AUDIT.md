@@ -8,7 +8,7 @@
 
 ## 1. EXECUTIVE INVENTORY SUMMARY
 
-A complete database and code-level audit was conducted against the local PostgreSQL / Neon database instance, Prisma ORM mappings, and the source archives located in `/Volumes/DevDrive/pravaah-upsc/chat`.
+A complete database and code-level audit was conducted against the local Docker PostgreSQL database instance, Prisma ORM mappings, and the source archives located in `/Volumes/DevDrive/pravaah-upsc/chat`.
 
 | Metric | Current Count | Target Production Standard | Gap / Deficit |
 | :--- | :---: | :---: | :--- |

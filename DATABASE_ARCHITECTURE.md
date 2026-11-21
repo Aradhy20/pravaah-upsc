@@ -82,4 +82,4 @@ erDiagram
    - `@@index([questionGroupId])`: Instant bilingual join operations.
    - `@@index([verificationStatus])`: High-speed filtering for verified student practice.
 3. **Database Connection Pooling**:
-   - Integrated with Neon PgBouncer transaction pooling on port 6543, avoiding connection exhaustion during heavy asynchronous background ingestion.
+   - Integrated with PostgreSQL 17 Docker container engine with connection tuning, avoiding connection exhaustion during heavy asynchronous background ingestion.

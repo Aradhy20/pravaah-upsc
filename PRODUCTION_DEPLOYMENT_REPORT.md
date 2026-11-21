@@ -2,7 +2,7 @@
 
 ## 1. Executive Summary
 
-This report certifies that the **Pravaah UPSC Knowledge Database, PYQ Ingestion & Intelligent Answer Mapping Engine** is fully implemented, verified, and operational for production deployment on Vercel and Neon PostgreSQL.
+This report certifies that the **Pravaah UPSC Knowledge Database, PYQ Ingestion & Intelligent Answer Mapping Engine** is fully implemented, verified, and operational with Docker PostgreSQL 17.
 
 ---
 
@@ -10,7 +10,7 @@ This report certifies that the **Pravaah UPSC Knowledge Database, PYQ Ingestion 
 
 | Service Component | Operational Status | Verification Method | Result |
 | :--- | :--- | :--- | :---: |
-| **Neon PostgreSQL Database** | **OPERATIONAL** | PgBouncer pooled connection test via Prisma 5.22 | **PASSED** |
+| **Docker PostgreSQL Database** | **OPERATIONAL** | Port 5432 connection test via Prisma 5.22 | **PASSED** |
 | **Prisma ORM Client** | **SYNCHRONIZED** | `npx prisma db push` & `npx prisma generate` | **PASSED** |
 | **Next.js 14 App Router** | **RUNNING** | Port 3000 local dev server & dynamic API routes | **PASSED** |
 | **Grounded RAG Engine** | **ACTIVE** | `POST /api/v1/ai/assistant` retrieval test | **PASSED** |

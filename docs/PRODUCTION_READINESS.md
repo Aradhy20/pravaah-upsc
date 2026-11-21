@@ -2,7 +2,7 @@
 
 **Auditor:** Senior Infrastructure Architect, Security Engineer & DevOps Lead  
 **Audit Date:** October 2026  
-**Target Environment:** Managed Cloud (Vercel / Docker Container) + Managed PostgreSQL (Neon / Supabase / AWS RDS)  
+**Target Environment:** Docker Containerized Environment + PostgreSQL 17 (Docker `pravaah-postgres`)  
 **Readiness Verdict:** **CODEBASE READY FOR STAGING; PRODUCTION REQUIRES CLOUD DATABASE & PAYMENT CREDENTIALS**
 
 ---
@@ -28,8 +28,7 @@ The application strictly separates sensitive secrets from code. Never commit `.e
 
 | Variable Name | Required | Default / Example | Purpose |
 | :--- | :---: | :--- | :--- |
-| `DATABASE_URL` | **Yes** | `postgresql://user:pass@ep-cool.us-east-1.aws.neon.tech/pravaah?sslmode=require` | PostgreSQL production connection string with connection pooling. |
-| `DIRECT_URL` | **Yes** | `postgresql://user:pass@ep-cool.us-east-1.aws.neon.tech/pravaah` | Direct connection string for Prisma migrations (bypassing pgbouncer). |
+| `DATABASE_URL` | **Yes** | `postgresql://postgres:postgres@localhost:5432/pravaah_upsc?schema=public` | PostgreSQL production connection string. |
 | `NEXTAUTH_SECRET` / `SESSION_SECRET` | **Yes** | `[Generated 64-char hex string]` | Salt and HMAC key for password hashing and session tokens. |
 | `RAZORPAY_KEY_ID` | Conditional | `rzp_live_xxxxxxxxxxxx` | Live Razorpay merchant key identifier for client checkout. |
 | `RAZORPAY_KEY_SECRET` | Conditional | `[Razorpay API Secret]` | Server-side Razorpay secret for order creation and verification. |
@@ -81,7 +80,7 @@ Verify that high-frequency query filters have corresponding B-Tree composite ind
 ### Backup Strategy & RPO/RTO Targets
 - **Recovery Point Objective (RPO):** $< 1$ hour of student attempt/note data loss.
 - **Recovery Time Objective (RTO):** $< 2$ hours to restore full service from catastrophic outage.
-- **Automated Continuous Backup:** Continuous Write-Ahead Logging (WAL) archiving provided by managed PostgreSQL (Neon/Supabase/RDS).
+- **Automated Continuous Backup:** Continuous Write-Ahead Logging (WAL) archiving provided by PostgreSQL container volumes and dump scripts (`npm run db:dump`).
 - **Daily Logical Snapshot:** Automated cron snapshot at `02:00 UTC` dumped to encrypted cloud storage (S3/GCS) with 30-day retention.
 
 ### Daily Backup Script (`scripts/backup_db.sh`)

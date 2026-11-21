@@ -38,7 +38,7 @@ All merchant credentials (`X-Api-Key`, `X-Api-Secret`, `UPI_GATEWAY_WEBHOOK_SECR
 ### Financial Integrity & Authoritative Pricing
 - **Zero Client Trust**: The frontend cannot specify prices or amounts. All prices are resolved server-side from authoritative database constants with 18% statutory GST.
 - **Integer Paise Representation**: All calculations use integer paise internally (`amountPaise`) to prevent floating-point rounding errors.
-- **Atomic Entitlement Provisioning**: Status verification and entitlement activation run inside an atomic `prisma.$transaction` with custom max-wait timeouts adapted for Neon PostgreSQL network poolers.
+- **Atomic Entitlement Provisioning**: Status verification and entitlement activation run inside an atomic `prisma.$transaction` with custom max-wait timeouts adapted for PostgreSQL connection pooling.
 
 ---
 

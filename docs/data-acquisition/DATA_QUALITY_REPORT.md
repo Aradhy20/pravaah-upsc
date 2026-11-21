@@ -28,7 +28,7 @@ This report documents the automated and human-in-the-loop quality audit executed
 
 | Model Entity | Live Database Count | Verification Method |
 |:---|:---|:---|
-| `Question` | **1,122** | Neon PostgreSQL `prisma.question.count()` |
+| `Question` | **1,122** | Docker PostgreSQL `prisma.question.count()` |
 | `QuestionOption` | **4,488** | 4 options per question |
 | `Explanation` | **1,122** | 1-to-1 explanation linkage |
 | `NCERTBook` | **9** | Classes 10, 11, 12 core textbooks |
