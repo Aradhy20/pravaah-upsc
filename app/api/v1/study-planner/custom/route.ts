@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { prisma } from "@/lib/prisma";
 import { getAuthenticatedUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
@@ -151,6 +152,35 @@ export async function POST(request: NextRequest) {
       weeklyStrategy,
       calculatedDaysRemaining,
     };
+
+    // Persist to user profile and study goal if authenticated
+    if (user) {
+      try {
+        const yearMatch = targetExam.match(/(19\d\d|20\d\d)/);
+        const parsedYear = yearMatch ? parseInt(yearMatch[1], 10) : 2025;
+
+        await prisma.userProfile.upsert({
+          where: { userId: user.id },
+          update: {
+            targetExam,
+            targetYear: parsedYear,
+            dailyStudyHours: hours,
+            preparationStage,
+            weakSubjects: prioritySubjects.join(", "),
+          },
+          create: {
+            userId: user.id,
+            targetExam,
+            targetYear: parsedYear,
+            dailyStudyHours: hours,
+            preparationStage,
+            weakSubjects: prioritySubjects.join(", "),
+          },
+        });
+      } catch (e: any) {
+        console.warn("Could not persist UserProfile update from study planner:", e.message);
+      }
+    }
 
     return NextResponse.json({
       success: true,

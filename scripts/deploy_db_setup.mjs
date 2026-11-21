@@ -44,6 +44,16 @@ async function setup() {
     }
   }
 
+  // 1b. Ensure all tables and seed records are verified
+  try {
+    execSync("node scripts/ensure_tables.mjs", {
+      stdio: "inherit",
+      env: { ...process.env, DATABASE_URL: dbUrl },
+    });
+  } catch (syncErr) {
+    console.warn("⚠️ Table check warning:", syncErr.message);
+  }
+
   // 2. Check and Seed Data if empty
   console.log("🌱 Checking if database has question records...");
   try {

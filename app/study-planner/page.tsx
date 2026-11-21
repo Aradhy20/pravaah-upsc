@@ -50,6 +50,12 @@ export default function DailyStudyPlannerPage() {
       const data = await res.json();
       if (res.ok && data.success) {
         setPlan(data.studyPlan);
+        if (data.studyPlan?.studentTarget) {
+          const st = data.studyPlan.studentTarget;
+          if (st.targetExam) setTargetExam(st.targetExam);
+          if (st.dailyStudyHours) setDailyHours(st.dailyStudyHours);
+          if (st.preparationStage) setStage(st.preparationStage);
+        }
       } else {
         setError(data.error || "Failed to formulate study plan.");
       }

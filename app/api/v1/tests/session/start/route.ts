@@ -8,28 +8,47 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser(request);
+    const body = await request.json().catch(() => ({}));
+    let { testId, paperCode, year } = body;
 
-    // Server-side Entitlement Check: Timed Exam Mode requires Achiever plan or higher
-    const entitlement = await checkEntitlement(user.id, "TIMED_EXAMS");
-    if (!entitlement.hasAccess) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: "FORBIDDEN_SUBSCRIPTION_REQUIRED",
-            message: entitlement.reason,
-            upgradeUrl: "/pricing",
-            requiredTier: entitlement.requiredTier,
-          },
-        },
-        { status: 403 }
-      );
+    // Parse testId if provided (e.g., "test-cse-2024-gs1", "test-cse-2023-gs2")
+    if (testId) {
+      if (!year) {
+        const yearMatch = testId.match(/(19\d\d|20\d\d)/);
+        if (yearMatch) year = parseInt(yearMatch[1], 10);
+      }
+      if (!paperCode) {
+        if (/gs2|csat/i.test(testId)) paperCode = "GS2";
+        else if (/gs1/i.test(testId)) paperCode = "GS1";
+      }
     }
 
-    const body = await request.json();
-    const { testId, paperCode = "GS1", year = 2024 } = body;
+    year = year ? parseInt(year.toString(), 10) : 2024;
+    paperCode = paperCode ? paperCode.toUpperCase() : "GS1";
 
-    let test = null;
+    // Free Diagnostic Test: UPSC CSE 2024 GS1 is open to all registered/guest aspirants to benchmark preparation
+    const isFreeDiagnostic = (year === 2024 && paperCode === "GS1") || testId === "test-cse-2024-gs1";
+
+    if (!isFreeDiagnostic && user.role !== "ADMIN") {
+      // Server-side Entitlement Check: Full Timed Exam Mode requires Achiever plan or higher
+      const entitlement = await checkEntitlement(user.id, "TIMED_EXAMS");
+      if (!entitlement.hasAccess) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: {
+              code: "FORBIDDEN_SUBSCRIPTION_REQUIRED",
+              message: entitlement.reason,
+              upgradeUrl: "/pricing",
+              requiredTier: entitlement.requiredTier,
+            },
+          },
+          { status: 403 }
+        );
+      }
+    }
+
+    let test: any = null;
     if (testId) {
       test = await prisma.test.findUnique({
         where: { id: testId },
@@ -57,33 +76,34 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // If no explicit test or not found, generate dynamically for the paper & year
-    let questionsList: any[] = [];
-    let targetPaper: any = null;
-
-    if (test && test.questions.length > 0) {
-      targetPaper = test.paper;
-      questionsList = test.questions.map((tq) => tq.question);
-    } else {
+    // Determine target paper
+    let targetPaper: any = test?.paper;
+    if (!targetPaper) {
       targetPaper = await prisma.paper.findFirst({
-        where: { code: paperCode },
+        where: { code: { equals: paperCode, mode: "insensitive" } },
       });
+    }
 
-      if (!targetPaper) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: { code: "PAPER_NOT_FOUND", message: "Paper not found" },
-          },
-          { status: 404 }
-        );
-      }
+    if (!targetPaper) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: { code: "PAPER_NOT_FOUND", message: `Paper '${paperCode}' not found` },
+        },
+        { status: 404 }
+      );
+    }
 
-      // Fetch verified published questions
+    let questionsList: any[] = [];
+
+    if (test && test.questions && test.questions.length > 0) {
+      questionsList = test.questions.map((tq: any) => tq.question);
+    } else {
+      // Fetch verified published questions for this paper and year
       questionsList = await prisma.question.findMany({
         where: {
           paperId: targetPaper.id,
-          year: parseInt(year.toString()),
+          year,
           status: "PUBLISHED",
         },
         orderBy: { questionNumber: "asc" },
@@ -100,20 +120,64 @@ export async function POST(request: NextRequest) {
         },
       });
 
-      // Ensure test container exists in DB
-      test = await prisma.test.findFirst({
-        where: { paperId: targetPaper.id, year: parseInt(year.toString()) },
-      });
-
-      if (!test) {
-        test = await prisma.test.create({
-          data: {
+      // If specific year has few questions, complement with authentic published questions from the paper
+      if (questionsList.length < 5) {
+        const moreQuestions = await prisma.question.findMany({
+          where: {
             paperId: targetPaper.id,
-            title: `UPSC CSE Prelims ${year} — ${targetPaper.name}`,
-            year: parseInt(year.toString()),
-            isFullPaper: true,
+            status: "PUBLISHED",
+            id: { notIn: questionsList.map((q: any) => q.id) },
+          },
+          take: 35 - questionsList.length,
+          orderBy: { year: "desc" },
+          include: {
+            options: {
+              select: {
+                id: true,
+                optionCode: true,
+                optionText: true,
+              },
+              orderBy: { optionCode: "asc" },
+            },
           },
         });
+        questionsList = [...questionsList, ...moreQuestions];
+      }
+
+      // Ensure test container exists in DB
+      if (!test) {
+        test = await prisma.test.findFirst({
+          where: { paperId: targetPaper.id, year },
+        });
+
+        if (!test) {
+          test = await prisma.test.create({
+            data: {
+              id: testId || undefined,
+              paperId: targetPaper.id,
+              title: `UPSC CSE Prelims ${year} — ${targetPaper.name}`,
+              year,
+              isFullPaper: true,
+            },
+          });
+        }
+      }
+
+      // Link questions into TestQuestion if not already linked
+      if (test && questionsList.length > 0) {
+        for (let i = 0; i < questionsList.length; i++) {
+          try {
+            await prisma.testQuestion.create({
+              data: {
+                testId: test.id,
+                questionId: questionsList[i].id,
+                orderIndex: i + 1,
+              },
+            });
+          } catch {
+            // Ignore if already linked
+          }
+        }
       }
     }
 
@@ -128,7 +192,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Sanitized Anti-Leak Payload
-    const sanitizedQuestions = questionsList.map((q) => ({
+    const sanitizedQuestions = questionsList.map((q: any) => ({
       id: q.id,
       questionNumber: q.questionNumber,
       questionText: q.questionText,

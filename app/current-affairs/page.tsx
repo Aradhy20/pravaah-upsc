@@ -36,8 +36,9 @@ export default function CurrentAffairsPage() {
       const res = await fetch(`/api/v1/current-affairs?${queryParams.toString()}`);
       const data = await res.json();
       if (res.ok && data.success) {
-        setStories(data.stories || []);
-        setTotal(data.meta?.total || data.total || data.stories?.length || 0);
+        const storiesList = data.stories || data.data?.stories || [];
+        setStories(storiesList);
+        setTotal(data.meta?.total || data.data?.total || data.total || storiesList.length);
       } else {
         setError(data.error || "Failed to retrieve verified current affairs from database.");
       }

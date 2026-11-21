@@ -343,26 +343,40 @@ export function getFallbackCurrentAffairs(paper?: string | null, search?: string
   const total = stories.length;
   const slice = stories.slice(skip, skip + limit);
 
+  const formattedStories = slice.map((s) => ({
+    id: s.id,
+    title: s.title,
+    slug: s.slug,
+    source: s.source || s.sourceName || "PIB / The Hindu",
+    sourceName: s.sourceName || s.source || "PIB / The Hindu",
+    sourceUrl: s.sourceUrl || "https://pib.gov.in",
+    publishedAt: s.publishedAt || new Date().toISOString(),
+    summary: s.summary,
+    keyInsights: s.keyInsights || [],
+    termsList: s.termsList ? (Array.isArray(s.termsList) ? s.termsList : s.termsList.split(",")) : [],
+    terms: s.termsList ? (Array.isArray(s.termsList) ? s.termsList : s.termsList.split(",")) : [],
+    syllabusPaper: s.syllabusPaper || "GS2",
+    topics: s.topics || [{ paper: s.syllabusPaper || "GS2", name: "Governance & Policies", syllabusPaper: s.syllabusPaper || "GS2", topicName: "Governance & Policies" }],
+    linkedPyqsCount: s.linkedQuestions?.length || s.questionLinks?.length || 1,
+    linkedPyqs: s.linkedQuestions || s.questionLinks || [],
+    linkedQuestions: s.linkedQuestions || [],
+  }));
+
   return {
     success: true,
+    meta: {
+      total,
+      page: Math.floor(skip / limit) + 1,
+      limit,
+      totalPages: Math.ceil(total / limit),
+    },
+    stories: formattedStories,
     data: {
       total,
       page: Math.floor(skip / limit) + 1,
       limit,
       totalPages: Math.ceil(total / limit),
-      stories: slice.map((s) => ({
-        id: s.id,
-        title: s.title,
-        slug: s.slug,
-        source: s.source || "PIB / The Hindu",
-        publishedAt: s.publishedAt || new Date().toISOString(),
-        summary: s.summary,
-        keyInsights: s.keyInsights || [],
-        termsList: s.termsList ? s.termsList.split(",") : [],
-        syllabusPaper: s.syllabusPaper || "GS2",
-        topics: [{ syllabusPaper: s.syllabusPaper || "GS2", topicName: "Governance & Policies" }],
-        linkedQuestions: [],
-      })),
+      stories: formattedStories,
     },
   };
 }
@@ -547,8 +561,24 @@ export function getFallbackDashboardAnalytics() {
         { topic: "Writs & Supreme Court Jurisdiction", subject: "Indian Polity", accuracy: 71.4 },
       ],
       recentSessions: [
-        { id: "sess-1", title: "UPSC CSE Prelims 2024 GS1", date: new Date().toISOString(), score: "162.66 / 200", accuracy: "84.5%" },
-        { id: "sess-2", title: "CSAT Reading Comprehension Drill", date: new Date(Date.now() - 86400000).toISOString(), score: "78.33 / 100", accuracy: "81.2%" },
+        {
+          id: "sess-1",
+          title: "UPSC CSE Prelims 2024 GS1",
+          date: new Date().toISOString(),
+          submittedAt: new Date().toISOString(),
+          score: "162.66 / 200",
+          netScore: 162.66,
+          accuracy: 84.5,
+        },
+        {
+          id: "sess-2",
+          title: "CSAT Reading Comprehension Drill",
+          date: new Date(Date.now() - 86400000).toISOString(),
+          submittedAt: new Date(Date.now() - 86400000).toISOString(),
+          score: "78.33 / 100",
+          netScore: 78.33,
+          accuracy: 81.2,
+        },
       ],
     },
   };

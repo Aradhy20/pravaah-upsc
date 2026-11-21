@@ -152,11 +152,15 @@ function PrelimsPYQContent() {
     if (globalLang === "hi") setDisplayLanguage("HI");
   }, [globalLang]);
 
-  // Load Inventory Counts on Mount
+  // Load Inventory Counts whenever paper filter changes
   useEffect(() => {
     async function loadInventory() {
       try {
-        const res = await fetch("/api/v1/pyqs/inventory");
+        const queryParams = new URLSearchParams();
+        if (selectedPaper && selectedPaper !== "ALL") {
+          queryParams.set("paper", selectedPaper);
+        }
+        const res = await fetch(`/api/v1/pyqs/inventory?${queryParams.toString()}`);
         const json = await res.json();
         if (json.success) {
           setYearInventory(json.data.years || []);
@@ -167,7 +171,7 @@ function PrelimsPYQContent() {
       }
     }
     loadInventory();
-  }, []);
+  }, [selectedPaper]);
 
   // Update URL search parameters
   const updateURL = useCallback(

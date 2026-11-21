@@ -133,7 +133,7 @@ export default function HomePage() {
               {/* Subtitle */}
               <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
                 No bloated paywalls or unverified coaching keys. Master{" "}
-                <span className="font-bold text-slate-900">1,079+ officially verified</span> UPSC General Studies & CSAT questions (Series A) with statement-by-statement evidence, timed exam simulation, NCERT chapter links, and automated spaced mistake revision.
+                <span className="font-bold text-slate-900">30 years of officially verified</span> UPSC General Studies & CSAT questions (1995–2024 Series A) with statement-by-statement evidence, timed exam simulation, NCERT chapter links, and automated spaced mistake revision.
               </p>
 
               {/* Prominent PYQ Search Box */}
@@ -275,12 +275,12 @@ export default function HomePage() {
                 {/* High-Impact Trust Metric Strip */}
                 <div className="grid grid-cols-4 divide-x divide-slate-800 bg-slate-950 py-3.5 px-3 text-center text-white">
                   <div>
-                    <div className="text-base sm:text-lg font-black text-blue-400">1,108+</div>
-                    <div className="text-[10px] font-medium text-slate-400 mt-0.5 leading-tight">Prelims Qs</div>
+                    <div className="text-base sm:text-lg font-black text-blue-400">30 Years</div>
+                    <div className="text-[10px] font-medium text-slate-400 mt-0.5 leading-tight">1995–2024 Archive</div>
                   </div>
                   <div>
-                    <div className="text-base sm:text-lg font-black text-emerald-400">80 Qs</div>
-                    <div className="text-[10px] font-medium text-slate-400 mt-0.5 leading-tight">Mains GS1–4</div>
+                    <div className="text-base sm:text-lg font-black text-emerald-400">GS1 & CSAT</div>
+                    <div className="text-[10px] font-medium text-slate-400 mt-0.5 leading-tight">Prelims & Mains</div>
                   </div>
                   <div>
                     <div className="text-base sm:text-lg font-black text-amber-400">100%</div>
@@ -288,7 +288,7 @@ export default function HomePage() {
                   </div>
                   <div>
                     <div className="text-base sm:text-lg font-black text-purple-400">0</div>
-                    <div className="text-[10px] font-medium text-slate-400 mt-0.5 leading-tight">Errors</div>
+                    <div className="text-[10px] font-medium text-slate-400 mt-0.5 leading-tight">Coaching Errors</div>
                   </div>
                 </div>
               </div>
@@ -400,7 +400,7 @@ export default function HomePage() {
                 Never second-guess with disputed coaching answer keys. Every question is mapped to official UPSC Series A keys, verified against government gazettes, PIB releases, and Supreme Court judgements.
               </p>
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-1 text-xs font-bold text-blue-700">
-                <span>1,108+ Questions Fully Verified</span>
+                <span>30-Year Archive Fully Verified</span>
                 <ChevronRight className="h-3.5 w-3.5" />
               </div>
             </div>
@@ -596,7 +596,7 @@ export default function HomePage() {
                 <div className="mt-4 text-3xl font-black text-slate-900">₹0</div>
                 <div className="mt-6 space-y-2 text-xs text-slate-700">
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-emerald-600" /> 1,079+ PYQs in Learn Mode
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> 30-Year Verified PYQs in Learn Mode
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-emerald-600" /> 5 Daily Quiz questions / day

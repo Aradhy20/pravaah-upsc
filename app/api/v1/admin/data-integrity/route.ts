@@ -1,10 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { ensureDatabaseTables } from "@/lib/db-sync";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
+    // Ensure all tables are synchronized before auditing
+    await ensureDatabaseTables().catch(() => {});
+
     const { searchParams } = new URL(request.url);
     const filterExam = searchParams.get("exam");
     const filterYear = searchParams.get("year") ? parseInt(searchParams.get("year")!, 10) : undefined;

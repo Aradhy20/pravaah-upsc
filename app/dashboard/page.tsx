@@ -318,9 +318,15 @@ export default function DashboardPage() {
                       </span>
                     </td>
                     <td className="py-3 font-bold text-slate-900">{sess.netScore} / 200</td>
-                    <td className="py-3 font-bold text-blue-600">{sess.accuracy}%</td>
+                    <td className="py-3 font-bold text-blue-600">
+                      {typeof sess.accuracy === "number"
+                        ? `${sess.accuracy}%`
+                        : String(sess.accuracy || 0).replace(/%+$/, "") + "%"}
+                    </td>
                     <td className="py-3 text-slate-400">
-                      {new Date(sess.submittedAt).toLocaleDateString()}
+                      {sess.submittedAt || sess.date
+                        ? new Date(sess.submittedAt || sess.date).toLocaleDateString()
+                        : "Recent"}
                     </td>
                   </tr>
                 ))}

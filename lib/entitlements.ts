@@ -8,50 +8,72 @@ export interface EntitlementCheckResult {
   reason?: string;
 }
 
+const FALLBACK_FEATURE_ENTITLEMENTS: Record<string, { minTier: number; name: string }> = {
+  TIMED_EXAMS: { minTier: 2, name: "Timed Examination Simulator" },
+  ADVANCED_ANALYTICS: { minTier: 2, name: "Diagnostic Weakness Detector" },
+  UNLIMITED_BOOKMARKS: { minTier: 2, name: "Unlimited Bookmarks" },
+  UNLIMITED_NOTES: { minTier: 2, name: "Unlimited Study Notes" },
+  PRIORITY_ACCESS: { minTier: 3, name: "Priority Access & Verification Audit" },
+};
+
 /**
  * Retrieves the current effective active subscription for a user.
  * If no active paid subscription is found, falls back to the Free plan (tier 0).
  */
 export async function getUserSubscription(userId: string) {
-  const activeSub = await prisma.subscription.findFirst({
-    where: {
-      userId,
-      status: "ACTIVE",
-      currentPeriodEnd: { gte: new Date() },
-    },
-    include: {
-      plan: {
-        include: {
-          features: true,
+  try {
+    const activeSub = await prisma.subscription.findFirst({
+      where: {
+        userId,
+        status: "ACTIVE",
+        currentPeriodEnd: { gte: new Date() },
+      },
+      include: {
+        plan: {
+          include: {
+            features: true,
+          },
         },
       },
-    },
-    orderBy: { currentPeriodEnd: "desc" },
-  });
+      orderBy: { currentPeriodEnd: "desc" },
+    });
 
-  if (activeSub) {
-    return {
-      isPaid: activeSub.plan.tier > 0,
-      tier: activeSub.plan.tier,
-      planCode: activeSub.plan.code,
-      planName: activeSub.plan.name,
-      subscription: activeSub,
-    };
+    if (activeSub) {
+      return {
+        isPaid: activeSub.plan.tier > 0,
+        tier: activeSub.plan.tier,
+        planCode: activeSub.plan.code,
+        planName: activeSub.plan.name,
+        subscription: activeSub,
+      };
+    }
+  } catch (err: any) {
+    console.warn("getUserSubscription database query warning:", err.message);
   }
 
   // Fallback to Free Plan
-  const freePlan = await prisma.plan.findUnique({
-    where: { code: "FREE" },
-    include: { features: true },
-  });
+  try {
+    const freePlan = await prisma.plan.findUnique({
+      where: { code: "FREE" },
+      include: { features: true },
+    });
 
-  return {
-    isPaid: false,
-    tier: 0,
-    planCode: "FREE",
-    planName: freePlan?.name || "Aspirant Foundation (Free)",
-    subscription: null,
-  };
+    return {
+      isPaid: false,
+      tier: 0,
+      planCode: "FREE",
+      planName: freePlan?.name || "Aspirant Foundation (Free)",
+      subscription: null,
+    };
+  } catch {
+    return {
+      isPaid: false,
+      tier: 0,
+      planCode: "FREE",
+      planName: "Aspirant Foundation (Free)",
+      subscription: null,
+    };
+  }
 }
 
 /**
@@ -62,12 +84,40 @@ export async function checkEntitlement(
   userId: string,
   featureCode: string
 ): Promise<EntitlementCheckResult> {
-  const [subInfo, entitlement] = await Promise.all([
-    getUserSubscription(userId),
-    prisma.featureEntitlement.findUnique({
+  let subInfo = {
+    isPaid: false,
+    tier: 0,
+    planCode: "FREE",
+    planName: "Aspirant Foundation (Free)",
+    subscription: null as any,
+  };
+
+  let entitlement: { minTier: number; name: string } | null = null;
+
+  try {
+    subInfo = await getUserSubscription(userId);
+  } catch (e: any) {
+    console.warn("Error getting user subscription:", e.message);
+  }
+
+  try {
+    const dbEntitlement = await prisma.featureEntitlement.findUnique({
       where: { featureCode },
-    }),
-  ]);
+    });
+    if (dbEntitlement) {
+      entitlement = dbEntitlement;
+    }
+  } catch (e: any) {
+    console.warn(`FeatureEntitlement query warning for ${featureCode}:`, e.message);
+  }
+
+  // Fall back to built-in dictionary if not in DB
+  if (!entitlement) {
+    entitlement = FALLBACK_FEATURE_ENTITLEMENTS[featureCode] || {
+      minTier: 0,
+      name: featureCode,
+    };
+  }
 
   const requiredTier = entitlement ? entitlement.minTier : 0;
   const hasAccess = subInfo.tier >= requiredTier;

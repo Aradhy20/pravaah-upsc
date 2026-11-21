@@ -304,7 +304,11 @@ export default function PricingPage() {
       ) : (
         <div className="mt-12 grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-4">
           {plans.map((p) => {
-            const priceObj = p.prices[billingInterval] || { amount: 0, discountPercent: 0 };
+            const priceObj =
+              p.prices[billingInterval] ||
+              p.prices["ANNUAL"] ||
+              p.prices["MONTHLY"] ||
+              { amount: 0, discountPercent: 0 };
             const isCurrent = userSubscription?.planCode === p.code;
             const isPopular = p.isPopular;
 
