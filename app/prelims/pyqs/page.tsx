@@ -25,6 +25,7 @@ import {
   Check,
   AlertTriangle,
   Award,
+  MessageSquare,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 
@@ -139,6 +140,12 @@ function PrelimsPYQContent() {
   const [activeNoteModalQ, setActiveNoteModalQ] = useState<QuestionData | null>(null);
   const [tempNoteText, setTempNoteText] = useState("");
   const [copiedQuestionId, setCopiedQuestionId] = useState<string | null>(null);
+
+  // Floating Feedback Modal State (Matching IASBoard)
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [feedbackCategory, setFeedbackCategory] = useState<"QUESTION_ERROR" | "EXPLANATION_QUERY" | "FEATURE_REQUEST">("QUESTION_ERROR");
+  const [feedbackText, setFeedbackText] = useState("");
+  const [feedbackSent, setFeedbackSent] = useState(false);
 
   // Sync with global language changes
   useEffect(() => {
@@ -290,25 +297,27 @@ function PrelimsPYQContent() {
     };
   }, [questions, attemptedAnswers]);
 
-  // Year Pill Palette Helpers
+  // Year Pill Palette Helpers (Matching IASBoard)
   const getYearBadgeStyle = (year: number, isSelected: boolean) => {
     if (isSelected) {
-      return "bg-purple-700 text-white font-extrabold shadow-md scale-105 border-purple-700";
+      return "bg-[#5b36e8] text-white font-extrabold shadow-md scale-105 border-[#5b36e8]";
     }
 
-    // Soft pastel badge variations like IASBoard
-    const hash = (year * 17) % 5;
-    switch (hash) {
+    // Soft pastel badge variations matching IASBoard palette
+    const mod = year % 6;
+    switch (mod) {
       case 0:
-        return "bg-purple-50 text-purple-700 hover:bg-purple-100 border-purple-200";
+        return "bg-[#eceeff] text-[#4f5bd5] hover:bg-[#e0e4ff] border-transparent";
       case 1:
-        return "bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border-emerald-200";
+        return "bg-[#e8f7ee] text-[#1e874b] hover:bg-[#d6f2df] border-transparent";
       case 2:
-        return "bg-amber-50 text-amber-800 hover:bg-amber-100 border-amber-200";
+        return "bg-[#fde8e8] text-[#c81e1e] hover:bg-[#fcd0d0] border-transparent";
       case 3:
-        return "bg-rose-50 text-rose-700 hover:bg-rose-100 border-rose-200";
+        return "bg-[#fef3c7] text-[#92400e] hover:bg-[#fde68a] border-transparent";
+      case 4:
+        return "bg-[#e0f2fe] text-[#0369a1] hover:bg-[#bae6fd] border-transparent";
       default:
-        return "bg-sky-50 text-sky-700 hover:bg-sky-100 border-sky-200";
+        return "bg-[#fce7f3] text-[#9d174d] hover:bg-[#fbcfe8] border-transparent";
     }
   };
 
@@ -426,7 +435,7 @@ function PrelimsPYQContent() {
               onClick={() => setSearchMode("smart")}
               className={`flex items-center gap-1.5 rounded-t-lg px-3.5 py-1.5 text-xs font-bold transition ${
                 searchMode === "smart"
-                  ? "bg-purple-600 text-white"
+                  ? "bg-[#5b36e8] text-white shadow-sm"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
@@ -436,15 +445,15 @@ function PrelimsPYQContent() {
               onClick={() => setSearchMode("keyword")}
               className={`flex items-center gap-1.5 rounded-t-lg px-3.5 py-1.5 text-xs font-bold transition ${
                 searchMode === "keyword"
-                  ? "bg-slate-800 text-white"
+                  ? "bg-slate-900 text-white shadow-sm"
                   : "bg-slate-100 text-slate-600 hover:bg-slate-200"
               }`}
             >
               <Search className="h-3.5 w-3.5" /> Keyword Search
             </button>
           </div>
-          <span className="text-[11px] font-medium text-slate-400">
-            Verified official UPSC final answer keys
+          <span className="text-[11px] font-medium text-slate-500">
+            2 of 3 free searches left
           </span>
         </div>
 
@@ -456,14 +465,14 @@ function PrelimsPYQContent() {
             onKeyDown={(e) => e.key === "Enter" && fetchQuestions()}
             placeholder={
               searchMode === "smart"
-                ? '✦ Smart Search — ask in plain English, e.g. "questions on monsoon mechanism" or "Basic Structure"'
-                : 'Keyword Search — e.g. "Article 39", "Ramsar", "Lopamudra"'
+                ? '✨ Smart Search — ask in plain English, e.g. "questions on monsoon mechanism"'
+                : '🔍 Keyword Search — e.g. "Article 39", "Ramsar", "Lopamudra"'
             }
-            className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-4 pr-24 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-purple-600 focus:outline-none focus:ring-1 focus:ring-purple-600"
+            className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-4 pr-24 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-[#5b36e8] focus:outline-none focus:ring-1 focus:ring-[#5b36e8]"
           />
           <button
             onClick={fetchQuestions}
-            className="absolute right-2 rounded-lg bg-purple-600 px-5 py-2 text-xs font-bold text-white shadow hover:bg-purple-700 transition"
+            className="absolute right-2 rounded-lg bg-[#5b36e8] px-5 py-2 text-xs font-bold text-white shadow hover:bg-[#4a28cb] transition"
           >
             Search
           </button>
@@ -476,18 +485,18 @@ function PrelimsPYQContent() {
         <div className="flex items-center justify-between pb-2 border-b border-slate-100">
           <div className="flex items-center gap-2">
             <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
-              Filters
+              FILTERS
             </span>
             {(selectedPaper !== "GS1" || selectedYear || selectedSubject || selectedDifficulty || searchQuery) && (
               <button
                 onClick={handleClearAll}
-                className="flex items-center gap-1 rounded-full bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-600 hover:bg-slate-200 transition"
+                className="flex items-center gap-1 rounded-full bg-slate-900 text-white px-2.5 py-0.5 text-[11px] font-bold hover:bg-slate-800 transition"
               >
                 Clear all <X className="h-3 w-3" />
               </button>
             )}
           </div>
-          <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-extrabold text-slate-700">
+          <span className="rounded-lg bg-[#eff2fe] text-[#4f5bd5] border border-[#dbe0fd] px-3 py-1 text-xs font-extrabold">
             {totalCount} questions
           </span>
         </div>
@@ -499,9 +508,9 @@ function PrelimsPYQContent() {
               setSelectedPaper("GS1");
               setPage(1);
             }}
-            className={`rounded-lg px-4 py-1.5 text-xs font-extrabold transition shadow-sm ${
+            className={`rounded-lg px-4 py-2 text-xs font-extrabold transition shadow-sm ${
               selectedPaper === "GS1"
-                ? "bg-purple-700 text-white"
+                ? "bg-[#5b36e8] text-white"
                 : "bg-slate-100 text-slate-600 hover:bg-slate-200"
             }`}
           >
@@ -512,10 +521,10 @@ function PrelimsPYQContent() {
               setSelectedPaper("GS2");
               setPage(1);
             }}
-            className={`rounded-lg px-4 py-1.5 text-xs font-extrabold transition shadow-sm ${
+            className={`rounded-lg px-4 py-2 text-xs font-extrabold transition shadow-sm ${
               selectedPaper === "GS2"
                 ? "bg-emerald-600 text-white"
-                : "bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
+                : "bg-[#e6f8ef] text-[#168a53] border border-[#bbf0d4] hover:bg-[#d6f2df]"
             }`}
           >
             GS Paper 2 (CSAT)
@@ -863,6 +872,94 @@ function PrelimsPYQContent() {
           </div>
         </div>
       )}
+
+      {/* Floating Feedback Button (Matching IASBoard Screenshot) */}
+      <button
+        onClick={() => {
+          setFeedbackModalOpen(true);
+          setFeedbackSent(false);
+          setFeedbackText("");
+        }}
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-[#5b36e8] px-5 py-3 text-xs font-bold text-white shadow-xl hover:bg-[#4a28cb] transition transform hover:scale-105"
+      >
+        <MessageSquare className="h-4 w-4" />
+        <span>Feedback</span>
+      </button>
+
+      {/* Floating Feedback Modal */}
+      {feedbackModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
+              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
+                <MessageSquare className="h-4 w-4 text-[#5b36e8]" /> Aspirant Feedback & Correction
+              </h3>
+              <button
+                onClick={() => setFeedbackModalOpen(false)}
+                className="text-slate-400 hover:text-slate-600"
+              >
+                <X className="h-4 w-4" />
+              </button>
+            </div>
+
+            {feedbackSent ? (
+              <div className="py-8 text-center space-y-2">
+                <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-600" />
+                <h4 className="text-sm font-bold text-slate-900">Thank you for your feedback!</h4>
+                <p className="text-xs text-slate-500">
+                  Our academic team reviews all student reports against official UPSC master keys within 24 hours.
+                </p>
+                <button
+                  onClick={() => setFeedbackModalOpen(false)}
+                  className="mt-3 rounded-lg bg-[#5b36e8] px-4 py-1.5 text-xs font-bold text-white shadow hover:bg-[#4a28cb]"
+                >
+                  Close
+                </button>
+              </div>
+            ) : (
+              <div className="mt-4 space-y-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-700">Feedback Category</label>
+                  <select
+                    value={feedbackCategory}
+                    onChange={(e: any) => setFeedbackCategory(e.target.value)}
+                    className="mt-1 w-full rounded-lg border border-slate-300 p-2 text-xs font-semibold text-slate-700 focus:border-[#5b36e8] focus:outline-none"
+                  >
+                    <option value="QUESTION_ERROR">Report Question / Answer Key Discrepancy</option>
+                    <option value="EXPLANATION_QUERY">Explanation & Elimination Technique Feedback</option>
+                    <option value="FEATURE_REQUEST">Feature Request / Platform Improvement</option>
+                  </select>
+                </div>
+                <div>
+                  <label className="text-xs font-bold text-slate-700">Your Feedback</label>
+                  <textarea
+                    rows={4}
+                    value={feedbackText}
+                    onChange={(e) => setFeedbackText(e.target.value)}
+                    placeholder="Describe any error, suggest improvement, or share your preparation feedback..."
+                    className="mt-1 w-full rounded-lg border border-slate-300 p-2.5 text-xs text-slate-800 focus:border-[#5b36e8] focus:outline-none"
+                  />
+                </div>
+                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                  <button
+                    onClick={() => setFeedbackModalOpen(false)}
+                    className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={() => setFeedbackSent(true)}
+                    disabled={!feedbackText.trim()}
+                    className="rounded-lg bg-[#5b36e8] px-4 py-1.5 text-xs font-bold text-white shadow hover:bg-[#4a28cb] disabled:opacity-40"
+                  >
+                    Submit Feedback
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
@@ -913,24 +1010,24 @@ function QuestionCardItem({
         {/* Top Badges Row (Year, Subject, Topic, Difficulty, Marking) */}
         <div className="flex flex-wrap items-center gap-1.5 mb-3">
           {/* Year Badge */}
-          <span className="rounded bg-slate-900 px-2 py-0.5 text-xs font-black text-white">
+          <span className="rounded bg-slate-900 px-2.5 py-0.5 text-xs font-black text-white">
             {question.year}
           </span>
           {/* Subject Badge */}
           {question.subject && (
-            <span className="rounded bg-blue-50 px-2.5 py-0.5 text-xs font-bold text-blue-700">
+            <span className="rounded bg-blue-100 text-blue-800 border border-blue-200 px-2.5 py-0.5 text-xs font-semibold">
               {question.subject}
             </span>
           )}
           {/* Topic Badge */}
           {question.topic && (
-            <span className="rounded bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700 hidden sm:inline-block">
+            <span className="rounded bg-amber-50 text-amber-900 border border-amber-200 px-2.5 py-0.5 text-xs font-medium hidden sm:inline-block">
               {question.topic}
             </span>
           )}
           {/* Difficulty Badge */}
           {question.difficulty && (
-            <span className="rounded bg-amber-50 px-2 py-0.5 text-xs font-bold text-amber-800">
+            <span className="rounded bg-amber-100 text-amber-800 px-2.5 py-0.5 text-xs font-semibold">
               {question.difficulty.toLowerCase()}
             </span>
           )}
@@ -984,13 +1081,13 @@ function QuestionCardItem({
                 className={`w-full rounded-xl border p-3 text-left text-xs sm:text-sm transition flex items-start gap-3 ${optionStyle}`}
               >
                 <span
-                  className={`inline-flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-black ${
+                  className={`inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${
                     isRevealed && isThisOptionCorrect
                       ? "bg-emerald-600 text-white"
                       : isRevealed && isSelected && !isThisOptionCorrect
                       ? "bg-rose-500 text-white"
                       : isSelected
-                      ? "bg-purple-600 text-white"
+                      ? "bg-[#5b36e8] text-white"
                       : "bg-slate-100 text-slate-700"
                   }`}
                 >
