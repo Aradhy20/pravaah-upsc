@@ -270,7 +270,7 @@ export default function MainsWorkspacePage() {
                       >
                         <div className="flex items-center justify-between text-[11px] text-slate-400 mb-1">
                           <span className="font-bold text-slate-700">
-                            UPSC {q.year} • Q#{q.questionNumber}
+                            UPSC CSE {q.year} • Question {q.questionNumber}
                           </span>
                           <span className="bg-slate-100 px-1.5 py-0.5 rounded text-slate-600 font-semibold">
                             {q.marks} Marks • {q.wordLimit}w
@@ -307,7 +307,7 @@ export default function MainsWorkspacePage() {
                       {activeQuestion.paperCode}
                     </span>
                     <span className="font-semibold text-slate-700">
-                      UPSC {activeQuestion.year} • Question #{activeQuestion.questionNumber}
+                      UPSC CSE {activeQuestion.year} • Question {activeQuestion.questionNumber}
                     </span>
                     <span className="text-slate-400">({activeQuestion.theme})</span>
                   </div>

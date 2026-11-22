@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getCurrentUser } from "@/lib/auth";
+import { getAuthenticatedUser } from "@/lib/auth";
 import { getUserSubscription } from "@/lib/entitlements";
 import { prisma } from "@/lib/prisma";
 
@@ -7,15 +7,36 @@ export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const user = await getAuthenticatedUser(request);
+
+    // Unauthenticated visitors default to the free foundation tier without throwing
+    if (!user) {
+      return NextResponse.json({
+        success: true,
+        data: {
+          isPaid: false,
+          tier: 0,
+          planCode: "FREE",
+          planName: "Aspirant Foundation (Free)",
+          subscription: null,
+          recentPayments: [],
+        },
+      });
+    }
+
     const subInfo = await getUserSubscription(user.id);
 
-    // Fetch user payment history
-    const payments = await prisma.paymentRecord.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: "desc" },
-      take: 10,
-    });
+    // Fetch user payment history with resilient error guard
+    let payments: any[] = [];
+    try {
+      payments = await prisma.paymentRecord.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" },
+        take: 10,
+      });
+    } catch (paymentErr: any) {
+      console.warn("Could not query payment records:", paymentErr.message);
+    }
 
     return NextResponse.json({
       success: true,

@@ -57,6 +57,18 @@ test("UPSC CSAT Paper 2 Scoring Formula (+2.5 for correct, -0.833 for incorrect)
   assert.ok(Math.abs(scorecard.netScore - 1.67) < 0.01);
   // Accuracy: 1 / 2 = 50.0%
   assert.equal(scorecard.accuracyPercentage, 50.0);
+  assert.equal(scorecard.qualifyingThreshold, 66);
+  assert.equal(scorecard.isQualified, false); // 1.67 < 66
+
+  // Test qualifying score (e.g. 27 correct = 67.5 marks > 66)
+  const qualifyingItems = Array.from({ length: 27 }, (_, i) => ({
+    questionId: `q${i}`,
+    selectedOption: "A",
+    correctOption: "A",
+  }));
+  const qualifyingScorecard = calculateScorecard("GS2", qualifyingItems);
+  assert.equal(qualifyingScorecard.isQualified, true);
+  assert.ok(qualifyingScorecard.netScore >= 66);
 });
 
 test("Zero attempts and negative score handling", () => {

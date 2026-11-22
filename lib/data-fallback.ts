@@ -391,13 +391,28 @@ export function getFallbackDailyQuiz(quizId?: string | null, dateStr?: string | 
   const questions: any[] = dump.Question || [];
   const options: any[] = dump.QuestionOption || [];
 
-  const quiz = quizzes[0] || {
-    id: "quiz-daily-fallback",
-    quizDate: new Date().toISOString(),
-    title: "Daily UPSC Prelims Practice Challenge",
-    description: "5 high-yield multiple-choice questions grounded in official UPSC CSE standards.",
-    totalQuestions: 5,
-  };
+  // Sort quizzes descending by date
+  const sortedQuizzes = [...quizzes].sort(
+    (a, b) => new Date(b.quizDate).getTime() - new Date(a.quizDate).getTime()
+  );
+
+  let quiz = sortedQuizzes[0];
+  if (!quiz) {
+    quiz = {
+      id: "quiz-daily-fallback",
+      quizDate: new Date().toISOString(),
+      title: "Daily UPSC Prelims Practice Challenge",
+      description: "5 high-yield multiple-choice questions grounded in official UPSC CSE standards.",
+      totalQuestions: 5,
+    };
+  } else if (!quizId && !dateStr) {
+    // If no specific historical date requested, align date with today
+    quiz = {
+      ...quiz,
+      quizDate: new Date().toISOString(),
+      title: `Daily UPSC Prelims Diagnostic (${new Date().toISOString().split("T")[0]})`,
+    };
+  }
 
   // Get 5 questions
   const quizQuestions = questions.slice(0, 5).map((q, idx) => {

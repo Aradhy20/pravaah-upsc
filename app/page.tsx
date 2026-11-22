@@ -659,8 +659,8 @@ export default function HomePage() {
             {/* Scholar All-Access */}
             <div className="rounded-3xl border border-slate-200 p-6 flex flex-col justify-between bg-white shadow-sm">
               <div>
-                <h3 className="text-base font-bold text-slate-900">Scholar (Mains & AI)</h3>
-                <p className="text-xs text-slate-500 mt-1">Prelims + Mains comprehensive</p>
+                <h3 className="text-base font-bold text-slate-900">Scholar (Ranker Suite)</h3>
+                <p className="text-xs text-slate-500 mt-1">Comprehensive Prelims, Mains & AI evaluation</p>
                 <div className="mt-4">
                   <span className="text-3xl font-black text-slate-900">
                     {pricingInterval === "ANNUAL" ? "₹8,999" : "₹1,299"}

@@ -30,6 +30,8 @@ export interface TestScorecard {
   netScore: number;
   accuracyPercentage: number;
   subjectBreakdown: Record<string, SubjectGradingStat>;
+  isQualified?: boolean;
+  qualifyingThreshold?: number;
 }
 
 export const UPSC_MARKING_SCHEMES: Record<string, MarkingScheme> = {
@@ -104,6 +106,10 @@ export function calculateScorecard(
     };
   }
 
+  const isCSAT = paperCode.toUpperCase() === "GS2";
+  const isQualified = isCSAT ? netScore >= 66 : undefined;
+  const qualifyingThreshold = isCSAT ? 66 : undefined;
+
   return {
     totalQuestions: items.length,
     attemptedCount,
@@ -115,5 +121,7 @@ export function calculateScorecard(
     netScore,
     accuracyPercentage,
     subjectBreakdown,
+    isQualified,
+    qualifyingThreshold,
   };
 }

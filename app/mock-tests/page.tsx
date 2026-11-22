@@ -74,7 +74,6 @@ const FALLBACK_TESTS: TestItem[] = [
 
 export default async function MockTestsPage() {
   let tests: TestItem[] = [];
-  let dbError: string | null = null;
 
   try {
     const rawTests = await prisma.test.findMany({
@@ -102,8 +101,7 @@ export default async function MockTestsPage() {
       tests = FALLBACK_TESTS;
     }
   } catch (err: any) {
-    console.error("Error loading mock tests in MockTestsPage:", err);
-    dbError = "Database temporarily synchronizing. Rendering standard examination catalogue.";
+    console.warn("Falling back to standard mock test catalogue:", err.message);
     tests = FALLBACK_TESTS;
   }
 
@@ -120,21 +118,6 @@ export default async function MockTestsPage() {
           Strict UPSC examination conditions with standard negative marking and server-side answer key protection
         </p>
       </div>
-
-      {dbError && (
-        <div className="mb-6 rounded-xl border border-amber-200 bg-amber-50 p-4 text-xs text-amber-800 flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <AlertCircle className="h-4 w-4 text-amber-600 shrink-0" />
-            <span>{dbError}</span>
-          </div>
-          <a
-            href="/mock-tests"
-            className="flex items-center gap-1 rounded bg-amber-700 px-2.5 py-1 text-[11px] font-bold text-white hover:bg-amber-800"
-          >
-            <RefreshCw className="h-3 w-3" /> Refresh
-          </a>
-        </div>
-      )}
 
       {/* UPSC Instructions Notice Card */}
       <div className="mb-8 rounded-2xl border border-blue-200 bg-blue-50/50 p-6">

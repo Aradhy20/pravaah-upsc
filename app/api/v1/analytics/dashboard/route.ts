@@ -1,15 +1,35 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
-import { getFallbackDashboardAnalytics } from "@/lib/data-fallback";
+import { getAuthenticatedUser } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
+    const user = await getAuthenticatedUser(request);
 
-    // 1. Fetch all attempts by this user
+    // If visitor is unauthenticated, return clean zero telemetry with unauthenticated flag
+    if (!user) {
+      return NextResponse.json({
+        success: true,
+        data: {
+          authenticated: false,
+          summary: {
+            totalAttempted: 0,
+            correctCount: 0,
+            incorrectCount: 0,
+            overallAccuracy: 0,
+            totalStudyHours: 0,
+            revisionQueueCount: 0,
+          },
+          subjectPerformance: [],
+          weakTopics: [],
+          recentSessions: [],
+        },
+      });
+    }
+
+    // 1. Fetch all attempts by this authenticated user
     const attempts = await prisma.userAttempt.findMany({
       where: { userId: user.id },
       include: {
@@ -116,13 +136,10 @@ export async function GET(request: NextRequest) {
       submittedAt: s.submittedAt,
     }));
 
-    if (totalAttempts === 0) {
-      return NextResponse.json(getFallbackDashboardAnalytics());
-    }
-
     return NextResponse.json({
       success: true,
       data: {
+        authenticated: true,
         summary: {
           totalAttempted: totalAttempts,
           correctCount: correctAttempts,
@@ -137,7 +154,23 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error: any) {
-    console.warn("Graceful fallback in GET /api/v1/analytics/dashboard:", error.message);
-    return NextResponse.json(getFallbackDashboardAnalytics());
+    console.warn("Error in GET /api/v1/analytics/dashboard:", error.message);
+    return NextResponse.json({
+      success: true,
+      data: {
+        authenticated: false,
+        summary: {
+          totalAttempted: 0,
+          correctCount: 0,
+          incorrectCount: 0,
+          overallAccuracy: 0,
+          totalStudyHours: 0,
+          revisionQueueCount: 0,
+        },
+        subjectPerformance: [],
+        weakTopics: [],
+        recentSessions: [],
+      },
+    });
   }
 }
