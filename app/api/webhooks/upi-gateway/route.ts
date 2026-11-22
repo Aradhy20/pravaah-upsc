@@ -4,6 +4,8 @@ import {
   verifyWebhookSignature,
   getUpiGatewayConfig,
   activateEntitlementForOrder,
+  handleRefundForOrder,
+  handleFailureForOrder,
 } from "@/lib/payments/upi-gateway";
 
 export const dynamic = "force-dynamic";
@@ -180,11 +182,20 @@ export async function POST(request: NextRequest) {
 
       case "order.failed": {
         if (order.status !== "PAID") {
-          await prisma.paymentOrder.update({
-            where: { id: order.id },
-            data: { status: "FAILED" },
+          await handleFailureForOrder({
+            paymentOrderId: order.id,
+            reason: orderData.reason || "Payment declined or failed",
           });
         }
+        break;
+      }
+
+      case "order.refunded": {
+        await handleRefundForOrder({
+          paymentOrderId: order.id,
+          reason: orderData.reason || "Refund issued",
+          amount: typeof orderData.amount === "number" ? orderData.amount : parseFloat(orderData.amount) || order.amount,
+        });
         break;
       }
 

@@ -8,7 +8,7 @@ export async function createPaymentOrder(
   params: InitiatePaymentParams,
   client?: UpiGatewayClient
 ): Promise<CheckoutResultData> {
-  const { userId, productType, productId, billingInterval = "ANNUAL", metadata = {} } = params;
+  const { userId, productType, productId, billingInterval = "ANNUAL", metadata = {}, forceNew = false } = params;
 
   // 1. Verify User exists
   const user = await prisma.user.findUnique({
@@ -26,8 +26,16 @@ export async function createPaymentOrder(
   let resolvedProductId = productId;
 
   if (productType === "SUBSCRIPTION") {
-    const plan = await prisma.plan.findUnique({
-      where: { code: productId },
+    const normalizedCode = productId.trim().toUpperCase();
+    const plan = await prisma.plan.findFirst({
+      where: {
+        OR: [
+          { code: normalizedCode },
+          { id: productId },
+          { code: productId },
+        ],
+        isActive: true,
+      },
       include: {
         prices: {
           where: { billingInterval, isActive: true },
@@ -43,6 +51,7 @@ export async function createPaymentOrder(
       );
     }
 
+    resolvedProductId = plan.code;
     amount = plan.prices[0].amountRupees;
     productName = `${plan.name} (${billingInterval.toLowerCase()} billing)`;
   } else if (productType === "TEST_SERIES") {
@@ -90,7 +99,7 @@ export async function createPaymentOrder(
   const baseAmount = Math.round((amount / 1.18) * 100) / 100;
   const gstAmount = Math.round((amount - baseAmount) * 100) / 100;
 
-  // 5. Create PENDING PaymentOrder in Database
+  // 5. Create PENDING PaymentOrder and PaymentRecord in Database
   const orderRecord = await prisma.paymentOrder.create({
     data: {
       clientOrderId,
@@ -113,6 +122,21 @@ export async function createPaymentOrder(
     },
   });
 
+  // Create corresponding PENDING PaymentRecord in financial ledger
+  await prisma.paymentRecord.create({
+    data: {
+      userId: user.id,
+      amount,
+      currency: "INR",
+      status: "PENDING",
+      provider: "UPI_GATEWAY",
+      providerTxId: clientOrderId,
+      idempotencyKey: `upi_${clientOrderId}`,
+      paymentMethod: "UPI",
+      receiptNumber: `REC-UPI-${Date.now()}`,
+    },
+  });
+
   // 6. Invoke UPI Gateway API
   const gatewayClient = client || new UpiGatewayClient();
   let gatewayOrder;
@@ -122,9 +146,13 @@ export async function createPaymentOrder(
       client_order_id: clientOrderId,
     });
   } catch (err: any) {
-    // Mark order FAILED if gateway rejected creation
+    // Mark order and payment record FAILED if gateway rejected creation
     await prisma.paymentOrder.update({
       where: { id: orderRecord.id },
+      data: { status: "FAILED" },
+    });
+    await prisma.paymentRecord.updateMany({
+      where: { providerTxId: clientOrderId },
       data: { status: "FAILED" },
     });
     throw err;

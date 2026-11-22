@@ -276,23 +276,177 @@ export async function activateEntitlementForOrder(params: {
       },
     });
 
-    // Also link or create corresponding PaymentRecord for financial reporting
-    await tx.paymentRecord.create({
-      data: {
-        userId: order.userId,
-        subscriptionId: subId,
-        amount: order.amount,
-        currency: order.currency,
-        status: "SUCCESS",
-        provider: "UPI_GATEWAY",
-        providerTxId: order.gatewayOrderId || order.clientOrderId,
-        idempotencyKey: `upi_${order.clientOrderId}`,
-        paymentMethod: "UPI",
-        receiptNumber: `REC-UPI-${Date.now()}`,
+    // Update or link corresponding PaymentRecord for financial reporting
+    const existingPaymentRecord = await tx.paymentRecord.findFirst({
+      where: {
+        OR: [
+          { providerTxId: order.clientOrderId },
+          { providerTxId: order.gatewayOrderId || "" },
+          { idempotencyKey: `upi_${order.clientOrderId}` },
+        ],
       },
     });
+
+    if (existingPaymentRecord) {
+      await tx.paymentRecord.update({
+        where: { id: existingPaymentRecord.id },
+        data: {
+          status: "SUCCESS",
+          subscriptionId: subId,
+          amount: order.amount,
+          currency: order.currency,
+          updatedAt: new Date(),
+        },
+      });
+    } else {
+      await tx.paymentRecord.create({
+        data: {
+          userId: order.userId,
+          subscriptionId: subId,
+          amount: order.amount,
+          currency: order.currency,
+          status: "SUCCESS",
+          provider: "UPI_GATEWAY",
+          providerTxId: order.gatewayOrderId || order.clientOrderId,
+          idempotencyKey: `upi_${order.clientOrderId}`,
+          paymentMethod: "UPI",
+          receiptNumber: `REC-UPI-${Date.now()}`,
+        },
+      });
+    }
   }, {
     maxWait: 20000,
     timeout: 30000,
+  });
+}
+
+/**
+ * Transactionally handles refunds: sets order and payment to REFUNDED,
+ * creates RefundRecord, cancels subscription, logs event.
+ */
+export async function handleRefundForOrder(params: {
+  paymentOrderId: string;
+  reason?: string;
+  amount?: number;
+}): Promise<void> {
+  const { paymentOrderId, reason = "Customer requested refund", amount } = params;
+
+  await prisma.$transaction(async (tx) => {
+    const order = await tx.paymentOrder.findUnique({
+      where: { id: paymentOrderId },
+    });
+
+    if (!order) {
+      throw new Error(`Order ${paymentOrderId} not found for refund`);
+    }
+
+    if (order.status === "REFUNDED") {
+      return; // Already refunded idempotently
+    }
+
+    const refundAmount = amount || order.amount;
+
+    // Update PaymentOrder
+    await tx.paymentOrder.update({
+      where: { id: order.id },
+      data: { status: "REFUNDED" },
+    });
+
+    // Find and update PaymentRecord
+    const payment = await tx.paymentRecord.findFirst({
+      where: {
+        OR: [
+          { providerTxId: order.clientOrderId },
+          { providerTxId: order.gatewayOrderId || "" },
+          { idempotencyKey: `upi_${order.clientOrderId}` },
+        ],
+      },
+    });
+
+    if (payment) {
+      await tx.paymentRecord.update({
+        where: { id: payment.id },
+        data: { status: "REFUNDED" },
+      });
+
+      // Create RefundRecord
+      await tx.refundRecord.create({
+        data: {
+          paymentRecordId: payment.id,
+          userId: order.userId,
+          amount: refundAmount,
+          currency: order.currency,
+          reason,
+          status: "COMPLETED",
+          providerRefundId: `ref_${order.clientOrderId}`,
+        },
+      });
+    }
+
+    // If subscription was active, cancel it immediately
+    if (order.subscriptionId) {
+      await tx.subscription.update({
+        where: { id: order.subscriptionId },
+        data: {
+          status: "CANCELED",
+          canceledAt: new Date(),
+        },
+      });
+
+      await tx.subscriptionEvent.create({
+        data: {
+          subscriptionId: order.subscriptionId,
+          eventType: "CANCELED",
+          payloadJson: JSON.stringify({
+            orderId: order.clientOrderId,
+            reason,
+            refundAmount,
+            refundedAt: new Date(),
+          }),
+        },
+      });
+    }
+  });
+}
+
+/**
+ * Handles failed payment: transitions order and payment to FAILED
+ */
+export async function handleFailureForOrder(params: {
+  paymentOrderId: string;
+  reason?: string;
+}): Promise<void> {
+  const { paymentOrderId, reason = "Payment declined or failed" } = params;
+
+  await prisma.$transaction(async (tx) => {
+    const order = await tx.paymentOrder.findUnique({
+      where: { id: paymentOrderId },
+    });
+
+    if (!order || order.status === "PAID") {
+      return; // Do not fail an already paid order
+    }
+
+    await tx.paymentOrder.update({
+      where: { id: order.id },
+      data: { status: "FAILED" },
+    });
+
+    const payment = await tx.paymentRecord.findFirst({
+      where: {
+        OR: [
+          { providerTxId: order.clientOrderId },
+          { providerTxId: order.gatewayOrderId || "" },
+          { idempotencyKey: `upi_${order.clientOrderId}` },
+        ],
+      },
+    });
+
+    if (payment) {
+      await tx.paymentRecord.update({
+        where: { id: payment.id },
+        data: { status: "FAILED" },
+      });
+    }
   });
 }

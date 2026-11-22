@@ -255,6 +255,50 @@ export default function UpiCheckoutPage({ params }: CheckoutPageProps) {
     );
   }
 
+  // FAILED STATE
+  if (order.status === "FAILED") {
+    return (
+      <div className="min-h-[75vh] flex items-center justify-center p-4">
+        <div className="w-full max-w-md rounded-2xl border border-rose-200 bg-white p-8 text-center shadow-lg">
+          <AlertCircle className="mx-auto h-12 w-12 text-rose-500 mb-3" />
+          <h2 className="text-xl font-bold text-slate-900">Payment Declined or Failed</h2>
+          <p className="mt-2 text-xs text-slate-600 leading-relaxed">
+            The transaction could not be verified or was declined by the issuing bank. Access was not activated.
+          </p>
+          <div className="mt-6 flex flex-col gap-2">
+            <a
+              href="/pricing"
+              className="inline-block w-full rounded-xl bg-slate-900 px-5 py-3 text-xs font-bold text-white hover:bg-slate-800 transition"
+            >
+              Retry Checkout
+            </a>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  // REFUNDED STATE
+  if (order.status === "REFUNDED") {
+    return (
+      <div className="min-h-[75vh] flex items-center justify-center p-4">
+        <div className="w-full max-w-md rounded-2xl border border-slate-200 bg-white p-8 text-center shadow-lg">
+          <RotateCw className="mx-auto h-12 w-12 text-slate-400 mb-3" />
+          <h2 className="text-xl font-bold text-slate-900">Payment Refunded</h2>
+          <p className="mt-2 text-xs text-slate-600 leading-relaxed">
+            This payment was refunded. Associated premium subscriptions have been deactivated according to Pravaah's 7-day refund guarantee.
+          </p>
+          <a
+            href="/pricing"
+            className="mt-6 inline-block w-full rounded-xl bg-amber-600 px-5 py-3 text-xs font-bold text-white hover:bg-amber-700 transition"
+          >
+            Explore Plans
+          </a>
+        </div>
+      </div>
+    );
+  }
+
   // Build authoritative dynamic UPI intent URL directed to Aradhy Jain
   const receivingUpiId = order.receivingUpiId || "jainaradhy123@okicici";
   const payeeName = order.payeeName || "Aradhy Jain";

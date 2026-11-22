@@ -73,6 +73,7 @@ export interface InitiatePaymentParams {
   productId: string; // Plan code e.g. "ACHIEVER", or Test ID
   billingInterval?: "MONTHLY" | "QUARTERLY" | "ANNUAL";
   metadata?: Record<string, any>;
+  forceNew?: boolean;
 }
 
 export interface CheckoutResultData {
