@@ -106,7 +106,7 @@ export async function GET(request: NextRequest) {
         accuracy: t.attempted > 0 ? Number(((t.correct / t.attempted) * 100).toFixed(1)) : 0,
       }))
       .filter((t) => t.accuracy < 60)
-      .sort((a, b) => a.accuracy - b.accuracy)
+      .sort((a: any, b: any) => a.accuracy - b.accuracy)
       .slice(0, 5);
 
     // 4. Revision queue count

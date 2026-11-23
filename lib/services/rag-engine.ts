@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { and, or } from "@prisma/orm-postgres/orm-client";
 
 export interface RAGQueryOptions {
   query: string;
@@ -77,101 +78,72 @@ export class RAGEngine {
       .filter((t) => t.length > 2 && !["what", "when", "where", "which", "how", "upsc", "question", "prelims", "mains"].includes(t));
 
     // 1. Retrieve Matching PYQs
-    const pyqWhere: any = {};
+    type QuestionAccessor = any;
+    const pyqConditions: ((q: QuestionAccessor) => any)[] = [];
     if (year) {
-      pyqWhere.year = year;
+      pyqConditions.push((q) => q.year.eq(year));
     }
     if (examFamily && examFamily !== "ALL") {
-      pyqWhere.OR = [
-        { examCategory: examFamily },
-        { paper: { code: { contains: examFamily } } },
-      ];
+      pyqConditions.push((q) => or(q.examCategory.eq(examFamily), q.paper.code.like(`%${examFamily}%`)));
     }
 
     // Multi-term search over question text and explanations
-    const searchConditions = searchTerms.map((term) => ({
-      OR: [
-        { questionText: { contains: term, mode: "insensitive" } },
-        { questionTextEn: { contains: term, mode: "insensitive" } },
-        { questionTextHi: { contains: term, mode: "insensitive" } },
-        {
-          explanation: {
-            OR: [
-              { summary: { contains: term, mode: "insensitive" } },
-              { detailedExplanation: { contains: term, mode: "insensitive" } },
-              { explanationEn: { contains: term, mode: "insensitive" } },
-            ],
-          },
-        },
-      ],
-    }));
+    const searchConditions = searchTerms.slice(0, 3).map((term) => (q: QuestionAccessor) =>
+      or(
+        q.questionText.ilike(`%${term}%`),
+        q.questionTextEn.ilike(`%${term}%`),
+        q.questionTextHi.ilike(`%${term}%`),
+        q.explanation.summary.ilike(`%${term}%`),
+        q.explanation.detailedExplanation.ilike(`%${term}%`),
+        q.explanation.explanationEn.ilike(`%${term}%`),
+      ));
 
-    if (searchConditions.length > 0) {
-      pyqWhere.AND = searchConditions.slice(0, 3); // Take top 3 keywords to avoid over-constraining
-    }
+    // Take top 3 keywords to avoid over-constraining
+    pyqConditions.push(...searchConditions);
 
-    const matchedQuestions = await prisma.question.findMany({
-      where: pyqWhere,
-      take: maxResults,
-      orderBy: [{ year: "desc" }, { questionNumber: "asc" }],
-      include: {
-        paper: true,
-        options: { orderBy: { optionCode: "asc" } },
-        explanation: true,
-        answers: {
-          take: 1,
-          orderBy: { createdAt: "desc" },
-        },
-        citations: {
-          take: 2,
-          include: { source: true },
-        },
-        topics: {
-          include: {
-            topic: {
-              include: { subject: true },
-            },
-          },
-        },
-      },
-    });
+    const matchedQuestions = await prisma.orm.public.Question
+      .where((q) => and(...pyqConditions.map((c) => c(q))))
+      .include("paper")
+      .include("options", (o) => o.orderBy((opt) => opt.optionCode.asc()))
+      .include("explanation")
+      .include("answers", (a) => a.orderBy((ans) => ans.createdAt.desc()).limit(1))
+      .include("citations", (c) => c.limit(2).include("source"))
+      .include("topics", (t) => t.include("topic", (topic) => topic.include("subject")))
+      .orderBy([(q) => q.year.desc(), (q) => q.questionNumber.asc()])
+      .limit(maxResults)
+      .all();
 
     // 2. Retrieve Matching NCERT Chapters
-    const ncertWhere: any = {};
-    if (searchTerms.length > 0) {
-      ncertWhere.OR = searchTerms.slice(0, 3).map((term) => ({
-        OR: [
-          { chapterTitle: { contains: term, mode: "insensitive" } },
-          { summary: { contains: term, mode: "insensitive" } },
-          { keyTopics: { contains: term, mode: "insensitive" } },
-          { book: { subject: { contains: term, mode: "insensitive" } } },
-          { book: { bookTitle: { contains: term, mode: "insensitive" } } },
-        ],
-      }));
-    }
+    type ChapterAccessor = any;
+    const ncertConditions = searchTerms.slice(0, 3).map((term) => (ch: ChapterAccessor) =>
+      or(
+        ch.chapterTitle.ilike(`%${term}%`),
+        ch.summary.ilike(`%${term}%`),
+        ch.keyTopics.ilike(`%${term}%`),
+        ch.book.subject.ilike(`%${term}%`),
+        ch.book.bookTitle.ilike(`%${term}%`),
+      ));
 
-    const matchedNcertChapters = await (prisma as any).nCERTChapter?.findMany({
-      where: ncertWhere,
-      take: 4,
-      include: { book: true },
-    }) || [];
+    const matchedNcertChapters = ncertConditions.length > 0
+      ? await prisma.orm.public.NCERTChapter
+          .where((ch) => and(...ncertConditions.map((c) => c(ch))))
+          .include("book")
+          .limit(4)
+          .all()
+      : await prisma.orm.public.NCERTChapter.include("book").limit(4).all();
 
     // 3. Retrieve Matching Syllabus Nodes
-    const syllabusWhere: any = {};
-    if (searchTerms.length > 0) {
-      syllabusWhere.OR = searchTerms.slice(0, 3).map((term) => ({
-        OR: [
-          { title: { contains: term, mode: "insensitive" } },
-          { description: { contains: term, mode: "insensitive" } },
-          { code: { contains: term, mode: "insensitive" } },
-        ],
-      }));
-    }
+    type NodeAccessor = any;
+    const syllabusConditions = searchTerms.slice(0, 3).map((term) => (n: NodeAccessor) =>
+      or(
+        n.title.ilike(`%${term}%`),
+        n.description.ilike(`%${term}%`),
+        n.code.ilike(`%${term}%`),
+      ));
 
-    const matchedSyllabusNodes = await prisma.syllabusNode.findMany({
-      where: syllabusWhere,
-      take: 3,
-    });
+    const matchedSyllabusNodes = syllabusConditions.length > 0
+      ? await prisma.orm.public.SyllabusNode.where((n) => and(...syllabusConditions.map((c) => c(n)))).limit(3).all()
+      : await prisma.orm.public.SyllabusNode.limit(3).all();
 
     // 4. Assemble Citations
     const citations: RAGCitation[] = [];

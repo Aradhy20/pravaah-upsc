@@ -76,16 +76,12 @@ export default async function MockTestsPage() {
   let tests: TestItem[] = [];
 
   try {
-    const rawTests = await prisma.test.findMany({
-      include: {
-        paper: true,
-        questions: true,
-        sessions: {
-          where: { status: "COMPLETED" },
-        },
-      },
-      orderBy: { createdAt: "desc" },
-    });
+    const rawTests = await prisma.orm.public.Test
+      .include("paper")
+      .include("questions")
+      .include("sessions", (sessions) => sessions.where({ status: "COMPLETED" }))
+      .orderBy((t) => t.createdAt.desc())
+      .all();
 
     if (rawTests && rawTests.length > 0) {
       tests = rawTests.map((t) => ({

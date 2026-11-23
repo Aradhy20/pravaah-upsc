@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { and } from "@prisma/orm-postgres/orm-client";
 import { calculateScorecard, QuestionGradingInput } from "@/lib/scoring";
 import { getCurrentUser } from "@/lib/auth";
 
@@ -20,34 +21,22 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const session = await prisma.testSession.findUnique({
-      where: { id: sessionId },
-      include: {
-        test: {
-          include: {
-            paper: true,
-            questions: {
-              include: {
-                question: {
-                  include: {
-                    options: true,
-                    explanation: true,
-                    topics: {
-                      include: {
-                        topic: {
-                          include: { subject: true },
-                        },
-                      },
-                    },
-                  },
-                },
-              },
-              orderBy: { orderIndex: "asc" },
-            },
-          },
-        },
-      },
-    });
+    const session = await prisma.orm.public.TestSession
+      .include("test", (test) =>
+        test
+          .include("paper")
+          .include("questions", (tqs) =>
+            tqs
+              .orderBy((tq) => tq.orderIndex.asc())
+              .include("question", (question) =>
+                question
+                  .include("options")
+                  .include("explanation")
+                  .include("topics", (ts) => ts.include("topic", (tp) => tp.include("subject"))),
+              ),
+          ),
+      )
+      .first({ id: sessionId });
 
     if (!session) {
       return NextResponse.json(
@@ -103,42 +92,22 @@ export async function POST(request: NextRequest) {
     if (session.test?.questions && session.test.questions.length > 0) {
       dbQuestions = session.test.questions.map((tq) => tq.question);
     } else {
-      dbQuestions = await prisma.question.findMany({
-        where: {
-          paperId: session.test?.paperId || undefined,
-          year: session.test?.year || 2024,
-          status: "PUBLISHED",
-        },
-        include: {
-          options: true,
-          explanation: true,
-          topics: {
-            include: {
-              topic: {
-                include: { subject: true },
-              },
-            },
-          },
-        },
-        orderBy: { questionNumber: "asc" },
-      });
+      dbQuestions = await prisma.orm.public.Question
+        .where({ paperId: session.test?.paperId || undefined, year: session.test?.year || 2024, status: "PUBLISHED" })
+        .include("options")
+        .include("explanation")
+        .include("topics", (ts) => ts.include("topic", (tp) => tp.include("subject")))
+        .orderBy((q) => q.questionNumber.asc())
+        .all();
 
       if (dbQuestions.length === 0) {
         const questionIds = Array.from(responseMap.keys());
-        dbQuestions = await prisma.question.findMany({
-          where: { id: { in: questionIds } },
-          include: {
-            options: true,
-            explanation: true,
-            topics: {
-              include: {
-                topic: {
-                  include: { subject: true },
-                },
-              },
-            },
-          },
-        });
+        dbQuestions = await prisma.orm.public.Question
+          .where((q) => q.id.in(questionIds))
+          .include("options")
+          .include("explanation")
+          .include("topics", (ts) => ts.include("topic", (tp) => tp.include("subject")))
+          .all();
       }
     }
 
@@ -207,46 +176,38 @@ export async function POST(request: NextRequest) {
     const paperCode = session.test.paper.code;
     const scorecard = calculateScorecard(paperCode, gradingInputs);
 
-    // Atomic High-Performance Transaction Batching (eliminates 100+ sequential roundtrips)
-    await prisma.$transaction(async (tx) => {
+    // Atomic Transaction (eliminates 100+ sequential roundtrips)
+    await prisma.transaction(async (tx) => {
       // 1. Batch insert all user responses
       if (userResponsesData.length > 0) {
-        await tx.userResponse.createMany({
-          data: userResponsesData,
-        });
+        await tx.orm.public.UserResponse.createAll(userResponsesData);
       }
 
       // 2. Batch upsert incorrect questions into ReviewSchedule (Mistake Bank)
       if (incorrectQuestionIds.length > 0) {
-        const existingSchedules = await tx.reviewSchedule.findMany({
-          where: {
-            userId: session.userId,
-            questionId: { in: incorrectQuestionIds },
-          },
-          select: { questionId: true },
-        });
+        const existingSchedules = await tx.orm.public.ReviewSchedule
+          .where((rs) => and(rs.userId.eq(session.userId), rs.questionId.in(incorrectQuestionIds)))
+          .select("questionId", "repetitionCount")
+          .all();
 
-        const existingSet = new Set(existingSchedules.map((s) => s.questionId));
+        const existingSet = new Map(existingSchedules.map((s) => [s.questionId, s]));
         const toUpdateIds = incorrectQuestionIds.filter((id) => existingSet.has(id));
         const toCreateIds = incorrectQuestionIds.filter((id) => !existingSet.has(id));
 
         if (toUpdateIds.length > 0) {
-          await tx.reviewSchedule.updateMany({
-            where: {
-              userId: session.userId,
-              questionId: { in: toUpdateIds },
-            },
-            data: {
-              repetitionCount: { increment: 1 },
+          for (const qId of toUpdateIds) {
+            const existing: any = existingSet.get(qId)!;
+            await tx.orm.public.ReviewSchedule.where({ userId: session.userId, questionId: qId }).updateAll({
+              repetitionCount: existing.repetitionCount + 1,
               isResolved: false,
               nextReviewDate: new Date(Date.now() + 86400000),
-            },
-          });
+            });
+          }
         }
 
         if (toCreateIds.length > 0) {
-          await tx.reviewSchedule.createMany({
-            data: toCreateIds.map((qId) => ({
+          await tx.orm.public.ReviewSchedule.createAll(
+            toCreateIds.map((qId) => ({
               userId: session.userId,
               questionId: qId,
               repetitionCount: 1,
@@ -254,36 +215,31 @@ export async function POST(request: NextRequest) {
               nextReviewDate: new Date(Date.now() + 86400000),
               isResolved: false,
             })),
-          });
+          );
         }
       }
 
       // 3. Mark TestSession completed with authoritative score
-      await tx.testSession.update({
-        where: { id: session.id },
-        data: {
-          status: "COMPLETED",
-          submittedAt: new Date(),
-          totalTimeSpentSeconds,
-          attemptedCount: scorecard.attemptedCount,
-          correctCount: scorecard.correctCount,
-          incorrectCount: scorecard.incorrectCount,
-          unattemptedCount: scorecard.unattemptedCount,
-          rawScore: scorecard.rawScore,
-          negativeMarks: scorecard.negativeMarks,
-          netScore: scorecard.netScore,
-        },
+      await tx.orm.public.TestSession.where({ id: session.id }).update({
+        status: "COMPLETED",
+        submittedAt: new Date(),
+        totalTimeSpentSeconds,
+        attemptedCount: scorecard.attemptedCount,
+        correctCount: scorecard.correctCount,
+        incorrectCount: scorecard.incorrectCount,
+        unattemptedCount: scorecard.unattemptedCount,
+        rawScore: scorecard.rawScore,
+        negativeMarks: scorecard.negativeMarks,
+        netScore: scorecard.netScore,
       });
 
       // 4. Record Study Activity
-      await tx.studyActivity.create({
-        data: {
-          userId: session.userId,
-          activityType: "test_completed",
-          label: `Completed ${session.test.title} (Score: ${scorecard.netScore})`,
-          refId: session.id,
-          durationSeconds: totalTimeSpentSeconds,
-        },
+      await tx.orm.public.StudyActivity.create({
+        userId: session.userId,
+        activityType: "test_completed",
+        label: `Completed ${session.test.title} (Score: ${scorecard.netScore})`,
+        refId: session.id,
+        durationSeconds: totalTimeSpentSeconds,
       });
     });
 

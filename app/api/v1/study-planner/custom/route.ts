@@ -159,8 +159,8 @@ export async function POST(request: NextRequest) {
         const yearMatch = targetExam.match(/(19\d\d|20\d\d)/);
         const parsedYear = yearMatch ? parseInt(yearMatch[1], 10) : 2025;
 
-        await prisma.userProfile.upsert({
-          where: { userId: user.id },
+        await prisma.orm.public.UserProfile.upsert({
+          conflictOn: { userId: user.id },
           update: {
             targetExam,
             targetYear: parsedYear,

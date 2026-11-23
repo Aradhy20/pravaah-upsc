@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { and, or } from "@prisma/orm-postgres/orm-client";
 
 export const dynamic = "force-dynamic";
 
@@ -18,14 +19,15 @@ export async function GET(request: NextRequest) {
     const limit = Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20")));
     const skip = (page - 1) * limit;
 
-    const where: any = {};
+    type QuestionAccessor = any;
+    const conditions: ((q: QuestionAccessor) => any)[] = [];
 
     if (status !== "ALL") {
-      where.status = status;
+      conditions.push((q) => q.status.eq(status));
     }
 
     if (paperCode) {
-      where.paper = { code: paperCode };
+      conditions.push((q) => q.paper.code.eq(paperCode));
     }
 
     if (yearsParam) {
@@ -34,88 +36,55 @@ export async function GET(request: NextRequest) {
         .map((y) => parseInt(y.trim()))
         .filter((y) => !isNaN(y));
       if (yearArray.length > 0) {
-        where.year = { in: yearArray };
+        conditions.push((q) => q.year.in(yearArray));
       }
     }
 
     if (difficulty) {
-      where.difficulty = difficulty.toUpperCase();
+      conditions.push((q) => q.difficulty.eq(difficulty.toUpperCase()));
     }
 
     if (subjectParam) {
-      where.topics = {
-        some: {
-          topic: {
-            subject: {
-              OR: [
-                { slug: subjectParam.toLowerCase() },
-                { name: { contains: subjectParam } },
-              ],
-            },
-          },
-        },
-      };
+      conditions.push((q) => q.topics.some((qt: any) =>
+        qt.topic.some((tp: any) =>
+          or(tp.subject.slug.eq(subjectParam.toLowerCase()), tp.subject.name.like(`%${subjectParam}%`)),
+        ),
+      ));
     }
 
     if (topicParam) {
-      where.topics = {
-        some: {
-          topic: {
-            OR: [
-              { slug: topicParam.toLowerCase() },
-              { name: { contains: topicParam } },
-            ],
-          },
-        },
-      };
+      conditions.push((q) => q.topics.some((qt: any) =>
+        qt.topic.some((tp: any) =>
+          or(tp.slug.eq(topicParam.toLowerCase()), tp.name.like(`%${topicParam}%`)),
+        ),
+      ));
     }
 
     if (search) {
-      where.OR = [
-        { questionText: { contains: search, mode: "insensitive" } },
-        {
-          explanation: {
-            OR: [
-              { summary: { contains: search, mode: "insensitive" } },
-              { detailedExplanation: { contains: search, mode: "insensitive" } },
-            ],
-          },
-        },
-      ];
+      conditions.push((q) => or(
+        q.questionText.ilike(`%${search}%`),
+        q.explanation.summary.ilike(`%${search}%`),
+        q.explanation.detailedExplanation.ilike(`%${search}%`),
+      ));
     }
 
+    const filtered = conditions.length > 0
+      ? prisma.orm.public.Question.where((q) => and(...conditions.map((c) => c(q))))
+      : prisma.orm.public.Question;
+
     const [total, questions] = await Promise.all([
-      prisma.question.count({ where }),
-      prisma.question.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: [{ year: "desc" }, { questionNumber: "asc" }],
-        include: {
-          paper: true,
-          options: {
-            orderBy: { optionCode: "asc" },
-          },
-          explanation: true,
-          answers: {
-            take: 1,
-            orderBy: { createdAt: "desc" },
-          },
-          citations: {
-            take: 2,
-            include: { source: true },
-          },
-          topics: {
-            include: {
-              topic: {
-                include: {
-                  subject: true,
-                },
-              },
-            },
-          },
-        },
-      }),
+      filtered.aggregate((a) => ({ n: a.count() })).then((r) => r.n),
+      filtered
+        .include("paper")
+        .include("options", (o) => o.orderBy((opt) => opt.optionCode.asc()))
+        .include("explanation")
+        .include("answers", (a) => a.orderBy((ans) => ans.createdAt.desc()).limit(1))
+        .include("citations", (c) => c.limit(2).include("source"))
+        .include("topics", (t) => t.include("topic", (topic) => topic.include("subject")))
+        .orderBy([(q) => q.year.desc(), (q) => q.questionNumber.asc()])
+        .offset(skip)
+        .limit(limit)
+        .all(),
     ]);
 
     // Format response

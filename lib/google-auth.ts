@@ -1,6 +1,8 @@
 import crypto from "crypto";
+import { or } from "@prisma/orm-postgres/orm-client";
 import { prisma } from "./prisma";
-import { hashPassword } from "./auth";
+import { authSecret, hashPassword } from "./auth";
+import service from "../service.mjs";
 
 export interface GoogleUserProfile {
   email: string;
@@ -9,11 +11,26 @@ export interface GoogleUserProfile {
   avatarUrl?: string | null;
 }
 
-const AUTH_SECRET = process.env.AUTH_SECRET || "pravaah_auth_secret_token_2026_super_secure_key";
+let cachedGoogleConfig: { clientId: string; clientSecret: string } | undefined;
+
+/** The Google OAuth credentials, read at request time through the service input. */
+export function getGoogleCredentials() {
+  if (!cachedGoogleConfig) {
+    // Read at request time through the service input, never process.env.
+    cachedGoogleConfig = {
+      clientId: service.input().GOOGLE_CLIENT_ID.expose(),
+      clientSecret: service.input().GOOGLE_CLIENT_SECRET.expose(),
+    };
+  }
+  return cachedGoogleConfig;
+}
+
+function googleCredentials() {
+  return getGoogleCredentials();
+}
 
 export function getGoogleOAuthConfig(reqOrigin?: string) {
-  const clientId = process.env.GOOGLE_CLIENT_ID || "";
-  const clientSecret = process.env.GOOGLE_CLIENT_SECRET || "";
+  const { clientId, clientSecret } = googleCredentials();
   const appUrl =
     process.env.APP_URL ||
     process.env.NEXTAUTH_URL ||
@@ -39,7 +56,7 @@ export function createGoogleOAuthState(returnTo = "/dashboard"): string {
   const payload = JSON.stringify({ nonce, timestamp, returnTo });
   const b64Payload = Buffer.from(payload).toString("base64url");
   const signature = crypto
-    .createHmac("sha256", AUTH_SECRET)
+    .createHmac("sha256", authSecret())
     .update(b64Payload)
     .digest("hex");
   return `${b64Payload}.${signature}`;
@@ -57,7 +74,7 @@ export function verifyGoogleOAuthState(
 
   const [b64Payload, signature] = state.split(".");
   const expectedSignature = crypto
-    .createHmac("sha256", AUTH_SECRET)
+    .createHmac("sha256", authSecret())
     .update(b64Payload)
     .digest("hex");
 
@@ -197,18 +214,11 @@ export async function findOrCreateGoogleUser(profile: GoogleUserProfile) {
   const normalizedEmail = profile.email.toLowerCase().trim();
 
   // 1. Try finding by unique Google ID
-  let user = await prisma.user.findFirst({
-    where: {
-      OR: [
-        { googleId: profile.googleId },
-        { email: normalizedEmail },
-      ],
-    },
-    include: {
-      role: true,
-      profile: true,
-    },
-  });
+  let user = await prisma.orm.public.User
+    .where((u) => or(u.googleId.eq(profile.googleId), u.email.eq(normalizedEmail)))
+    .include("role")
+    .include("profile")
+    .first();
 
   // 2. User exists: update Google ID or avatar if needed
   if (user) {
@@ -221,54 +231,45 @@ export async function findOrCreateGoogleUser(profile: GoogleUserProfile) {
     }
 
     if (Object.keys(updates).length > 0) {
-      user = await prisma.user.update({
-        where: { id: user.id },
-        data: updates,
-        include: {
-          role: true,
-          profile: true,
-        },
-      });
+      user = await prisma.orm.public.User
+        .include("role")
+        .include("profile")
+        .where({ id: user.id })
+        .update(updates);
     }
 
     return { user, isNew: false };
   }
 
   // 3. User does not exist: Provision new Aspirant account
-  let role = await prisma.role.findUnique({
-    where: { name: "ASPIRANT" },
-  });
+  let role = await prisma.orm.public.Role.where({ name: "ASPIRANT" }).first();
 
   if (!role) {
-    role = await prisma.role.create({
-      data: { name: "ASPIRANT", description: "Standard Civil Services Aspirant" },
+    role = await prisma.orm.public.Role.create({
+      name: "ASPIRANT",
+      description: "Standard Civil Services Aspirant",
     });
   }
 
   // Generate an unguessable cryptographic password hash for the Google user
   const randomPassword = crypto.randomBytes(32).toString("hex");
 
-  const newUser = await prisma.user.create({
-    data: {
+  const newUser = await prisma.orm.public.User
+    .include("role")
+    .include("profile")
+    .create({
       email: normalizedEmail,
       fullName: profile.fullName || normalizedEmail.split("@")[0],
       passwordHash: hashPassword(randomPassword),
       googleId: profile.googleId,
       avatarUrl: profile.avatarUrl || null,
       roleId: role.id,
-      profile: {
-        create: {
-          targetYear: 2027,
-          dailyGoalMinutes: 60,
-          optionalSubject: "General",
-        },
-      },
-    },
-    include: {
-      role: true,
-      profile: true,
-    },
-  });
+      profile: (p) => p.create({
+        targetYear: 2027,
+        dailyGoalMinutes: 60,
+        optionalSubject: "General",
+      }),
+    });
 
   return { user: newUser, isNew: true };
 }

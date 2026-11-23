@@ -1,30 +1,36 @@
-import { PrismaClient } from "@prisma/client";
+import service from "../service.mjs";
 
-const globalForPrisma = globalThis as unknown as {
-  prisma: PrismaClient | undefined;
-};
+type LoadedDeps = ReturnType<typeof service.load>;
 
-// Check for primary or Vercel integration environment variables
-const resolvedDatabaseUrl =
-  process.env.DATABASE_URL ||
-  process.env.STORAGE_URL ||
-  process.env.STORAGE_PRISMA_DATABASE_URL ||
-  process.env.STORAGE_POSTGRES_URL ||
-  process.env.STORAGE_DATABASE_URL ||
-  process.env.STORAGE_URL_NON_POOLING ||
-  process.env.POSTGRES_PRISMA_URL ||
-  process.env.POSTGRES_URL ||
-  process.env.PRISMA_DATABASE_URL;
+/** The Prisma ORM 8 client, carried by the service's `db` dependency. */
+export type PrismaClient = LoadedDeps["db"]["client"];
 
-if (!process.env.DATABASE_URL && resolvedDatabaseUrl) {
-  process.env.DATABASE_URL = resolvedDatabaseUrl;
+let cached: PrismaClient | undefined;
+
+// `service.load()` is read at query time, never at module scope: under Next.js
+// every route module is imported at build time without the runtime environment.
+// It caches its result, so the first query hydrates the dependency once.
+function getClient(): PrismaClient {
+  if (!cached) {
+    cached = service.load().db.client;
+  }
+  return cached;
 }
 
-export const prisma =
-  globalForPrisma.prisma ??
-  new PrismaClient({
-    ...(resolvedDatabaseUrl ? { datasourceUrl: resolvedDatabaseUrl } : {}),
-    log: process.env.NODE_ENV === "development" ? ["warn", "error"] : ["error"],
-  });
-
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+/**
+ * The Prisma ORM 8 client, lazy so importing this module stays safe at build
+ * time. Queries read `prisma.orm.public.<Model>`.
+ */
+export const prisma: any = new Proxy(
+  {} as PrismaClient,
+  {
+    get(_target, prop) {
+      const client = getClient() as unknown as Record<string | symbol, unknown>;
+      const value = Reflect.get(client, prop);
+      return typeof value === "function" ? value.bind(client) : value;
+    },
+    has(_target, prop) {
+      return prop in (getClient() as unknown as object);
+    },
+  },
+) as any;

@@ -17,14 +17,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const quiz = await prisma.dailyQuiz.findUnique({
-      where: { id: quizId },
-      include: {
-        questions: {
-          orderBy: { orderIndex: "asc" },
-        },
-      },
-    });
+    const quiz = await prisma.orm.public.DailyQuiz
+      .include("questions", (questions) => questions.orderBy((q) => q.orderIndex.asc()))
+      .first({ id: quizId });
 
     if (!quiz) {
       return NextResponse.json(
@@ -79,13 +74,8 @@ export async function POST(request: NextRequest) {
 
     // If authenticated user, record attempt
     if (user) {
-      await prisma.dailyQuizAttempt.upsert({
-        where: {
-          userId_dailyQuizId: {
-            userId: user.id,
-            dailyQuizId: quiz.id,
-          },
-        },
+      await prisma.orm.public.DailyQuizAttempt.upsert({
+        conflictOn: { userId: user.id, dailyQuizId: quiz.id },
         update: {
           score: netScore,
           accuracyPercent,
@@ -103,14 +93,12 @@ export async function POST(request: NextRequest) {
       });
 
       // Log study activity
-      await prisma.studyActivity.create({
-        data: {
-          userId: user.id,
-          activityType: "daily_quiz_completed",
-          label: `Completed Daily Quiz: ${quiz.title}`,
-          refId: quiz.id,
-          durationSeconds: 300,
-        },
+      await prisma.orm.public.StudyActivity.create({
+        userId: user.id,
+        activityType: "daily_quiz_completed",
+        label: `Completed Daily Quiz: ${quiz.title}`,
+        refId: quiz.id,
+        durationSeconds: 300,
       });
     }
 

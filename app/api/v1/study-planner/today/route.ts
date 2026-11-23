@@ -10,33 +10,23 @@ export async function GET(request: NextRequest) {
 
     // 1. What to study today: Latest verified current affairs story + syllabus theme
     const [todayStory, latestQuiz] = await Promise.all([
-      prisma.currentAffairsStory.findFirst({
-        where: { status: "PUBLISHED" },
-        orderBy: { publishedAt: "desc" },
-        include: {
-          topics: true,
-          questionLinks: {
-            include: {
-              question: {
-                select: {
-                  id: true,
-                  year: true,
-                  questionNumber: true,
-                  paper: { select: { code: true } },
-                  questionText: true,
-                },
-              },
-            },
-          },
-        },
-      }),
-      prisma.dailyQuiz.findFirst({
-        where: { isPublished: true },
-        orderBy: { quizDate: "desc" },
-        include: {
-          questions: { select: { id: true } },
-        },
-      }),
+      prisma.orm.public.CurrentAffairsStory
+        .where({ status: "PUBLISHED" })
+        .include("topics")
+        .include("questionLinks", (qls) =>
+          qls.include("question", (question) =>
+            question
+              .select("id", "year", "questionNumber", "questionText")
+              .include("paper", (paper) => paper.select("code")),
+          ),
+        )
+        .orderBy((s) => s.publishedAt.desc())
+        .first(),
+      prisma.orm.public.DailyQuiz
+        .where({ isPublished: true })
+        .include("questions", (questions) => questions.select("id"))
+        .orderBy((q) => q.quizDate.desc())
+        .first(),
     ]);
 
     // 2. What is important for UPSC: Top high-yield connected PYQs
@@ -51,12 +41,12 @@ export async function GET(request: NextRequest) {
         rationale: ql.relationshipRationale,
       }));
     } else {
-      const fallbackQuestions = await prisma.question.findMany({
-        where: { status: "PUBLISHED" },
-        take: 3,
-        orderBy: { year: "desc" },
-        include: { paper: true },
-      });
+      const fallbackQuestions = await prisma.orm.public.Question
+        .where({ status: "PUBLISHED" })
+        .include("paper")
+        .orderBy((q) => q.year.desc())
+        .limit(3)
+        .all();
       highYieldPyqs = fallbackQuestions.map((q) => ({
         id: q.id,
         year: q.year,
@@ -71,25 +61,16 @@ export async function GET(request: NextRequest) {
     let revisionItemsDue: any[] = [];
     if (user) {
       const now = new Date();
-      const schedules = await prisma.reviewSchedule.findMany({
-        where: {
-          userId: user.id,
-          isResolved: false,
-          nextReviewDate: { lte: now },
-        },
-        take: 5,
-        include: {
-          question: {
-            select: {
-              id: true,
-              year: true,
-              questionNumber: true,
-              questionText: true,
-              paper: { select: { code: true } },
-            },
-          },
-        },
-      });
+      const schedules = await prisma.orm.public.ReviewSchedule
+        .where({ userId: user.id, isResolved: false })
+        .where((rs) => rs.nextReviewDate.lte(now))
+        .include("question", (question) =>
+          question
+            .select("id", "year", "questionNumber", "questionText")
+            .include("paper", (paper) => paper.select("code")),
+        )
+        .limit(5)
+        .all();
 
       revisionItemsDue = schedules.map((s) => ({
         scheduleId: s.id,
@@ -107,9 +88,7 @@ export async function GET(request: NextRequest) {
     let studentProfile: any = null;
     if (user) {
       try {
-        studentProfile = await prisma.userProfile.findUnique({
-          where: { userId: user.id },
-        });
+        studentProfile = await prisma.orm.public.UserProfile.where({ userId: user.id }).first();
       } catch {
         // Safe ignore
       }

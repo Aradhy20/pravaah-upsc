@@ -8,6 +8,7 @@ import {
   findOrCreateGoogleUser,
 } from "@/lib/google-auth";
 import { COOKIE_USER_ID, signSessionToken } from "@/lib/auth";
+import { getGoogleCredentials } from "@/lib/google-auth";
 
 export const dynamic = "force-dynamic";
 
@@ -99,7 +100,7 @@ export async function POST(request: NextRequest) {
     };
 
     // 1. Check for development simulation
-    if (simulate && (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test" || !process.env.GOOGLE_CLIENT_ID)) {
+    if (simulate && (process.env.NODE_ENV === "development" || process.env.NODE_ENV === "test" || !getGoogleCredentials().clientId)) {
       const email = testUser?.email || `simulated_${Date.now()}@gmail.com`;
       const fullName = testUser?.name || "Simulated Google Aspirant";
       const googleId = testUser?.sub || `google_sim_${Date.now()}`;

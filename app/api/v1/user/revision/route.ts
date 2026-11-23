@@ -8,27 +8,17 @@ export async function GET(request: NextRequest) {
   try {
     const user = await getCurrentUser(request);
 
-    const items = await prisma.reviewSchedule.findMany({
-      where: {
-        userId: user.id,
-        isResolved: false,
-      },
-      orderBy: { nextReviewDate: "asc" },
-      include: {
-        question: {
-          include: {
-            paper: true,
-            options: { orderBy: { optionCode: "asc" } },
-            explanation: true,
-            topics: {
-              include: {
-                topic: { include: { subject: true } },
-              },
-            },
-          },
-        },
-      },
-    });
+    const items = await prisma.orm.public.ReviewSchedule
+      .where({ userId: user.id, isResolved: false })
+      .include("question", (question) =>
+        question
+          .include("paper")
+          .include("options", (o) => o.orderBy((opt) => opt.optionCode.asc()))
+          .include("explanation")
+          .include("topics", (ts) => ts.include("topic", (tp) => tp.include("subject"))),
+      )
+      .orderBy((r) => r.nextReviewDate.asc())
+      .all();
 
     const data = items.map((item) => ({
       scheduleId: item.id,
@@ -91,12 +81,9 @@ export async function POST(request: NextRequest) {
     }
 
     if (action === "resolve") {
-      await prisma.reviewSchedule.updateMany({
-        where: whereClause,
-        data: {
-          isResolved: true,
-          updatedAt: new Date(),
-        },
+      await prisma.orm.public.ReviewSchedule.where(whereClause).updateAll({
+        isResolved: true,
+        updatedAt: new Date(),
       });
 
       return NextResponse.json({
@@ -104,15 +91,16 @@ export async function POST(request: NextRequest) {
         message: "Question marked as resolved/mastered from revision queue.",
       });
     } else {
-      // Reschedule for 3 days later
-      await prisma.reviewSchedule.updateMany({
-        where: whereClause,
-        data: {
-          repetitionCount: { increment: 1 },
+      // Reschedule for 3 days later. Reads then writes the repetition count
+      // because an update has no increment form.
+      const targets = await prisma.orm.public.ReviewSchedule.where(whereClause).all();
+      for (const target of targets) {
+        await prisma.orm.public.ReviewSchedule.where({ id: target.id }).update({
+          repetitionCount: target.repetitionCount + 1,
           nextReviewDate: new Date(Date.now() + 3 * 86400000),
           updatedAt: new Date(),
-        },
-      });
+        });
+      }
 
       return NextResponse.json({
         success: true,

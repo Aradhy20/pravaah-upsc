@@ -1,5 +1,6 @@
 import React from "react";
 import { prisma } from "@/lib/prisma";
+import { or } from "@prisma/orm-postgres/orm-client";
 import { QuestionCard } from "@/components/QuestionCard";
 import { ArrowLeft, Layers } from "lucide-react";
 
@@ -15,35 +16,23 @@ interface SubjectDetailPageProps {
 export default async function SubjectDetailPage({ params }: SubjectDetailPageProps) {
   const subjectSlug = params.subject.toLowerCase();
 
-  const subject = await prisma.subject.findFirst({
-    where: {
-      OR: [{ slug: subjectSlug }, { name: { contains: params.subject } }],
-    },
-    include: {
-      paper: true,
-      topics: {
-        include: {
-          questions: {
-            where: { question: { status: "PUBLISHED" } },
-            include: {
-              question: {
-                include: {
-                  paper: true,
-                  options: { orderBy: { optionCode: "asc" } },
-                  explanation: true,
-                  topics: {
-                    include: {
-                      topic: { include: { subject: true } },
-                    },
-                  },
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-  });
+  const subject = await prisma.orm.public.Subject
+    .where((s) => or(s.slug.eq(subjectSlug), s.name.like(`%${params.subject}%`)))
+    .include("paper")
+    .include("topics", (topics) =>
+      topics.include("questions", (questions) =>
+        questions
+          .where((ql) => ql.question.status.eq("PUBLISHED"))
+          .include("question", (question) =>
+            question
+              .include("paper")
+              .include("options", (o) => o.orderBy((opt) => opt.optionCode.asc()))
+              .include("explanation")
+              .include("topics", (ts) => ts.include("topic", (tp) => tp.include("subject"))),
+          ),
+      ),
+    )
+    .first();
 
   if (!subject) {
     return (

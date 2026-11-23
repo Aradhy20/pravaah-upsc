@@ -15,22 +15,17 @@ export async function GET(request: NextRequest) {
     }
     const userId = userAuth.id;
 
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      select: {
-        id: true,
-        email: true,
-        fullName: true,
-        role: { select: { name: true } },
-        profile: true,
-        subscriptions: {
-          where: { status: "ACTIVE" },
-          include: { plan: true },
-          orderBy: { createdAt: "desc" },
-          take: 1,
-        },
-      },
-    });
+    const user = await prisma.orm.public.User
+      .include("role", (role) => role.select("name"))
+      .include("profile")
+      .include("subscriptions", (subs) =>
+        subs
+          .where({ status: "ACTIVE" })
+          .include("plan")
+          .orderBy((s) => s.createdAt.desc())
+          .limit(1),
+      )
+      .first({ id: userId });
 
     if (!user) {
       return NextResponse.json(
@@ -94,39 +89,44 @@ export async function PUT(request: NextRequest) {
       fullName,
     } = body;
 
-    const updatedUser = await prisma.user.update({
-      where: { id: userId },
-      data: {
-        ...(fullName && typeof fullName === "string" ? { fullName: fullName.trim() } : {}),
-        profile: {
-          upsert: {
-            create: {
-              targetYear: targetYear ? parseInt(targetYear.toString()) : 2026,
-              targetExam: targetExam || "UPSC_CSE",
-              optionalSubject: optionalSubject || "General Studies",
-              dailyGoalMinutes: dailyGoalMinutes ? parseInt(dailyGoalMinutes.toString()) : 60,
-              dailyStudyHours: dailyStudyHours ? parseFloat(dailyStudyHours.toString()) : 4.0,
-              preferredLanguage: preferredLanguage || "en",
-              weakSubjects: weakSubjects ? String(weakSubjects) : null,
-              preparationStage: preparationStage || "BEGINNER",
-            },
-            update: {
-              ...(targetYear !== undefined ? { targetYear: parseInt(targetYear.toString()) } : {}),
-              ...(targetExam !== undefined ? { targetExam: String(targetExam) } : {}),
-              ...(optionalSubject !== undefined ? { optionalSubject: String(optionalSubject) } : {}),
-              ...(dailyGoalMinutes !== undefined ? { dailyGoalMinutes: parseInt(dailyGoalMinutes.toString()) } : {}),
-              ...(dailyStudyHours !== undefined ? { dailyStudyHours: parseFloat(dailyStudyHours.toString()) } : {}),
-              ...(preferredLanguage !== undefined ? { preferredLanguage: String(preferredLanguage) } : {}),
-              ...(weakSubjects !== undefined ? { weakSubjects: String(weakSubjects) } : {}),
-              ...(preparationStage !== undefined ? { preparationStage: String(preparationStage) } : {}),
-            },
-          },
-        },
+    await prisma.orm.public.UserProfile.upsert({
+      conflictOn: { userId },
+      create: {
+        userId,
+        targetYear: targetYear ? parseInt(targetYear.toString()) : 2026,
+        targetExam: targetExam || "UPSC_CSE",
+        optionalSubject: optionalSubject || "General Studies",
+        dailyGoalMinutes: dailyGoalMinutes ? parseInt(dailyGoalMinutes.toString()) : 60,
+        dailyStudyHours: dailyStudyHours ? parseFloat(dailyStudyHours.toString()) : 4.0,
+        preferredLanguage: preferredLanguage || "en",
+        weakSubjects: weakSubjects ? String(weakSubjects) : null,
+        preparationStage: preparationStage || "BEGINNER",
       },
-      include: {
-        profile: true,
+      update: {
+        ...(targetYear !== undefined ? { targetYear: parseInt(targetYear.toString()) } : {}),
+        ...(targetExam !== undefined ? { targetExam: String(targetExam) } : {}),
+        ...(optionalSubject !== undefined ? { optionalSubject: String(optionalSubject) } : {}),
+        ...(dailyGoalMinutes !== undefined ? { dailyGoalMinutes: parseInt(dailyGoalMinutes.toString()) } : {}),
+        ...(dailyStudyHours !== undefined ? { dailyStudyHours: parseFloat(dailyStudyHours.toString()) } : {}),
+        ...(preferredLanguage !== undefined ? { preferredLanguage: String(preferredLanguage) } : {}),
+        ...(weakSubjects !== undefined ? { weakSubjects: String(weakSubjects) } : {}),
+        ...(preparationStage !== undefined ? { preparationStage: String(preparationStage) } : {}),
       },
     });
+
+    const updatedUser = await prisma.orm.public.User
+      .include("profile")
+      .where({ id: userId })
+      .update({
+        ...(fullName && typeof fullName === "string" ? { fullName: fullName.trim() } : {}),
+      });
+
+    if (!updatedUser) {
+      return NextResponse.json(
+        { success: false, error: "User not found" },
+        { status: 404 }
+      );
+    }
 
     return NextResponse.json({
       success: true,

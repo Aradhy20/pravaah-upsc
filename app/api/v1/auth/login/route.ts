@@ -20,13 +20,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const user = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
-      include: {
-        role: true,
-        profile: true,
-      },
-    });
+    const user = await prisma.orm.public.User
+      .include("role")
+      .include("profile")
+      .where({ email: email.toLowerCase().trim() })
+      .first();
 
     if (!user) {
       return NextResponse.json(

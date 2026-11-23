@@ -10,21 +10,15 @@ export default async function SubjectsPage() {
   let subjects: any[] = [];
 
   try {
-    const dbSubjects = await prisma.subject.findMany({
-      include: {
-        paper: true,
-        topics: {
-          include: {
-            questions: {
-              where: {
-                question: { status: "PUBLISHED" },
-              },
-            },
-          },
-        },
-      },
-      orderBy: { name: "asc" },
-    });
+    const dbSubjects = await prisma.orm.public.Subject
+      .include("paper")
+      .include("topics", (topics) =>
+        topics.include("questions", (questions) =>
+          questions.where((ql) => ql.question.status.eq("PUBLISHED")),
+        ),
+      )
+      .orderBy((s) => s.name.asc())
+      .all();
 
     if (dbSubjects && dbSubjects.length > 0) {
       subjects = dbSubjects;

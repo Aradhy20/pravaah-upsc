@@ -30,9 +30,9 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email: email.toLowerCase().trim() },
-    });
+    const existingUser = await prisma.orm.public.User
+      .where({ email: email.toLowerCase().trim() })
+      .first();
 
     if (existingUser) {
       return NextResponse.json(
@@ -44,35 +44,29 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    let role = await prisma.role.findUnique({
-      where: { name: "ASPIRANT" },
-    });
+    let role = await prisma.orm.public.Role.where({ name: "ASPIRANT" }).first();
 
     if (!role) {
-      role = await prisma.role.create({
-        data: { name: "ASPIRANT", description: "Standard Civil Services Aspirant" },
+      role = await prisma.orm.public.Role.create({
+        name: "ASPIRANT",
+        description: "Standard Civil Services Aspirant",
       });
     }
 
-    const user = await prisma.user.create({
-      data: {
+    const user = await prisma.orm.public.User
+      .include("role")
+      .include("profile")
+      .create({
         email: email.toLowerCase().trim(),
         fullName: fullName.trim(),
         passwordHash: hashPassword(password),
         roleId: role.id,
-        profile: {
-          create: {
-            targetYear: parseInt(targetYear.toString()),
-            optionalSubject,
-            dailyGoalMinutes: 60,
-          },
-        },
-      },
-      include: {
-        role: true,
-        profile: true,
-      },
-    });
+        profile: (p) => p.create({
+          targetYear: parseInt(targetYear.toString()),
+          optionalSubject,
+          dailyGoalMinutes: 60,
+        }),
+      });
 
     // Set cryptographically signed authentication session cookie
     const cookieStore = cookies();

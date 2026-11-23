@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { not } from "@prisma/orm-postgres/orm-client";
 import { getCurrentUser } from "@/lib/auth";
 import { checkEntitlement } from "@/lib/entitlements";
 
@@ -50,38 +51,27 @@ export async function POST(request: NextRequest) {
 
     let test: any = null;
     if (testId) {
-      test = await prisma.test.findUnique({
-        where: { id: testId },
-        include: {
-          paper: true,
-          questions: {
-            include: {
-              question: {
-                include: {
-                  options: {
-                    select: {
-                      id: true,
-                      optionCode: true,
-                      optionText: true,
-                      // DO NOT SELECT isCorrect! (Anti-leak)
-                    },
-                    orderBy: { optionCode: "asc" },
-                  },
-                },
-              },
-            },
-            orderBy: { orderIndex: "asc" },
-          },
-        },
-      });
+      test = await prisma.orm.public.Test
+        .include("paper")
+        .include("questions", (tqs) =>
+          tqs
+            .orderBy((tq) => tq.orderIndex.asc())
+            .include("question", (question) =>
+              question.include("options", (o) =>
+                o
+                  .select("id", "optionCode", "optionText")
+                  // DO NOT SELECT isCorrect! (Anti-leak)
+                  .orderBy((opt) => opt.optionCode.asc()),
+              ),
+            ),
+        )
+        .first({ id: testId });
     }
 
     // Determine target paper
     let targetPaper: any = test?.paper;
     if (!targetPaper) {
-      targetPaper = await prisma.paper.findFirst({
-        where: { code: { equals: paperCode, mode: "insensitive" } },
-      });
+      targetPaper = await prisma.orm.public.Paper.where((p) => p.code.ilike(paperCode)).first();
     }
 
     if (!targetPaper) {
@@ -100,65 +90,44 @@ export async function POST(request: NextRequest) {
       questionsList = test.questions.map((tq: any) => tq.question);
     } else {
       // Fetch verified published questions for this paper and year
-      questionsList = await prisma.question.findMany({
-        where: {
-          paperId: targetPaper.id,
-          year,
-          status: "PUBLISHED",
-        },
-        orderBy: { questionNumber: "asc" },
-        include: {
-          options: {
-            select: {
-              id: true,
-              optionCode: true,
-              optionText: true,
-              // Strictly stripped: isCorrect
-            },
-            orderBy: { optionCode: "asc" },
-          },
-        },
-      });
+      questionsList = await prisma.orm.public.Question
+        .where({ paperId: targetPaper.id, year, status: "PUBLISHED" })
+        .include("options", (o) =>
+          o
+            .select("id", "optionCode", "optionText")
+            // Strictly stripped: isCorrect
+            .orderBy((opt) => opt.optionCode.asc()),
+        )
+        .orderBy((q) => q.questionNumber.asc())
+        .all();
 
       // If specific year has few questions, complement with authentic published questions from the paper
       if (questionsList.length < 5) {
-        const moreQuestions = await prisma.question.findMany({
-          where: {
-            paperId: targetPaper.id,
-            status: "PUBLISHED",
-            id: { notIn: questionsList.map((q: any) => q.id) },
-          },
-          take: 35 - questionsList.length,
-          orderBy: { year: "desc" },
-          include: {
-            options: {
-              select: {
-                id: true,
-                optionCode: true,
-                optionText: true,
-              },
-              orderBy: { optionCode: "asc" },
-            },
-          },
-        });
+        const moreQuestions = await prisma.orm.public.Question
+          .where({ paperId: targetPaper.id, status: "PUBLISHED" })
+          .where((q) => not(q.id.in(questionsList.map((q: any) => q.id))))
+          .include("options", (o) =>
+            o.select("id", "optionCode", "optionText").orderBy((opt) => opt.optionCode.asc()),
+          )
+          .orderBy((q) => q.year.desc())
+          .limit(35 - questionsList.length)
+          .all();
         questionsList = [...questionsList, ...moreQuestions];
       }
 
       // Ensure test container exists in DB
       if (!test) {
-        test = await prisma.test.findFirst({
-          where: { paperId: targetPaper.id, year },
-        });
+        test = await prisma.orm.public.Test
+          .where({ paperId: targetPaper.id, year })
+          .first();
 
         if (!test) {
-          test = await prisma.test.create({
-            data: {
-              id: testId || undefined,
-              paperId: targetPaper.id,
-              title: `UPSC CSE Prelims ${year} — ${targetPaper.name}`,
-              year,
-              isFullPaper: true,
-            },
+          test = await prisma.orm.public.Test.create({
+            id: testId || undefined,
+            paperId: targetPaper.id,
+            title: `UPSC CSE Prelims ${year} — ${targetPaper.name}`,
+            year,
+            isFullPaper: true,
           });
         }
       }
@@ -167,12 +136,10 @@ export async function POST(request: NextRequest) {
       if (test && questionsList.length > 0) {
         for (let i = 0; i < questionsList.length; i++) {
           try {
-            await prisma.testQuestion.create({
-              data: {
-                testId: test.id,
-                questionId: questionsList[i].id,
-                orderIndex: i + 1,
-              },
+            await prisma.orm.public.TestQuestion.create({
+              testId: test.id,
+              questionId: questionsList[i].id,
+              orderIndex: i + 1,
             });
           } catch {
             // Ignore if already linked
@@ -182,13 +149,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Create active session in DB
-    const session = await prisma.testSession.create({
-      data: {
-        userId: user.id,
-        testId: test.id,
-        status: "IN_PROGRESS",
-        totalQuestions: questionsList.length,
-      },
+    const session = await prisma.orm.public.TestSession.create({
+      userId: user.id,
+      testId: test.id,
+      status: "IN_PROGRESS",
+      totalQuestions: questionsList.length,
     });
 
     // Sanitized Anti-Leak Payload

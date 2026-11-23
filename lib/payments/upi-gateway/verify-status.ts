@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/prisma";
+import { or } from "@prisma/orm-postgres/orm-client";
 import { UpiGatewayClient } from "./client";
 import { OrderNotFoundError } from "./errors";
 
@@ -30,18 +31,11 @@ export async function verifyOrderStatus(
   client?: UpiGatewayClient
 ): Promise<StatusCheckResult> {
   // 1. Fetch internal order
-  const order = await prisma.paymentOrder.findFirst({
-    where: {
-      OR: [
-        { clientOrderId: orderIdentifier },
-        { gatewayOrderId: orderIdentifier },
-      ],
-    },
-    include: {
-      user: true,
-      subscription: true,
-    },
-  });
+  const order = await prisma.orm.public.PaymentOrder
+    .where((o) => or(o.clientOrderId.eq(orderIdentifier), o.gatewayOrderId.eq(orderIdentifier)))
+    .include("user")
+    .include("subscription")
+    .first();
 
   if (!order) {
     throw new OrderNotFoundError(orderIdentifier);
@@ -80,10 +74,7 @@ export async function verifyOrderStatus(
       const gatewayData = await gatewayClient.getOrderStatus(order.gatewayOrderId);
 
       // Record polling timestamp
-      await prisma.paymentOrder.update({
-        where: { id: order.id },
-        data: { lastCheckedAt: new Date() },
-      });
+      await prisma.orm.public.PaymentOrder.where({ id: order.id }).update({ lastCheckedAt: new Date() });
 
       if (gatewayData.status === "paid") {
         // Activate entitlement transactionally
@@ -112,22 +103,13 @@ export async function verifyOrderStatus(
       }
 
       if (gatewayData.status === "expired") {
-        await prisma.paymentOrder.update({
-          where: { id: order.id },
-          data: { status: "EXPIRED" },
-        });
+        await prisma.orm.public.PaymentOrder.where({ id: order.id }).update({ status: "EXPIRED" });
         order.status = "EXPIRED";
       } else if (gatewayData.status === "failed") {
-        await prisma.paymentOrder.update({
-          where: { id: order.id },
-          data: { status: "FAILED" },
-        });
+        await prisma.orm.public.PaymentOrder.where({ id: order.id }).update({ status: "FAILED" });
         order.status = "FAILED";
       } else if (gatewayData.status === "under_review") {
-        await prisma.paymentOrder.update({
-          where: { id: order.id },
-          data: { status: "UNDER_REVIEW" },
-        });
+        await prisma.orm.public.PaymentOrder.where({ id: order.id }).update({ status: "UNDER_REVIEW" });
         order.status = "UNDER_REVIEW";
       }
     } catch (err: any) {
@@ -167,11 +149,8 @@ export async function activateEntitlementForOrder(params: {
 }): Promise<void> {
   const { paymentOrderId, utr, paidAt = new Date() } = params;
 
-  await prisma.$transaction(async (tx) => {
-    const order = await tx.paymentOrder.findUnique({
-      where: { id: paymentOrderId },
-      include: { user: true },
-    });
+  await prisma.transaction(async (tx) => {
+    const order = await tx.orm.public.PaymentOrder.include("user").first({ id: paymentOrderId });
 
     if (!order) {
       throw new Error(`Order ${paymentOrderId} not found for activation`);
@@ -194,9 +173,7 @@ export async function activateEntitlementForOrder(params: {
       } catch {}
 
       const planCode = order.productId || "ACHIEVER";
-      const plan = await tx.plan.findUnique({
-        where: { code: planCode },
-      });
+      const plan = await tx.orm.public.Plan.where({ code: planCode }).first();
 
       if (plan) {
         const days =
@@ -204,10 +181,10 @@ export async function activateEntitlementForOrder(params: {
         const now = new Date();
         const periodEnd = new Date(now.getTime() + days * 86400000);
 
-        const existingSub = await tx.subscription.findFirst({
-          where: { userId: order.userId },
-          orderBy: { currentPeriodEnd: "desc" },
-        });
+        const existingSub = await tx.orm.public.Subscription
+          .where({ userId: order.userId })
+          .orderBy((s) => s.currentPeriodEnd.desc())
+          .first();
 
         if (existingSub) {
           // If existing sub is active and in future, extend from currentPeriodEnd
@@ -217,106 +194,86 @@ export async function activateEntitlementForOrder(params: {
               : now;
           const newPeriodEnd = new Date(startBase.getTime() + days * 86400000);
 
-          const updatedSub = await tx.subscription.update({
-            where: { id: existingSub.id },
-            data: {
-              planId: plan.id,
-              billingInterval,
-              status: "ACTIVE",
-              currentPeriodStart: now,
-              currentPeriodEnd: newPeriodEnd,
-              cancelAtPeriodEnd: false,
-              canceledAt: null,
-            },
+          const updatedSub = await tx.orm.public.Subscription.where({ id: existingSub.id }).update({
+            planId: plan.id,
+            billingInterval,
+            status: "ACTIVE",
+            currentPeriodStart: now,
+            currentPeriodEnd: newPeriodEnd,
+            cancelAtPeriodEnd: false,
+            canceledAt: null,
           });
-          subId = updatedSub.id;
+          subId = updatedSub!.id;
         } else {
-          const createdSub = await tx.subscription.create({
-            data: {
-              userId: order.userId,
-              planId: plan.id,
-              billingInterval,
-              status: "ACTIVE",
-              currentPeriodStart: now,
-              currentPeriodEnd: periodEnd,
-              cancelAtPeriodEnd: false,
-              providerSubId: `upi_${order.clientOrderId}`,
-            },
+          const createdSub = await tx.orm.public.Subscription.create({
+            userId: order.userId,
+            planId: plan.id,
+            billingInterval,
+            status: "ACTIVE",
+            currentPeriodStart: now,
+            currentPeriodEnd: periodEnd,
+            cancelAtPeriodEnd: false,
+            providerSubId: `upi_${order.clientOrderId}`,
           });
           subId = createdSub.id;
         }
 
         // Record subscription activation event
-        await tx.subscriptionEvent.create({
-          data: {
-            subscriptionId: subId,
-            eventType: "ACTIVATED",
-            payloadJson: JSON.stringify({
-              orderId: order.clientOrderId,
-              gatewayOrderId: order.gatewayOrderId,
-              amount: order.amount,
-              planCode: plan.code,
-              utr,
-              paidAt,
-            }),
-          },
+        await tx.orm.public.SubscriptionEvent.create({
+          subscriptionId: subId!,
+          eventType: "ACTIVATED",
+          payloadJson: JSON.stringify({
+            orderId: order.clientOrderId,
+            gatewayOrderId: order.gatewayOrderId,
+            amount: order.amount,
+            planCode: plan.code,
+            utr,
+            paidAt,
+          }),
         });
       }
     }
 
     // Update order status to PAID
-    await tx.paymentOrder.update({
-      where: { id: order.id },
-      data: {
-        status: "PAID",
-        subscriptionId: subId,
-        utr: utr || order.utr,
-        paidAt,
-        verifiedAt: new Date(),
-      },
+    await tx.orm.public.PaymentOrder.where({ id: order.id }).update({
+      status: "PAID",
+      subscriptionId: subId,
+      utr: utr || order.utr,
+      paidAt,
+      verifiedAt: new Date(),
     });
 
     // Update or link corresponding PaymentRecord for financial reporting
-    const existingPaymentRecord = await tx.paymentRecord.findFirst({
-      where: {
-        OR: [
-          { providerTxId: order.clientOrderId },
-          { providerTxId: order.gatewayOrderId || "" },
-          { idempotencyKey: `upi_${order.clientOrderId}` },
-        ],
-      },
-    });
+    const existingPaymentRecord = await tx.orm.public.PaymentRecord
+      .where((p) => or(
+        p.providerTxId.eq(order.clientOrderId),
+        p.providerTxId.eq(order.gatewayOrderId || ""),
+        p.idempotencyKey.eq(`upi_${order.clientOrderId}`),
+      ))
+      .first();
 
     if (existingPaymentRecord) {
-      await tx.paymentRecord.update({
-        where: { id: existingPaymentRecord.id },
-        data: {
-          status: "SUCCESS",
-          subscriptionId: subId,
-          amount: order.amount,
-          currency: order.currency,
-          updatedAt: new Date(),
-        },
+      await tx.orm.public.PaymentRecord.where({ id: existingPaymentRecord.id }).update({
+        status: "SUCCESS",
+        subscriptionId: subId,
+        amount: order.amount,
+        currency: order.currency,
+        updatedAt: new Date(),
       });
     } else {
-      await tx.paymentRecord.create({
-        data: {
-          userId: order.userId,
-          subscriptionId: subId,
-          amount: order.amount,
-          currency: order.currency,
-          status: "SUCCESS",
-          provider: "UPI_GATEWAY",
-          providerTxId: order.gatewayOrderId || order.clientOrderId,
-          idempotencyKey: `upi_${order.clientOrderId}`,
-          paymentMethod: "UPI",
-          receiptNumber: `REC-UPI-${Date.now()}`,
-        },
+      await tx.orm.public.PaymentRecord.create({
+        userId: order.userId,
+        subscriptionId: subId,
+        amount: order.amount,
+        currency: order.currency,
+        status: "SUCCESS",
+        provider: "UPI_GATEWAY",
+        providerTxId: order.gatewayOrderId || order.clientOrderId,
+        idempotencyKey: `upi_${order.clientOrderId}`,
+        paymentMethod: "UPI",
+        receiptNumber: `REC-UPI-${Date.now()}`,
       });
     }
-  }, {
-    maxWait: 20000,
-    timeout: 30000,
   });
 }
 
@@ -331,10 +288,8 @@ export async function handleRefundForOrder(params: {
 }): Promise<void> {
   const { paymentOrderId, reason = "Customer requested refund", amount } = params;
 
-  await prisma.$transaction(async (tx) => {
-    const order = await tx.paymentOrder.findUnique({
-      where: { id: paymentOrderId },
-    });
+  await prisma.transaction(async (tx) => {
+    const order = await tx.orm.public.PaymentOrder.first({ id: paymentOrderId });
 
     if (!order) {
       throw new Error(`Order ${paymentOrderId} not found for refund`);
@@ -347,63 +302,48 @@ export async function handleRefundForOrder(params: {
     const refundAmount = amount || order.amount;
 
     // Update PaymentOrder
-    await tx.paymentOrder.update({
-      where: { id: order.id },
-      data: { status: "REFUNDED" },
-    });
+    await tx.orm.public.PaymentOrder.where({ id: order.id }).update({ status: "REFUNDED" });
 
     // Find and update PaymentRecord
-    const payment = await tx.paymentRecord.findFirst({
-      where: {
-        OR: [
-          { providerTxId: order.clientOrderId },
-          { providerTxId: order.gatewayOrderId || "" },
-          { idempotencyKey: `upi_${order.clientOrderId}` },
-        ],
-      },
-    });
+    const payment = await tx.orm.public.PaymentRecord
+      .where((p) => or(
+        p.providerTxId.eq(order.clientOrderId),
+        p.providerTxId.eq(order.gatewayOrderId || ""),
+        p.idempotencyKey.eq(`upi_${order.clientOrderId}`),
+      ))
+      .first();
 
     if (payment) {
-      await tx.paymentRecord.update({
-        where: { id: payment.id },
-        data: { status: "REFUNDED" },
-      });
+      await tx.orm.public.PaymentRecord.where({ id: payment.id }).update({ status: "REFUNDED" });
 
       // Create RefundRecord
-      await tx.refundRecord.create({
-        data: {
-          paymentRecordId: payment.id,
-          userId: order.userId,
-          amount: refundAmount,
-          currency: order.currency,
-          reason,
-          status: "COMPLETED",
-          providerRefundId: `ref_${order.clientOrderId}`,
-        },
+      await tx.orm.public.RefundRecord.create({
+        paymentRecordId: payment.id,
+        userId: order.userId,
+        amount: refundAmount,
+        currency: order.currency,
+        reason,
+        status: "COMPLETED",
+        providerRefundId: `ref_${order.clientOrderId}`,
       });
     }
 
     // If subscription was active, cancel it immediately
     if (order.subscriptionId) {
-      await tx.subscription.update({
-        where: { id: order.subscriptionId },
-        data: {
-          status: "CANCELED",
-          canceledAt: new Date(),
-        },
+      await tx.orm.public.Subscription.where({ id: order.subscriptionId }).update({
+        status: "CANCELED",
+        canceledAt: new Date(),
       });
 
-      await tx.subscriptionEvent.create({
-        data: {
-          subscriptionId: order.subscriptionId,
-          eventType: "CANCELED",
-          payloadJson: JSON.stringify({
-            orderId: order.clientOrderId,
-            reason,
-            refundAmount,
-            refundedAt: new Date(),
-          }),
-        },
+      await tx.orm.public.SubscriptionEvent.create({
+        subscriptionId: order.subscriptionId,
+        eventType: "CANCELED",
+        payloadJson: JSON.stringify({
+          orderId: order.clientOrderId,
+          reason,
+          refundAmount,
+          refundedAt: new Date(),
+        }),
       });
     }
   });
@@ -418,35 +358,25 @@ export async function handleFailureForOrder(params: {
 }): Promise<void> {
   const { paymentOrderId, reason = "Payment declined or failed" } = params;
 
-  await prisma.$transaction(async (tx) => {
-    const order = await tx.paymentOrder.findUnique({
-      where: { id: paymentOrderId },
-    });
+  await prisma.transaction(async (tx) => {
+    const order = await tx.orm.public.PaymentOrder.first({ id: paymentOrderId });
 
     if (!order || order.status === "PAID") {
       return; // Do not fail an already paid order
     }
 
-    await tx.paymentOrder.update({
-      where: { id: order.id },
-      data: { status: "FAILED" },
-    });
+    await tx.orm.public.PaymentOrder.where({ id: order.id }).update({ status: "FAILED" });
 
-    const payment = await tx.paymentRecord.findFirst({
-      where: {
-        OR: [
-          { providerTxId: order.clientOrderId },
-          { providerTxId: order.gatewayOrderId || "" },
-          { idempotencyKey: `upi_${order.clientOrderId}` },
-        ],
-      },
-    });
+    const payment = await tx.orm.public.PaymentRecord
+      .where((p) => or(
+        p.providerTxId.eq(order.clientOrderId),
+        p.providerTxId.eq(order.gatewayOrderId || ""),
+        p.idempotencyKey.eq(`upi_${order.clientOrderId}`),
+      ))
+      .first();
 
     if (payment) {
-      await tx.paymentRecord.update({
-        where: { id: payment.id },
-        data: { status: "FAILED" },
-      });
+      await tx.orm.public.PaymentRecord.where({ id: payment.id }).update({ status: "FAILED" });
     }
   });
 }

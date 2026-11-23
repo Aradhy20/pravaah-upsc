@@ -13,18 +13,12 @@ export async function GET(request: NextRequest) {
 
     // If caller requests the archive catalog of daily quizzes
     if (archive) {
-      const pastQuizzes = await prisma.dailyQuiz.findMany({
-        where: { isPublished: true },
-        orderBy: { quizDate: "desc" },
-        take: 30,
-        select: {
-          id: true,
-          quizDate: true,
-          title: true,
-          description: true,
-          totalQuestions: true,
-        },
-      });
+      const pastQuizzes = await prisma.orm.public.DailyQuiz
+        .where({ isPublished: true })
+        .select("id", "quizDate", "title", "description", "totalQuestions")
+        .orderBy((q) => q.quizDate.desc())
+        .limit(30)
+        .all();
 
       return NextResponse.json({
         success: true,
@@ -40,24 +34,15 @@ export async function GET(request: NextRequest) {
     }
 
     // Find the requested or latest published daily quiz
-    const quiz = await prisma.dailyQuiz.findFirst({
-      where,
-      orderBy: { quizDate: "desc" },
-      include: {
-        questions: {
-          orderBy: { orderIndex: "asc" },
-          include: {
-            story: {
-              select: {
-                id: true,
-                title: true,
-                slug: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    const quiz = await prisma.orm.public.DailyQuiz
+      .where(where)
+      .include("questions", (questions) =>
+        questions
+          .orderBy((q) => q.orderIndex.asc())
+          .include("story", (story) => story.select("id", "title", "slug")),
+      )
+      .orderBy((q) => q.quizDate.desc())
+      .first();
 
     if (!quiz) {
       return NextResponse.json(getFallbackDailyQuiz(quizId, dateStr));

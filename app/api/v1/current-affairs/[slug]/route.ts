@@ -10,26 +10,19 @@ export async function GET(
   try {
     const slug = params.slug;
 
-    const story = await prisma.currentAffairsStory.findUnique({
-      where: { slug },
-      include: {
-        topics: true,
-        questionLinks: {
-          include: {
-            question: {
-              include: {
-                paper: true,
-                options: { orderBy: { optionCode: "asc" } },
-                explanation: true,
-              },
-            },
-          },
-        },
-        quizQuestions: {
-          orderBy: { orderIndex: "asc" },
-        },
-      },
-    });
+    const story = await prisma.orm.public.CurrentAffairsStory
+      .where({ slug })
+      .include("topics")
+      .include("questionLinks", (qls) =>
+        qls.include("question", (question) =>
+          question
+            .include("paper")
+            .include("options", (o) => o.orderBy((opt) => opt.optionCode.asc()))
+            .include("explanation"),
+        ),
+      )
+      .include("quizQuestions", (qs) => qs.orderBy((q) => q.orderIndex.asc()))
+      .first();
 
     if (!story) {
       return NextResponse.json(
@@ -38,12 +31,11 @@ export async function GET(
       );
     }
 
-    // Increment view count (safely ignore write failures in read-only environments like Vercel SQLite)
+    // Increment view count (safely ignore write failures in read-only environments)
     try {
-      await prisma.currentAffairsStory.update({
-        where: { id: story.id },
-        data: { viewCount: { increment: 1 } },
-      });
+      await prisma.orm.public.CurrentAffairsStory
+        .where({ id: story.id })
+        .update({ viewCount: story.viewCount + 1 });
     } catch {
       // Ignored in read-only serverless environments
     }

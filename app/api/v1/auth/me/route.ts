@@ -22,10 +22,7 @@ export async function GET(request: NextRequest) {
 
     const [subscription, userRecord] = await Promise.all([
       getUserSubscription(user.id),
-      prisma.user.findUnique({
-        where: { id: user.id },
-        include: { profile: true },
-      }),
+      prisma.orm.public.User.include("profile").first({ id: user.id }),
     ]);
 
     return NextResponse.json({

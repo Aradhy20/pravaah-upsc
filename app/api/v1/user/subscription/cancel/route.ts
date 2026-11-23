@@ -10,12 +10,9 @@ export async function POST(request: NextRequest) {
     const body = await request.json().catch(() => ({}));
     const { reason = "User requested cancellation" } = body;
 
-    const activeSub = await prisma.subscription.findFirst({
-      where: {
-        userId: user.id,
-        status: "ACTIVE",
-      },
-    });
+    const activeSub = await prisma.orm.public.Subscription
+      .where({ userId: user.id, status: "ACTIVE" })
+      .first();
 
     if (!activeSub) {
       return NextResponse.json(
@@ -25,29 +22,24 @@ export async function POST(request: NextRequest) {
     }
 
     // Set cancel at period end
-    const updated = await prisma.subscription.update({
-      where: { id: activeSub.id },
-      data: {
-        cancelAtPeriodEnd: true,
-        canceledAt: new Date(),
-      },
+    const updated = await prisma.orm.public.Subscription.where({ id: activeSub.id }).update({
+      cancelAtPeriodEnd: true,
+      canceledAt: new Date(),
     });
 
     // Record Subscription Event
-    await prisma.subscriptionEvent.create({
-      data: {
-        subscriptionId: activeSub.id,
-        eventType: "CANCELED",
-        payloadJson: JSON.stringify({ reason, requestedAt: new Date() }),
-      },
+    await prisma.orm.public.SubscriptionEvent.create({
+      subscriptionId: activeSub.id,
+      eventType: "CANCELED",
+      payloadJson: JSON.stringify({ reason, requestedAt: new Date() }),
     });
 
     return NextResponse.json({
       success: true,
       data: {
-        subscriptionId: updated.id,
-        cancelAtPeriodEnd: updated.cancelAtPeriodEnd,
-        effectiveUntil: updated.currentPeriodEnd,
+        subscriptionId: updated!.id,
+        cancelAtPeriodEnd: updated!.cancelAtPeriodEnd,
+        effectiveUntil: updated!.currentPeriodEnd,
         message: "Your subscription will not renew after the current billing cycle.",
       },
     });

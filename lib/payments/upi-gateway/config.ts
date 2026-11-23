@@ -1,13 +1,26 @@
+import service from "../../../service.mjs";
 import { UpiGatewayConfig } from "./types";
 
+let cachedCredentials: { apiKey: string; apiSecret: string; webhookSecret: string } | undefined;
+
+function gatewayCredentials() {
+  if (!cachedCredentials) {
+    // Read at request time through the service input, never process.env.
+    cachedCredentials = {
+      apiKey: service.input().UPI_GATEWAY_API_KEY.expose(),
+      apiSecret: service.input().UPI_GATEWAY_API_SECRET.expose(),
+      webhookSecret: service.input().UPI_GATEWAY_WEBHOOK_SECRET.expose(),
+    };
+  }
+  return cachedCredentials;
+}
+
 export function getUpiGatewayConfig(): UpiGatewayConfig {
+  const { apiKey, apiSecret, webhookSecret } = gatewayCredentials();
   const baseUrl = (process.env.UPI_GATEWAY_BASE_URL || "https://payments.yourdomain.com").replace(
     /\/+$/,
     ""
   );
-  const apiKey = process.env.UPI_GATEWAY_API_KEY || "test_key_pravaah_sandbox";
-  const apiSecret = process.env.UPI_GATEWAY_API_SECRET || "test_sec_pravaah_sandbox";
-  const webhookSecret = process.env.UPI_GATEWAY_WEBHOOK_SECRET || "whsec_pravaah_upi_sandbox_2026";
   const sandboxMode = process.env.UPI_GATEWAY_SANDBOX_MODE !== "false";
   const timeoutMs = parseInt(process.env.UPI_GATEWAY_TIMEOUT_MS || "10000", 10);
 

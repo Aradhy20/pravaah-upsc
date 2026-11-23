@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { and, or } from "@prisma/orm-postgres/orm-client";
 import { getFallbackCurrentAffairs } from "@/lib/data-fallback";
 
 export const dynamic = "force-dynamic";
@@ -13,49 +14,42 @@ export async function GET(request: NextRequest) {
     const page = Math.max(parseInt(searchParams.get("page") || "1", 10), 1);
     const skip = (page - 1) * limit;
 
-    const where: any = {
-      status: "PUBLISHED",
-    };
+    type StoryAccessor = any;
+    const conditions: ((s: StoryAccessor) => any)[] = [];
+
+    conditions.push((s) => s.status.eq("PUBLISHED"));
 
     if (paper && paper !== "ALL") {
-      where.topics = {
-        some: {
-          syllabusPaper: paper,
-        },
-      };
+      conditions.push((s) => s.topics.some((t: any) => t.syllabusPaper.eq(paper)));
     }
 
     if (search) {
-      where.OR = [
-        { title: { contains: search, mode: "insensitive" } },
-        { summary: { contains: search, mode: "insensitive" } },
-        { termsList: { contains: search, mode: "insensitive" } },
-      ];
+      conditions.push((s) => or(
+        s.title.ilike(`%${search}%`),
+        s.summary.ilike(`%${search}%`),
+        s.termsList.ilike(`%${search}%`),
+      ));
     }
 
+    const filtered = conditions.length > 0
+      ? prisma.orm.public.CurrentAffairsStory.where((s) => and(...conditions.map((c) => c(s))))
+      : prisma.orm.public.CurrentAffairsStory;
+
     const [total, stories] = await Promise.all([
-      prisma.currentAffairsStory.count({ where }),
-      prisma.currentAffairsStory.findMany({
-        where,
-        skip,
-        take: limit,
-        orderBy: { publishedAt: "desc" },
-        include: {
-          topics: true,
-          questionLinks: {
-            include: {
-              question: {
-                select: {
-                  id: true,
-                  year: true,
-                  questionNumber: true,
-                  paper: { select: { code: true } },
-                },
-              },
-            },
-          },
-        },
-      }),
+      filtered.aggregate((a) => ({ n: a.count() })).then((r) => r.n),
+      filtered
+        .include("topics")
+        .include("questionLinks", (qls) =>
+          qls.include("question", (question) =>
+            question
+              .select("id", "year", "questionNumber")
+              .include("paper", (p) => p.select("code")),
+          ),
+        )
+        .orderBy((s) => s.publishedAt.desc())
+        .offset(skip)
+        .limit(limit)
+        .all(),
     ]);
 
     if (stories.length === 0) {

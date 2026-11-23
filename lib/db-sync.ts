@@ -1,9 +1,25 @@
 import { prisma } from "@/lib/prisma";
-import fs from "fs";
-import path from "path";
 
 let isSyncRunning = false;
 let isSynced = false;
+
+/** The tables the data contract declares, for drift reporting. */
+const CONTRACT_TABLES = [
+  "AnswerKeyVersion", "AuditLog", "BackgroundJob", "Bookmark", "ContentImportJob",
+  "ContentReview", "CurrentAffairsStory", "DailyQuiz", "DailyQuizAttempt",
+  "DailyQuizQuestion", "DataQualityReport", "Exam", "ExamDirectory", "ExamStage",
+  "ExamYear", "Explanation", "ExtractionJob", "FeatureEntitlement",
+  "HistoricalExamPeriod", "IngestionJobAudit", "KnowledgeSource", "MainsDraft",
+  "MainsQuestion", "NCERTBook", "NCERTChapter", "NCERTChapterQuestionLink", "Paper",
+  "PaymentOrder", "PaymentRecord", "PaymentWebhookEvent", "Plan", "PlanFeature",
+  "PlanPrice", "Question", "QuestionAnswer", "QuestionOption", "QuestionSource",
+  "QuestionSyllabusMapping", "QuestionTopic", "RefundRecord", "ReviewSchedule", "Role",
+  "Session", "SourceCitation", "SourceDocument", "SourceRecord", "SourceRegistryRecord",
+  "StoryQuestionLink", "StoryTopic", "StudyActivity", "StudyGoal", "Subject",
+  "Subscription", "SubscriptionEvent", "Subtopic", "SyllabusNode", "SyllabusTopic",
+  "Test", "TestQuestion", "TestSession", "Topic", "TopperCopy", "User", "UserAttempt",
+  "UserNote", "UserProfile", "UserResponse", "VideoLesson", "VideoProgress",
+];
 
 export interface DbSyncResult {
   success: boolean;
@@ -39,74 +55,27 @@ export async function ensureDatabaseTables(): Promise<DbSyncResult> {
   isSyncRunning = true;
   try {
     // 1. Get existing tables in public schema
-    const existingRows = await prisma.$queryRawUnsafe<Array<{ table_name: string }>>(`
-      SELECT table_name 
-      FROM information_schema.tables 
-      WHERE table_schema = 'public'
-    `);
-    const existingTableNames = new Set(existingRows.map((r) => r.table_name));
-
-    // 2. Read migration SQL
-    let migrationSql = "";
-    const possiblePaths = [
-      path.join(process.cwd(), "prisma", "migrations", "20261122000000_init", "migration.sql"),
-      path.join(process.cwd(), "data", "migration.sql"),
-    ];
-
-    for (const p of possiblePaths) {
-      if (fs.existsSync(p)) {
-        migrationSql = fs.readFileSync(p, "utf8");
-        break;
-      }
-    }
+    const existingRows = await prisma.query(
+      prisma.raw.sql`SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'`
+        .returnsRow({ table_name: "pg/text@1" })
+        .build(),
+    );
+    const existingTableNames = new Set(existingRows.map((r: { table_name: string }) => r.table_name));
 
     const createdTables: string[] = [];
     const missingTables: string[] = [];
 
-    if (migrationSql) {
-      // Split into statements
-      const statements = migrationSql
-        .split(";")
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0);
-
-      for (const rawStmt of statements) {
-        // Only process CREATE TABLE statements
-        const match = rawStmt.match(/CREATE\s+TABLE\s+"([^"]+)"/i);
-        if (match) {
-          const tableName = match[1];
-          if (!existingTableNames.has(tableName)) {
-            missingTables.push(tableName);
-            const safeStmt = rawStmt.replace(/CREATE\s+TABLE\s+"/i, 'CREATE TABLE IF NOT EXISTS "');
-            try {
-              await prisma.$executeRawUnsafe(safeStmt);
-              createdTables.push(tableName);
-              existingTableNames.add(tableName);
-            } catch (err: any) {
-              console.warn(`Warning creating table ${tableName}:`, err.message);
-            }
-          }
-        }
-      }
-
-      // Also create indexes for created tables
-      for (const rawStmt of statements) {
-        if (/CREATE\s+(UNIQUE\s+)?INDEX/i.test(rawStmt)) {
-          const safeIndexStmt = rawStmt.replace(/CREATE\s+(UNIQUE\s+)?INDEX\s+/i, (m, u) =>
-            u ? "CREATE UNIQUE INDEX IF NOT EXISTS " : "CREATE INDEX IF NOT EXISTS "
-          );
-          try {
-            await prisma.$executeRawUnsafe(safeIndexStmt);
-          } catch {
-            // Ignore index creation errors if columns don't match or already indexed
-          }
-        }
+    // Tables the contract expects but the database does not have. The deploy's
+    // migration step (prisma db migrate) creates them before the app starts.
+    for (const table of CONTRACT_TABLES) {
+      if (!existingTableNames.has(table)) {
+        missingTables.push(table);
       }
     }
 
     // 3. Ensure FeatureEntitlements exist
     try {
-      const feCount = await prisma.featureEntitlement.count();
+      const feCount = await prisma.orm.public.FeatureEntitlement.aggregate((a) => ({ n: a.count() }));
       if (feCount < 5) {
         const defaultEntitlements = [
           {
@@ -142,10 +111,10 @@ export async function ensureDatabaseTables(): Promise<DbSyncResult> {
         ];
 
         for (const de of defaultEntitlements) {
-          await prisma.featureEntitlement.upsert({
-            where: { featureCode: de.featureCode },
-            update: { minTier: de.minTier },
+          await prisma.orm.public.FeatureEntitlement.upsert({
             create: de,
+            update: { minTier: de.minTier },
+            conflictOn: { featureCode: de.featureCode },
           });
         }
       }
@@ -214,26 +183,25 @@ export async function ensureDatabaseTables(): Promise<DbSyncResult> {
 
         for (const dp of defaultPlans) {
           const { prices, ...planData } = dp;
-          const plan = await prisma.plan.upsert({
-            where: { code: planData.code },
-            update: planData,
+          const plan = await prisma.orm.public.Plan.upsert({
             create: planData,
+            update: planData,
+            conflictOn: { code: planData.code },
           });
 
           for (const pr of prices) {
-            const existingPrice = await prisma.planPrice.findFirst({
-              where: { planId: plan.id, billingInterval: pr.billingInterval },
-            });
+            const existingPrice = await prisma.orm.public.PlanPrice.where({
+              planId: plan.id,
+              billingInterval: pr.billingInterval,
+            }).first();
             if (!existingPrice) {
-              await prisma.planPrice.create({
-                data: {
-                  planId: plan.id,
-                  billingInterval: pr.billingInterval,
-                  amountRupees: pr.amountRupees,
-                  currency: "INR",
-                  discountPercent: pr.discountPercent,
-                  isActive: true,
-                },
+              await prisma.orm.public.PlanPrice.create({
+                planId: plan.id,
+                billingInterval: pr.billingInterval,
+                amountRupees: pr.amountRupees,
+                currency: "INR",
+                discountPercent: pr.discountPercent,
+                isActive: true,
               });
             }
           }

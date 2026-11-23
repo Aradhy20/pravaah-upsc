@@ -23,13 +23,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const question = await prisma.question.findUnique({
-      where: { id: questionId },
-      include: {
-        options: true,
-        explanation: true,
-      },
-    });
+    const question = await prisma.orm.public.Question
+      .include("options")
+      .include("explanation")
+      .first({ id: questionId });
 
     if (!question) {
       return NextResponse.json(
@@ -49,51 +46,45 @@ export async function POST(request: NextRequest) {
     const isCorrect = selectedOption.toUpperCase() === correctOption.toUpperCase();
 
     // 1. Record Attempt
-    await prisma.userAttempt.create({
-      data: {
-        userId: user.id,
-        questionId: question.id,
-        selectedOption: selectedOption.toUpperCase(),
-        isCorrect,
-        timeSpentSeconds,
-        mode: "LEARN",
-      },
+    await prisma.orm.public.UserAttempt.create({
+      userId: user.id,
+      questionId: question.id,
+      selectedOption: selectedOption.toUpperCase(),
+      isCorrect,
+      timeSpentSeconds,
+      mode: "LEARN",
     });
 
     // 2. If incorrect, add or update in ReviewSchedule (Mistake Queue)
     if (!isCorrect) {
-      await prisma.reviewSchedule.upsert({
-        where: {
-          userId_questionId: {
-            userId: user.id,
-            questionId: question.id,
-          },
-        },
-        update: {
-          repetitionCount: { increment: 1 },
+      const existingSchedule = await prisma.orm.public.ReviewSchedule
+        .where({ userId: user.id, questionId: question.id })
+        .first();
+      if (existingSchedule) {
+        await prisma.orm.public.ReviewSchedule.where({ id: existingSchedule.id }).update({
+          repetitionCount: existingSchedule.repetitionCount + 1,
           isResolved: false,
           nextReviewDate: new Date(Date.now() + 86400000), // Next review in 24 hours
-        },
-        create: {
+        });
+      } else {
+        await prisma.orm.public.ReviewSchedule.create({
           userId: user.id,
           questionId: question.id,
           repetitionCount: 1,
           intervalDays: 1,
           nextReviewDate: new Date(Date.now() + 86400000),
           isResolved: false,
-        },
-      });
+        });
+      }
     }
 
     // 3. Record Study Activity
-    await prisma.studyActivity.create({
-      data: {
-        userId: user.id,
-        activityType: "mcq_attempted",
-        label: `Solved Q.${question.questionNumber} (${question.year})`,
-        refId: question.id,
-        durationSeconds: timeSpentSeconds,
-      },
+    await prisma.orm.public.StudyActivity.create({
+      userId: user.id,
+      activityType: "mcq_attempted",
+      label: `Solved Q.${question.questionNumber} (${question.year})`,
+      refId: question.id,
+      durationSeconds: timeSpentSeconds,
     });
 
     return NextResponse.json({

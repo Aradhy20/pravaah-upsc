@@ -29,11 +29,11 @@ export async function GET(request: NextRequest) {
     // Fetch user payment history with resilient error guard
     let payments: any[] = [];
     try {
-      payments = await prisma.paymentRecord.findMany({
-        where: { userId: user.id },
-        orderBy: { createdAt: "desc" },
-        take: 10,
-      });
+      payments = await prisma.orm.public.PaymentRecord
+        .where({ userId: user.id })
+        .orderBy((p) => p.createdAt.desc())
+        .limit(10)
+        .all();
     } catch (paymentErr: any) {
       console.warn("Could not query payment records:", paymentErr.message);
     }

@@ -193,7 +193,7 @@ export async function GET(request: NextRequest) {
         count: items.length,
         instances: items.slice(0, 5),
       }))
-      .sort((a, b) => b.count - a.count);
+      .sort((a: any, b: any) => b.count - a.count);
 
     // Ingestion pipeline status
     const ingestionPipelineHealth = {
@@ -256,7 +256,7 @@ export async function GET(request: NextRequest) {
       availableFilters: {
         exams: allExams,
         papers: allPapers,
-        years: Array.from(new Set(allQuestions.map((q) => q.year))).sort((a, b) => b - a),
+        years: Array.from(new Set(allQuestions.map((q) => q.year))).sort((a: any, b: any) => b - a),
       },
     });
   } catch (error: any) {

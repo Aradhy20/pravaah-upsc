@@ -22,21 +22,12 @@ const FALLBACK_FEATURE_ENTITLEMENTS: Record<string, { minTier: number; name: str
  */
 export async function getUserSubscription(userId: string) {
   try {
-    const activeSub = await prisma.subscription.findFirst({
-      where: {
-        userId,
-        status: "ACTIVE",
-        currentPeriodEnd: { gte: new Date() },
-      },
-      include: {
-        plan: {
-          include: {
-            features: true,
-          },
-        },
-      },
-      orderBy: { currentPeriodEnd: "desc" },
-    });
+    const activeSub = await prisma.orm.public.Subscription
+      .where({ userId, status: "ACTIVE" })
+      .where((s) => s.currentPeriodEnd.gte(new Date()))
+      .include("plan", (plan) => plan.include("features"))
+      .orderBy((s) => s.currentPeriodEnd.desc())
+      .first();
 
     if (activeSub) {
       return {
@@ -53,10 +44,7 @@ export async function getUserSubscription(userId: string) {
 
   // Fallback to Free Plan
   try {
-    const freePlan = await prisma.plan.findUnique({
-      where: { code: "FREE" },
-      include: { features: true },
-    });
+    const freePlan = await prisma.orm.public.Plan.include("features").where({ code: "FREE" }).first();
 
     return {
       isPaid: false,
@@ -101,9 +89,7 @@ export async function checkEntitlement(
   }
 
   try {
-    const dbEntitlement = await prisma.featureEntitlement.findUnique({
-      where: { featureCode },
-    });
+    const dbEntitlement = await prisma.orm.public.FeatureEntitlement.where({ featureCode }).first();
     if (dbEntitlement) {
       entitlement = dbEntitlement;
     }
@@ -150,12 +136,10 @@ export async function checkQuota(
     return { allowed: true, maxAllowed: null };
   }
 
-  const planFeature = await prisma.planFeature.findFirst({
-    where: {
-      plan: { code: subInfo.planCode },
-      featureCode,
-    },
-  });
+  const plan = await prisma.orm.public.Plan.where({ code: subInfo.planCode }).first();
+  const planFeature = plan
+    ? await prisma.orm.public.PlanFeature.where({ planId: plan.id, featureCode }).first()
+    : null;
 
   const limitValue = planFeature?.limitValue ?? (featureCode === "BOOKMARKS_LIMIT" ? 5 : 3);
   return {

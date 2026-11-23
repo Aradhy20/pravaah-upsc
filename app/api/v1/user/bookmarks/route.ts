@@ -8,26 +8,17 @@ export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   try {
     const user = await getCurrentUser(request);
-    const bookmarks = await prisma.bookmark.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: "desc" },
-      include: {
-        question: {
-          include: {
-            paper: true,
-            options: { orderBy: { optionCode: "asc" } },
-            explanation: true,
-            topics: {
-              include: {
-                topic: {
-                  include: { subject: true },
-                },
-              },
-            },
-          },
-        },
-      },
-    });
+    const bookmarks = await prisma.orm.public.Bookmark
+      .where({ userId: user.id })
+      .include("question", (question) =>
+        question
+          .include("paper")
+          .include("options", (o) => o.orderBy((opt) => opt.optionCode.asc()))
+          .include("explanation")
+          .include("topics", (ts) => ts.include("topic", (tp) => tp.include("subject"))),
+      )
+      .orderBy((b) => b.createdAt.desc())
+      .all();
 
     const data = bookmarks.map((b) => ({
       bookmarkId: b.id,
@@ -81,25 +72,21 @@ export async function POST(request: NextRequest) {
     }
 
     // Toggle bookmark
-    const existing = await prisma.bookmark.findUnique({
-      where: {
-        userId_questionId: {
-          userId: user.id,
-          questionId,
-        },
-      },
-    });
+    const existing = await prisma.orm.public.Bookmark
+      .where({ userId: user.id, questionId })
+      .first();
 
     if (existing) {
-      await prisma.bookmark.delete({
-        where: { id: existing.id },
-      });
+      await prisma.orm.public.Bookmark.where({ id: existing.id }).delete();
       return NextResponse.json({
         success: true,
         data: { questionId, bookmarked: false },
       });
     } else {
-      const currentCount = await prisma.bookmark.count({ where: { userId: user.id } });
+      const currentCount = await prisma.orm.public.Bookmark
+        .where({ userId: user.id })
+        .aggregate((a) => ({ n: a.count() }))
+        .then((r) => r.n);
       const quota = await checkQuota(user.id, "BOOKMARKS_LIMIT", currentCount);
       if (!quota.allowed) {
         return NextResponse.json(
@@ -115,12 +102,10 @@ export async function POST(request: NextRequest) {
         );
       }
 
-      const created = await prisma.bookmark.create({
-        data: {
-          userId: user.id,
-          questionId,
-          folderTag,
-        },
+      const created = await prisma.orm.public.Bookmark.create({
+        userId: user.id,
+        questionId,
+        folderTag,
       });
       return NextResponse.json({
         success: true,

@@ -8,22 +8,15 @@ export const dynamic = "force-dynamic";
 export async function GET(request: NextRequest) {
   try {
     const user = await getCurrentUser(request);
-    const notes = await prisma.userNote.findMany({
-      where: { userId: user.id },
-      orderBy: { updatedAt: "desc" },
-      include: {
-        question: {
-          include: {
-            paper: true,
-            topics: {
-              include: {
-                topic: { include: { subject: true } },
-              },
-            },
-          },
-        },
-      },
-    });
+    const notes = await prisma.orm.public.UserNote
+      .where({ userId: user.id })
+      .include("question", (question) =>
+        question
+          .include("paper")
+          .include("topics", (ts) => ts.include("topic", (tp) => tp.include("subject"))),
+      )
+      .orderBy((n) => n.updatedAt.desc())
+      .all();
 
     const data = notes.map((n) => ({
       id: n.id,
@@ -63,17 +56,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const existing = await prisma.userNote.findUnique({
-      where: {
-        userId_questionId: {
-          userId: user.id,
-          questionId,
-        },
-      },
-    });
+    const existing = await prisma.orm.public.UserNote
+      .where({ userId: user.id, questionId })
+      .first();
 
     if (!existing) {
-      const currentCount = await prisma.userNote.count({ where: { userId: user.id } });
+      const currentCount = await prisma.orm.public.UserNote
+        .where({ userId: user.id })
+        .aggregate((a) => ({ n: a.count() }))
+        .then((r) => r.n);
       const quota = await checkQuota(user.id, "NOTES_LIMIT", currentCount);
       if (!quota.allowed) {
         return NextResponse.json(
@@ -90,13 +81,8 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    const note = await prisma.userNote.upsert({
-      where: {
-        userId_questionId: {
-          userId: user.id,
-          questionId,
-        },
-      },
+    const note = await prisma.orm.public.UserNote.upsert({
+      conflictOn: { userId: user.id, questionId },
       update: {
         content,
         updatedAt: new Date(),

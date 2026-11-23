@@ -1,4 +1,5 @@
 import { prisma } from "./prisma";
+import service from "../service.mjs";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 import crypto from "crypto";
@@ -14,7 +15,16 @@ export interface CurrentUser {
 
 export const COOKIE_USER_ID = "pravaah_user_id";
 
-const AUTH_SECRET = process.env.AUTH_SECRET || "pravaah_auth_secret_token_2026_super_secure_key";
+let cachedAuthSecret: string | undefined;
+
+/** The AUTH_SECRET service input, read at request time. */
+export function authSecret(): string {
+  if (!cachedAuthSecret) {
+    // `service.input()` is read at request time, never at module scope.
+    cachedAuthSecret = service.input().AUTH_SECRET.expose();
+  }
+  return cachedAuthSecret;
+}
 
 /**
  * Sign a session token with HMAC-SHA256
@@ -22,7 +32,7 @@ const AUTH_SECRET = process.env.AUTH_SECRET || "pravaah_auth_secret_token_2026_s
 export function signSessionToken(userId: string): string {
   const timestamp = Date.now();
   const payload = `${userId}:${timestamp}`;
-  const signature = crypto.createHmac("sha256", AUTH_SECRET).update(payload).digest("hex");
+  const signature = crypto.createHmac("sha256", authSecret()).update(payload).digest("hex");
   return `${payload}:${signature}`;
 }
 
@@ -41,7 +51,7 @@ export function verifySessionToken(token: string): string | null {
       return null;
     }
     const expectedSig = crypto
-      .createHmac("sha256", AUTH_SECRET)
+      .createHmac("sha256", authSecret())
       .update(`${userId}:${timestampStr}`)
       .digest("hex");
     if (signature.length === expectedSig.length && crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSig))) {
@@ -109,10 +119,7 @@ export async function getAuthenticatedUser(request?: NextRequest): Promise<Curre
   }
 
   try {
-    const user = await prisma.user.findUnique({
-      where: { id: userId },
-      include: { role: true },
-    });
+    const user = await prisma.orm.public.User.include("role").first({ id: userId });
 
     if (!user) {
       return null;
@@ -147,10 +154,7 @@ export async function getCurrentUser(
   if (options.allowDemoFallback) {
     // Fallback to default demo aspirant for frictionless evaluation
     try {
-      const defaultAspirant = await prisma.user.findUnique({
-        where: { email: "aspirant@pravaah.in" },
-        include: { role: true },
-      });
+      const defaultAspirant = await prisma.orm.public.User.include("role").where({ email: "aspirant@pravaah.in" }).first();
 
       if (defaultAspirant) {
         return {

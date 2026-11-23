@@ -18,24 +18,15 @@ export default async function DirectPaperPage({ params }: DirectPaperPageProps) 
   const paperSlug = params.paper.toLowerCase();
   const paperCode = paperSlug.includes("2") || paperSlug.includes("csat") ? "GS2" : "GS1";
 
-  const questions = await prisma.question.findMany({
-    where: {
-      year,
-      paper: { code: paperCode },
-      status: "PUBLISHED",
-    },
-    orderBy: { questionNumber: "asc" },
-    include: {
-      paper: true,
-      options: { orderBy: { optionCode: "asc" } },
-      explanation: true,
-      topics: {
-        include: {
-          topic: { include: { subject: true } },
-        },
-      },
-    },
-  });
+  const questions = await prisma.orm.public.Question
+    .where({ year, status: "PUBLISHED" })
+    .where((q) => q.paper.code.eq(paperCode))
+    .include("paper")
+    .include("options", (o) => o.orderBy((opt) => opt.optionCode.asc()))
+    .include("explanation")
+    .include("topics", (t) => t.include("topic", (tp) => tp.include("subject")))
+    .orderBy((q) => q.questionNumber.asc())
+    .all();
 
   const formatted = questions.map((q) => ({
     id: q.id,

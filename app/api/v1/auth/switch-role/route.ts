@@ -22,10 +22,7 @@ export async function POST(request: NextRequest) {
     const targetRole = body.role === "ADMIN" ? "ADMIN" : "ASPIRANT";
 
     const targetEmail = targetRole === "ADMIN" ? "admin@pravaah.in" : "aspirant@pravaah.in";
-    const user = await prisma.user.findUnique({
-      where: { email: targetEmail },
-      include: { role: true },
-    });
+    const user = await prisma.orm.public.User.include("role").where({ email: targetEmail }).first();
 
     if (!user) {
       return NextResponse.json(
