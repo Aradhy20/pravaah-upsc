@@ -27,6 +27,8 @@
 *.sqlite3
 *.db-journal
 data/backups/*.db
+data/backup/*.json
+data/corpus_starter_kit/downloaded_pdfs/*.pdf
 
 # Vercel
 .vercel

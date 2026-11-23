@@ -1,0 +1,62 @@
+{
+  "dataset_name": "UPSC All-Exam Source-Backed Corpus Starter Kit",
+  "snapshot_date": "2026-11-23",
+  "scope": "All UPSC examination families represented in the official Previous Exam Details registry; current historic snapshot years 2012-2027. Future notices are not PYQs.",
+  "official_registry": {
+    "url": "https://cms.upsc.gov.in/previous-exam-details/",
+    "exam_records": 240,
+    "question_paper_pdf_items": 2101,
+    "total_document_items": 2478,
+    "unique_pdf_urls": 2457,
+    "answer_key_typed_records": 10
+  },
+  "third_party_answer_key_discovery": {
+    "url": "https://parikshaindex.com/upsc/answer-key/",
+    "claimed_documents": 615,
+    "year_range": "2011-2026",
+    "authority": "Independent discovery index only; not an official source of truth"
+  },
+  "local_database_snapshot": {
+    "sources": 5,
+    "exams": 1,
+    "documents": 4,
+    "questions": 0,
+    "answer_keys": 0,
+    "explanations": 0,
+    "practice_questions": 0
+  },
+  "important_limitations": [
+    "The local environment had no outbound DNS/network access, so the full 240-exam / 2,478-document live registry sync could not be run into the SQLite file.",
+    "The SQLite file is a seed database. Run upsc_corpus_builder.py sync on a networked machine to fill the full source document index.",
+    "No question text, options, answer letters, or explanations have been fabricated or inserted as official PYQs.",
+    "PDF extraction output is a candidate only and requires human review before publication.",
+    "Official answer-key records are incomplete in the registry; answer-key PDFs must be retrieved, matched to the exam/paper/test series, and checked manually.",
+    "Generated practice questions belong in practice_questions and must never be counted as official PYQs."
+  ],
+  "seed_documents": [
+    {
+      "document_id": "CSE-PRE-2024-GS1-QP",
+      "kind": "official_question_paper",
+      "status": "listed_in_official_previous_exam_registry",
+      "url": "https://www.upsc.gov.in/uploads/2026/07/general-studies-paper-i-4-1.pdf"
+    },
+    {
+      "document_id": "CSE-PRE-2024-CSAT-QP",
+      "kind": "official_question_paper",
+      "status": "listed_in_official_previous_exam_registry",
+      "url": "https://www.upsc.gov.in/uploads/2026/07/general-studies-paper-ii-4-1.pdf"
+    },
+    {
+      "document_id": "CSE-PRE-2024-GS1-AK",
+      "kind": "answer_key_reference",
+      "status": "third_party_index_lists_upsc_hosted_url_direct_fetch_404_on_snapshot_date",
+      "url": "https://www.upsc.gov.in/sites/default/files/AnsKey-CivilServicesPExam-2024-GeneralStudies-I-210525.pdf"
+    },
+    {
+      "document_id": "CSE-PRE-2024-CSAT-AK",
+      "kind": "answer_key_reference",
+      "status": "third_party_index_lists_upsc_hosted_url_direct_fetch_404_on_snapshot_date",
+      "url": "https://www.upsc.gov.in/sites/default/files/AnsKey-CivilServicesPExam-2024-GeneralStudies-II-210525.pdf"
+    }
+  ]
+}

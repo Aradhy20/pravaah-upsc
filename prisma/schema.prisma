@@ -194,6 +194,10 @@ model Question {
   mistakeClassifications UserMistakeClassification[]
   verificationStatus     String                      @default("OFFICIALLY_VERIFIED") // OFFICIALLY_VERIFIED, INDEPENDENTLY_CORROBORATED, EXPERT_REVIEWED, PENDING_VERIFICATION, DISPUTED
   examCategory           String                      @default("CSE") // CSE, CDS, NDA, CAPF, EPFO, ESE
+  contentLabel           String                      @default("OFFICIAL_UPSC_PYQ") // OFFICIAL_UPSC_PYQ, TEACHER_VERIFIED_CONTENT, AI_GENERATED_EXPLANATION, GENERATED_PRACTICE_NOT_OFFICIAL_PYQ
+  corpusDocumentId       String?
+  corpusDocument         CorpusDocument?             @relation(fields: [corpusDocumentId], references: [id], onDelete: SetNull)
+  bookletSeries          String?
   createdAt              DateTime                    @default(now())
   updatedAt              DateTime                    @updatedAt
 
@@ -1405,5 +1409,128 @@ model UserPackPurchase {
 
   @@index([userId, status, expiresAt])
 }
+
+// ==========================================
+// UPSC ALL-EXAMS CORPUS REPOSITORY
+// ==========================================
+
+model CorpusSource {
+  id            String           @id // matches source_id e.g. upsc_official_registry
+  sourceName    String
+  sourceKind    String
+  authority     String           @default("UPSC")
+  url           String
+  lastChecked   String?
+  observedCount String?
+  note          String?
+  exams         CorpusExam[]
+  documents     CorpusDocument[]
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+}
+
+model CorpusExam {
+  id             String           @id // matches exam_id e.g. cse_prelims_2024
+  examName       String
+  year           Int
+  examFamily     String           // "CSE", "CDS", "NDA", "IFOS", "CAPF", "CMS", "ESE", "CGS", "IES_ISS", "CISF_LDCE", "OTHER"
+  sourceId       String?
+  source         CorpusSource?    @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  registryStatus String?
+  documents      CorpusDocument[]
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+
+  @@index([examFamily, year])
+  @@index([year])
+}
+
+model CorpusDocument {
+  id                 String               @id // matches document_id
+  examId             String?
+  exam               CorpusExam?          @relation(fields: [examId], references: [id], onDelete: SetNull)
+  examName           String
+  year               Int
+  paper              String
+  documentType       String               // "Question Paper", "Answer Key", "Cut-off Marks", etc.
+  authority          String               @default("UPSC")
+  sourceUrl          String
+  uploaded           String?
+  fileSize           String?
+  verificationStatus String               @default("OFFICIAL_REGISTRY_VERIFIED")
+  sourceRef          String?
+  localPath          String?
+  fileHashSha256     String?
+  extractionStatus   String               @default("NOT_EXTRACTED") // "NOT_EXTRACTED", "EXTRACTED", "NEEDS_OCR", "FAILED"
+  note               String?
+  sourceId           String?
+  source             CorpusSource?        @relation(fields: [sourceId], references: [id], onDelete: SetNull)
+  pages              CorpusDocumentPage[]
+  questions          Question[]
+  createdAt          DateTime             @default(now())
+  updatedAt          DateTime             @updatedAt
+
+  @@index([examId, documentType])
+  @@index([year, documentType])
+  @@index([extractionStatus])
+}
+
+model CorpusDocumentPage {
+  id                String         @id @default(cuid())
+  documentId        String
+  document          CorpusDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  pageNumber        Int
+  pageText          String         @db.Text
+  extractionQuality String         @default("USABLE_TEXT") // "USABLE_TEXT", "LOW_TEXT_NEEDS_OCR", "EMPTY"
+  characterCount    Int            @default(0)
+  hasHindi          Boolean        @default(false)
+  hasEnglish        Boolean        @default(true)
+  createdAt         DateTime       @default(now())
+
+  @@unique([documentId, pageNumber])
+  @@index([documentId])
+}
+
+model GeneratedPracticeQuestion {
+  id              String   @id @default(cuid())
+  practiceId      String   @unique
+  examFamily      String   @default("CSE")
+  syllabusSubject String
+  syllabusTopic   String?
+  difficulty      String   @default("MEDIUM")
+  questionText    String   @db.Text
+  optionA         String   @db.Text
+  optionB         String   @db.Text
+  optionC         String   @db.Text
+  optionD         String   @db.Text
+  answerLetter    String
+  explanation     String   @db.Text
+  generationModel String?
+  generatedAt     String?
+  reviewStatus    String   @default("UNVERIFIED_PRACTICE")
+  contentLabel    String   @default("GENERATED_PRACTICE_NOT_OFFICIAL_PYQ")
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  @@index([syllabusSubject, difficulty])
+  @@index([contentLabel])
+}
+
+model CorpusIngestionJob {
+  id              String    @id @default(cuid())
+  runId           String    @unique
+  action          String    // SYNC_REGISTRY, BATCH_DOWNLOAD, TEXT_EXTRACTION, QUESTION_STAGING, ANSWER_KEY_IMPORT, PRACTICE_IMPORT
+  startedAt       DateTime  @default(now())
+  finishedAt      DateTime?
+  recordsSeen     Int       @default(0)
+  recordsAdded    Int       @default(0)
+  errors          Int       @default(0)
+  status          String    @default("COMPLETED") // RUNNING, COMPLETED, FAILED
+  note            String?   @db.Text
+  createdAt       DateTime  @default(now())
+
+  @@index([action, status])
+}
+
 
 
