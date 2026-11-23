@@ -46,6 +46,11 @@ model User {
   topicProgress     UserTopicProgress[]
   mistakes          UserMistakeClassification[]
   supportTickets    SupportTicket[]
+  usageLedger       UserUsageLedger?
+  couponRedemptions CouponRedemption[]
+  referralsMade     Referral[]                  @relation("ReferrerRelation")
+  referralReceived  Referral?                   @relation("ReferredRelation")
+  packPurchases     UserPackPurchase[]
   createdAt         DateTime                    @default(now())
   updatedAt         DateTime                    @updatedAt
 }
@@ -1299,4 +1304,106 @@ model MapFeature {
 
   @@index([category, stateOrCountry])
 }
+
+model UserUsageLedger {
+  id                    String    @id @default(cuid())
+  userId                String    @unique
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  periodStart           DateTime  @default(now())
+  periodEnd             DateTime
+  aiMentorMessagesUsed  Int       @default(0)
+  aiMentorMessagesLimit Int       @default(0)
+  mainsEvaluationsUsed  Int       @default(0)
+  mainsEvaluationsLimit Int       @default(0)
+  pyqAttemptsToday      Int       @default(0)
+  pyqDailyLimit         Int       @default(15)
+  lastPyqAttemptDate    DateTime?
+  createdAt             DateTime  @default(now())
+  updatedAt             DateTime  @updatedAt
+
+  @@index([userId, periodEnd])
+}
+
+model Coupon {
+  id                 String             @id @default(cuid())
+  code               String             @unique
+  description        String?
+  discountType       String             // "PERCENTAGE" or "FIXED"
+  discountValue      Float              // e.g. 20 (for 20%) or 100 (for ₹100 off)
+  maxRedemptions     Int                @default(100)
+  currentRedemptions Int                @default(0)
+  validFrom          DateTime           @default(now())
+  validUntil         DateTime
+  eligiblePlans      String?            // comma-separated e.g. "PLUS,PRO,ELITE"
+  minOrderValue      Float              @default(0)
+  isActive           Boolean            @default(true)
+  redemptions        CouponRedemption[]
+  createdAt          DateTime           @default(now())
+  updatedAt          DateTime           @updatedAt
+
+  @@index([code, isActive])
+}
+
+model CouponRedemption {
+  id             String   @id @default(cuid())
+  couponId       String
+  coupon         Coupon   @relation(fields: [couponId], references: [id], onDelete: Cascade)
+  userId         String
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  orderId        String?
+  discountAmount Float
+  redeemedAt     DateTime @default(now())
+
+  @@index([couponId, userId])
+}
+
+model Referral {
+  id             String   @id @default(cuid())
+  referrerUserId String
+  referrer       User     @relation("ReferrerRelation", fields: [referrerUserId], references: [id], onDelete: Cascade)
+  referredUserId String?  @unique
+  referredUser   User?    @relation("ReferredRelation", fields: [referredUserId], references: [id], onDelete: SetNull)
+  referralCode   String   @unique
+  status         String   @default("PENDING") // "PENDING", "QUALIFIED", "REWARDED"
+  rewardPoints   Int      @default(0)
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  @@index([referrerUserId, status])
+}
+
+model SpecializedPack {
+  id              String             @id @default(cuid())
+  code            String             @unique // "CSAT_INTENSIVE", "MAINS_EVAL_PACK", "INTERVIEW_PREP", "MOCK_SERIES_ADV", "CURRENT_AFFAIRS_REV"
+  name            String
+  nameHi          String?
+  tagline         String
+  category        String             // "CSAT", "MAINS", "INTERVIEW", "MOCK", "CURRENT_AFFAIRS"
+  priceRupees     Float
+  featuresJson    String             // JSON string of feature list
+  creditsIncluded Int                @default(0) // e.g. 10 evaluations
+  validityDays    Int                @default(365)
+  isActive        Boolean            @default(true)
+  purchases       UserPackPurchase[]
+  createdAt       DateTime           @default(now())
+  updatedAt       DateTime           @updatedAt
+
+  @@index([category, isActive])
+}
+
+model UserPackPurchase {
+  id               String          @id @default(cuid())
+  userId           String
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packId           String
+  pack             SpecializedPack @relation(fields: [packId], references: [id], onDelete: Cascade)
+  purchasePrice    Float
+  status           String          @default("ACTIVE") // "ACTIVE", "EXPIRED", "REFUNDED"
+  creditsRemaining Int             @default(0)
+  expiresAt        DateTime
+  createdAt        DateTime        @default(now())
+
+  @@index([userId, status, expiresAt])
+}
+
 

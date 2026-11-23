@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthenticatedUser } from "@/lib/auth";
 import { RAGEngine } from "@/lib/services/rag-engine";
+import { checkAiCreditAllowance, deductAiCredit } from "@/lib/entitlements";
 
 export const dynamic = "force-dynamic";
 
@@ -24,6 +25,22 @@ export async function POST(request: NextRequest) {
     let recentAccuracy = 0;
 
     if (user) {
+      // Check AI Mentor credit allowance
+      const creditCheck = await checkAiCreditAllowance(user.id, "AI_MENTOR");
+      if (!creditCheck.allowed) {
+        return NextResponse.json(
+          {
+            success: false,
+            error: "AI_LIMIT_REACHED",
+            message:
+              "You have reached your included Pravaah AI Personal Mentor allowance for this billing period. Upgrade to Aspirant Pro (100 messages/mo) or Aspirant Elite (300 messages/mo).",
+            usage: creditCheck,
+          },
+          { status: 403 }
+        );
+      }
+      await deductAiCredit(user.id, "AI_MENTOR");
+
       profile = await prisma.userProfile.findUnique({ where: { userId: user.id } });
       const attempts = await prisma.userAttempt.findMany({
         where: { userId: user.id },

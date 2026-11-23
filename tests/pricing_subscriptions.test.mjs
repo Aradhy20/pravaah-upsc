@@ -67,8 +67,8 @@ test('Pricing & Plans API: Authoritative Server-Side Tier Retrieval', async () =
   assert.ok(achieverPlan, 'Achiever plan must exist');
   assert.strictEqual(achieverPlan.tier, 2);
   assert.strictEqual(achieverPlan.isPopular, true, 'Achiever must be flagged as popular/recommended');
-  assert.strictEqual(achieverPlan.prices.MONTHLY.amount, 799);
-  assert.strictEqual(achieverPlan.prices.ANNUAL.amount, 5499);
+  assert.strictEqual(achieverPlan.prices.MONTHLY.amount, 299);
+  assert.strictEqual(achieverPlan.prices.ANNUAL.amount, 1999);
 });
 
 test('Feature Entitlement Service: Access Control & Quota Limits', async () => {

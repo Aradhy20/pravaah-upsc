@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthenticatedUser } from "@/lib/auth";
+import { checkAiCreditAllowance, deductAiCredit } from "@/lib/entitlements";
 
 export const dynamic = "force-dynamic";
 
@@ -53,6 +54,21 @@ export async function POST(request: NextRequest) {
           error: "Answer is too short for meaningful UPSC evaluation (minimum 30 words required).",
         },
         { status: 400 }
+      );
+    }
+
+    // Verify AI evaluation credits
+    const creditCheck = await checkAiCreditAllowance(user.id, "MAINS_EVALUATION");
+    if (!creditCheck.allowed) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "CREDIT_LIMIT_REACHED",
+          message:
+            "You have used all included Mains Answer Evaluation credits for this billing period. Upgrade to Aspirant Pro/Elite or purchase a specialized Mains Evaluation Pack.",
+          usage: creditCheck,
+        },
+        { status: 403 }
       );
     }
 
@@ -260,6 +276,9 @@ Provide your response in JSON format with this exact structure:
         isSubmitted: true,
       },
     });
+
+    // Deduct evaluation credit from student's ledger
+    await deductAiCredit(user.id, "MAINS_EVALUATION");
 
     return NextResponse.json({
       success: true,
