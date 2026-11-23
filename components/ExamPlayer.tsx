@@ -46,6 +46,7 @@ export function ExamPlayer({
   const [currentIndex, setCurrentIndex] = useState(0);
   const [answers, setAnswers] = useState<Record<string, string>>({}); // { questionId: "B" }
   const [markedForReview, setMarkedForReview] = useState<Record<string, boolean>>({});
+  const [timePerQuestion, setTimePerQuestion] = useState<Record<string, number>>({});
   const [secondsRemaining, setSecondsRemaining] = useState(durationMinutes * 60);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showSubmitModal, setShowSubmitModal] = useState(false);
@@ -63,6 +64,9 @@ export function ExamPlayer({
         }
         if (parsed.markedForReview && typeof parsed.markedForReview === "object") {
           setMarkedForReview(parsed.markedForReview);
+        }
+        if (parsed.timePerQuestion && typeof parsed.timePerQuestion === "object") {
+          setTimePerQuestion(parsed.timePerQuestion);
         }
         if (typeof parsed.secondsRemaining === "number" && parsed.secondsRemaining > 0) {
           const elapsed = parsed.savedAt ? Math.floor((Date.now() - parsed.savedAt) / 1000) : 0;
@@ -87,6 +91,7 @@ export function ExamPlayer({
         JSON.stringify({
           answers,
           markedForReview,
+          timePerQuestion,
           secondsRemaining,
           currentIndex,
           savedAt: Date.now(),
@@ -95,9 +100,9 @@ export function ExamPlayer({
     } catch (e) {
       // localStorage error fallback
     }
-  }, [sessionId, answers, markedForReview, secondsRemaining, currentIndex, scorecardResult]);
+  }, [sessionId, answers, markedForReview, timePerQuestion, secondsRemaining, currentIndex, scorecardResult]);
 
-  // Timer countdown
+  // Timer countdown and dynamic time-spent per question tracking
   useEffect(() => {
     if (scorecardResult || secondsRemaining <= 0) return;
     const interval = setInterval(() => {
@@ -109,9 +114,18 @@ export function ExamPlayer({
         }
         return prev - 1;
       });
+
+      // Track dynamic time spent per question
+      if (questions[currentIndex]?.id) {
+        const qId = questions[currentIndex].id;
+        setTimePerQuestion((prev) => ({
+          ...prev,
+          [qId]: (prev[qId] || 0) + 1,
+        }));
+      }
     }, 1000);
     return () => clearInterval(interval);
-  }, [secondsRemaining, scorecardResult]);
+  }, [secondsRemaining, scorecardResult, currentIndex, questions]);
 
   const formatTimer = (seconds: number) => {
     const h = Math.floor(seconds / 3600);
@@ -156,7 +170,7 @@ export function ExamPlayer({
       const responsePayload = questions.map((q) => ({
         questionId: q.id,
         selectedOption: answers[q.id] || null,
-        timeSpent: 45,
+        timeSpent: timePerQuestion[q.id] || 0,
       }));
 
       const res = await fetch("/api/v1/tests/session/submit", {
@@ -199,9 +213,24 @@ export function ExamPlayer({
         {/* Scorecard Hero Banner */}
         <div className="rounded-2xl border border-heritage-border bg-white p-6 sm:p-8 shadow-card">
           <div className="border-b border-heritage-border/60 pb-5">
-            <span className="rounded-full bg-heritage-cream px-3 py-1 text-xs font-bold text-heritage-burgundy border border-heritage-border">
-              Exam Complete • Official UPSC Marking
-            </span>
+            <div className="flex flex-wrap items-center gap-2">
+              <span className="rounded-full bg-heritage-cream px-3 py-1 text-xs font-bold text-heritage-burgundy border border-heritage-border">
+                Exam Complete • Official UPSC Marking
+              </span>
+              {paperCode === "GS2" && (
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-bold border ${
+                    sc.netScore >= 66
+                      ? "bg-emerald-50 text-emerald-800 border-emerald-300"
+                      : "bg-rose-50 text-rose-800 border-rose-300"
+                  }`}
+                >
+                  {sc.netScore >= 66
+                    ? "✓ CSAT Qualified (≥ 33% / 66 Marks)"
+                    : "⚠️ Below 33% Qualifying Cutoff (< 66 Marks)"}
+                </span>
+              )}
+            </div>
             <h1 className="font-serif mt-3 text-2xl sm:text-3xl font-bold text-heritage-text">
               {scorecardResult.testTitle}
             </h1>

@@ -250,6 +250,12 @@ Provide your response in JSON format with this exact structure:
       };
     }
 
+    if (evaluationData) {
+      evaluationData.examinerDisclaimer =
+        "Pravaah AI evaluation is an algorithmic diagnostic tool calibrated against official UPSC CSE rubrics (Intro, Body Dimensions, Empirical Evidence, Conclusion) to aid self-reflection. It does not replace human examiner subjectivity or guarantee UPSC marks.";
+      evaluationData.isAiGeneratedEvaluation = true;
+    }
+
     // Persist AI evaluation in MainsDraft
     await prisma.mainsDraft.upsert({
       where: {

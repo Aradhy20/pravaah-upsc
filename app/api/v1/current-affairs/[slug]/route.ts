@@ -8,10 +8,19 @@ export async function GET(
   { params }: { params: { slug: string } }
 ) {
   try {
-    const slug = params.slug;
+    const rawSlug = params?.slug;
+    if (!rawSlug) {
+      return NextResponse.json(
+        { success: false, error: "Story slug is required" },
+        { status: 400 }
+      );
+    }
+    const decodedSlug = decodeURIComponent(rawSlug);
 
-    const story = await prisma.currentAffairsStory.findUnique({
-      where: { slug },
+    const story = await prisma.currentAffairsStory.findFirst({
+      where: {
+        OR: [{ slug: decodedSlug }, { slug: rawSlug }],
+      },
       include: {
         topics: true,
         questionLinks: {

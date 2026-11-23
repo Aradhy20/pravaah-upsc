@@ -18,6 +18,8 @@ import {
   ShieldCheck,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 export default function MainsWorkspacePage() {
   const { language, t } = useLanguage();
@@ -186,6 +188,7 @@ export default function MainsWorkspacePage() {
 
   return (
     <div className="min-h-screen bg-heritage-ivory flex flex-col font-sans">
+      <Header />
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Banner */}
         <div className="bg-gradient-to-r from-heritage-wine via-heritage-burgundy to-heritage-wine rounded-2xl p-6 sm:p-10 text-white shadow-gold border border-heritage-gold/30 mb-8">
@@ -564,6 +567,7 @@ export default function MainsWorkspacePage() {
           </div>
         </div>
       </main>
+      <Footer />
     </div>
   );
 }
