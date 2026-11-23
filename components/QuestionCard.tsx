@@ -516,15 +516,22 @@ export function QuestionCard({
               </p>
             )}
 
-            {/* Statement Analysis */}
-            {question.explanation?.detailedExplanation && (
-              <div className="mt-2.5 text-xs text-slate-700 leading-relaxed space-y-1.5 border-t border-slate-200/60 pt-2.5">
+            {/* Statement Analysis (Bilingual Aware) */}
+            {question.explanation && (
+              <div className="mt-2.5 text-xs text-slate-700 leading-relaxed space-y-2 border-t border-slate-200/60 pt-2.5">
                 <p className="font-bold text-slate-900 uppercase tracking-wide text-[10px]">
                   Pedagogical Breakdown:
                 </p>
-                <p className="whitespace-pre-line">
-                  {question.explanation.detailedExplanation}
-                </p>
+                {(langMode === "EN" || langMode === "BOTH" || !question.explanation.explanationHi) && (
+                  <p className="whitespace-pre-line">
+                    {question.explanation.detailedExplanation}
+                  </p>
+                )}
+                {(langMode === "HI" || langMode === "BOTH") && question.explanation.explanationHi && (
+                  <p className={`whitespace-pre-line text-slate-800 ${langMode === "BOTH" ? "border-t border-slate-200/40 pt-2 font-medium" : ""}`}>
+                    {question.explanation.explanationHi}
+                  </p>
+                )}
               </div>
             )}
 

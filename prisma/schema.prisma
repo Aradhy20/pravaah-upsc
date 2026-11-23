@@ -148,6 +148,10 @@ model Question {
   questionText   String
   questionTextEn String?
   questionTextHi String?
+  questionFormat String?            @default("SINGLE_CHOICE") // SINGLE_CHOICE, MULTI_STATEMENT, MATCH_FOLLOWING, ASSERTION_REASONING, CHRONOLOGY, COMPREHENSION
+  translationStatus String            @default("TRANSLATION_MISSING") // ORIGINAL_SOURCE, HUMAN_VERIFIED, MACHINE_TRANSLATED_REVIEW_REQUIRED, TRANSLATION_MISSING
+  examStage      String             @default("PRELIMS") // PRELIMS, MAINS, INTERVIEW
+  sourceReference String?
   difficulty     String             @default("MEDIUM") // EASY, MEDIUM, HARD
   difficultyLevel String?           @default("MEDIUM")
   subjectId      String?
@@ -189,6 +193,41 @@ model Question {
   @@index([status])
 }
 
+model QuestionStagingRecord {
+  id                   String    @id @default(cuid())
+  importJobId          String?
+  sourceReference      String?   // Document URL, booklet code, or paper series
+  examCategory         String    @default("CSE") // CSE, CDS, NDA, etc.
+  examStage            String    @default("PRELIMS") // PRELIMS, MAINS
+  year                 Int
+  paperCode            String    // GS1, GS2
+  questionNumber       Int
+  questionFormat       String    @default("SINGLE_CHOICE") // SINGLE_CHOICE, MULTI_STATEMENT, MATCH_FOLLOWING, ASSERTION_REASONING, CHRONOLOGY, COMPREHENSION
+  questionTextEn       String
+  questionTextHi       String?
+  optionsJson          String    // JSON string of [{ code: "A", textEn: "...", textHi: "...", isCorrect: true }]
+  officialAnswer       String?   // A, B, C, D
+  explanationEn        String?
+  explanationHi        String?
+  sourceCitation       String?
+  subjectSlug          String?
+  topicSlug            String?
+  difficulty           String    @default("MEDIUM")
+  translationStatus    String    @default("TRANSLATION_MISSING") // ORIGINAL_SOURCE, HUMAN_VERIFIED, MACHINE_TRANSLATED_REVIEW_REQUIRED, TRANSLATION_MISSING
+  validationErrorsJson String?   // JSON array of detected validation issues
+  workflowStatus       String    @default("IMPORTED") // IMPORTED, EXTRACTION_COMPLETED, AWAITING_VERIFICATION, VERIFIED, APPROVED_FOR_PUBLICATION, PUBLISHED, REJECTED_OR_ARCHIVED
+  publishedQuestionId  String?   // Pointer to Question.id once promoted
+  reviewedBy           String?
+  reviewedAt           DateTime?
+  rejectionReason      String?
+  createdAt            DateTime  @default(now())
+  updatedAt            DateTime  @updatedAt
+
+  @@unique([paperCode, year, questionNumber, examCategory])
+  @@index([workflowStatus])
+  @@index([year, paperCode])
+}
+
 model QuestionOption {
   id           String       @id @default(cuid())
   questionId   String
@@ -198,6 +237,7 @@ model QuestionOption {
   optionText   String
   optionTextEn String?
   optionTextHi String?
+  translationStatus String?      @default("TRANSLATION_MISSING") // ORIGINAL_SOURCE, HUMAN_VERIFIED, MACHINE_TRANSLATED_REVIEW_REQUIRED, TRANSLATION_MISSING
   optionOrder  Int          @default(1)
   isCorrect    Boolean      @default(false)
   responses    UserResponse[]
@@ -217,6 +257,7 @@ model Explanation {
   relatedConcept       String?
   explanationEn        String?
   explanationHi        String?
+  translationStatus    String?   @default("ORIGINAL_SOURCE") // ORIGINAL_SOURCE, HUMAN_VERIFIED, MACHINE_TRANSLATED_REVIEW_REQUIRED, TRANSLATION_MISSING
   explanationSource    String?
   explanationType      String?   @default("PEDAGOGICAL")
   verifiedAt           DateTime?
@@ -783,6 +824,9 @@ model MainsQuestion {
   year              Int
   questionNumber    Int
   questionText      String
+  questionTextHi    String?
+  translationStatus String       @default("TRANSLATION_MISSING") // ORIGINAL_SOURCE, HUMAN_VERIFIED, MACHINE_TRANSLATED_REVIEW_REQUIRED, TRANSLATION_MISSING
+  sourceReference   String?
   marks             Int          @default(10) // 10 or 15 marks
   wordLimit         Int          @default(150) // 150 or 250 words
   theme             String       // e.g. "Modern History", "Governance", "Ethics Case Study"

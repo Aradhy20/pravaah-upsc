@@ -74,6 +74,8 @@ export async function GET(request: NextRequest) {
       ingestionAudits,
       importJobs,
       sources,
+      stagingStatusCounts,
+      bilingualQuestionsCount,
     ] = await Promise.all([
       prisma.question.count({ where }),
       prisma.question.findMany({
@@ -136,6 +138,11 @@ export async function GET(request: NextRequest) {
       prisma.knowledgeSource.findMany({
         select: { id: true, sourceName: true, canonicalUrl: true, reliabilityLevel: true },
       }),
+      prisma.questionStagingRecord.groupBy({
+        by: ["workflowStatus"],
+        _count: { _all: true },
+      }),
+      prisma.question.count({ where: { questionTextHi: { not: null } } }),
     ]);
 
     // Compute duplicate clusters and integrity checks
@@ -233,6 +240,12 @@ export async function GET(request: NextRequest) {
         missingSource,
         verifiedAnswersCount,
         unverifiedAnswersCount: totalQuestions - verifiedAnswersCount,
+        bilingualQuestionsCount,
+        englishQuestionsCount: totalQuestions,
+        stagingSummary: stagingStatusCounts.reduce((acc: any, curr: any) => {
+          acc[curr.workflowStatus] = curr._count._all;
+          return acc;
+        }, {}),
       },
       coverage: {
         paperDistribution: paperCounts,

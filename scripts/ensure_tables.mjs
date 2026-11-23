@@ -87,6 +87,97 @@ async function main() {
       console.log(`✅ Ensured tables. Newly created: ${created}. Total tables: ${existingTableNames.size}`);
     }
 
+    // 2b. Phase 3: Synchronize Question, Option, Explanation, MainsQuestion columns & QuestionStagingRecord table
+    try {
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS "QuestionStagingRecord" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "importJobId" TEXT,
+          "sourceReference" TEXT,
+          "examCategory" TEXT NOT NULL DEFAULT 'CSE',
+          "examStage" TEXT NOT NULL DEFAULT 'PRELIMS',
+          "year" INTEGER NOT NULL,
+          "paperCode" TEXT NOT NULL,
+          "questionNumber" INTEGER NOT NULL,
+          "questionFormat" TEXT NOT NULL DEFAULT 'SINGLE_CHOICE',
+          "questionTextEn" TEXT NOT NULL,
+          "questionTextHi" TEXT,
+          "optionsJson" TEXT NOT NULL,
+          "officialAnswer" TEXT,
+          "explanationEn" TEXT,
+          "explanationHi" TEXT,
+          "sourceCitation" TEXT,
+          "subjectSlug" TEXT,
+          "topicSlug" TEXT,
+          "difficulty" TEXT NOT NULL DEFAULT 'MEDIUM',
+          "translationStatus" TEXT NOT NULL DEFAULT 'TRANSLATION_MISSING',
+          "validationErrorsJson" TEXT,
+          "workflowStatus" TEXT NOT NULL DEFAULT 'IMPORTED',
+          "publishedQuestionId" TEXT,
+          "reviewedBy" TEXT,
+          "reviewedAt" TIMESTAMP(3),
+          "rejectionReason" TEXT,
+          "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE UNIQUE INDEX IF NOT EXISTS "QuestionStagingRecord_paperCode_year_questionNumber_examCategory_key"
+        ON "QuestionStagingRecord"("paperCode", "year", "questionNumber", "examCategory");
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE INDEX IF NOT EXISTS "QuestionStagingRecord_workflowStatus_idx"
+        ON "QuestionStagingRecord"("workflowStatus");
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE INDEX IF NOT EXISTS "QuestionStagingRecord_year_paperCode_idx"
+        ON "QuestionStagingRecord"("year", "paperCode");
+      `);
+
+      // Add columns to Question
+      await prisma.$executeRawUnsafe(`
+        ALTER TABLE "Question" 
+        ADD COLUMN IF NOT EXISTS "questionFormat" TEXT DEFAULT 'SINGLE_CHOICE',
+        ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING',
+        ADD COLUMN IF NOT EXISTS "examStage" TEXT DEFAULT 'PRELIMS',
+        ADD COLUMN IF NOT EXISTS "sourceReference" TEXT;
+      `);
+
+      // Add columns to QuestionOption
+      await prisma.$executeRawUnsafe(`
+        ALTER TABLE "QuestionOption" 
+        ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING';
+      `);
+
+      // Add columns to Explanation
+      await prisma.$executeRawUnsafe(`
+        ALTER TABLE "Explanation" 
+        ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'ORIGINAL_SOURCE';
+      `);
+
+      // Add columns to MainsQuestion
+      await prisma.$executeRawUnsafe(`
+        ALTER TABLE "MainsQuestion" 
+        ADD COLUMN IF NOT EXISTS "questionTextHi" TEXT,
+        ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING',
+        ADD COLUMN IF NOT EXISTS "sourceReference" TEXT;
+      `);
+
+      // Backfill translationStatus on Question
+      await prisma.$executeRawUnsafe(`
+        UPDATE "Question"
+        SET "translationStatus" = CASE 
+          WHEN "questionTextHi" IS NOT NULL AND length(trim("questionTextHi")) > 0 THEN 'HUMAN_VERIFIED'
+          ELSE 'TRANSLATION_MISSING'
+        END
+        WHERE "translationStatus" IS NULL OR "translationStatus" = 'TRANSLATION_MISSING';
+      `);
+
+      console.log("✅ Phase 3: Synchronized QuestionStagingRecord and schema columns.");
+    } catch (e) {
+      console.warn("⚠️ Phase 3 schema synchronization warning:", e.message);
+    }
+
     // 3. Ensure FeatureEntitlements exist
     try {
       const feCount = await prisma.featureEntitlement.count();
