@@ -1,17 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
-import { getCurrentUser } from "@/lib/auth";
+import { checkAdminAccess } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
-    const user = await getCurrentUser(request);
-    if (user.role !== "ADMIN") {
-      return NextResponse.json(
-        { success: false, error: { code: "FORBIDDEN", message: "Admin access required" } },
-        { status: 403 }
-      );
+    const auth = await checkAdminAccess(request);
+    if (!auth.authorized) {
+      return auth.response;
     }
 
     const [subscriptions, recentPayments, statusBreakdown] = await Promise.all([

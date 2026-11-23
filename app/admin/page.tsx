@@ -70,7 +70,7 @@ export default function AdminDashboardPage() {
             className="flex items-center gap-1.5 rounded-lg bg-emerald-600 px-3.5 py-2 text-xs font-bold text-white shadow-sm hover:bg-emerald-700"
           >
             <CreditCard className="h-4 w-4" />
-            <span>UPI Financial Ledger</span>
+            <span>Payment & Transaction Ledger</span>
           </a>
           <a
             href="/admin/ingestion"

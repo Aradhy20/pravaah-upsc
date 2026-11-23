@@ -143,7 +143,7 @@ test('External PYQ Pipeline (ExamGOAL, ExamSIDE & Human Peritus) Test Suite', as
       body: JSON.stringify({ action: 'DISCOVER' }),
     });
 
-    assert.strictEqual(res.status, 403, 'Unauthenticated request must receive 403 Forbidden');
+    assert.ok(res.status === 401 || res.status === 403, 'Unauthenticated request must receive 401 or 403');
   });
 
   // Test 6: Database Quality & Integrity Audit

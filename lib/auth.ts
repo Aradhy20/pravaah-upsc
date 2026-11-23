@@ -1,6 +1,6 @@
 import { prisma } from "./prisma";
 import { cookies } from "next/headers";
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import crypto from "crypto";
 
 export interface CurrentUser {
@@ -177,4 +177,63 @@ export async function getCurrentUser(
     googleId: null,
   };
 }
+
+/**
+ * Strict Server-Side Administrator Guard.
+ * NEVER allows demo fallback or guest fallback.
+ * Throws an error if not authenticated or not an administrator.
+ */
+export async function requireAdmin(request?: NextRequest): Promise<CurrentUser> {
+  const user = await getAuthenticatedUser(request);
+  if (!user) {
+    throw new Error("UNAUTHENTICATED");
+  }
+  if (user.role !== "ADMIN") {
+    throw new Error("FORBIDDEN");
+  }
+  return user;
+}
+
+/**
+ * Standardized Admin API route guard helper.
+ * Returns either { authorized: true, user } or { authorized: false, response: NextResponse }.
+ */
+export async function checkAdminAccess(request?: NextRequest): Promise<
+  | { authorized: true; user: CurrentUser }
+  | { authorized: false; response: NextResponse }
+> {
+  const user = await getAuthenticatedUser(request);
+  if (!user) {
+    return {
+      authorized: false,
+      response: NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "UNAUTHENTICATED",
+            message: "Authentication required to access administrator endpoints.",
+          },
+        },
+        { status: 401 }
+      ),
+    };
+  }
+  if (user.role !== "ADMIN") {
+    return {
+      authorized: false,
+      response: NextResponse.json(
+        {
+          success: false,
+          error: {
+            code: "FORBIDDEN",
+            message: "Administrative privileges required.",
+          },
+        },
+        { status: 403 }
+      ),
+    };
+  }
+  return { authorized: true, user };
+}
+
 

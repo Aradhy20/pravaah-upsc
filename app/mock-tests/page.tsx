@@ -19,11 +19,11 @@ const FALLBACK_TESTS: TestItem[] = [
   {
     id: "test-cse-2024-gs1",
     title: "UPSC CSE Prelims 2024 — GS Paper 1 Simulation",
-    description: "Official 2024 General Studies Paper 1 Series A simulation with live negative marking.",
+    description: "Official 2024 General Studies Paper 1 Series A questions with live negative marking.",
     year: 2024,
     paperCode: "GS1",
-    questionCount: 100,
-    durationMinutes: 120,
+    questionCount: 36,
+    durationMinutes: 60,
   },
   {
     id: "test-cse-2024-gs2",
@@ -31,44 +31,17 @@ const FALLBACK_TESTS: TestItem[] = [
     description: "Official 2024 CSAT Paper II Series A with comprehension and analytical reasoning.",
     year: 2024,
     paperCode: "GS2",
-    questionCount: 80,
-    durationMinutes: 120,
+    questionCount: 41,
+    durationMinutes: 60,
   },
   {
     id: "test-cse-2023-gs1",
-    title: "UPSC CSE Prelims 2023 — GS1 Full Paper",
-    description: "Official 2023 General Studies Paper 1 Series A simulation.",
+    title: "UPSC CSE Prelims 2023 — GS1 Curated Test",
+    description: "Official 2023 General Studies Paper 1 Series A curated questions.",
     year: 2023,
     paperCode: "GS1",
-    questionCount: 99,
-    durationMinutes: 120,
-  },
-  {
-    id: "test-cse-2023-gs2",
-    title: "UPSC CSE Prelims 2023 — CSAT Paper II",
-    description: "Official 2023 CSAT Paper II Series A simulation with 33% qualifying threshold.",
-    year: 2023,
-    paperCode: "GS2",
-    questionCount: 80,
-    durationMinutes: 120,
-  },
-  {
-    id: "test-cse-2022-gs1",
-    title: "UPSC CSE Prelims 2022 — GS1 Full Paper",
-    description: "Official 2022 General Studies Paper 1 Series A simulation.",
-    year: 2022,
-    paperCode: "GS1",
-    questionCount: 100,
-    durationMinutes: 120,
-  },
-  {
-    id: "test-cse-2022-gs2",
-    title: "UPSC CSE Prelims 2022 — CSAT Paper II",
-    description: "Official 2022 CSAT Paper II Series A simulation.",
-    year: 2022,
-    paperCode: "GS2",
-    questionCount: 80,
-    durationMinutes: 120,
+    questionCount: 5,
+    durationMinutes: 15,
   },
 ];
 
@@ -94,11 +67,37 @@ export default async function MockTestsPage() {
         description: t.description,
         year: t.year || 2024,
         paperCode: t.paper?.code || "GS1",
-        questionCount: t.questions?.length || t.paper?.totalQuestions || 100,
-        durationMinutes: t.paper?.durationMinutes || 120,
+        questionCount: t.questions?.length || 36,
+        durationMinutes: t.paper?.durationMinutes || 60,
       }));
     } else {
-      tests = FALLBACK_TESTS;
+      const gs1Count = await prisma.question.count({
+        where: { year: 2024, paper: { code: "GS1" }, status: "PUBLISHED" },
+      });
+      const gs2Count = await prisma.question.count({
+        where: { year: 2024, paper: { code: "GS2" }, status: "PUBLISHED" },
+      });
+
+      tests = [
+        {
+          id: "test-cse-2024-gs1",
+          title: "UPSC CSE Prelims 2024 — GS Paper 1 Simulation",
+          description: "Official 2024 General Studies Paper 1 Series A questions with live negative marking.",
+          year: 2024,
+          paperCode: "GS1",
+          questionCount: gs1Count || 36,
+          durationMinutes: 60,
+        },
+        {
+          id: "test-cse-2024-gs2",
+          title: "UPSC CSE Prelims 2024 — CSAT Paper II Simulation",
+          description: "Official 2024 CSAT Paper II Series A with comprehension and analytical reasoning.",
+          year: 2024,
+          paperCode: "GS2",
+          questionCount: gs2Count || 41,
+          durationMinutes: 60,
+        },
+      ];
     }
   } catch (err: any) {
     console.warn("Falling back to standard mock test catalogue:", err.message);

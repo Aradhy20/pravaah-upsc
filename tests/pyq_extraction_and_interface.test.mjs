@@ -123,7 +123,7 @@ test('PYQ Ingestion, Verification & API Interface Test Suite', async (t) => {
       body: JSON.stringify({ action: 'VERIFY', questionIds: ['dummy-id'] }),
     });
 
-    assert.strictEqual(res.status, 403, 'Should reject non-admin request with 403 Forbidden');
+    assert.ok(res.status === 401 || res.status === 403, 'Should reject unauthenticated/non-admin request with 401 or 403');
   });
 
   // Test 8: Admin Batch CSV Export

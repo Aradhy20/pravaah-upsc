@@ -68,83 +68,7 @@ export default function PricingPage() {
   }, []);
 
   const handleCheckout = async (plan: any) => {
-    if (plan.code === "FREE") {
-      alert("You are already eligible for the Aspirant Foundation Free plan.");
-      return;
-    }
-
-    try {
-      setCheckoutLoading(true);
-      setCheckoutSuccess(null);
-
-      // 1. Attempt Real-time UPI Payment Order Initiation
-      const upiRes = await fetch("/api/v1/payments/create-order", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          productType: "SUBSCRIPTION",
-          productId: plan.code,
-          billingInterval,
-        }),
-      });
-
-      const upiJson = await upiRes.json();
-      if (upiRes.ok && upiJson.success && upiJson.data?.orderId) {
-        window.location.href = `/checkout/${upiJson.data.orderId}`;
-        return;
-      }
-
-      // 2. Fallback to Sandbox Checkout
-      const checkoutRes = await fetch("/api/v1/billing/checkout", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          planCode: plan.code,
-          billingInterval,
-        }),
-      });
-
-      const checkoutJson = await checkoutRes.json();
-      if (!checkoutJson.success) {
-        alert(checkoutJson.error?.message || "Checkout failed");
-        setCheckoutLoading(false);
-        return;
-      }
-
-      const orderData = checkoutJson.data;
-
-      // 2. In Sandbox / Development mode, trigger immediate verified webhook activation
-      const webhookRes = await fetch("/api/v1/billing/webhook", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "x-pravaah-webhook-signature": "pravaah_webhook_dev_secret_2026",
-        },
-        body: JSON.stringify({
-          event: "payment.succeeded",
-          orderId: orderData.orderId,
-          planCode: plan.code,
-          billingInterval,
-          status: "SUCCESS",
-        }),
-      });
-
-      const webhookJson = await webhookRes.json();
-      if (webhookJson.success) {
-        setCheckoutSuccess(
-          `🎉 Congratulations! You have successfully upgraded to ${plan.name} (${billingInterval.toLowerCase()} billing). All premium examination features are now active!`
-        );
-        setSelectedPlanForCheckout(null);
-        await loadData();
-      } else {
-        alert("Payment confirmation failed in sandbox.");
-      }
-    } catch (e: any) {
-      console.error(e);
-      alert("Error processing checkout transaction.");
-    } finally {
-      setCheckoutLoading(false);
-    }
+    alert("Online payments are temporarily unavailable while our secure payment system is being configured. Please check back soon.");
   };
 
   const handleCancelSubscription = async () => {
@@ -279,6 +203,17 @@ export default function PricingPage() {
             </button>
           </div>
         </div>
+      </div>
+
+      {/* Temporary Payment System Migration Notice */}
+      <div className="mt-8 mx-auto max-w-3xl rounded-2xl border border-amber-200 bg-amber-50/90 p-4 shadow-sm text-center">
+        <div className="flex items-center justify-center gap-2 text-amber-900 font-semibold text-xs sm:text-sm">
+          <AlertCircle className="h-4 w-4 shrink-0 text-amber-600" />
+          <span>Online payments are temporarily unavailable while our secure payment system is being configured. Please check back soon.</span>
+        </div>
+        <p className="mt-1 text-[11px] text-amber-700">
+          All free Aspirant Foundation capabilities (1995–2024 Prelims PYQs, CSAT, daily quizzes, syllabus analytics) remain 100% active and unimpacted.
+        </p>
       </div>
 
       {/* Plan Cards Grid */}
@@ -417,29 +352,25 @@ export default function PricingPage() {
                       Current Active Plan
                     </button>
                   ) : p.tier === 0 ? (
-                    <button
-                      disabled
-                      className="w-full rounded-xl border border-slate-200 bg-slate-50 py-3 text-xs font-bold text-slate-600 text-center"
+                    <a
+                      href="/pyqs"
+                      className="w-full block rounded-xl border border-emerald-300 bg-emerald-50 py-3 text-xs font-bold text-emerald-800 text-center hover:bg-emerald-100 transition"
                     >
-                      Included with Account
-                    </button>
+                      Access Free Foundation
+                    </a>
                   ) : (
-                    <button
-                      onClick={() => handleCheckout(p)}
-                      disabled={checkoutLoading}
-                      className={`w-full flex items-center justify-center gap-1.5 rounded-xl py-3 text-xs font-bold shadow-sm transition ${
-                        isPopular
-                          ? "bg-blue-600 text-white hover:bg-blue-700 shadow-blue-200"
-                          : "bg-slate-900 text-white hover:bg-slate-800"
-                      }`}
-                    >
-                      <span>
-                        {userSubscription?.tier > p.tier
-                          ? `Switch to ${p.name}`
-                          : `Upgrade to ${p.name}`}
-                      </span>
-                      <ArrowRight className="h-3.5 w-3.5" />
-                    </button>
+                    <div className="space-y-1.5">
+                      <button
+                        disabled
+                        className="w-full flex items-center justify-center gap-1.5 rounded-xl bg-slate-100 border border-slate-200 py-3 text-xs font-bold text-slate-400 cursor-not-allowed shadow-none"
+                      >
+                        <Lock className="h-3.5 w-3.5 text-slate-400" />
+                        <span>Payments Temporarily Unavailable</span>
+                      </button>
+                      <p className="text-[10px] text-center text-slate-500 leading-tight">
+                        Online payments are temporarily unavailable while our secure payment system is being configured. Please check back soon.
+                      </p>
+                    </div>
                   )}
                 </div>
               </div>

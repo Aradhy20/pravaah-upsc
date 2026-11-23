@@ -133,7 +133,7 @@ export default function HomePage() {
               {/* Subtitle */}
               <p className="mt-4 text-sm sm:text-base text-slate-600 leading-relaxed font-normal">
                 No bloated paywalls or unverified coaching keys. Master{" "}
-                <span className="font-bold text-slate-900">30 years of officially verified</span> UPSC General Studies & CSAT questions (1995–2024 Series A) with statement-by-statement evidence, timed exam simulation, NCERT chapter links, and automated spaced mistake revision.
+                <span className="font-bold text-slate-900">officially verified</span> UPSC General Studies & CSAT questions (1995–2024 Series A) with statement-by-statement evidence, timed exam simulation, NCERT chapter links, and automated spaced mistake revision.
               </p>
 
               {/* Prominent PYQ Search Box */}
@@ -275,8 +275,8 @@ export default function HomePage() {
                 {/* High-Impact Trust Metric Strip */}
                 <div className="grid grid-cols-4 divide-x divide-slate-800 bg-slate-950 py-3.5 px-3 text-center text-white">
                   <div>
-                    <div className="text-base sm:text-lg font-black text-blue-400">30 Years</div>
-                    <div className="text-[10px] font-medium text-slate-400 mt-0.5 leading-tight">1995–2024 Archive</div>
+                    <div className="text-base sm:text-lg font-black text-blue-400">1995–2024</div>
+                    <div className="text-[10px] font-medium text-slate-400 mt-0.5 leading-tight">Curated Archives</div>
                   </div>
                   <div>
                     <div className="text-base sm:text-lg font-black text-emerald-400">GS1 & CSAT</div>
@@ -400,7 +400,7 @@ export default function HomePage() {
                 Never second-guess with disputed coaching answer keys. Every question is mapped to official UPSC Series A keys, verified against government gazettes, PIB releases, and Supreme Court judgements.
               </p>
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-1 text-xs font-bold text-blue-700">
-                <span>30-Year Archive Fully Verified</span>
+                <span>Multi-Year Archive Fully Verified</span>
                 <ChevronRight className="h-3.5 w-3.5" />
               </div>
             </div>
@@ -428,7 +428,7 @@ export default function HomePage() {
                 Don't wait 2 weeks for coaching test series evaluation. Receive instant scores across Introduction clarity, multi-dimensional body arguments, Supreme Court precedents, and pragmatic Way Forward.
               </p>
               <div className="mt-4 pt-3 border-t border-slate-100 flex items-center gap-1 text-xs font-bold text-indigo-700">
-                <span>80 Authentic Mains Questions</span>
+                <span>32 Authentic Mains Questions</span>
                 <ChevronRight className="h-3.5 w-3.5" />
               </div>
             </div>
@@ -596,7 +596,7 @@ export default function HomePage() {
                 <div className="mt-4 text-3xl font-black text-slate-900">₹0</div>
                 <div className="mt-6 space-y-2 text-xs text-slate-700">
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-emerald-600" /> 30-Year Verified PYQs in Learn Mode
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> Curated Verified PYQs in Learn Mode
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-emerald-600" /> 5 Daily Quiz questions / day
@@ -677,7 +677,7 @@ export default function HomePage() {
                     <CheckCircle className="h-4 w-4 text-emerald-600" /> Instant AI Mains Answer Grading
                   </div>
                   <div className="flex items-center gap-2">
-                    <CheckCircle className="h-4 w-4 text-emerald-600" /> 80 Authentic Mains Model Frameworks
+                    <CheckCircle className="h-4 w-4 text-emerald-600" /> 32 Authentic Mains Model Frameworks
                   </div>
                   <div className="flex items-center gap-2">
                     <CheckCircle className="h-4 w-4 text-emerald-600" /> PDF Model Answer Exports

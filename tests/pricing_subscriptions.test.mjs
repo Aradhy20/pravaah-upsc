@@ -143,8 +143,8 @@ test('Feature Entitlement Service: Access Control & Quota Limits', async () => {
   assert.strictEqual(paidBookmarkQuota.maxAllowed, null);
 });
 
-test('Subscription Checkout & Webhook Lifecycle: Idempotency & Signature Guard', async () => {
-  // 1. Initialize Checkout for ACHIEVER Annual Plan
+test('Subscription Checkout & Webhook Lifecycle: Safely Disabled for Cashfree Migration', async () => {
+  // 1. Paid Checkout must be safely disabled (HTTP 503 PAYMENTS_DISABLED)
   const checkoutRes = await fetch(`${BASE_URL}/api/v1/billing/checkout`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -154,33 +154,13 @@ test('Subscription Checkout & Webhook Lifecycle: Idempotency & Signature Guard',
     }),
   });
 
-  assert.strictEqual(checkoutRes.status, 200);
+  assert.strictEqual(checkoutRes.status, 503, 'Paid checkout must return 503 Service Unavailable');
   const checkoutJson = await checkoutRes.json();
-  assert.strictEqual(checkoutJson.success, true);
-  assert.ok(checkoutJson.data.orderId, 'Checkout must return orderId reference');
-  assert.strictEqual(checkoutJson.data.amount, 5499);
-  assert.strictEqual(checkoutJson.data.currency, 'INR');
+  assert.strictEqual(checkoutJson.success, false);
+  assert.strictEqual(checkoutJson.error.code, 'PAYMENTS_DISABLED');
 
-  const orderId = checkoutJson.data.orderId;
-
-  // 2. Reject Webhook with Invalid Signature
-  const badSigRes = await fetch(`${BASE_URL}/api/v1/billing/webhook`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-pravaah-webhook-signature': 'invalid_forged_secret',
-    },
-    body: JSON.stringify({
-      event: 'payment.succeeded',
-      orderId,
-      planCode: 'ACHIEVER',
-      billingInterval: 'ANNUAL',
-    }),
-  });
-  assert.strictEqual(badSigRes.status, 401, 'Webhook with forged signature must be rejected with 401');
-
-  // 3. Process Valid Payment Succeeded Webhook
-  const validWebhookRes = await fetch(`${BASE_URL}/api/v1/billing/webhook`, {
+  // 2. Browser/Dev Webhook must be permanently disabled (HTTP 503 WEBHOOK_DISABLED)
+  const webhookRes = await fetch(`${BASE_URL}/api/v1/billing/webhook`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -188,35 +168,16 @@ test('Subscription Checkout & Webhook Lifecycle: Idempotency & Signature Guard',
     },
     body: JSON.stringify({
       event: 'payment.succeeded',
-      orderId,
+      orderId: 'fake_order_123',
       planCode: 'ACHIEVER',
       billingInterval: 'ANNUAL',
       status: 'SUCCESS',
     }),
   });
-  assert.strictEqual(validWebhookRes.status, 200);
-  const validWebhookJson = await validWebhookRes.json();
-  assert.strictEqual(validWebhookJson.success, true);
-  assert.strictEqual(validWebhookJson.data.status, 'ACTIVE');
-
-  // 4. Test Idempotency: Duplicate Webhook Call
-  const duplicateWebhookRes = await fetch(`${BASE_URL}/api/v1/billing/webhook`, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'x-pravaah-webhook-signature': 'pravaah_webhook_dev_secret_2026',
-    },
-    body: JSON.stringify({
-      event: 'payment.succeeded',
-      orderId,
-      planCode: 'BEGINNER',
-      billingInterval: 'ANNUAL',
-      status: 'SUCCESS',
-    }),
-  });
-  assert.strictEqual(duplicateWebhookRes.status, 200);
-  const duplicateJson = await duplicateWebhookRes.json();
-  assert.ok(duplicateJson.message.includes('idempotently'), 'Duplicate webhook must be handled idempotently');
+  assert.strictEqual(webhookRes.status, 503, 'Dev webhook must be rejected with 503');
+  const webhookJson = await webhookRes.json();
+  assert.strictEqual(webhookJson.success, false);
+  assert.strictEqual(webhookJson.error.code, 'WEBHOOK_DISABLED');
 });
 
 test('Subscription Cancellation API: Preserves Current Period Access', async () => {

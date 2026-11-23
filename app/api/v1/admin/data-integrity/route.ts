@@ -1,11 +1,18 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { ensureDatabaseTables } from "@/lib/db-sync";
+import { checkAdminAccess } from "@/lib/auth";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
+    // 1. Strict Server-side Administrator Authorization
+    const auth = await checkAdminAccess(request);
+    if (!auth.authorized) {
+      return auth.response;
+    }
+
     // Ensure all tables are synchronized before auditing
     await ensureDatabaseTables().catch(() => {});
 
@@ -204,17 +211,6 @@ export async function GET(request: NextRequest) {
       status: totalQuestions > 0 ? "OPERATIONAL_NEEDS_CLEANUP" : "EMPTY",
     };
 
-    // RAG and Evaluation stats from benchmark
-    const ragGroundingMetrics = {
-      averageConfidence: 76.2,
-      groundingRateHigh: 90.0, // >= 60% grounding rate
-      syllabusHitRate: 98.0,
-      ncertHitRate: 90.0,
-      hallucinationFreeRate: 100.0,
-      averageRetrievalLatencyMs: 31,
-      totalBenchmarkQueries: 50,
-    };
-
     return NextResponse.json({
       success: true,
       timestamp: new Date().toISOString(),
@@ -252,7 +248,6 @@ export async function GET(request: NextRequest) {
       },
       duplicateClusters: duplicateClusters.slice(0, 15),
       ingestionPipelineHealth,
-      ragGroundingMetrics,
       availableFilters: {
         exams: allExams,
         papers: allPapers,

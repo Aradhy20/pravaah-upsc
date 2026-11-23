@@ -1,74 +1,66 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthenticatedUser } from "@/lib/auth";
-import { verifyOrderStatus, OrderNotFoundError } from "@/lib/payments/upi-gateway";
+import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-interface Params {
-  params: {
-    orderId: string;
-  };
-}
-
-export async function GET(request: NextRequest, { params }: Params) {
+/**
+ * GET /api/v1/payments/orders/[orderId]/status
+ * 
+ * Read-only retrieval of historical order records from database.
+ * Does not make external gateway calls or simulate order state changes.
+ */
+export async function GET(
+  _request: NextRequest,
+  { params }: { params: { orderId: string } }
+) {
   try {
-    const user = await getAuthenticatedUser(request);
-    if (!user) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: "UNAUTHENTICATED",
-            message: "Authentication required to query order status.",
-          },
-        },
-        { status: 401 }
-      );
-    }
-
     const { orderId } = params;
     if (!orderId) {
       return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: "MISSING_ORDER_ID",
-            message: "orderId path parameter is required.",
-          },
-        },
+        { success: false, error: { code: "INVALID_ORDER_ID", message: "orderId is required" } },
         { status: 400 }
       );
     }
 
-    const result = await verifyOrderStatus(orderId);
-
-    return NextResponse.json({
-      success: true,
-      data: result,
+    const order = await prisma.paymentOrder.findFirst({
+      where: {
+        OR: [
+          { clientOrderId: orderId },
+          { gatewayOrderId: orderId },
+          { id: orderId },
+        ],
+      },
+      select: {
+        id: true,
+        clientOrderId: true,
+        amount: true,
+        currency: true,
+        status: true,
+        productType: true,
+        productId: true,
+        createdAt: true,
+        paidAt: true,
+        expiresAt: true,
+      },
     });
-  } catch (error: any) {
-    if (error instanceof OrderNotFoundError || error?.code === "ORDER_NOT_FOUND" || error?.statusCode === 404) {
+
+    if (!order) {
       return NextResponse.json(
         {
           success: false,
-          error: {
-            code: error.code || "ORDER_NOT_FOUND",
-            message: error.message || "Order not found",
-          },
+          error: { code: "ORDER_NOT_FOUND", message: `Order '${orderId}' not found.` },
         },
         { status: 404 }
       );
     }
 
-    console.error("Error in GET /api/v1/payments/orders/[orderId]/status:", error);
+    return NextResponse.json({
+      success: true,
+      data: order,
+    });
+  } catch (error: any) {
     return NextResponse.json(
-      {
-        success: false,
-        error: {
-          code: "STATUS_VERIFICATION_FAILED",
-          message: error.message || "Failed to verify order status.",
-        },
-      },
+      { success: false, error: { code: "INTERNAL_ERROR", message: "Failed to retrieve order status." } },
       { status: 500 }
     );
   }
