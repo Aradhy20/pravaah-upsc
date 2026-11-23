@@ -110,29 +110,29 @@ export default async function MockTestsPage() {
   return (
     <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
       <div className="mb-8">
-        <div className="flex items-center gap-2">
-          <Clock className="h-6 w-6 text-blue-700" />
-          <h1 className="text-2xl sm:text-3xl font-extrabold text-slate-900">
+        <div className="flex items-center gap-2.5">
+          <Clock className="h-6 w-6 text-heritage-burgundy" />
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold text-heritage-text">
             Timed Examination Simulator
           </h1>
         </div>
-        <p className="mt-1 text-sm text-slate-500">
-          Strict UPSC examination conditions with standard negative marking and server-side answer key protection
+        <p className="mt-1 text-sm text-heritage-secondary">
+          Strict UPSC examination conditions with standard negative marking and server-side anti-leak answer protection
         </p>
       </div>
 
       {/* UPSC Instructions Notice Card */}
-      <div className="mb-8 rounded-2xl border border-blue-200 bg-blue-50/50 p-6">
-        <h2 className="text-sm font-bold text-blue-900 uppercase tracking-wider flex items-center gap-1.5">
-          <ShieldAlert className="h-4 w-4 text-blue-700" />
+      <div className="mb-8 rounded-2xl border border-heritage-gold/40 bg-heritage-ivory p-6 shadow-card">
+        <h2 className="font-serif text-sm font-bold text-heritage-burgundy uppercase tracking-wider flex items-center gap-2">
+          <ShieldAlert className="h-4 w-4 text-heritage-gold" />
           Authentic Examination Protocol
         </h2>
-        <ul className="mt-2 space-y-1 text-xs text-blue-950 leading-relaxed">
+        <ul className="mt-2.5 space-y-1.5 text-xs text-heritage-text leading-relaxed">
           <li>
-            • <strong>General Studies Paper I:</strong> 100 Questions, 200 Marks, 120 Minutes. Correct answer: +2.0 marks; Incorrect answer: -0.666 marks (-1/3rd penalty).
+            • <strong className="text-heritage-burgundy">General Studies Paper I:</strong> 100 Questions, 200 Marks, 120 Minutes. Correct answer: +2.0 marks; Incorrect answer: -0.666 marks (-1/3rd penalty).
           </li>
           <li>
-            • <strong>CSAT Paper II:</strong> 80 Questions, 200 Marks, 120 Minutes. Correct answer: +2.5 marks; Incorrect answer: -0.833 marks. Qualifying score is 33% (66 marks).
+            • <strong className="text-heritage-saffron">CSAT Paper II:</strong> 80 Questions, 200 Marks, 120 Minutes. Correct answer: +2.5 marks; Incorrect answer: -0.833 marks. Qualifying score is 33% (66 marks).
           </li>
           <li>
             • <strong>Anti-Leak Protection:</strong> Correct options and official explanations are strictly withheld from client payloads until you confirm final submission.
@@ -147,52 +147,52 @@ export default async function MockTestsPage() {
           return (
             <div
               key={test.id}
-              className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition flex flex-col justify-between"
+              className="rounded-2xl border border-heritage-border bg-white p-6 shadow-card hover:shadow-hover transition flex flex-col justify-between"
             >
               <div>
                 <div className="flex items-center justify-between">
                   <span
-                    className={`rounded px-2.5 py-1 text-xs font-bold ${
+                    className={`rounded-md px-2.5 py-1 text-xs font-bold border ${
                       isCSAT
-                        ? "bg-teal-100 text-teal-800"
-                        : "bg-blue-100 text-blue-800"
+                        ? "bg-heritage-saffron/10 text-heritage-saffron border-heritage-saffron/30"
+                        : "bg-heritage-burgundy/10 text-heritage-burgundy border-heritage-burgundy/30"
                     }`}
                   >
                     {isCSAT ? "CSAT Paper II" : "GS Paper I"}
                   </span>
-                  <span className="text-xs font-semibold text-slate-400">
+                  <span className="text-xs font-semibold text-heritage-secondary">
                     {test.year || 2024}
                   </span>
                 </div>
 
-                <h3 className="mt-3 text-lg font-bold text-slate-900 leading-snug">
+                <h3 className="font-serif mt-3 text-lg font-bold text-heritage-text leading-snug">
                   {test.title}
                 </h3>
 
-                <p className="mt-2 text-xs text-slate-500 leading-relaxed">
+                <p className="mt-2 text-xs text-heritage-secondary leading-relaxed">
                   {test.description || "Authentic UPSC paper simulation with live timer and scorecard."}
                 </p>
 
-                <div className="mt-4 border-t border-slate-100 pt-3 grid grid-cols-3 gap-2 text-center text-xs">
-                  <div className="rounded bg-slate-50 p-2">
-                    <span className="text-slate-400 text-[10px] block uppercase">Questions</span>
-                    <strong className="text-slate-800">{test.questionCount}</strong>
+                <div className="mt-4 border-t border-heritage-border/60 pt-3 grid grid-cols-3 gap-2 text-center text-xs">
+                  <div className="rounded-xl bg-heritage-ivory border border-heritage-border p-2">
+                    <span className="text-heritage-secondary text-[10px] block uppercase font-bold">Questions</span>
+                    <strong className="text-heritage-text font-serif text-sm">{test.questionCount}</strong>
                   </div>
-                  <div className="rounded bg-slate-50 p-2">
-                    <span className="text-slate-400 text-[10px] block uppercase">Duration</span>
-                    <strong className="text-slate-800">{test.durationMinutes}m</strong>
+                  <div className="rounded-xl bg-heritage-ivory border border-heritage-border p-2">
+                    <span className="text-heritage-secondary text-[10px] block uppercase font-bold">Duration</span>
+                    <strong className="text-heritage-text font-serif text-sm">{test.durationMinutes}m</strong>
                   </div>
-                  <div className="rounded bg-slate-50 p-2">
-                    <span className="text-slate-400 text-[10px] block uppercase">Marks</span>
-                    <strong className="text-slate-800">200</strong>
+                  <div className="rounded-xl bg-heritage-ivory border border-heritage-border p-2">
+                    <span className="text-heritage-secondary text-[10px] block uppercase font-bold">Marks</span>
+                    <strong className="text-heritage-text font-serif text-sm">200</strong>
                   </div>
                 </div>
               </div>
 
-              <div className="mt-6 pt-4 border-t border-slate-100">
+              <div className="mt-6 pt-4 border-t border-heritage-border/60">
                 <a
                   href={`/mock-tests/${test.id}`}
-                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-600 px-4 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-blue-700 transition"
+                  className="w-full flex items-center justify-center gap-2 rounded-xl bg-heritage-burgundy px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-heritage-wine transition"
                 >
                   <Play className="h-3.5 w-3.5 fill-white" />
                   <span>Start Examination</span>

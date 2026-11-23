@@ -69,22 +69,22 @@ export function FilterBar({
     searchQuery.trim() !== "";
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm space-y-4">
+    <div className="rounded-2xl border border-heritage-border bg-white p-4 sm:p-5 shadow-card space-y-4">
       {/* Search Input Bar */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-3">
         <div className="relative flex-1">
-          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-heritage-secondary" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            placeholder="Search keywords, articles, environmental treaties, topics..."
-            className="w-full rounded-lg border border-slate-300 bg-slate-50/50 pl-10 pr-4 py-2.5 text-sm text-slate-800 placeholder:text-slate-400 focus:border-blue-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-blue-500 transition"
+            placeholder="Search microthemes, constitutional articles, Ramsar sites, economic indices..."
+            className="w-full rounded-xl border border-heritage-border bg-heritage-ivory/40 pl-10 pr-4 py-2.5 text-sm text-heritage-text placeholder:text-heritage-secondary/70 focus:border-heritage-gold focus:bg-white focus:outline-none focus:ring-2 focus:ring-heritage-gold/20 transition"
           />
           {searchQuery && (
             <button
               onClick={() => onSearchChange("")}
-              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-slate-400 hover:bg-slate-200 hover:text-slate-600"
+              className="absolute right-3 top-1/2 -translate-y-1/2 rounded-full p-1 text-heritage-secondary hover:bg-heritage-cream hover:text-heritage-text transition"
             >
               <X className="h-3.5 w-3.5" />
             </button>
@@ -92,24 +92,24 @@ export function FilterBar({
         </div>
 
         {/* Smart vs Exact Toggle */}
-        <div className="flex items-center rounded-lg border border-slate-200 bg-slate-100 p-1 text-xs font-semibold">
+        <div className="flex items-center rounded-xl border border-heritage-border bg-heritage-ivory p-1 text-xs font-semibold">
           <button
             onClick={() => onSearchModeChange("smart")}
-            className={`flex items-center gap-1.5 rounded-md px-3 py-1.5 transition ${
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 transition ${
               searchMode === "smart"
-                ? "bg-white text-blue-700 shadow-sm"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-heritage-burgundy text-white shadow-xs font-bold"
+                : "text-heritage-secondary hover:text-heritage-text"
             }`}
           >
-            <Sparkles className="h-3.5 w-3.5 text-blue-600" />
+            <Sparkles className="h-3.5 w-3.5 text-heritage-gold" />
             <span>Smart Concept</span>
           </button>
           <button
             onClick={() => onSearchModeChange("exact")}
-            className={`rounded-md px-3 py-1.5 transition ${
+            className={`rounded-lg px-3 py-1.5 transition ${
               searchMode === "exact"
-                ? "bg-white text-slate-900 shadow-sm"
-                : "text-slate-600 hover:text-slate-900"
+                ? "bg-white text-heritage-text border border-heritage-border shadow-xs font-bold"
+                : "text-heritage-secondary hover:text-heritage-text"
             }`}
           >
             Exact Match
@@ -118,25 +118,25 @@ export function FilterBar({
       </div>
 
       {/* Paper Toggle & Subject Select */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-slate-100 pt-3">
+      <div className="flex flex-wrap items-center justify-between gap-3 border-t border-heritage-border/60 pt-3">
         {/* Paper Toggle Buttons */}
         <div className="flex items-center gap-2">
           <button
             onClick={() => onPaperChange("GS1")}
-            className={`rounded-lg border px-4 py-2 text-xs font-bold transition touch-target ${
+            className={`rounded-lg border px-4 py-2 text-xs font-bold transition ${
               selectedPaper === "GS1"
-                ? "border-blue-600 bg-blue-600 text-white shadow-sm"
-                : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                ? "border-heritage-burgundy bg-heritage-burgundy text-white shadow-xs"
+                : "border-heritage-border bg-white text-heritage-text hover:bg-heritage-ivory"
             }`}
           >
             General Studies Paper I
           </button>
           <button
             onClick={() => onPaperChange("GS2")}
-            className={`rounded-lg border px-4 py-2 text-xs font-bold transition touch-target ${
+            className={`rounded-lg border px-4 py-2 text-xs font-bold transition ${
               selectedPaper === "GS2"
-                ? "border-teal-600 bg-teal-600 text-white shadow-sm"
-                : "border-slate-300 bg-white text-slate-700 hover:bg-slate-50"
+                ? "border-heritage-saffron bg-heritage-saffron text-white shadow-xs"
+                : "border-heritage-border bg-white text-heritage-text hover:bg-heritage-ivory"
             }`}
           >
             GS Paper II (CSAT)
@@ -148,7 +148,7 @@ export function FilterBar({
           <select
             value={selectedSubject}
             onChange={(e) => onSubjectChange(e.target.value)}
-            className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-medium text-slate-700 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+            className="rounded-lg border border-heritage-border bg-white px-3 py-2 text-xs font-semibold text-heritage-text focus:border-heritage-gold focus:outline-none focus:ring-1 focus:ring-heritage-gold"
           >
             <option value="">All Subjects</option>
             {SUBJECTS_LIST.map((subj) => (
@@ -172,36 +172,36 @@ export function FilterBar({
       </div>
 
       {/* Year Multi-Select Chips */}
-      <div className="border-t border-slate-100 pt-3">
+      <div className="border-t border-heritage-border/60 pt-3">
         <div className="flex flex-wrap items-center gap-1.5">
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-wide mr-1">
+          <span className="text-xs font-bold text-heritage-secondary uppercase tracking-wider mr-1">
             Years:
           </span>
 
           <button
             onClick={() => handlePresetYears("ALL")}
-            className={`rounded-md border px-2.5 py-1 text-xs font-bold transition touch-target ${
+            className={`rounded-md border px-2.5 py-1 text-xs font-bold transition ${
               isAllYears
-                ? "bg-slate-800 text-white border-slate-800"
-                : "bg-white text-slate-600 border-slate-200 hover:bg-slate-50"
+                ? "bg-heritage-wine text-white border-heritage-wine shadow-xs"
+                : "bg-white text-heritage-secondary border-heritage-border hover:bg-heritage-ivory"
             }`}
           >
             All Years
           </button>
           <button
             onClick={() => handlePresetYears("LAST_5")}
-            className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition"
+            className="rounded-md border border-heritage-border bg-white px-2.5 py-1 text-xs font-medium text-heritage-secondary hover:bg-heritage-ivory transition"
           >
             Last 5 Yrs
           </button>
           <button
             onClick={() => handlePresetYears("LAST_10")}
-            className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-semibold text-slate-600 hover:bg-slate-50 transition"
+            className="rounded-md border border-heritage-border bg-white px-2.5 py-1 text-xs font-medium text-heritage-secondary hover:bg-heritage-ivory transition"
           >
             Last 10 Yrs
           </button>
 
-          <span className="text-slate-300 mx-1">|</span>
+          <span className="text-heritage-border mx-1">|</span>
 
           {AVAILABLE_YEARS.slice(0, 6).map((year) => {
             const isSelected = selectedYears.includes(year);
@@ -211,8 +211,8 @@ export function FilterBar({
                 onClick={() => handleYearToggle(year)}
                 className={`rounded-md border px-2.5 py-1 text-xs font-bold transition ${
                   isSelected
-                    ? "border-blue-600 bg-blue-50 text-blue-700 ring-1 ring-blue-600/30"
-                    : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 hover:bg-slate-50"
+                    ? "border-heritage-burgundy bg-heritage-cream text-heritage-burgundy ring-1 ring-heritage-burgundy/30"
+                    : "border-heritage-border bg-white text-heritage-secondary hover:border-heritage-gold hover:bg-heritage-ivory"
                 }`}
               >
                 {year}
@@ -224,13 +224,13 @@ export function FilterBar({
 
       {/* Filter Status Meta */}
       {totalFilteredCount !== undefined && (
-        <div className="flex items-center justify-between text-xs text-slate-500 pt-1">
+        <div className="flex items-center justify-between text-xs text-heritage-secondary pt-1">
           <span>
-            Showing <strong className="text-slate-900 font-bold">{totalFilteredCount}</strong>{" "}
+            Showing <strong className="text-heritage-text font-bold">{totalFilteredCount}</strong>{" "}
             verified questions matching current filters
           </span>
           {searchMode === "smart" && searchQuery && (
-            <span className="text-blue-600 font-medium">Ranked by conceptual relevance</span>
+            <span className="text-heritage-burgundy font-medium">Ranked by conceptual relevance</span>
           )}
         </div>
       )}

@@ -26,6 +26,8 @@ import {
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
+import { Header } from "@/components/Header";
+import { Footer } from "@/components/Footer";
 
 export default function MissionControlPage() {
   const { t, language } = useLanguage();
@@ -59,10 +61,10 @@ export default function MissionControlPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#F7F9FC] flex items-center justify-center">
+      <div className="min-h-screen bg-heritage-ivory flex items-center justify-center">
         <div className="text-center">
-          <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-[#2453E6]" />
-          <p className="mt-3 text-sm font-semibold text-[#475467]">
+          <div className="inline-block animate-spin rounded-full h-10 w-10 border-b-2 border-[#741A2B]" />
+          <p className="mt-3 text-sm font-semibold text-[#786B68]">
             {language === "hi"
               ? "मिशन कंट्रोल टेलीमेट्री लोड हो रही है..."
               : "Calibrating Mission Control Telemetry..."}
@@ -128,25 +130,26 @@ export default function MissionControlPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F7F9FC] font-sans text-[#101828]">
+    <div className="min-h-screen bg-heritage-ivory flex flex-col font-sans text-heritage-dark">
+      <Header />
       {/* Top Banner / Breadcrumb Bar */}
-      <div className="border-b border-[#E4E7EC] bg-white">
+      <div className="border-b border-[#E7DDD4] bg-white">
         <div className="mx-auto max-w-[1280px] px-4 py-4 sm:px-6 lg:px-8">
           <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
             <div className="flex items-center gap-3">
-              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#2453E6] text-white shadow-sm">
+              <div className="flex h-11 w-11 items-center justify-center rounded-2xl bg-[#741A2B] text-white shadow-sm">
                 <Target className="h-6 w-6" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
-                  <h1 className="text-xl sm:text-2xl font-black text-[#101828] tracking-tight">
-                    Pravaah <span className="text-[#2453E6]">Mission Control</span>
+                  <h1 className="text-xl sm:text-2xl font-black text-[#261B1E] tracking-tight">
+                    Pravaah <span className="text-[#741A2B]">Mission Control</span>
                   </h1>
-                  <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-[11px] font-black uppercase text-[#2453E6]">
+                  <span className="rounded-full bg-blue-100 px-2.5 py-0.5 text-[11px] font-black uppercase text-[#741A2B]">
                     {d.profile?.targetExam || "UPSC CSE"} {d.profile?.targetYear || 2026}
                   </span>
                 </div>
-                <p className="text-xs text-[#667085] mt-0.5">
+                <p className="text-xs text-[#786B68] mt-0.5">
                   {language === "hi"
                     ? "व्यक्तिगत तैयारी कमांड सेंटर • वास्तविक अध्ययन डेटा और प्रदर्शन पर आधारित"
                     : "Personalized Preparation Command Center • Grounded in authentic database telemetry"}
@@ -174,7 +177,7 @@ export default function MissionControlPage() {
               {/* Refresh Action */}
               <button
                 onClick={fetchMissionControl}
-                className="flex items-center gap-1.5 rounded-xl border border-[#E4E7EC] bg-white px-3 py-1.5 text-xs font-bold text-[#475467] hover:bg-[#F7F9FC] transition"
+                className="flex items-center gap-1.5 rounded-xl border border-[#E7DDD4] bg-white px-3 py-1.5 text-xs font-bold text-[#786B68] hover:bg-heritage-ivory transition"
                 title="Refresh Telemetry"
               >
                 <RefreshCw className="h-3.5 w-3.5" />
@@ -185,23 +188,23 @@ export default function MissionControlPage() {
         </div>
       </div>
 
-      <div className="mx-auto max-w-[1280px] px-4 py-8 sm:px-6 lg:px-8 space-y-8">
+      <main className="flex-1 mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8 space-y-8 w-full">
         {/* ========================================================= */}
         {/* SECTION 1: THE 5 CORE ASPIRANT QUESTIONS (INTERACTIVE BANNER) */}
         {/* ========================================================= */}
-        <div className="rounded-3xl border border-[#E4E7EC] bg-white p-6 sm:p-8 shadow-sm">
-          <div className="flex items-center justify-between pb-4 border-b border-[#E4E7EC]">
+        <div className="rounded-3xl border border-[#E7DDD4] bg-white p-6 sm:p-8 shadow-sm">
+          <div className="flex items-center justify-between pb-4 border-b border-[#E7DDD4]">
             <div>
-              <span className="text-[11px] font-black uppercase tracking-wider text-[#2453E6]">
+              <span className="text-[11px] font-black uppercase tracking-wider text-[#741A2B]">
                 {language === "hi" ? "दैनिक रणनीतिक विश्लेषण" : "Daily Strategic Insight"}
               </span>
-              <h2 className="text-lg sm:text-xl font-black text-[#101828] mt-0.5">
+              <h2 className="text-lg sm:text-xl font-black text-[#261B1E] mt-0.5">
                 {language === "hi"
                   ? "5 मुख्य प्रश्न: आपकी तैयारी की वास्तविक स्थिति"
                   : "The 5 Core Aspirant Questions: Real-Time Intelligence"}
               </h2>
             </div>
-            <span className="rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-bold text-[#2453E6] hidden sm:block">
+            <span className="rounded-lg bg-blue-50 px-2.5 py-1 text-xs font-bold text-[#741A2B] hidden sm:block">
               {language === "hi" ? "डेटा-आधारित उत्तर" : "Data-Backed Answers"}
             </span>
           </div>
@@ -217,8 +220,8 @@ export default function MissionControlPage() {
                   onClick={() => setActiveQuestionTab(idx)}
                   className={`flex items-center gap-2 rounded-xl px-3.5 py-2 text-xs font-bold whitespace-nowrap transition-all ${
                     isActive
-                      ? "bg-[#2453E6] text-white shadow-xs"
-                      : "bg-[#F7F9FC] text-[#475467] hover:bg-slate-100 hover:text-[#101828]"
+                      ? "bg-[#741A2B] text-white shadow-xs"
+                      : "bg-heritage-ivory text-[#786B68] hover:bg-slate-100 hover:text-[#261B1E]"
                   }`}
                 >
                   <Icon className="h-3.5 w-3.5" />
@@ -232,11 +235,11 @@ export default function MissionControlPage() {
           <div className="mt-4 rounded-2xl bg-blue-50/70 border border-blue-200/80 p-5 sm:p-6 transition-all">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
               <div className="space-y-1.5 max-w-3xl">
-                <div className="flex items-center gap-2 text-xs font-bold text-[#2453E6] uppercase tracking-wide">
+                <div className="flex items-center gap-2 text-xs font-bold text-[#741A2B] uppercase tracking-wide">
                   <Sparkles className="h-4 w-4" />
                   <span>{language === "hi" ? coreQuestionsList[activeQuestionTab].qHi : coreQuestionsList[activeQuestionTab].qEn}</span>
                 </div>
-                <p className="text-sm sm:text-base font-semibold text-[#101828] leading-relaxed">
+                <p className="text-sm sm:text-base font-semibold text-[#261B1E] leading-relaxed">
                   {coreQuestionsList[activeQuestionTab].answer}
                 </p>
               </div>
@@ -244,7 +247,7 @@ export default function MissionControlPage() {
               {coreQuestionsList[activeQuestionTab].actionAnchor.startsWith("#") ? (
                 <a
                   href={coreQuestionsList[activeQuestionTab].actionAnchor}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#2453E6] px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#1d44c2] transition whitespace-nowrap self-start sm:self-center"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#741A2B] px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#1d44c2] transition whitespace-nowrap self-start sm:self-center"
                 >
                   <span>{coreQuestionsList[activeQuestionTab].actionText}</span>
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -252,7 +255,7 @@ export default function MissionControlPage() {
               ) : (
                 <Link
                   href={coreQuestionsList[activeQuestionTab].actionAnchor}
-                  className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#2453E6] px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#1d44c2] transition whitespace-nowrap self-start sm:self-center"
+                  className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#741A2B] px-4 py-2.5 text-xs font-bold text-white shadow-xs hover:bg-[#1d44c2] transition whitespace-nowrap self-start sm:self-center"
                 >
                   <span>{coreQuestionsList[activeQuestionTab].actionText}</span>
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -267,25 +270,25 @@ export default function MissionControlPage() {
         {/* ========================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Today's Study Plan (7 Cols) */}
-          <div id="today-plan" className="lg:col-span-7 rounded-3xl border border-[#E4E7EC] bg-white p-6 shadow-sm flex flex-col justify-between">
+          <div id="today-plan" className="lg:col-span-7 rounded-3xl border border-[#E7DDD4] bg-white p-6 shadow-sm flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-4 border-b border-[#E4E7EC]">
+              <div className="flex items-center justify-between pb-4 border-b border-[#E7DDD4]">
                 <div className="flex items-center gap-2.5">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700">
                     <Clock className="h-4 w-4" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-[#101828]">
+                    <h3 className="text-base font-bold text-[#261B1E]">
                       {language === "hi" ? "आज की अध्ययन योजना" : "Today's Study Plan & Timetable"}
                     </h3>
-                    <p className="text-[11px] text-[#667085]">
+                    <p className="text-[11px] text-[#786B68]">
                       {language === "hi" ? `लक्ष्य: दैनिक ${todayPlan.targetHours} घंटे` : `Target: ${todayPlan.targetHours} hours daily commitment`}
                     </p>
                   </div>
                 </div>
                 <Link
                   href="/study-planner"
-                  className="text-xs font-bold text-[#2453E6] hover:underline"
+                  className="text-xs font-bold text-[#741A2B] hover:underline"
                 >
                   {language === "hi" ? "प्लानर खोलें →" : "Full Planner →"}
                 </Link>
@@ -301,7 +304,7 @@ export default function MissionControlPage() {
                       className={`flex items-start justify-between gap-3 rounded-2xl border p-3.5 transition-all ${
                         isChecked
                           ? "bg-emerald-50/50 border-emerald-200"
-                          : "bg-[#F7F9FC] border-[#E4E7EC] hover:bg-slate-100"
+                          : "bg-heritage-ivory border-[#E7DDD4] hover:bg-slate-100"
                       }`}
                     >
                       <div className="flex items-start gap-3">
@@ -310,7 +313,7 @@ export default function MissionControlPage() {
                           className={`mt-0.5 flex h-5 w-5 shrink-0 items-center justify-center rounded-md border transition ${
                             isChecked
                               ? "bg-emerald-600 border-emerald-600 text-white"
-                              : "border-[#D0D5DD] bg-white hover:border-[#2453E6]"
+                              : "border-[#D0D5DD] bg-white hover:border-[#741A2B]"
                           }`}
                           aria-label={`Toggle ${task.title}`}
                         >
@@ -319,12 +322,12 @@ export default function MissionControlPage() {
                         <div>
                           <p
                             className={`text-xs font-bold ${
-                              isChecked ? "line-through text-slate-500" : "text-[#101828]"
+                              isChecked ? "line-through text-slate-500" : "text-[#261B1E]"
                             }`}
                           >
                             {task.title}
                           </p>
-                          <div className="flex items-center gap-2 mt-1 text-[10px] font-bold text-[#667085]">
+                          <div className="flex items-center gap-2 mt-1 text-[10px] font-bold text-[#786B68]">
                             <span className="rounded bg-slate-200 px-1.5 py-0.2 uppercase">
                               {task.category}
                             </span>
@@ -335,7 +338,7 @@ export default function MissionControlPage() {
 
                       <Link
                         href={task.actionUrl}
-                        className="rounded-lg bg-white border border-[#E4E7EC] px-2.5 py-1 text-[11px] font-bold text-[#2453E6] hover:bg-blue-50 transition shrink-0"
+                        className="rounded-lg bg-white border border-[#E7DDD4] px-2.5 py-1 text-[11px] font-bold text-[#741A2B] hover:bg-blue-50 transition shrink-0"
                       >
                         {language === "hi" ? "शुरू करें" : "Start"}
                       </Link>
@@ -345,71 +348,71 @@ export default function MissionControlPage() {
               </div>
             </div>
 
-            <div className="mt-6 pt-4 border-t border-[#E4E7EC] flex items-center justify-between text-xs text-[#667085]">
+            <div className="mt-6 pt-4 border-t border-[#E7DDD4] flex items-center justify-between text-xs text-[#786B68]">
               <span>{language === "hi" ? "पूर्ण किए गए कार्य:" : "Tasks Completed:"} <strong>{Object.values(completedTaskIds).filter(Boolean).length} / {todayPlan.tasks.length}</strong></span>
               <span>{language === "hi" ? "दैनिक प्रगति:" : "Progress:"} <strong>{Math.round((Object.values(completedTaskIds).filter(Boolean).length / Math.max(1, todayPlan.tasks.length)) * 100)}%</strong></span>
             </div>
           </div>
 
           {/* Exam Readiness Index (5 Cols) */}
-          <div id="readiness-index" className="lg:col-span-5 rounded-3xl border border-[#E4E7EC] bg-white p-6 shadow-sm flex flex-col justify-between">
+          <div id="readiness-index" className="lg:col-span-5 rounded-3xl border border-[#E7DDD4] bg-white p-6 shadow-sm flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-4 border-b border-[#E4E7EC]">
+              <div className="flex items-center justify-between pb-4 border-b border-[#E7DDD4]">
                 <div className="flex items-center gap-2.5">
-                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-[#2453E6]">
+                  <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-[#741A2B]">
                     <ShieldCheck className="h-4 w-4" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-[#101828]">
+                    <h3 className="text-base font-bold text-[#261B1E]">
                       {language === "hi" ? "परीक्षा तैयारी सूचकांक" : "Exam Readiness Index"}
                     </h3>
-                    <p className="text-[11px] text-[#667085]">
+                    <p className="text-[11px] text-[#786B68]">
                       {language === "hi" ? "पारदर्शी वस्तुनिष्ठ गणना" : "Transparent Objective Metric"}
                     </p>
                   </div>
                 </div>
-                <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-[#2453E6]">
+                <span className="rounded-full bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-[#741A2B]">
                   {readiness.status || "CALIBRATING"}
                 </span>
               </div>
 
               {/* Gauge Score Display */}
               <div className="my-5 text-center">
-                <div className="inline-flex flex-col items-center justify-center h-28 w-28 rounded-full border-4 border-[#2453E6] bg-blue-50/50 shadow-inner">
-                  <span className="text-3xl font-black text-[#101828] leading-none">
+                <div className="inline-flex flex-col items-center justify-center h-28 w-28 rounded-full border-4 border-[#741A2B] bg-blue-50/50 shadow-inner">
+                  <span className="text-3xl font-black text-[#261B1E] leading-none">
                     {readiness.index || 0}
                   </span>
-                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#667085] mt-1">
+                  <span className="text-[10px] font-bold uppercase tracking-wider text-[#786B68] mt-1">
                     out of 100
                   </span>
                 </div>
-                <p className="mt-2 text-xs font-bold text-[#101828]">{readiness.label}</p>
+                <p className="mt-2 text-xs font-bold text-[#261B1E]">{readiness.label}</p>
               </div>
 
               {/* Four Factor Breakdown */}
               <div className="space-y-2 text-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-[#667085]">GS Paper 1 Accuracy (35% weight):</span>
-                  <span className="font-bold text-[#101828]">{readiness.breakdown?.gsPaper1Accuracy || 0}%</span>
+                  <span className="text-[#786B68]">GS Paper 1 Accuracy (35% weight):</span>
+                  <span className="font-bold text-[#261B1E]">{readiness.breakdown?.gsPaper1Accuracy || 0}%</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#667085]">CSAT Estimated Score (25% weight):</span>
-                  <span className="font-bold text-[#101828]">
+                  <span className="text-[#786B68]">CSAT Estimated Score (25% weight):</span>
+                  <span className="font-bold text-[#261B1E]">
                     {readiness.breakdown?.csatQualifyingMargin || 0} / 66
                   </span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#667085]">Syllabus Coverage (20% weight):</span>
-                  <span className="font-bold text-[#101828]">{readiness.breakdown?.syllabusCoveragePct || 0}%</span>
+                  <span className="text-[#786B68]">Syllabus Coverage (20% weight):</span>
+                  <span className="font-bold text-[#261B1E]">{readiness.breakdown?.syllabusCoveragePct || 0}%</span>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="text-[#667085]">Revision Consistency (20% weight):</span>
-                  <span className="font-bold text-[#101828]">{readiness.breakdown?.revisionConsistencyPct || 0}%</span>
+                  <span className="text-[#786B68]">Revision Consistency (20% weight):</span>
+                  <span className="font-bold text-[#261B1E]">{readiness.breakdown?.revisionConsistencyPct || 0}%</span>
                 </div>
               </div>
             </div>
 
-            <div className="mt-5 rounded-xl bg-[#F7F9FC] p-3 text-[10px] text-[#667085] leading-relaxed border border-[#E4E7EC]">
+            <div className="mt-5 rounded-xl bg-heritage-ivory p-3 text-[10px] text-[#786B68] leading-relaxed border border-[#E7DDD4]">
               <strong>Methodology:</strong> {readiness.methodology}
             </div>
           </div>
@@ -420,24 +423,24 @@ export default function MissionControlPage() {
         {/* ========================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* CSAT Survival Indicator (6 Cols) */}
-          <div className="lg:col-span-6 rounded-3xl border border-[#E4E7EC] bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between pb-4 border-b border-[#E4E7EC]">
+          <div className="lg:col-span-6 rounded-3xl border border-[#E7DDD4] bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E7DDD4]">
               <div className="flex items-center gap-2.5">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-purple-50 text-purple-700">
                   <BarChart2 className="h-4 w-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#101828]">
+                  <h3 className="text-base font-bold text-[#261B1E]">
                     {language === "hi" ? "CSAT क्वालिफाइंग स्थिति (पेपर II)" : "CSAT Survival & Qualifying Coach"}
                   </h3>
-                  <p className="text-[11px] text-[#667085]">
+                  <p className="text-[11px] text-[#786B68]">
                     {language === "hi" ? "33% न्यूनतम अंक (66/200 अनिवार्य)" : "Mandatory 33% Qualifying Benchmark (66 / 200)"}
                   </p>
                 </div>
               </div>
               <Link
                 href="/csat-coach"
-                className="text-xs font-bold text-[#2453E6] hover:underline"
+                className="text-xs font-bold text-[#741A2B] hover:underline"
               >
                 {language === "hi" ? "CSAT कोच →" : "Coach Hub →"}
               </Link>
@@ -454,7 +457,7 @@ export default function MissionControlPage() {
             {/* Benchmark Bar */}
             <div className="mt-5">
               <div className="flex items-center justify-between text-xs font-bold mb-1.5">
-                <span className="text-[#667085]">Estimated Score:</span>
+                <span className="text-[#786B68]">Estimated Score:</span>
                 <span className={`font-black ${csat.isQualifying ? "text-emerald-700" : "text-amber-700"}`}>
                   {csat.estimatedScore} / 200 Marks ({csat.isQualifying ? "Qualifying" : "Below Cutoff"})
                 </span>
@@ -473,7 +476,7 @@ export default function MissionControlPage() {
                   title="33% (66 Marks) Cutoff Line"
                 />
               </div>
-              <div className="flex justify-between text-[10px] font-bold text-[#667085] mt-1">
+              <div className="flex justify-between text-[10px] font-bold text-[#786B68] mt-1">
                 <span>0</span>
                 <span className="text-red-700">66 Marks (33% Cutoff)</span>
                 <span>200</span>
@@ -482,34 +485,34 @@ export default function MissionControlPage() {
 
             {/* CSAT Sub-pillar breakdown */}
             <div className="mt-5 grid grid-cols-3 gap-2.5 text-center">
-              <div className="rounded-xl bg-[#F7F9FC] border border-[#E4E7EC] p-2.5">
-                <p className="text-[10px] font-bold text-[#667085] uppercase">Quant</p>
-                <p className="text-sm font-black text-[#101828] mt-0.5">{csat.quantAccuracy}%</p>
+              <div className="rounded-xl bg-heritage-ivory border border-[#E7DDD4] p-2.5">
+                <p className="text-[10px] font-bold text-[#786B68] uppercase">Quant</p>
+                <p className="text-sm font-black text-[#261B1E] mt-0.5">{csat.quantAccuracy}%</p>
               </div>
-              <div className="rounded-xl bg-[#F7F9FC] border border-[#E4E7EC] p-2.5">
-                <p className="text-[10px] font-bold text-[#667085] uppercase">Reasoning</p>
-                <p className="text-sm font-black text-[#101828] mt-0.5">{csat.reasoningAccuracy}%</p>
+              <div className="rounded-xl bg-heritage-ivory border border-[#E7DDD4] p-2.5">
+                <p className="text-[10px] font-bold text-[#786B68] uppercase">Reasoning</p>
+                <p className="text-sm font-black text-[#261B1E] mt-0.5">{csat.reasoningAccuracy}%</p>
               </div>
-              <div className="rounded-xl bg-[#F7F9FC] border border-[#E4E7EC] p-2.5">
-                <p className="text-[10px] font-bold text-[#667085] uppercase">Reading Comp</p>
-                <p className="text-sm font-black text-[#101828] mt-0.5">{csat.readingComprehensionAccuracy}%</p>
+              <div className="rounded-xl bg-heritage-ivory border border-[#E7DDD4] p-2.5">
+                <p className="text-[10px] font-bold text-[#786B68] uppercase">Reading Comp</p>
+                <p className="text-sm font-black text-[#261B1E] mt-0.5">{csat.readingComprehensionAccuracy}%</p>
               </div>
             </div>
           </div>
 
           {/* Weak-Topic Identification (6 Cols) */}
-          <div id="weak-areas" className="lg:col-span-6 rounded-3xl border border-[#E4E7EC] bg-white p-6 shadow-sm flex flex-col justify-between">
+          <div id="weak-areas" className="lg:col-span-6 rounded-3xl border border-[#E7DDD4] bg-white p-6 shadow-sm flex flex-col justify-between">
             <div>
-              <div className="flex items-center justify-between pb-4 border-b border-[#E4E7EC]">
+              <div className="flex items-center justify-between pb-4 border-b border-[#E7DDD4]">
                 <div className="flex items-center gap-2.5">
                   <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-rose-50 text-rose-700">
                     <AlertTriangle className="h-4 w-4" />
                   </div>
                   <div>
-                    <h3 className="text-base font-bold text-[#101828]">
+                    <h3 className="text-base font-bold text-[#261B1E]">
                       {language === "hi" ? "कमजोर विषय रडार" : "Data-Driven Weak Topics"}
                     </h3>
-                    <p className="text-[11px] text-[#667085]">
+                    <p className="text-[11px] text-[#786B68]">
                       {language === "hi" ? "वास्तविक गलत उत्तरों के आधार पर" : "Identified from actual question attempts"}
                     </p>
                   </div>
@@ -525,11 +528,11 @@ export default function MissionControlPage() {
                   weakTopics.map((wt: any, idx: number) => (
                     <div
                       key={idx}
-                      className="flex items-center justify-between gap-3 rounded-2xl bg-[#F7F9FC] border border-[#E4E7EC] p-3 text-xs"
+                      className="flex items-center justify-between gap-3 rounded-2xl bg-heritage-ivory border border-[#E7DDD4] p-3 text-xs"
                     >
                       <div>
-                        <p className="font-bold text-[#101828]">{wt.topic}</p>
-                        <p className="text-[11px] text-[#667085]">{wt.subject} • {wt.attempted} attempts</p>
+                        <p className="font-bold text-[#261B1E]">{wt.topic}</p>
+                        <p className="text-[11px] text-[#786B68]">{wt.subject} • {wt.attempted} attempts</p>
                       </div>
                       <div className="flex items-center gap-3">
                         <span className="font-black text-rose-600 bg-rose-50 px-2 py-0.5 rounded">
@@ -537,7 +540,7 @@ export default function MissionControlPage() {
                         </span>
                         <Link
                           href={`/pyqs?q=${encodeURIComponent(wt.topic)}`}
-                          className="rounded-lg bg-white border border-[#E4E7EC] px-2.5 py-1 text-[11px] font-bold text-[#2453E6] hover:bg-blue-50 transition"
+                          className="rounded-lg bg-white border border-[#E7DDD4] px-2.5 py-1 text-[11px] font-bold text-[#741A2B] hover:bg-blue-50 transition"
                         >
                           {language === "hi" ? "अभ्यास करें" : "Drill"}
                         </Link>
@@ -545,19 +548,19 @@ export default function MissionControlPage() {
                     </div>
                   ))
                 ) : (
-                  <div className="text-center py-6 text-xs text-[#667085]">
+                  <div className="text-center py-6 text-xs text-[#786B68]">
                     <CheckCircle className="h-8 w-8 text-emerald-500 mx-auto mb-2" />
-                    <p className="font-bold text-[#101828]">No Critical Weaknesses Detected</p>
+                    <p className="font-bold text-[#261B1E]">No Critical Weaknesses Detected</p>
                     <p className="mt-1">Maintain balanced practice across all subjects to keep accuracy consistent.</p>
                   </div>
                 )}
               </div>
             </div>
 
-            <div className="mt-4 pt-3 border-t border-[#E4E7EC] text-right">
+            <div className="mt-4 pt-3 border-t border-[#E7DDD4] text-right">
               <Link
                 href="/revision"
-                className="text-xs font-bold text-[#2453E6] hover:underline"
+                className="text-xs font-bold text-[#741A2B] hover:underline"
               >
                 {language === "hi" ? "गलती नोटबुक और SM-2 रिवीज़न देखें →" : "Open Mistake Intelligence Lab →"}
               </Link>
@@ -570,17 +573,17 @@ export default function MissionControlPage() {
         {/* ========================================================= */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* Subject Performance Matrix (7 Cols) */}
-          <div id="subject-performance" className="lg:col-span-7 rounded-3xl border border-[#E4E7EC] bg-white p-6 shadow-sm">
-            <div className="flex items-center justify-between pb-4 border-b border-[#E4E7EC]">
+          <div id="subject-performance" className="lg:col-span-7 rounded-3xl border border-[#E7DDD4] bg-white p-6 shadow-sm">
+            <div className="flex items-center justify-between pb-4 border-b border-[#E7DDD4]">
               <div className="flex items-center gap-2.5">
-                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-[#2453E6]">
+                <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-50 text-[#741A2B]">
                   <Compass className="h-4 w-4" />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#101828]">
+                  <h3 className="text-base font-bold text-[#261B1E]">
                     {language === "hi" ? "विषय-वार दक्षता मैट्रिक्स" : "Subject Mastery & Performance"}
                   </h3>
-                  <p className="text-[11px] text-[#667085]">
+                  <p className="text-[11px] text-[#786B68]">
                     {language === "hi" ? "सामान्य अध्ययन एवं सीसैट विश्लेषण" : "GS Papers & CSAT Pillars with Sample Thresholds"}
                   </p>
                 </div>
@@ -598,11 +601,11 @@ export default function MissionControlPage() {
                 return (
                   <div
                     key={idx}
-                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-2xl bg-[#F7F9FC] border border-[#E4E7EC] p-3 text-xs"
+                    className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 rounded-2xl bg-heritage-ivory border border-[#E7DDD4] p-3 text-xs"
                   >
                     <div>
-                      <p className="font-bold text-[#101828]">{sub.subject}</p>
-                      <p className="text-[11px] text-[#667085]">
+                      <p className="font-bold text-[#261B1E]">{sub.subject}</p>
+                      <p className="text-[11px] text-[#786B68]">
                         {sub.attempted} attempted • {sub.correct} correct
                       </p>
                     </div>
@@ -610,11 +613,11 @@ export default function MissionControlPage() {
                     <div className="flex items-center gap-3">
                       <div className="w-24 bg-slate-200 rounded-full h-2 overflow-hidden">
                         <div
-                          className="bg-[#2453E6] h-full rounded-full"
+                          className="bg-[#741A2B] h-full rounded-full"
                           style={{ width: `${sub.accuracy}%` }}
                         />
                       </div>
-                      <span className="font-bold text-[#101828] w-12 text-right">{sub.accuracy}%</span>
+                      <span className="font-bold text-[#261B1E] w-12 text-right">{sub.accuracy}%</span>
                       <span className={`rounded-md px-2 py-0.5 text-[10px] font-extrabold uppercase ${badgeClass}`}>
                         {sub.status.replace("_", " ")}
                       </span>
@@ -628,17 +631,17 @@ export default function MissionControlPage() {
           {/* Syllabus Intelligence & Mains Studio Velocity (5 Cols) */}
           <div className="lg:col-span-5 space-y-6">
             {/* Syllabus Intelligence Card */}
-            <div className="rounded-3xl border border-[#E4E7EC] bg-white p-6 shadow-sm">
-              <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC]">
+            <div className="rounded-3xl border border-[#E7DDD4] bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between pb-3 border-b border-[#E7DDD4]">
                 <div className="flex items-center gap-2">
-                  <BookOpen className="h-4 w-4 text-[#2453E6]" />
-                  <h3 className="text-sm font-bold text-[#101828]">
+                  <BookOpen className="h-4 w-4 text-[#741A2B]" />
+                  <h3 className="text-sm font-bold text-[#261B1E]">
                     {language === "hi" ? "पाठ्यक्रम इंटेलिजेंस मानचित्र" : "Syllabus Intelligence Map"}
                   </h3>
                 </div>
                 <Link
                   href="/syllabus/intelligence"
-                  className="text-xs font-bold text-[#2453E6] hover:underline"
+                  className="text-xs font-bold text-[#741A2B] hover:underline"
                 >
                   {language === "hi" ? "मानचित्र खोलें →" : "Explore →"}
                 </Link>
@@ -646,8 +649,8 @@ export default function MissionControlPage() {
 
               <div className="mt-4 flex items-center justify-between text-xs">
                 <div>
-                  <p className="text-2xl font-black text-[#101828]">{syllabus.overallPercentage || 0}%</p>
-                  <p className="text-[11px] text-[#667085]">Overall Syllabus Mapped</p>
+                  <p className="text-2xl font-black text-[#261B1E]">{syllabus.overallPercentage || 0}%</p>
+                  <p className="text-[11px] text-[#786B68]">Overall Syllabus Mapped</p>
                 </div>
                 <div className="text-right text-[11px] space-y-1">
                   <p><strong className="text-emerald-700">{syllabus.masteredCount || 0}</strong> Mastered</p>
@@ -658,34 +661,34 @@ export default function MissionControlPage() {
             </div>
 
             {/* Mains Answer Studio Velocity */}
-            <div className="rounded-3xl border border-[#E4E7EC] bg-white p-6 shadow-sm">
-              <div className="flex items-center justify-between pb-3 border-b border-[#E4E7EC]">
+            <div className="rounded-3xl border border-[#E7DDD4] bg-white p-6 shadow-sm">
+              <div className="flex items-center justify-between pb-3 border-b border-[#E7DDD4]">
                 <div className="flex items-center gap-2">
                   <FileText className="h-4 w-4 text-rose-700" />
-                  <h3 className="text-sm font-bold text-[#101828]">
+                  <h3 className="text-sm font-bold text-[#261B1E]">
                     {language === "hi" ? "मेन्स उत्तर लेखन स्टूडियो" : "Mains Answer Writing Studio"}
                   </h3>
                 </div>
                 <Link
                   href="/mains"
-                  className="text-xs font-bold text-[#2453E6] hover:underline"
+                  className="text-xs font-bold text-[#741A2B] hover:underline"
                 >
                   {language === "hi" ? "स्टूडियो →" : "Studio →"}
                 </Link>
               </div>
 
               <div className="mt-4 grid grid-cols-3 gap-2 text-center text-xs">
-                <div className="rounded-xl bg-[#F7F9FC] border border-[#E4E7EC] p-2.5">
-                  <p className="text-lg font-black text-[#101828]">{mains.draftsCount || 0}</p>
-                  <p className="text-[10px] text-[#667085] uppercase">Drafts</p>
+                <div className="rounded-xl bg-heritage-ivory border border-[#E7DDD4] p-2.5">
+                  <p className="text-lg font-black text-[#261B1E]">{mains.draftsCount || 0}</p>
+                  <p className="text-[10px] text-[#786B68] uppercase">Drafts</p>
                 </div>
-                <div className="rounded-xl bg-[#F7F9FC] border border-[#E4E7EC] p-2.5">
-                  <p className="text-lg font-black text-[#101828]">{mains.submittedCount || 0}</p>
-                  <p className="text-[10px] text-[#667085] uppercase">Submitted</p>
+                <div className="rounded-xl bg-heritage-ivory border border-[#E7DDD4] p-2.5">
+                  <p className="text-lg font-black text-[#261B1E]">{mains.submittedCount || 0}</p>
+                  <p className="text-[10px] text-[#786B68] uppercase">Submitted</p>
                 </div>
-                <div className="rounded-xl bg-[#F7F9FC] border border-[#E4E7EC] p-2.5">
+                <div className="rounded-xl bg-heritage-ivory border border-[#E7DDD4] p-2.5">
                   <p className="text-lg font-black text-rose-700">{mains.totalWordsWritten || 0}</p>
-                  <p className="text-[10px] text-[#667085] uppercase">Words</p>
+                  <p className="text-[10px] text-[#786B68] uppercase">Words</p>
                 </div>
               </div>
             </div>
@@ -695,13 +698,13 @@ export default function MissionControlPage() {
         {/* ========================================================= */}
         {/* ROW 4: STRATEGIC RECOMMENDED NEXT ACTIONS */}
         {/* ========================================================= */}
-        <div className="rounded-3xl border border-[#E4E7EC] bg-white p-6 sm:p-8 shadow-sm">
-          <div className="flex items-center justify-between pb-4 border-b border-[#E4E7EC]">
+        <div className="rounded-3xl border border-[#E7DDD4] bg-white p-6 sm:p-8 shadow-sm">
+          <div className="flex items-center justify-between pb-4 border-b border-[#E7DDD4]">
             <div>
-              <span className="text-[11px] font-black uppercase tracking-wider text-[#2453E6]">
+              <span className="text-[11px] font-black uppercase tracking-wider text-[#741A2B]">
                 {language === "hi" ? "रणनीतिक कदम" : "Personalized Recommendation Engine"}
               </span>
-              <h2 className="text-lg sm:text-xl font-black text-[#101828] mt-0.5">
+              <h2 className="text-lg sm:text-xl font-black text-[#261B1E] mt-0.5">
                 {language === "hi"
                   ? "अगली सर्वोत्तम तैयारी कार्रवाई"
                   : "Recommended Next High-Impact Actions"}
@@ -713,20 +716,20 @@ export default function MissionControlPage() {
             {(d.recommendedActions || []).map((action: any) => (
               <div
                 key={action.id}
-                className="flex flex-col justify-between rounded-2xl bg-[#F7F9FC] border border-[#E4E7EC] p-5 hover:border-[#2453E6] hover:shadow-sm transition"
+                className="flex flex-col justify-between rounded-2xl bg-heritage-ivory border border-[#E7DDD4] p-5 hover:border-[#741A2B] hover:shadow-sm transition"
               >
                 <div>
-                  <span className="inline-block rounded-md bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-[#2453E6] uppercase">
+                  <span className="inline-block rounded-md bg-blue-100 px-2 py-0.5 text-[10px] font-bold text-[#741A2B] uppercase">
                     {action.badge}
                   </span>
-                  <h4 className="text-sm font-bold text-[#101828] mt-2">{action.title}</h4>
-                  <p className="text-xs text-[#667085] mt-1 leading-relaxed">
+                  <h4 className="text-sm font-bold text-[#261B1E] mt-2">{action.title}</h4>
+                  <p className="text-xs text-[#786B68] mt-1 leading-relaxed">
                     {action.description}
                   </p>
                 </div>
                 <Link
                   href={action.actionUrl}
-                  className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#2453E6] hover:underline"
+                  className="mt-4 inline-flex items-center gap-1.5 text-xs font-bold text-[#741A2B] hover:underline"
                 >
                   <span>{language === "hi" ? "आगे बढ़ें" : "Proceed to Action"}</span>
                   <ArrowRight className="h-3.5 w-3.5" />
@@ -735,7 +738,8 @@ export default function MissionControlPage() {
             ))}
           </div>
         </div>
-      </div>
+      </main>
+      <Footer />
     </div>
   );
 }

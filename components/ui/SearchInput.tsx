@@ -19,10 +19,10 @@ export function SearchInput({
     <form
       action="/pyqs"
       method="GET"
-      className={`flex items-center w-full rounded-2xl border border-[#E4E7EC] bg-white p-1.5 shadow-xs transition focus-within:border-[#2453E6] focus-within:ring-3 focus-within:ring-[#2453E6]/10 ${className}`}
+      className={`flex items-center w-full rounded-2xl border border-[#E7DDD4] bg-white p-1.5 shadow-xs transition focus-within:border-[#C69A4A] focus-within:ring-3 focus-within:ring-[#C69A4A]/20 ${className}`}
     >
-      <div className="pl-3 pr-2 text-[#667085]">
-        <Search className="h-5 w-5" />
+      <div className="pl-3 pr-2 text-[#786B68]">
+        <Search className="h-5 w-5 text-[#C69A4A]" />
       </div>
       <input
         type="text"
@@ -30,12 +30,12 @@ export function SearchInput({
         defaultValue={defaultValue}
         placeholder={placeholder}
         aria-label="Search previous year questions"
-        className="w-full bg-transparent px-2 py-2 text-sm text-[#101828] placeholder:text-[#667085] focus:outline-none min-h-[40px]"
+        className="w-full bg-transparent px-2 py-2 text-sm text-[#261B1E] placeholder:text-[#786B68] focus:outline-none min-h-[40px]"
         {...props}
       />
       <button
         type="submit"
-        className="shrink-0 rounded-xl bg-[#2453E6] px-4 sm:px-5 py-2 text-sm font-bold text-white shadow-xs hover:bg-[#1d44c2] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6] min-h-[40px]"
+        className="shrink-0 rounded-xl bg-[#741A2B] px-4 sm:px-5 py-2 text-sm font-bold text-white shadow-xs hover:bg-[#5E1422] transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C69A4A] min-h-[40px]"
       >
         {buttonText}
       </button>

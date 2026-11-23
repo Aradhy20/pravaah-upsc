@@ -23,13 +23,13 @@ export function EmptyState({
 }: EmptyStateProps) {
   return (
     <div
-      className={`flex flex-col items-center justify-center p-8 sm:p-12 text-center rounded-2xl border border-dashed border-[#E4E7EC] bg-white ${className}`}
+      className={`flex flex-col items-center justify-center p-8 sm:p-12 text-center rounded-2xl border border-dashed border-[#E7DDD4] bg-white shadow-xs ${className}`}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#F7F9FC] text-[#667085] mb-4">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FBF7F0] text-[#741A2B] border border-[#E7DDD4] mb-4">
         {icon || <HelpCircle className="h-6 w-6" />}
       </div>
-      <h3 className="text-base font-bold text-[#101828]">{title}</h3>
-      <p className="mt-1.5 max-w-sm text-xs sm:text-sm text-[#475467] leading-relaxed">
+      <h3 className="text-base font-bold font-editorial text-[#261B1E]">{title}</h3>
+      <p className="mt-1.5 max-w-sm text-xs sm:text-sm text-[#786B68] leading-relaxed">
         {description}
       </p>
       {(actionText && (actionHref || onAction)) && (
@@ -64,38 +64,40 @@ export function ErrorState({
 }: ErrorStateProps) {
   return (
     <div
-      className={`flex flex-col items-center justify-center p-8 text-center rounded-2xl border border-rose-200 bg-rose-50/50 ${className}`}
+      className={`flex flex-col items-center justify-center p-8 text-center rounded-2xl border border-[#ECC4C4] bg-[#FAECEC]/60 ${className}`}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-100 text-[#DC2626] mb-3">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#FAECEC] text-[#A32D2D] border border-[#ECC4C4] mb-3">
         <AlertCircle className="h-6 w-6" />
       </div>
-      <h3 className="text-sm font-bold text-[#101828]">{title}</h3>
-      <p className="mt-1 max-w-sm text-xs text-[#DC2626]">{message}</p>
+      <h3 className="text-base font-bold font-editorial text-[#3A101A]">{title}</h3>
+      <p className="mt-1 text-xs text-[#786B68] max-w-sm">{message}</p>
       {onRetry && (
-        <div className="mt-4">
-          <SecondaryButton onClick={onRetry} size="sm" icon={<RefreshCw className="h-3.5 w-3.5" />}>
-            Retry
-          </SecondaryButton>
-        </div>
+        <SecondaryButton
+          onClick={onRetry}
+          size="sm"
+          className="mt-4"
+          icon={<RefreshCw className="h-3.5 w-3.5" />}
+        >
+          Try Again
+        </SecondaryButton>
       )}
     </div>
   );
 }
 
-interface LoadingSkeletonProps {
-  lines?: number;
+export function SkeletonLoader({
+  count = 3,
+  className = "",
+}: {
+  count?: number;
   className?: string;
-}
-
-export function LoadingSkeleton({ lines = 3, className = "" }: LoadingSkeletonProps) {
+}) {
   return (
-    <div className={`space-y-3 animate-pulse ${className}`} aria-label="Loading content">
-      <div className="h-5 w-2/5 rounded-lg bg-[#E4E7EC]" />
-      {Array.from({ length: lines }).map((_, i) => (
+    <div className={`space-y-4 animate-pulse ${className}`}>
+      {Array.from({ length: count }).map((_, idx) => (
         <div
-          key={i}
-          className="h-4 rounded-md bg-[#F2F4F7]"
-          style={{ width: `${85 - i * 12}%` }}
+          key={idx}
+          className="h-28 rounded-2xl bg-[#F4EDE2] border border-[#E7DDD4]"
         />
       ))}
     </div>

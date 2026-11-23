@@ -197,33 +197,33 @@ export default function SyllabusVaultPage() {
   );
 
   return (
-    <div className="min-h-screen bg-slate-50 py-10 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-heritage-ivory py-10 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl">
         {/* Header Hero */}
         <div className="text-center max-w-3xl mx-auto mb-10">
-          <div className="inline-flex items-center gap-2 rounded-full bg-blue-100 px-4 py-1.5 text-xs font-bold text-blue-800 mb-4">
-            <Sparkles className="h-4 w-4" />
+          <div className="inline-flex items-center gap-2 rounded-full bg-heritage-cream border border-heritage-gold/40 px-4 py-1.5 text-xs font-bold text-heritage-burgundy mb-4 shadow-xs">
+            <Sparkles className="h-4 w-4 text-heritage-gold" />
             Official UPSC Crack Engine & High-Yield Vault
           </div>
-          <h1 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tight">
-            Everything You Need to <span className="text-blue-700">Crack UPSC CSE</span>
+          <h1 className="font-serif text-3xl sm:text-4xl font-bold text-heritage-text tracking-tight">
+            Everything You Need to <span className="text-heritage-burgundy">Crack UPSC CSE</span>
           </h1>
-          <p className="mt-3 text-base text-slate-600">
+          <p className="mt-3 text-base text-heritage-secondary leading-relaxed">
             Authoritative micro-topic syllabus, standard NCERT & booklist mapping, high-yield static cheat sheets, and 365-day preparation strategy compiled from verified UPSC official standards.
           </p>
         </div>
 
         {/* Primary Tab Switcher */}
-        <div className="flex flex-wrap items-center justify-center gap-2 mb-8 border-b border-slate-200 pb-4">
+        <div className="flex flex-wrap items-center justify-center gap-2 mb-8 border-b border-heritage-border pb-4">
           <button
             onClick={() => { setActiveTab("SYLLABUS"); setSearchQuery(""); }}
             className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all ${
               activeTab === "SYLLABUS"
-                ? "bg-blue-700 text-white shadow-md shadow-blue-700/20"
-                : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
+                ? "bg-heritage-burgundy text-white shadow-xs font-extrabold"
+                : "bg-white text-heritage-text hover:bg-heritage-cream border border-heritage-border"
             }`}
           >
-            <Layers className="h-4 w-4" />
+            <Layers className="h-4 w-4 text-heritage-gold" />
             Detailed Syllabus Matrix
           </button>
 
@@ -231,11 +231,11 @@ export default function SyllabusVaultPage() {
             onClick={() => { setActiveTab("BOOKLIST"); setSearchQuery(""); }}
             className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all ${
               activeTab === "BOOKLIST"
-                ? "bg-blue-700 text-white shadow-md shadow-blue-700/20"
-                : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
+                ? "bg-heritage-burgundy text-white shadow-xs font-extrabold"
+                : "bg-white text-heritage-text hover:bg-heritage-cream border border-heritage-border"
             }`}
           >
-            <BookOpen className="h-4 w-4" />
+            <BookOpen className="h-4 w-4 text-heritage-gold" />
             Standard Booklist & Roadmap
           </button>
 
@@ -243,11 +243,11 @@ export default function SyllabusVaultPage() {
             onClick={() => { setActiveTab("CHEAT_SHEETS"); setSearchQuery(""); }}
             className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all ${
               activeTab === "CHEAT_SHEETS"
-                ? "bg-blue-700 text-white shadow-md shadow-blue-700/20"
-                : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
+                ? "bg-heritage-burgundy text-white shadow-xs font-extrabold"
+                : "bg-white text-heritage-text hover:bg-heritage-cream border border-heritage-border"
             }`}
           >
-            <ShieldCheck className="h-4 w-4" />
+            <ShieldCheck className="h-4 w-4 text-heritage-gold" />
             High-Yield Concept Vaults
           </button>
 
@@ -255,18 +255,18 @@ export default function SyllabusVaultPage() {
             onClick={() => { setActiveTab("ROADMAP"); setSearchQuery(""); }}
             className={`flex items-center gap-2 rounded-xl px-5 py-2.5 text-sm font-bold transition-all ${
               activeTab === "ROADMAP"
-                ? "bg-blue-700 text-white shadow-md shadow-blue-700/20"
-                : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
+                ? "bg-heritage-burgundy text-white shadow-xs font-extrabold"
+                : "bg-white text-heritage-text hover:bg-heritage-cream border border-heritage-border"
             }`}
           >
-            <Calendar className="h-4 w-4" />
+            <Calendar className="h-4 w-4 text-heritage-gold" />
             365-Day Master Strategy
           </button>
         </div>
 
         {/* Global Live Search Bar */}
         <div className="max-w-2xl mx-auto mb-8 relative">
-          <Search className="absolute left-4 top-3.5 h-5 w-5 text-slate-400" />
+          <Search className="absolute left-4 top-3.5 h-5 w-5 text-heritage-secondary" />
           <input
             type="text"
             placeholder={
@@ -278,13 +278,11 @@ export default function SyllabusVaultPage() {
             }
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full rounded-2xl border border-slate-200 bg-white py-3 pl-12 pr-4 text-sm font-medium text-slate-900 shadow-sm focus:border-blue-600 focus:outline-none focus:ring-4 focus:ring-blue-100"
+            className="w-full rounded-2xl border border-heritage-border bg-white py-3 pl-12 pr-4 text-sm font-medium text-heritage-text shadow-card focus:border-heritage-gold focus:outline-none focus:ring-2 focus:ring-heritage-gold/20"
           />
         </div>
 
-        {/* ======================================================== */}
-        {/* TAB 1: DETAILED SYLLABUS MATRIX                          */}
-        {/* ======================================================== */}
+        {/* TAB 1: DETAILED SYLLABUS MATRIX */}
         {activeTab === "SYLLABUS" && (
           <div>
             {/* Paper Filter Pills */}
@@ -302,10 +300,10 @@ export default function SyllabusVaultPage() {
                 <button
                   key={pill.code}
                   onClick={() => setSyllabusFilter(pill.code)}
-                  className={`rounded-lg px-3.5 py-1.5 text-xs font-bold transition-all ${
+                  className={`rounded-xl px-3.5 py-1.5 text-xs font-bold transition-all ${
                     syllabusFilter === pill.code
-                      ? "bg-slate-900 text-white shadow-sm"
-                      : "bg-white text-slate-600 hover:bg-slate-100 border border-slate-200"
+                      ? "bg-heritage-burgundy text-white shadow-xs"
+                      : "bg-white text-heritage-secondary hover:bg-heritage-cream hover:text-heritage-text border border-heritage-border"
                   }`}
                 >
                   {pill.label}
@@ -314,9 +312,9 @@ export default function SyllabusVaultPage() {
             </div>
 
             {loading ? (
-              <div className="py-20 text-center text-slate-500">Loading syllabus nodes from database...</div>
+              <div className="py-20 text-center text-heritage-secondary">Loading syllabus nodes from database...</div>
             ) : filteredNodes.length === 0 ? (
-              <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center text-slate-500">
+              <div className="rounded-2xl border border-heritage-border bg-white p-12 text-center text-heritage-secondary shadow-card">
                 No syllabus topics matching "{searchQuery}".
               </div>
             ) : (
@@ -324,32 +322,32 @@ export default function SyllabusVaultPage() {
                 {filteredNodes.map((node) => (
                   <div
                     key={node.code}
-                    className="flex flex-col justify-between rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:shadow-md transition-shadow group"
+                    className="flex flex-col justify-between rounded-2xl border border-heritage-border bg-white p-6 shadow-card hover:shadow-hover transition-shadow group"
                   >
                     <div>
                       <div className="flex items-center justify-between gap-2 mb-3">
-                        <span className="inline-block rounded-md bg-blue-50 px-2.5 py-1 text-[11px] font-extrabold text-blue-700">
+                        <span className="inline-block rounded-md bg-heritage-cream px-2.5 py-1 text-[11px] font-extrabold text-heritage-burgundy border border-heritage-border">
                           {node.code}
                         </span>
-                        <span className="text-xs font-semibold text-slate-400">
+                        <span className="text-xs font-semibold text-heritage-secondary">
                           {node.paperCode}
                         </span>
                       </div>
-                      <div className="text-xs font-bold uppercase tracking-wider text-slate-400 mb-1">
+                      <div className="text-xs font-bold uppercase tracking-wider text-heritage-secondary mb-1">
                         {node.subjectName}
                       </div>
-                      <h3 className="text-base font-bold text-slate-900 group-hover:text-blue-700 transition-colors">
+                      <h3 className="font-serif text-base font-bold text-heritage-text group-hover:text-heritage-burgundy transition-colors">
                         {node.title}
                       </h3>
-                      <p className="mt-2 text-xs text-slate-600 leading-relaxed">
+                      <p className="mt-2 text-xs text-heritage-secondary leading-relaxed">
                         {node.description}
                       </p>
                     </div>
 
-                    <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
+                    <div className="mt-5 pt-4 border-t border-heritage-border/60 flex items-center justify-between">
                       <Link
                         href={`/pyqs?search=${encodeURIComponent(node.title.split(" ")[0])}`}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-blue-700 hover:text-blue-800"
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-heritage-burgundy hover:text-heritage-wine"
                       >
                         Practice Related PYQs <ArrowRight className="h-3.5 w-3.5" />
                       </Link>
@@ -361,19 +359,17 @@ export default function SyllabusVaultPage() {
           </div>
         )}
 
-        {/* ======================================================== */}
-        {/* TAB 2: STANDARD BOOKLIST & ROADMAP                       */}
-        {/* ======================================================== */}
+        {/* TAB 2: STANDARD BOOKLIST & ROADMAP */}
         {activeTab === "BOOKLIST" && (
           <div className="space-y-8">
-            <div className="rounded-2xl bg-gradient-to-r from-blue-700 to-indigo-800 p-6 text-white shadow-md">
+            <div className="rounded-2xl bg-gradient-to-r from-heritage-wine via-heritage-burgundy to-heritage-wine p-6 text-white shadow-gold border border-heritage-gold/30">
               <div className="flex items-start gap-4">
                 <div className="rounded-xl bg-white/10 p-3">
-                  <BookOpen className="h-6 w-6 text-white" />
+                  <BookOpen className="h-6 w-6 text-heritage-gold" />
                 </div>
                 <div>
-                  <h2 className="text-xl font-bold">The Standard UPSC Resource Compendium</h2>
-                  <p className="mt-1 text-sm text-blue-100 leading-relaxed">
+                  <h2 className="font-serif text-xl font-bold">The Standard UPSC Resource Compendium</h2>
+                  <p className="mt-1 text-sm text-heritage-cream/90 leading-relaxed">
                     Topper recommendation: <strong>"Read one book ten times, rather than ten books one time."</strong> Below is the exhaustive subject-by-subject mapping to officially tested NCERTs and standard reference books.
                   </p>
                 </div>
@@ -382,9 +378,9 @@ export default function SyllabusVaultPage() {
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {STANDARD_BOOKLIST.map((subj, idx) => (
-                <div key={idx} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                  <h3 className="text-lg font-black text-slate-900 mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-                    <span className="flex h-6 w-6 items-center justify-center rounded-full bg-blue-100 text-xs font-bold text-blue-700">
+                <div key={idx} className="rounded-2xl border border-heritage-border bg-white p-6 shadow-card">
+                  <h3 className="font-serif text-lg font-bold text-heritage-text mb-4 pb-2 border-b border-heritage-border/60 flex items-center gap-2">
+                    <span className="flex h-6 w-6 items-center justify-center rounded-lg bg-heritage-cream text-xs font-bold text-heritage-burgundy border border-heritage-border">
                       {idx + 1}
                     </span>
                     {subj.subject}
@@ -392,23 +388,23 @@ export default function SyllabusVaultPage() {
 
                   <div className="space-y-4">
                     {subj.books.map((b, bIdx) => (
-                      <div key={bIdx} className="rounded-xl bg-slate-50 p-4 border border-slate-100">
+                      <div key={bIdx} className="rounded-xl bg-heritage-ivory p-4 border border-heritage-border">
                         <div className="flex items-center justify-between gap-2">
-                          <h4 className="text-sm font-bold text-slate-900">{b.title}</h4>
+                          <h4 className="font-serif text-sm font-bold text-heritage-text">{b.title}</h4>
                           <span
-                            className={`rounded-md px-2 py-0.5 text-[10px] font-extrabold ${
+                            className={`rounded-md px-2 py-0.5 text-[10px] font-bold border ${
                               b.priority === "Must Read"
-                                ? "bg-rose-100 text-rose-700"
+                                ? "bg-rose-100 text-rose-800 border-rose-200"
                                 : b.priority === "Crucial"
-                                ? "bg-amber-100 text-amber-700"
-                                : "bg-blue-100 text-blue-700"
+                                ? "bg-amber-100 text-amber-800 border-amber-200"
+                                : "bg-heritage-cream text-heritage-burgundy border-heritage-border"
                             }`}
                           >
                             {b.priority}
                           </span>
                         </div>
-                        <div className="text-xs font-medium text-slate-500 mt-0.5">Author / Source: {b.author}</div>
-                        <p className="mt-2 text-xs text-slate-600 leading-relaxed">
+                        <div className="text-xs font-medium text-heritage-secondary mt-0.5">Author / Source: {b.author}</div>
+                        <p className="mt-2 text-xs text-heritage-text leading-relaxed">
                           <strong>Key Chapters:</strong> {b.chapters}
                         </p>
                       </div>
@@ -420,9 +416,7 @@ export default function SyllabusVaultPage() {
           </div>
         )}
 
-        {/* ======================================================== */}
-        {/* TAB 3: HIGH-YIELD STATIC CONCEPT CHEAT SHEETS            */}
-        {/* ======================================================== */}
+        {/* TAB 3: HIGH-YIELD STATIC CONCEPT CHEAT SHEETS */}
         {activeTab === "CHEAT_SHEETS" && (
           <div>
             {/* Sub-Category Switcher */}
@@ -438,8 +432,8 @@ export default function SyllabusVaultPage() {
                   onClick={() => setCheatSheetCategory(cat.id as any)}
                   className={`rounded-xl px-4 py-2 text-xs font-bold transition-all ${
                     cheatSheetCategory === cat.id
-                      ? "bg-indigo-700 text-white shadow-sm"
-                      : "bg-white text-slate-700 hover:bg-slate-100 border border-slate-200"
+                      ? "bg-heritage-burgundy text-white shadow-xs"
+                      : "bg-white text-heritage-secondary hover:bg-heritage-cream hover:text-heritage-text border border-heritage-border"
                   }`}
                 >
                   {cat.label}
@@ -451,15 +445,15 @@ export default function SyllabusVaultPage() {
             {cheatSheetCategory === "ARTICLES" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredArticles.map((art, idx) => (
-                  <div key={idx} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition">
+                  <div key={idx} className="rounded-2xl border border-heritage-border bg-white p-5 shadow-card hover:shadow-hover transition">
                     <div className="flex items-center justify-between gap-2 mb-2">
-                      <span className="text-sm font-black text-blue-700">{art.article}</span>
-                      <span className="text-[10px] font-bold rounded-md bg-slate-100 px-2 py-0.5 text-slate-600">
+                      <span className="font-serif text-sm font-bold text-heritage-burgundy">{art.article}</span>
+                      <span className="text-[10px] font-bold rounded-md bg-heritage-cream px-2 py-0.5 text-heritage-burgundy border border-heritage-border">
                         {art.category}
                       </span>
                     </div>
-                    <h4 className="text-sm font-bold text-slate-900 mb-2">{art.title}</h4>
-                    <p className="text-xs text-slate-600 leading-relaxed">{art.significance}</p>
+                    <h4 className="font-serif text-sm font-bold text-heritage-text mb-2">{art.title}</h4>
+                    <p className="text-xs text-heritage-secondary leading-relaxed">{art.significance}</p>
                   </div>
                 ))}
               </div>
@@ -469,12 +463,12 @@ export default function SyllabusVaultPage() {
             {cheatSheetCategory === "AMENDMENTS" && (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {filteredAmendments.map((amd, idx) => (
-                  <div key={idx} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                  <div key={idx} className="rounded-2xl border border-heritage-border bg-white p-6 shadow-card">
                     <div className="flex items-center justify-between gap-2 mb-2">
-                      <h4 className="text-base font-black text-indigo-700">{amd.amendment}</h4>
-                      <span className="text-xs font-bold text-slate-500">{amd.name}</span>
+                      <h4 className="font-serif text-base font-bold text-heritage-burgundy">{amd.amendment}</h4>
+                      <span className="text-xs font-bold text-heritage-secondary">{amd.name}</span>
                     </div>
-                    <p className="text-xs text-slate-600 leading-relaxed mt-2">{amd.details}</p>
+                    <p className="text-xs text-heritage-text leading-relaxed mt-2">{amd.details}</p>
                   </div>
                 ))}
               </div>
@@ -484,17 +478,17 @@ export default function SyllabusVaultPage() {
             {cheatSheetCategory === "ENVIRONMENT" && (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {filteredEnvironment.map((env, idx) => (
-                  <div key={idx} className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+                  <div key={idx} className="rounded-2xl border border-heritage-border bg-white p-5 shadow-card">
                     <div className="flex items-center justify-between gap-2 mb-2">
-                      <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md">
+                      <span className="text-xs font-bold text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
                         {env.state}
                       </span>
-                      <span className="text-[11px] font-semibold text-slate-500 flex items-center gap-1">
-                        <MapPin className="h-3 w-3" /> {env.river}
+                      <span className="text-[11px] font-semibold text-heritage-secondary flex items-center gap-1">
+                        <MapPin className="h-3 w-3 text-heritage-gold" /> {env.river}
                       </span>
                     </div>
-                    <h4 className="text-base font-bold text-slate-900 mb-2">{env.name}</h4>
-                    <p className="text-xs text-slate-600 leading-relaxed">{env.significance}</p>
+                    <h4 className="font-serif text-base font-bold text-heritage-text mb-2">{env.name}</h4>
+                    <p className="text-xs text-heritage-secondary leading-relaxed">{env.significance}</p>
                   </div>
                 ))}
               </div>
@@ -504,24 +498,24 @@ export default function SyllabusVaultPage() {
             {cheatSheetCategory === "RIVERS" && (
               <div className="space-y-6">
                 {filteredRivers.map((riv, idx) => (
-                  <div key={idx} className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-slate-100">
-                      <h3 className="text-lg font-black text-blue-900">{riv.river}</h3>
-                      <span className="text-xs font-bold text-slate-500">
+                  <div key={idx} className="rounded-2xl border border-heritage-border bg-white p-6 shadow-card">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-heritage-border/60">
+                      <h3 className="font-serif text-lg font-bold text-heritage-burgundy">{riv.river}</h3>
+                      <span className="text-xs font-semibold text-heritage-secondary">
                         <strong>Origin:</strong> {riv.origin}
                       </span>
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mt-4 text-xs">
-                      <div className="rounded-xl bg-slate-50 p-3">
-                        <span className="font-bold text-slate-900 block mb-1">Left-Bank Tributaries:</span>
-                        <span className="text-slate-600">{riv.leftTributaries}</span>
+                      <div className="rounded-xl bg-heritage-ivory p-3.5 border border-heritage-border">
+                        <span className="font-serif font-bold text-heritage-text block mb-1">Left-Bank Tributaries:</span>
+                        <span className="text-heritage-secondary">{riv.leftTributaries}</span>
                       </div>
-                      <div className="rounded-xl bg-slate-50 p-3">
-                        <span className="font-bold text-slate-900 block mb-1">Right-Bank Tributaries:</span>
-                        <span className="text-slate-600">{riv.rightTributaries}</span>
+                      <div className="rounded-xl bg-heritage-ivory p-3.5 border border-heritage-border">
+                        <span className="font-serif font-bold text-heritage-text block mb-1">Right-Bank Tributaries:</span>
+                        <span className="text-heritage-secondary">{riv.rightTributaries}</span>
                       </div>
                     </div>
-                    <p className="mt-3 text-xs text-slate-600 leading-relaxed bg-blue-50/50 p-3 rounded-xl border border-blue-100">
+                    <p className="mt-3 text-xs text-heritage-text leading-relaxed bg-heritage-cream/80 p-3.5 rounded-xl border border-heritage-gold/30">
                       <strong>High-Yield Fact:</strong> {riv.keyFacts}
                     </p>
                   </div>
@@ -531,84 +525,82 @@ export default function SyllabusVaultPage() {
           </div>
         )}
 
-        {/* ======================================================== */}
-        {/* TAB 4: 365-DAY UPSC MASTER STRATEGY                      */}
-        {/* ======================================================== */}
+        {/* TAB 4: 365-DAY UPSC MASTER STRATEGY */}
         {activeTab === "ROADMAP" && (
           <div className="space-y-8 max-w-4xl mx-auto">
-            <div className="rounded-2xl bg-white border border-slate-200 p-8 shadow-sm">
-              <h2 className="text-2xl font-black text-slate-900 mb-6 flex items-center gap-3">
-                <Calendar className="h-6 w-6 text-blue-700" />
+            <div className="rounded-2xl bg-white border border-heritage-border p-8 shadow-card">
+              <h2 className="font-serif text-2xl font-bold text-heritage-text mb-6 flex items-center gap-3">
+                <Calendar className="h-6 w-6 text-heritage-gold" />
                 The 4-Phase 365-Day UPSC Preparation Blueprint
               </h2>
 
-              <div className="space-y-8 relative before:absolute before:inset-0 before:left-5 before:w-0.5 before:bg-slate-200">
+              <div className="space-y-8 relative before:absolute before:inset-0 before:left-5 before:w-0.5 before:bg-heritage-border">
                 {/* Phase 1 */}
                 <div className="relative flex items-start gap-6 pl-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-blue-700 text-white font-bold text-sm shadow">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-heritage-burgundy text-white font-bold text-sm shadow">
                     1
                   </div>
                   <div>
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-blue-700">
+                    <span className="text-xs font-bold uppercase tracking-wider text-heritage-burgundy">
                       Months 1 to 4 • Foundation & Basic NCERTs
                     </span>
-                    <h3 className="text-lg font-bold text-slate-900 mt-1">
+                    <h3 className="font-serif text-lg font-bold text-heritage-text mt-1">
                       Concept Mastery & Habit Formation
                     </h3>
-                    <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                    <p className="mt-2 text-sm text-heritage-secondary leading-relaxed">
                       Read foundational NCERTs (Class 6 to 12) for History, Geography, Polity, and Economy. Develop a daily habit of reading one standard national daily (The Hindu or Indian Express) and attempt the 5-Question Daily Prelims Diagnostic on Pravaah.
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">NCERT Class 11/12</span>
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">Daily 5-MCQ Quiz</span>
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">PIB Current Affairs</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">NCERT Class 11/12</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">Daily 5-MCQ Quiz</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">PIB Current Affairs</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Phase 2 */}
                 <div className="relative flex items-start gap-6 pl-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-indigo-700 text-white font-bold text-sm shadow">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-heritage-wine text-white font-bold text-sm shadow">
                     2
                   </div>
                   <div>
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-indigo-700">
+                    <span className="text-xs font-bold uppercase tracking-wider text-heritage-wine">
                       Months 5 to 8 • Core Standard Reference Books & Optional
                     </span>
-                    <h3 className="text-lg font-bold text-slate-900 mt-1">
+                    <h3 className="font-serif text-lg font-bold text-heritage-text mt-1">
                       Standard References & Integrated Mains Preparation
                     </h3>
-                    <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                    <p className="mt-2 text-sm text-heritage-secondary leading-relaxed">
                       Complete first thorough reading of Laxmikanth, Spectrum, Economy (Ramesh Singh/Vivek Singh), and PMF IAS Environment. Complete 70% of Optional Subject syllabus. Start writing 1 Mains answer daily in the Mains Answer Studio.
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">Laxmikanth & Spectrum</span>
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">Mains 1 Question / Day</span>
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">Optional Subject Pass 1</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">Laxmikanth & Spectrum</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">Mains 1 Question / Day</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">Optional Subject Pass 1</span>
                     </div>
                   </div>
                 </div>
 
                 {/* Phase 3 */}
                 <div className="relative flex items-start gap-6 pl-4">
-                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-amber-600 text-white font-bold text-sm shadow">
+                  <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full bg-heritage-saffron text-white font-bold text-sm shadow">
                     3
                   </div>
                   <div>
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-amber-700">
+                    <span className="text-xs font-bold uppercase tracking-wider text-heritage-saffron">
                       Months 9 to 11 • Prelims Intensive & PYQ Drill
                     </span>
-                    <h3 className="text-lg font-bold text-slate-900 mt-1">
-                      121+ Verified Question Deep Dive, CSAT & Mock Testing
+                    <h3 className="font-serif text-lg font-bold text-heritage-text mt-1">
+                      Verified Question Deep Dive, CSAT & Mock Testing
                     </h3>
-                    <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-                      Shift 100% focus to Prelims. Solve all 121 verified official questions from 1995-2024 on Pravaah UPSC. Memorize elimination techniques. Take 2-Hour timed mock exams every weekend. Regularly review mistake notebook to clear weak spots.
+                    <p className="mt-2 text-sm text-heritage-secondary leading-relaxed">
+                      Shift 100% focus to Prelims. Solve all verified official questions from 1995-2024 on Pravaah UPSC. Memorize elimination techniques. Take 2-Hour timed mock exams every weekend. Regularly review mistake notebook to clear weak spots.
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">121 PYQ Explorer</span>
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">Timed 2-Hour Mocks</span>
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">CSAT Practice</span>
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">Mistake Revision</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">Official PYQ Explorer</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">Timed 2-Hour Mocks</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">CSAT Practice</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">Mistake Revision</span>
                     </div>
                   </div>
                 </div>
@@ -619,19 +611,19 @@ export default function SyllabusVaultPage() {
                     4
                   </div>
                   <div>
-                    <span className="text-xs font-extrabold uppercase tracking-wider text-emerald-700">
+                    <span className="text-xs font-bold uppercase tracking-wider text-emerald-700">
                       Post-Prelims (June to September) • Mains Acceleration
                     </span>
-                    <h3 className="text-lg font-bold text-slate-900 mt-1">
+                    <h3 className="font-serif text-lg font-bold text-heritage-text mt-1">
                       Ethics Case Studies, Essay & Full-Length Tests
                     </h3>
-                    <p className="mt-2 text-sm text-slate-600 leading-relaxed">
+                    <p className="mt-2 text-sm text-heritage-secondary leading-relaxed">
                       Write 2 full essays per week using the PESTLE multidimensional framework. Solve 50+ Ethics case studies. Revise value-added data points, committee recommendations, and Supreme Court judgments.
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">Ethics Case Studies</span>
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">Essay Frameworks</span>
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">Full 3-Hour Simulation</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">Ethics Case Studies</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">Essay Frameworks</span>
+                      <span className="rounded-md bg-heritage-ivory border border-heritage-border px-2 py-1 text-xs font-medium text-heritage-text">Full 3-Hour Simulation</span>
                     </div>
                   </div>
                 </div>
@@ -641,24 +633,24 @@ export default function SyllabusVaultPage() {
         )}
 
         {/* Bottom CTA to Subscription / Test Series */}
-        <div className="mt-16 rounded-3xl bg-slate-900 p-8 sm:p-12 text-center text-white relative overflow-hidden shadow-xl">
+        <div className="mt-16 rounded-3xl bg-gradient-to-r from-heritage-wine via-heritage-burgundy to-heritage-wine p-8 sm:p-12 text-center text-white relative overflow-hidden shadow-gold border border-heritage-gold/30">
           <div className="relative z-10 max-w-2xl mx-auto">
-            <h2 className="text-2xl sm:text-3xl font-black">Ready to Put Strategy into Practice?</h2>
-            <p className="mt-3 text-slate-300 text-sm sm:text-base">
-              Solve 121 verified UPSC CSE questions with official UPSC answer keys, statement-by-statement evidence, and automated SuperMemo-2 mistake revision.
+            <h2 className="font-serif text-2xl sm:text-3xl font-bold">Ready to Put Strategy into Practice?</h2>
+            <p className="mt-3 text-heritage-cream/90 text-sm sm:text-base leading-relaxed">
+              Solve verified UPSC CSE questions with official UPSC answer keys, statement-by-statement evidence, and automated SuperMemo-2 mistake revision.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
               <Link
                 href="/pyqs"
-                className="rounded-xl bg-blue-600 px-6 py-3 text-sm font-bold text-white hover:bg-blue-500 transition shadow-lg shadow-blue-600/30"
+                className="rounded-xl bg-heritage-cream text-heritage-burgundy px-6 py-3 text-sm font-bold hover:bg-white transition shadow-xs"
               >
                 Start Practicing PYQs
               </Link>
               <Link
                 href="/pricing"
-                className="rounded-xl bg-white/10 px-6 py-3 text-sm font-bold text-white hover:bg-white/20 transition backdrop-blur-sm"
+                className="rounded-xl bg-white/10 px-6 py-3 text-sm font-semibold text-white hover:bg-white/20 transition backdrop-blur-xs border border-white/20"
               >
-                View Premium Plans & UPI Checkout
+                View Premium Plans & Checkout
               </Link>
             </div>
           </div>

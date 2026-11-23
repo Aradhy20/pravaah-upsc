@@ -102,25 +102,25 @@ export default function MapLearningLabPage() {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-heritage-ivory flex flex-col font-sans text-heritage-dark">
       <Header />
 
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Hero Banner */}
-        <div className="bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-900 rounded-3xl p-6 sm:p-10 text-white shadow-sm mb-8 relative overflow-hidden">
+        <div className="bg-gradient-to-r from-heritage-wine via-heritage-burgundy to-heritage-wine rounded-3xl p-6 sm:p-10 text-white shadow-xl mb-8 relative overflow-hidden border border-heritage-gold/30">
           <div className="relative z-10 max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-semibold mb-4 border border-emerald-400/20">
-              <Globe className="h-3.5 w-3.5" />
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-heritage-gold/20 text-heritage-goldLight text-xs font-semibold mb-4 border border-heritage-gold/30">
+              <Globe className="h-3.5 w-3.5 text-heritage-gold" />
               {language === "hi" ? "मानचित्र आधारित भूगोल अधिगम प्रयोगशाला" : "UPSC Cartographic & Spatial Intelligence"}
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
+            <h1 className="text-2xl sm:text-4xl font-serif font-black tracking-tight text-white">
               {language === "hi" ? (
-                <>मानचित्र आधारित भूगोल <span className="text-emerald-400">अभ्यास केंद्र</span></>
+                <>मानचित्र आधारित भूगोल <span className="text-heritage-gold">अभ्यास केंद्र</span></>
               ) : (
-                <>Map-Based Learning Lab & <span className="text-emerald-400">Spatial Atlas</span></>
+                <>Map-Based Learning Lab & <span className="text-heritage-gold">Spatial Atlas</span></>
               )}
             </h1>
-            <p className="mt-3 text-slate-300 text-xs sm:text-sm leading-relaxed">
+            <p className="mt-3 text-white/80 text-xs sm:text-sm leading-relaxed">
               {language === "hi"
                 ? "राष्ट्रीय उद्यान, रामसर आर्द्रभूमियां, जलप्रपात, नदियाँ, पर्वतीय दर्रे एवं भू-राजनीतिक चोकपॉइंट्स का उच्च-सटीक भौगोलिक अध्ययन। यूपीएससी प्रारंभिक परीक्षा के विगत वर्षों के वास्तविक प्रश्नों के संदर्भों सहित।"
                 : "High-yield spatial drills covering National Parks, Ramsar Wetlands, River Gorges, Mountain Passes, and Global Maritime Chokepoints. Master location-matching questions testing exact geographic coordinates and ecological significance."}
@@ -133,8 +133,8 @@ export default function MapLearningLabPage() {
               onClick={() => setQuizMode(false)}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition ${
                 !quizMode
-                  ? "bg-emerald-500 text-slate-950 shadow"
-                  : "bg-white/10 hover:bg-white/20 text-white border border-white/10"
+                  ? "bg-heritage-gold text-heritage-wine shadow-xs"
+                  : "bg-white/10 hover:bg-white/20 text-white border border-white/20"
               }`}
             >
               {language === "hi" ? "भौगोलिक निर्देशिका" : "Spatial Atlas Explorer"}
@@ -148,8 +148,8 @@ export default function MapLearningLabPage() {
               }}
               className={`px-4 py-2 rounded-xl text-xs font-bold transition flex items-center gap-1.5 ${
                 quizMode
-                  ? "bg-emerald-500 text-slate-950 shadow"
-                  : "bg-white/10 hover:bg-white/20 text-white border border-white/10"
+                  ? "bg-heritage-gold text-heritage-wine shadow-xs"
+                  : "bg-white/10 hover:bg-white/20 text-white border border-white/20"
               }`}
             >
               <Sparkles className="h-3.5 w-3.5" />
@@ -160,27 +160,27 @@ export default function MapLearningLabPage() {
 
         {/* QUIZ MODE VIEW */}
         {quizMode && currentQuizFeature ? (
-          <div className="bg-white rounded-3xl border border-slate-200 p-6 sm:p-10 shadow-sm max-w-3xl mx-auto mb-12">
-            <div className="flex items-center justify-between pb-4 mb-6 border-b border-slate-100 text-xs">
-              <span className="font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full">
+          <div className="bg-white rounded-3xl border border-heritage-border p-6 sm:p-10 shadow-sm max-w-3xl mx-auto mb-12">
+            <div className="flex items-center justify-between pb-4 mb-6 border-b border-heritage-border text-xs">
+              <span className="font-bold text-heritage-burgundy bg-heritage-cream px-3 py-1 rounded-full border border-heritage-border">
                 Question {currentQuizIndex + 1} of {features.length}
               </span>
-              <span className="font-semibold text-slate-500">
-                Score: <strong className="text-slate-900">{quizScore}</strong> correct
+              <span className="font-semibold text-heritage-muted">
+                Score: <strong className="text-heritage-dark font-serif">{quizScore}</strong> correct
               </span>
             </div>
 
             <div className="mb-6">
-              <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
+              <span className="text-[11px] font-bold text-heritage-muted uppercase tracking-wider block mb-1">
                 Category: {currentQuizFeature.category.replace(/_/g, " ")}
               </span>
-              <h2 className="text-lg font-bold text-slate-900 mb-2">
+              <h2 className="text-lg font-serif font-black text-heritage-dark mb-2">
                 {language === "hi" && currentQuizFeature.nameHi
                   ? currentQuizFeature.nameHi
                   : currentQuizFeature.name}
               </h2>
-              <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100 text-xs text-slate-700 leading-relaxed">
-                <span className="font-bold text-slate-900 block mb-1">Ecological & Geographic Clues:</span>
+              <div className="p-4 bg-heritage-ivory rounded-2xl border border-heritage-border text-xs text-heritage-dark leading-relaxed">
+                <span className="font-bold text-heritage-wine block mb-1">Ecological & Geographic Clues:</span>
                 <p>
                   {language === "hi" && currentQuizFeature.keyFactsHi
                     ? currentQuizFeature.keyFactsHi
@@ -189,13 +189,13 @@ export default function MapLearningLabPage() {
               </div>
             </div>
 
-            <p className="text-xs font-bold text-slate-800 mb-3">
+            <p className="text-xs font-serif font-bold text-heritage-dark mb-3">
               Where is this geographical feature situated?
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-6">
               {quizOptions.map((opt) => {
-                let btnStyle = "border-slate-200 bg-white hover:bg-slate-50 text-slate-800";
+                let btnStyle = "border-heritage-border bg-white hover:bg-heritage-ivory text-heritage-dark";
                 if (isAnswerRevealed) {
                   if (opt.id === currentQuizFeature.id) {
                     btnStyle = "border-emerald-500 bg-emerald-50 text-emerald-950 font-bold ring-2 ring-emerald-500/20";
@@ -212,7 +212,7 @@ export default function MapLearningLabPage() {
                     className={`p-3.5 rounded-xl border text-xs text-left transition-all ${btnStyle}`}
                   >
                     <span className="font-semibold block">{opt.stateOrCountry}</span>
-                    <span className="text-[10px] text-slate-400">
+                    <span className="text-[10px] text-heritage-muted">
                       Coordinates: {opt.latitude}° N, {opt.longitude}° E
                     </span>
                   </button>
@@ -226,8 +226,8 @@ export default function MapLearningLabPage() {
                   <CheckCircle className="h-4 w-4" />
                   Official Geography Solution
                 </div>
-                <p className="text-slate-700 leading-relaxed">
-                  <strong className="text-slate-900">{currentQuizFeature.name}</strong> is situated in{" "}
+                <p className="text-heritage-dark leading-relaxed">
+                  <strong className="text-heritage-burgundy">{currentQuizFeature.name}</strong> is situated in{" "}
                   <strong>{currentQuizFeature.stateOrCountry}</strong>.
                 </p>
                 {currentQuizFeature.upscReference && (
@@ -242,7 +242,7 @@ export default function MapLearningLabPage() {
               {isAnswerRevealed ? (
                 <button
                   onClick={nextQuizQuestion}
-                  className="px-6 py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white text-xs font-bold transition shadow"
+                  className="px-6 py-2.5 rounded-xl bg-heritage-burgundy hover:bg-heritage-wine text-white text-xs font-bold transition shadow-xs"
                 >
                   {currentQuizIndex + 1 < features.length ? "Next Location →" : "Restart Quiz"}
                 </button>
@@ -260,8 +260,8 @@ export default function MapLearningLabPage() {
                   onClick={() => setSelectedCategory(cat.id)}
                   className={`px-3.5 py-2 rounded-xl text-xs font-bold transition ${
                     selectedCategory === cat.id
-                      ? "bg-slate-900 text-white shadow"
-                      : "bg-white border border-slate-200 text-slate-700 hover:bg-slate-50"
+                      ? "bg-heritage-burgundy text-white shadow-xs"
+                      : "bg-white border border-heritage-border text-heritage-dark hover:bg-heritage-cream"
                   }`}
                 >
                   {language === "hi" ? cat.labelHi : cat.labelEn} ({cat.count})
@@ -271,21 +271,21 @@ export default function MapLearningLabPage() {
 
             {/* Search Input */}
             <div className="mb-6 relative">
-              <Search className="h-4 w-4 text-slate-400 absolute left-3.5 top-3.5" />
+              <Search className="h-4 w-4 text-heritage-muted absolute left-3.5 top-3.5" />
               <input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search locations, rivers, waterfalls, or state/countries (e.g. Narmada, Loktak, Bab-el-Mandeb)..."
-                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-slate-200 text-xs text-slate-900 bg-white focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent placeholder:text-slate-400"
+                className="w-full pl-10 pr-4 py-2.5 rounded-xl border border-heritage-border text-xs text-heritage-dark bg-white focus:outline-none focus:ring-2 focus:ring-heritage-gold focus:border-transparent placeholder:text-heritage-muted"
               />
             </div>
 
             {/* Feature Cards Grid */}
             {loading ? (
-              <div className="py-20 text-center text-xs text-slate-400">Loading spatial atlas...</div>
+              <div className="py-20 text-center text-xs text-heritage-muted">Loading spatial atlas...</div>
             ) : filteredFeatures.length === 0 ? (
-              <div className="bg-white rounded-2xl border border-slate-200 p-12 text-center text-xs text-slate-500">
+              <div className="bg-white rounded-2xl border border-heritage-border p-12 text-center text-xs text-heritage-muted">
                 No geographical features match the selected filter.
               </div>
             ) : (
@@ -293,46 +293,46 @@ export default function MapLearningLabPage() {
                 {filteredFeatures.map((f) => (
                   <div
                     key={f.id}
-                    className="bg-white rounded-2xl border border-slate-200 p-5 shadow-xs hover:border-emerald-300 hover:shadow-sm transition-all flex flex-col justify-between"
+                    className="bg-white rounded-2xl border border-heritage-border p-5 shadow-xs hover:border-heritage-gold hover:shadow-md transition-all flex flex-col justify-between"
                   >
                     <div>
                       {/* Badge Row */}
                       <div className="flex items-center justify-between text-[11px] mb-2.5">
-                        <span className="font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-md border border-emerald-100">
+                        <span className="font-bold text-heritage-burgundy bg-heritage-cream px-2.5 py-0.5 rounded-md border border-heritage-border">
                           {f.category.replace(/_/g, " ")}
                         </span>
-                        <span className="text-slate-400 flex items-center gap-1 font-mono text-[10px]">
-                          <Navigation className="h-3 w-3" />
+                        <span className="text-heritage-muted flex items-center gap-1 font-mono text-[10px]">
+                          <Navigation className="h-3 w-3 text-heritage-gold" />
                           {f.latitude}° N, {f.longitude}° E
                         </span>
                       </div>
 
                       {/* Title */}
-                      <h3 className="text-sm font-bold text-slate-900 mb-0.5">
+                      <h3 className="text-sm font-serif font-bold text-heritage-dark mb-0.5">
                         {f.name}
                       </h3>
                       {f.nameHi && (
-                        <p className="text-xs text-slate-500 mb-2 font-medium">
+                        <p className="text-xs text-heritage-muted mb-2 font-medium">
                           {f.nameHi}
                         </p>
                       )}
 
                       {/* State / Region */}
-                      <div className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-600 bg-slate-50 px-2 py-0.5 rounded mb-3">
-                        <MapPin className="h-3 w-3 text-emerald-600" />
+                      <div className="inline-flex items-center gap-1 text-[11px] font-semibold text-heritage-muted bg-heritage-ivory px-2 py-0.5 rounded mb-3 border border-heritage-border/60">
+                        <MapPin className="h-3 w-3 text-heritage-gold" />
                         <span>{f.stateOrCountry}</span>
                       </div>
 
                       {/* Key Facts */}
-                      <p className="text-xs text-slate-600 leading-relaxed mb-4">
+                      <p className="text-xs text-heritage-muted leading-relaxed mb-4">
                         {language === "hi" && f.keyFactsHi ? f.keyFactsHi : f.keyFacts}
                       </p>
                     </div>
 
                     {/* UPSC Provenance Footer */}
                     {f.upscReference && (
-                      <div className="pt-3 border-t border-slate-100 text-[10px] font-bold text-emerald-700 flex items-center gap-1">
-                        <ShieldCheck className="h-3.5 w-3.5 shrink-0" />
+                      <div className="pt-3 border-t border-heritage-border text-[10px] font-bold text-heritage-wine flex items-center gap-1">
+                        <ShieldCheck className="h-3.5 w-3.5 text-heritage-gold shrink-0" />
                         <span>{f.upscReference}</span>
                       </div>
                     )}

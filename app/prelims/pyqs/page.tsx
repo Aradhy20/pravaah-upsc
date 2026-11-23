@@ -141,7 +141,7 @@ function PrelimsPYQContent() {
   const [tempNoteText, setTempNoteText] = useState("");
   const [copiedQuestionId, setCopiedQuestionId] = useState<string | null>(null);
 
-  // Floating Feedback Modal State (Matching IASBoard)
+  // Floating Feedback Modal State
   const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
   const [feedbackCategory, setFeedbackCategory] = useState<"QUESTION_ERROR" | "EXPLANATION_QUERY" | "FEATURE_REQUEST">("QUESTION_ERROR");
   const [feedbackText, setFeedbackText] = useState("");
@@ -301,43 +301,27 @@ function PrelimsPYQContent() {
     };
   }, [questions, attemptedAnswers]);
 
-  // Year Pill Palette Helpers (Matching IASBoard)
+  // Heritage Year Badge Style Helper
   const getYearBadgeStyle = (year: number, isSelected: boolean) => {
     if (isSelected) {
-      return "bg-[#5b36e8] text-white font-extrabold shadow-md scale-105 border-[#5b36e8]";
+      return "bg-heritage-burgundy text-white font-extrabold shadow-xs scale-105 border-heritage-burgundy";
     }
-
-    // Soft pastel badge variations matching IASBoard palette
-    const mod = year % 6;
-    switch (mod) {
-      case 0:
-        return "bg-[#eceeff] text-[#4f5bd5] hover:bg-[#e0e4ff] border-transparent";
-      case 1:
-        return "bg-[#e8f7ee] text-[#1e874b] hover:bg-[#d6f2df] border-transparent";
-      case 2:
-        return "bg-[#fde8e8] text-[#c81e1e] hover:bg-[#fcd0d0] border-transparent";
-      case 3:
-        return "bg-[#fef3c7] text-[#92400e] hover:bg-[#fde68a] border-transparent";
-      case 4:
-        return "bg-[#e0f2fe] text-[#0369a1] hover:bg-[#bae6fd] border-transparent";
-      default:
-        return "bg-[#fce7f3] text-[#9d174d] hover:bg-[#fbcfe8] border-transparent";
-    }
+    return "bg-white text-heritage-secondary hover:border-heritage-gold hover:text-heritage-text border-heritage-border";
   };
 
   return (
-    <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
-      {/* 1. Top Exam Selector Tabs (Matching IASBoard) */}
-      <div className="flex items-center gap-6 border-b border-slate-200 pb-2 mb-6">
+    <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6">
+      {/* 1. Top Exam Selector Tabs */}
+      <div className="flex items-center gap-6 border-b border-heritage-border pb-2 mb-6">
         <button
           onClick={() => {
             setActiveExamTab("CSE");
             setPage(1);
           }}
-          className={`relative pb-2 text-sm font-extrabold transition ${
+          className={`relative pb-2 text-sm font-serif font-bold transition ${
             activeExamTab === "CSE"
-              ? "text-purple-700 after:absolute after:bottom-[-9px] after:left-0 after:right-0 after:h-0.5 after:bg-purple-700"
-              : "text-slate-500 hover:text-slate-800"
+              ? "text-heritage-burgundy after:absolute after:bottom-[-9px] after:left-0 after:right-0 after:h-0.5 after:bg-heritage-burgundy"
+              : "text-heritage-secondary hover:text-heritage-text"
           }`}
         >
           UPSC CSE
@@ -347,14 +331,14 @@ function PrelimsPYQContent() {
             setActiveExamTab("OTHER");
             setPage(1);
           }}
-          className={`relative pb-2 text-sm font-medium transition ${
+          className={`relative pb-2 text-sm font-serif font-medium transition ${
             activeExamTab === "OTHER"
-              ? "text-purple-700 font-extrabold after:absolute after:bottom-[-9px] after:left-0 after:right-0 after:h-0.5 after:bg-purple-700"
-              : "text-slate-500 hover:text-slate-800"
+              ? "text-heritage-burgundy font-bold after:absolute after:bottom-[-9px] after:left-0 after:right-0 after:h-0.5 after:bg-heritage-burgundy"
+              : "text-heritage-secondary hover:text-heritage-text"
           }`}
         >
           Other UPSC Exams{" "}
-          <span className="text-[11px] text-slate-400 font-normal ml-1 hidden sm:inline">
+          <span className="text-[11px] text-heritage-secondary/70 font-sans font-normal ml-1 hidden sm:inline">
             CAPF · CDS · CISF · CGS · EPFO ...
           </span>
         </button>
@@ -363,38 +347,38 @@ function PrelimsPYQContent() {
       {/* 2. Page Title & Mode Controls */}
       <div className="mb-6 flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          <h1 className="font-serif text-2xl sm:text-3xl font-bold tracking-tight text-heritage-text">
             Prelims · Previous-Year Questions <span className="sr-only">Prelims PYQ Explorer</span>
           </h1>
-          <p className="mt-1 text-xs sm:text-sm text-slate-600">
-            Attempt real UPSC Prelims MCQs year by year — pick an option to see the answer, explanation and elimination technique.
+          <p className="mt-1 text-xs sm:text-sm text-heritage-secondary">
+            Attempt official UPSC Prelims MCQs year by year — instant bilingual toggle, Series A official answer keys, and pedagogical trap analysis.
           </p>
         </div>
 
         {/* Mode Switchers and Language Toggle */}
         <div className="flex flex-wrap items-center gap-2">
           {/* Bilingual Toggle */}
-          <div className="flex items-center rounded-lg border border-slate-200 bg-slate-100 p-0.5 text-xs font-bold">
+          <div className="flex items-center rounded-xl border border-heritage-border bg-heritage-ivory p-0.5 text-xs font-bold">
             <button
               onClick={() => setDisplayLanguage("EN")}
-              className={`rounded-md px-2.5 py-1 transition ${
-                displayLanguage === "EN" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-900"
+              className={`rounded-lg px-2.5 py-1 transition ${
+                displayLanguage === "EN" ? "bg-heritage-burgundy text-white shadow-xs font-bold" : "text-heritage-secondary hover:text-heritage-text"
               }`}
             >
               EN
             </button>
             <button
               onClick={() => setDisplayLanguage("HI")}
-              className={`rounded-md px-2.5 py-1 font-hindi transition ${
-                displayLanguage === "HI" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-900"
+              className={`rounded-lg px-2.5 py-1 font-hindi transition ${
+                displayLanguage === "HI" ? "bg-heritage-burgundy text-white shadow-xs font-bold" : "text-heritage-secondary hover:text-heritage-text"
               }`}
             >
               हिन्दी
             </button>
             <button
               onClick={() => setDisplayLanguage("BOTH")}
-              className={`rounded-md px-2.5 py-1 transition ${
-                displayLanguage === "BOTH" ? "bg-white text-purple-700 shadow-sm" : "text-slate-500 hover:text-slate-900"
+              className={`rounded-lg px-2.5 py-1 transition ${
+                displayLanguage === "BOTH" ? "bg-heritage-burgundy text-white shadow-xs font-bold" : "text-heritage-secondary hover:text-heritage-text"
               }`}
             >
               Both
@@ -402,62 +386,62 @@ function PrelimsPYQContent() {
           </div>
 
           {/* Mode Selector */}
-          <div className="flex items-center rounded-lg border border-slate-200 bg-white p-0.5 text-xs font-bold shadow-sm">
+          <div className="flex items-center rounded-xl border border-heritage-border bg-white p-0.5 text-xs font-bold shadow-card">
             <button
               onClick={() => setViewMode("practice")}
-              className={`flex items-center gap-1 rounded-md px-3 py-1.5 transition ${
-                viewMode === "practice" ? "bg-purple-50 text-purple-700" : "text-slate-600 hover:text-slate-900"
+              className={`flex items-center gap-1 rounded-lg px-3 py-1.5 transition ${
+                viewMode === "practice" ? "bg-heritage-cream text-heritage-burgundy font-bold" : "text-heritage-secondary hover:text-heritage-text"
               }`}
             >
-              <List className="h-3.5 w-3.5" /> Practice
+              <List className="h-3.5 w-3.5 text-heritage-gold" /> Practice
             </button>
             <button
               onClick={() => setViewMode("focus")}
-              className={`flex items-center gap-1 rounded-md px-3 py-1.5 transition ${
-                viewMode === "focus" ? "bg-purple-50 text-purple-700" : "text-slate-600 hover:text-slate-900"
+              className={`flex items-center gap-1 rounded-lg px-3 py-1.5 transition ${
+                viewMode === "focus" ? "bg-heritage-cream text-heritage-burgundy font-bold" : "text-heritage-secondary hover:text-heritage-text"
               }`}
             >
-              <Maximize2 className="h-3.5 w-3.5" /> Focus (1Q)
+              <Maximize2 className="h-3.5 w-3.5 text-heritage-gold" /> Focus (1Q)
             </button>
             <button
               onClick={() => setViewMode("exam")}
-              className={`flex items-center gap-1 rounded-md px-3 py-1.5 transition ${
-                viewMode === "exam" ? "bg-amber-50 text-amber-800" : "text-slate-600 hover:text-slate-900"
+              className={`flex items-center gap-1 rounded-lg px-3 py-1.5 transition ${
+                viewMode === "exam" ? "bg-heritage-saffron/15 text-heritage-saffron font-bold" : "text-heritage-secondary hover:text-heritage-text"
               }`}
             >
-              <Clock className="h-3.5 w-3.5" /> Timed Exam
+              <Clock className="h-3.5 w-3.5 text-heritage-saffron" /> Timed Exam
             </button>
           </div>
         </div>
       </div>
 
-      {/* 3. Search Bar with Smart / Keyword Tabs (Matching IASBoard) */}
+      {/* 3. Search Bar with Smart / Keyword Tabs */}
       <div className="mb-6 space-y-2">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <button
               onClick={() => setSearchMode("smart")}
-              className={`flex items-center gap-1.5 rounded-t-lg px-3.5 py-1.5 text-xs font-bold transition ${
+              className={`flex items-center gap-1.5 rounded-t-xl px-3.5 py-1.5 text-xs font-bold transition ${
                 searchMode === "smart"
-                  ? "bg-[#5b36e8] text-white shadow-sm"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  ? "bg-heritage-burgundy text-white shadow-xs"
+                  : "bg-heritage-cream/60 text-heritage-secondary hover:bg-heritage-cream hover:text-heritage-text"
               }`}
             >
-              <Sparkles className="h-3.5 w-3.5" /> Smart Search
+              <Sparkles className="h-3.5 w-3.5 text-heritage-gold" /> Smart Search
             </button>
             <button
               onClick={() => setSearchMode("keyword")}
-              className={`flex items-center gap-1.5 rounded-t-lg px-3.5 py-1.5 text-xs font-bold transition ${
+              className={`flex items-center gap-1.5 rounded-t-xl px-3.5 py-1.5 text-xs font-bold transition ${
                 searchMode === "keyword"
-                  ? "bg-slate-900 text-white shadow-sm"
-                  : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                  ? "bg-heritage-wine text-white shadow-xs"
+                  : "bg-heritage-cream/60 text-heritage-secondary hover:bg-heritage-cream hover:text-heritage-text"
               }`}
             >
-              <Search className="h-3.5 w-3.5" /> Keyword Search
+              <Search className="h-3.5 w-3.5 text-heritage-gold" /> Keyword Search
             </button>
           </div>
-          <span className="text-[11px] font-medium text-slate-500">
-            2 of 3 free searches left
+          <span className="text-[11px] font-medium text-heritage-secondary">
+            Verified official UPSC question bank
           </span>
         </div>
 
@@ -469,38 +453,38 @@ function PrelimsPYQContent() {
             onKeyDown={(e) => e.key === "Enter" && fetchQuestions()}
             placeholder={
               searchMode === "smart"
-                ? '✨ Smart Search — ask in plain English, e.g. "questions on monsoon mechanism"'
-                : '🔍 Keyword Search — e.g. "Article 39", "Ramsar", "Lopamudra"'
+                ? '✨ Smart Search — ask in plain English, e.g. "questions on monsoon mechanism or biodiversity treaties"'
+                : '🔍 Keyword Search — e.g. "Article 39", "Ramsar", "Lopamudra", "Green Hydrogen"'
             }
-            className="w-full rounded-xl border border-slate-300 bg-white py-3 pl-4 pr-24 text-sm text-slate-900 shadow-sm placeholder:text-slate-400 focus:border-[#5b36e8] focus:outline-none focus:ring-1 focus:ring-[#5b36e8]"
+            className="w-full rounded-2xl border border-heritage-border bg-white py-3 pl-4 pr-28 text-sm text-heritage-text shadow-card placeholder:text-heritage-secondary/70 focus:border-heritage-gold focus:outline-none focus:ring-2 focus:ring-heritage-gold/20"
           />
           <button
             onClick={fetchQuestions}
-            className="absolute right-2 rounded-lg bg-[#5b36e8] px-5 py-2 text-xs font-bold text-white shadow hover:bg-[#4a28cb] transition"
+            className="absolute right-2 rounded-xl bg-heritage-burgundy px-5 py-2 text-xs font-bold text-white shadow hover:bg-heritage-wine transition"
           >
             Search
           </button>
         </div>
       </div>
 
-      {/* 4. Filters Panel (Paper Toggle, Dynamic Year Pills, Subjects Dropdown) */}
-      <div className="mb-6 rounded-2xl border border-slate-200 bg-white p-4 sm:p-5 shadow-sm space-y-4">
+      {/* 4. Filters Panel */}
+      <div className="mb-6 rounded-2xl border border-heritage-border bg-white p-4 sm:p-5 shadow-card space-y-4">
         {/* Filter Header */}
-        <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+        <div className="flex items-center justify-between pb-2 border-b border-heritage-border/60">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-extrabold uppercase tracking-wider text-slate-400">
+            <span className="text-xs font-bold uppercase tracking-wider text-heritage-secondary">
               FILTERS
             </span>
             {(selectedPaper !== "GS1" || selectedYear || selectedSubject || selectedDifficulty || searchQuery) && (
               <button
                 onClick={handleClearAll}
-                className="flex items-center gap-1 rounded-full bg-slate-900 text-white px-2.5 py-0.5 text-[11px] font-bold hover:bg-slate-800 transition"
+                className="flex items-center gap-1 rounded-full bg-heritage-wine text-white px-2.5 py-0.5 text-[11px] font-bold hover:bg-heritage-burgundy transition"
               >
                 Clear all <X className="h-3 w-3" />
               </button>
             )}
           </div>
-          <span className="rounded-lg bg-[#eff2fe] text-[#4f5bd5] border border-[#dbe0fd] px-3 py-1 text-xs font-extrabold">
+          <span className="rounded-lg bg-heritage-cream text-heritage-burgundy border border-heritage-border px-3 py-1 text-xs font-extrabold">
             {totalCount} questions
           </span>
         </div>
@@ -512,10 +496,10 @@ function PrelimsPYQContent() {
               setSelectedPaper("GS1");
               setPage(1);
             }}
-            className={`rounded-lg px-4 py-2 text-xs font-extrabold transition shadow-sm ${
+            className={`rounded-xl px-4 py-2 text-xs font-bold transition shadow-xs ${
               selectedPaper === "GS1"
-                ? "bg-[#5b36e8] text-white"
-                : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                ? "bg-heritage-burgundy text-white"
+                : "bg-heritage-ivory text-heritage-secondary hover:bg-heritage-cream hover:text-heritage-text border border-heritage-border"
             }`}
           >
             GS Paper 1 <span className="sr-only">(GS Paper I)</span>
@@ -525,10 +509,10 @@ function PrelimsPYQContent() {
               setSelectedPaper("GS2");
               setPage(1);
             }}
-            className={`rounded-lg px-4 py-2 text-xs font-extrabold transition shadow-sm ${
+            className={`rounded-xl px-4 py-2 text-xs font-bold transition shadow-xs ${
               selectedPaper === "GS2"
-                ? "bg-emerald-600 text-white"
-                : "bg-[#e6f8ef] text-[#168a53] border border-[#bbf0d4] hover:bg-[#d6f2df]"
+                ? "bg-heritage-saffron text-white"
+                : "bg-heritage-ivory text-heritage-secondary hover:bg-heritage-cream hover:text-heritage-text border border-heritage-border"
             }`}
           >
             GS Paper 2 (CSAT)
@@ -542,10 +526,10 @@ function PrelimsPYQContent() {
               setSelectedYear(null);
               setPage(1);
             }}
-            className={`rounded-md border px-3 py-1 text-xs font-bold transition ${
+            className={`rounded-lg border px-3 py-1 text-xs font-bold transition ${
               selectedYear === null
-                ? "bg-purple-700 text-white border-purple-700 font-extrabold shadow-sm"
-                : "border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+                ? "bg-heritage-burgundy text-white border-heritage-burgundy font-extrabold shadow-xs"
+                : "border-heritage-border bg-white text-heritage-secondary hover:bg-heritage-ivory"
             }`}
           >
             All years
@@ -557,9 +541,9 @@ function PrelimsPYQContent() {
               setSelectedYear(2024);
               setPage(1);
             }}
-            className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50 hidden sm:inline-block"
+            className="rounded-lg border border-heritage-border bg-white px-2.5 py-1 text-xs font-medium text-heritage-secondary hover:bg-heritage-ivory hidden sm:inline-block transition"
           >
-            Last 5 years <span className="text-[10px] text-slate-400">2020–2024</span>
+            Last 5 years <span className="text-[10px] text-heritage-secondary/70">2020–2024</span>
           </button>
 
           {/* Preset Pill: Last 10 Years */}
@@ -568,9 +552,9 @@ function PrelimsPYQContent() {
               setSelectedYear(2024);
               setPage(1);
             }}
-            className="rounded-md border border-slate-200 bg-white px-2.5 py-1 text-xs font-medium text-slate-600 hover:bg-slate-50 hidden md:inline-block"
+            className="rounded-lg border border-heritage-border bg-white px-2.5 py-1 text-xs font-medium text-heritage-secondary hover:bg-heritage-ivory hidden md:inline-block transition"
           >
-            Last 10 years <span className="text-[10px] text-slate-400">2015–2024</span>
+            Last 10 years <span className="text-[10px] text-heritage-secondary/70">2015–2024</span>
           </button>
 
           {/* Dynamic Year Pills */}
@@ -583,13 +567,13 @@ function PrelimsPYQContent() {
                   setSelectedYear(isSelected ? null : item.year);
                   setPage(1);
                 }}
-                className={`rounded-md border px-2.5 py-1 text-xs font-bold transition flex items-center gap-1 ${getYearBadgeStyle(
+                className={`rounded-lg border px-2.5 py-1 text-xs font-bold transition flex items-center gap-1 ${getYearBadgeStyle(
                   item.year,
                   isSelected
                 )}`}
               >
                 <span>{item.year}</span>
-                <span className={`text-[10px] ${isSelected ? "text-purple-200" : "opacity-75"}`}>
+                <span className={`text-[10px] ${isSelected ? "text-heritage-gold" : "opacity-75"}`}>
                   ({item.count})
                 </span>
               </button>
@@ -607,7 +591,7 @@ function PrelimsPYQContent() {
                 setSelectedSubject(e.target.value);
                 setPage(1);
               }}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 focus:border-purple-600 focus:outline-none"
+              className="w-full rounded-xl border border-heritage-border bg-white px-3 py-2 text-xs font-semibold text-heritage-text focus:border-heritage-gold focus:outline-none"
             >
               <option value="">All subjects</option>
               {subjectInventory
@@ -628,7 +612,7 @@ function PrelimsPYQContent() {
                 setSelectedDifficulty(e.target.value);
                 setPage(1);
               }}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold text-slate-700 focus:border-purple-600 focus:outline-none"
+              className="w-full rounded-xl border border-heritage-border bg-white px-3 py-2 text-xs font-semibold text-heritage-text focus:border-heritage-gold focus:outline-none"
             >
               <option value="">All Difficulties</option>
               <option value="EASY">Easy</option>
@@ -638,13 +622,13 @@ function PrelimsPYQContent() {
           </div>
 
           {/* Marking Scheme Indicator */}
-          <div className="flex items-center justify-end text-xs text-slate-500 font-mono">
+          <div className="flex items-center justify-end text-xs text-heritage-secondary font-mono">
             {selectedPaper === "GS2" ? (
-              <span className="rounded bg-emerald-50 px-2 py-1 text-emerald-800 font-bold border border-emerald-200">
+              <span className="rounded-lg bg-heritage-saffron/10 px-2.5 py-1 text-heritage-saffron font-bold border border-heritage-saffron/30">
                 CSAT Marking: +2.5 / -0.833
               </span>
             ) : (
-              <span className="rounded bg-blue-50 px-2 py-1 text-blue-800 font-bold border border-blue-200">
+              <span className="rounded-lg bg-heritage-burgundy/10 px-2.5 py-1 text-heritage-burgundy font-bold border border-heritage-burgundy/30">
                 GS1 Marking: +2.0 / -0.666
               </span>
             )}
@@ -654,12 +638,12 @@ function PrelimsPYQContent() {
 
       {/* Timed Exam Floating Header */}
       {viewMode === "exam" && (
-        <div className="mb-6 sticky top-4 z-30 rounded-xl bg-slate-900 text-white p-4 shadow-xl flex items-center justify-between">
+        <div className="mb-6 sticky top-4 z-30 rounded-2xl bg-heritage-wine text-white p-4 shadow-xl border border-heritage-gold/30 flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <Clock className="h-5 w-5 text-amber-400 animate-pulse" />
+            <Clock className="h-5 w-5 text-heritage-gold animate-pulse" />
             <div>
-              <p className="text-xs text-slate-400">Exam Timer</p>
-              <p className="font-mono text-lg font-black text-amber-300">
+              <p className="text-xs text-heritage-gold/80">Exam Timer</p>
+              <p className="font-mono text-lg font-black text-heritage-gold">
                 {Math.floor(examTimer / 3600)}h {Math.floor((examTimer % 3600) / 60)}m{" "}
                 {examTimer % 60}s
               </p>
@@ -668,7 +652,7 @@ function PrelimsPYQContent() {
 
           <div className="flex items-center gap-4">
             <div className="text-right text-xs">
-              <span className="text-slate-400">Attempted: </span>
+              <span className="text-heritage-cream/70">Attempted: </span>
               <span className="font-bold text-white">
                 {Object.keys(attemptedAnswers).length} / {questions.length}
               </span>
@@ -676,7 +660,7 @@ function PrelimsPYQContent() {
             {!examSubmitted ? (
               <button
                 onClick={() => setExamSubmitted(true)}
-                className="rounded-lg bg-emerald-500 hover:bg-emerald-600 px-4 py-2 text-xs font-bold text-white shadow"
+                className="rounded-xl bg-emerald-600 hover:bg-emerald-700 px-4 py-2 text-xs font-bold text-white shadow transition"
               >
                 Submit Exam
               </button>
@@ -686,7 +670,7 @@ function PrelimsPYQContent() {
                   setExamSubmitted(false);
                   setAttemptedAnswers({});
                 }}
-                className="rounded-lg bg-slate-700 hover:bg-slate-600 px-4 py-2 text-xs font-bold text-white"
+                className="rounded-xl bg-heritage-burgundy hover:bg-heritage-wine px-4 py-2 text-xs font-bold text-white transition"
               >
                 Reset Exam
               </button>
@@ -697,51 +681,51 @@ function PrelimsPYQContent() {
 
       {/* Exam Score Summary Bar (when submitted) */}
       {viewMode === "exam" && examSubmitted && (
-        <div className="mb-6 rounded-2xl bg-gradient-to-r from-purple-900 to-indigo-900 text-white p-6 shadow-lg">
+        <div className="mb-6 rounded-2xl bg-gradient-to-r from-heritage-burgundy to-heritage-wine text-white p-6 shadow-gold border border-heritage-gold/30">
           <div className="flex items-center gap-3 mb-4">
-            <Award className="h-8 w-8 text-amber-400" />
+            <Award className="h-8 w-8 text-heritage-gold" />
             <div>
-              <h2 className="text-xl font-black">Exam Performance Summary</h2>
-              <p className="text-xs text-purple-200">
-                Computed with UPSC official negative marking criteria
+              <h2 className="font-serif text-xl font-bold">Exam Performance Summary</h2>
+              <p className="text-xs text-heritage-cream/80">
+                Computed with official UPSC negative marking criteria
               </p>
             </div>
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-            <div className="rounded-lg bg-white/10 p-3">
-              <p className="text-xs text-purple-200">Final Score</p>
-              <p className="text-2xl font-black text-amber-300">{examStats.totalMarks}</p>
+            <div className="rounded-xl bg-white/10 p-3.5 backdrop-blur-xs">
+              <p className="text-xs text-heritage-cream/80">Final Score</p>
+              <p className="text-2xl font-black text-heritage-gold">{examStats.totalMarks}</p>
             </div>
-            <div className="rounded-lg bg-white/10 p-3">
-              <p className="text-xs text-purple-200">Correct</p>
-              <p className="text-2xl font-black text-emerald-400">{examStats.correct}</p>
+            <div className="rounded-xl bg-white/10 p-3.5 backdrop-blur-xs">
+              <p className="text-xs text-heritage-cream/80">Correct</p>
+              <p className="text-2xl font-black text-emerald-300">{examStats.correct}</p>
             </div>
-            <div className="rounded-lg bg-white/10 p-3">
-              <p className="text-xs text-purple-200">Incorrect</p>
-              <p className="text-2xl font-black text-rose-400">{examStats.incorrect}</p>
+            <div className="rounded-xl bg-white/10 p-3.5 backdrop-blur-xs">
+              <p className="text-xs text-heritage-cream/80">Incorrect</p>
+              <p className="text-2xl font-black text-rose-300">{examStats.incorrect}</p>
             </div>
-            <div className="rounded-lg bg-white/10 p-3">
-              <p className="text-xs text-purple-200">Accuracy</p>
-              <p className="text-2xl font-black text-cyan-300">{examStats.accuracy}%</p>
+            <div className="rounded-xl bg-white/10 p-3.5 backdrop-blur-xs">
+              <p className="text-xs text-heritage-cream/80">Accuracy</p>
+              <p className="text-2xl font-black text-amber-200">{examStats.accuracy}%</p>
             </div>
           </div>
         </div>
       )}
 
-      {/* 5. Main Questions Display: 2-Column Grid matching IASBoard */}
+      {/* 5. Main Questions Display: 2-Column Grid */}
       {loading ? (
         <div className="py-24 text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mb-3" />
-          <p className="text-xs font-bold text-slate-500">Loading authentic UPSC questions...</p>
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-heritage-burgundy border-t-transparent mb-3" />
+          <p className="text-xs font-bold text-heritage-secondary">Loading authentic UPSC questions...</p>
         </div>
       ) : questions.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-slate-300 bg-white py-20 text-center">
-          <BookOpen className="mx-auto h-10 w-10 text-slate-400 mb-2" />
-          <p className="text-base font-bold text-slate-700">No questions found</p>
-          <p className="text-xs text-slate-500 mt-1">Try clearing your filters or choosing another year.</p>
+        <div className="rounded-2xl border border-dashed border-heritage-border bg-white py-20 text-center shadow-card">
+          <BookOpen className="mx-auto h-10 w-10 text-heritage-gold mb-2" />
+          <p className="font-serif text-lg font-bold text-heritage-text">No questions found</p>
+          <p className="text-xs text-heritage-secondary mt-1">Try clearing your filters or choosing another year.</p>
           <button
             onClick={handleClearAll}
-            className="mt-4 rounded-lg bg-purple-600 px-4 py-2 text-xs font-bold text-white hover:bg-purple-700"
+            className="mt-4 rounded-xl bg-heritage-burgundy px-5 py-2.5 text-xs font-bold text-white hover:bg-heritage-wine transition"
           >
             Clear Filters
           </button>
@@ -749,20 +733,20 @@ function PrelimsPYQContent() {
       ) : viewMode === "focus" ? (
         /* Focus Mode: 1 Question at a time with Keyboard / Arrow controls */
         <div className="max-w-3xl mx-auto space-y-4">
-          <div className="flex items-center justify-between text-xs font-bold text-slate-500">
+          <div className="flex items-center justify-between text-xs font-bold text-heritage-secondary">
             <span>Question {focusIndex + 1} of {questions.length}</span>
             <div className="flex items-center gap-2">
               <button
                 onClick={() => setFocusIndex((i) => Math.max(0, i - 1))}
                 disabled={focusIndex === 0}
-                className="rounded border border-slate-300 bg-white p-1 text-slate-700 disabled:opacity-40"
+                className="rounded-lg border border-heritage-border bg-white p-1.5 text-heritage-text disabled:opacity-40 hover:bg-heritage-ivory"
               >
                 <ChevronLeft className="h-4 w-4" />
               </button>
               <button
                 onClick={() => setFocusIndex((i) => Math.min(questions.length - 1, i + 1))}
                 disabled={focusIndex === questions.length - 1}
-                className="rounded border border-slate-300 bg-white p-1 text-slate-700 disabled:opacity-40"
+                className="rounded-lg border border-heritage-border bg-white p-1.5 text-heritage-text disabled:opacity-40 hover:bg-heritage-ivory"
               >
                 <ChevronRight className="h-4 w-4" />
               </button>
@@ -785,7 +769,7 @@ function PrelimsPYQContent() {
           />
         </div>
       ) : (
-        /* Grid Mode: 2 Columns on large screens, matching IASBoard layout */
+        /* Grid Mode: 2 Columns on large screens */
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {questions.map((q) => (
             <QuestionCardItem
@@ -810,23 +794,23 @@ function PrelimsPYQContent() {
 
       {/* Pagination Controls */}
       {!loading && questions.length > 0 && (
-        <div className="mt-8 flex items-center justify-between border-t border-slate-200 pt-4">
-          <p className="text-xs text-slate-500">
-            Page <span className="font-bold text-slate-900">{page}</span> of{" "}
-            <span className="font-bold text-slate-900">{Math.ceil(totalCount / 24) || 1}</span>
+        <div className="mt-8 flex items-center justify-between border-t border-heritage-border pt-4">
+          <p className="text-xs text-heritage-secondary">
+            Page <span className="font-bold text-heritage-text">{page}</span> of{" "}
+            <span className="font-bold text-heritage-text">{Math.ceil(totalCount / 24) || 1}</span>
           </p>
           <div className="flex items-center gap-2">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm disabled:opacity-40 hover:bg-slate-50"
+              className="rounded-xl border border-heritage-border bg-white px-3.5 py-2 text-xs font-bold text-heritage-text shadow-xs disabled:opacity-40 hover:bg-heritage-ivory transition"
             >
               Previous
             </button>
             <button
               onClick={() => setPage((p) => p + 1)}
               disabled={!hasMore}
-              className="rounded-lg border border-slate-300 bg-white px-3 py-1.5 text-xs font-bold text-slate-700 shadow-sm disabled:opacity-40 hover:bg-slate-50"
+              className="rounded-xl border border-heritage-border bg-white px-3.5 py-2 text-xs font-bold text-heritage-text shadow-xs disabled:opacity-40 hover:bg-heritage-ivory transition"
             >
               Next
             </button>
@@ -836,15 +820,15 @@ function PrelimsPYQContent() {
 
       {/* Note Modal */}
       {activeNoteModalQ && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-1.5">
-                <FileEdit className="h-4 w-4 text-purple-600" /> Study Note ({activeNoteModalQ.year} Q{activeNoteModalQ.questionNumber})
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-2xl bg-white p-6 shadow-2xl border border-heritage-border">
+            <div className="flex items-center justify-between pb-3 border-b border-heritage-border">
+              <h3 className="font-serif text-sm font-bold text-heritage-text flex items-center gap-1.5">
+                <FileEdit className="h-4 w-4 text-heritage-gold" /> Study Note ({activeNoteModalQ.year} Q{activeNoteModalQ.questionNumber})
               </h3>
               <button
                 onClick={() => setActiveNoteModalQ(null)}
-                className="text-slate-400 hover:text-slate-600"
+                className="text-heritage-secondary hover:text-heritage-text"
               >
                 <X className="h-4 w-4" />
               </button>
@@ -854,12 +838,12 @@ function PrelimsPYQContent() {
               value={tempNoteText}
               onChange={(e) => setTempNoteText(e.target.value)}
               placeholder="Write personal revision notes, mnemonics, or conceptual reminders..."
-              className="mt-4 w-full rounded-lg border border-slate-300 p-3 text-xs text-slate-800 focus:border-purple-600 focus:outline-none"
+              className="mt-4 w-full rounded-xl border border-heritage-border p-3 text-xs text-heritage-text focus:border-heritage-gold focus:outline-none"
             />
             <div className="mt-4 flex items-center justify-end gap-2">
               <button
                 onClick={() => setActiveNoteModalQ(null)}
-                className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                className="rounded-lg border border-heritage-border px-3.5 py-1.5 text-xs font-bold text-heritage-secondary hover:bg-heritage-ivory"
               >
                 Cancel
               </button>
@@ -868,7 +852,7 @@ function PrelimsPYQContent() {
                   setUserNotes((prev) => ({ ...prev, [activeNoteModalQ.id]: tempNoteText }));
                   setActiveNoteModalQ(null);
                 }}
-                className="rounded-lg bg-purple-600 px-4 py-1.5 text-xs font-bold text-white shadow hover:bg-purple-700"
+                className="rounded-lg bg-heritage-burgundy px-4 py-1.5 text-xs font-bold text-white shadow hover:bg-heritage-wine transition"
               >
                 Save Note
               </button>
@@ -877,45 +861,43 @@ function PrelimsPYQContent() {
         </div>
       )}
 
-      {/* Floating Feedback Button (Matching IASBoard Screenshot) */}
+      {/* Floating Feedback Button */}
       <button
         onClick={() => {
           setFeedbackModalOpen(true);
           setFeedbackSent(false);
           setFeedbackText("");
         }}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-[#5b36e8] px-5 py-3 text-xs font-bold text-white shadow-xl hover:bg-[#4a28cb] transition transform hover:scale-105"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-heritage-burgundy px-5 py-3 text-xs font-bold text-white shadow-gold hover:bg-heritage-wine transition transform hover:scale-105"
       >
-        <MessageSquare className="h-4 w-4" />
+        <MessageSquare className="h-4 w-4 text-heritage-gold" />
         <span>Feedback</span>
       </button>
 
       {/* Floating Feedback Modal */}
       {feedbackModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200">
-              <h3 className="text-sm font-bold text-slate-900 flex items-center gap-2">
-                <MessageSquare className="h-4 w-4 text-[#5b36e8]" /> Aspirant Feedback & Correction
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-md rounded-2xl bg-white p-6 shadow-2xl border border-heritage-border">
+            <div className="flex items-center justify-between pb-3 border-b border-heritage-border">
+              <h3 className="font-serif text-sm font-bold text-heritage-text flex items-center gap-2">
+                <MessageSquare className="h-4 w-4 text-heritage-gold" /> Aspirant Feedback & Correction
               </h3>
               <button
                 onClick={() => setFeedbackModalOpen(false)}
-                className="text-slate-400 hover:text-slate-600"
+                className="text-heritage-secondary hover:text-heritage-text"
               >
                 <X className="h-4 w-4" />
               </button>
             </div>
 
             {feedbackSent ? (
-              <div className="py-8 text-center space-y-2">
-                <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-600" />
-                <h4 className="text-sm font-bold text-slate-900">Thank you for your feedback!</h4>
-                <p className="text-xs text-slate-500">
-                  Our academic team reviews all student reports against official UPSC master keys within 24 hours.
-                </p>
+              <div className="py-6 text-center">
+                <CheckCircle2 className="mx-auto h-10 w-10 text-emerald-600 mb-2" />
+                <p className="font-serif text-sm font-bold text-heritage-text">Thank you for your feedback!</p>
+                <p className="text-xs text-heritage-secondary mt-1">Our academic team will audit this within 24 hours.</p>
                 <button
                   onClick={() => setFeedbackModalOpen(false)}
-                  className="mt-3 rounded-lg bg-[#5b36e8] px-4 py-1.5 text-xs font-bold text-white shadow hover:bg-[#4a28cb]"
+                  className="mt-4 rounded-xl bg-heritage-burgundy px-4 py-2 text-xs font-bold text-white"
                 >
                   Close
                 </button>
@@ -923,38 +905,38 @@ function PrelimsPYQContent() {
             ) : (
               <div className="mt-4 space-y-3">
                 <div>
-                  <label className="text-xs font-bold text-slate-700">Feedback Category</label>
+                  <label className="block text-[11px] font-semibold text-heritage-secondary mb-1">Category</label>
                   <select
                     value={feedbackCategory}
                     onChange={(e: any) => setFeedbackCategory(e.target.value)}
-                    className="mt-1 w-full rounded-lg border border-slate-300 p-2 text-xs font-semibold text-slate-700 focus:border-[#5b36e8] focus:outline-none"
+                    className="w-full rounded-xl border border-heritage-border p-2 text-xs text-heritage-text focus:outline-none focus:ring-1 focus:ring-heritage-gold"
                   >
-                    <option value="QUESTION_ERROR">Report Question / Answer Key Discrepancy</option>
-                    <option value="EXPLANATION_QUERY">Explanation & Elimination Technique Feedback</option>
-                    <option value="FEATURE_REQUEST">Feature Request / Platform Improvement</option>
+                    <option value="QUESTION_ERROR">Discrepancy in question or key</option>
+                    <option value="EXPLANATION_QUERY">Explanation query or suggestion</option>
+                    <option value="FEATURE_REQUEST">Feature request / UI improvement</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-xs font-bold text-slate-700">Your Feedback</label>
+                  <label className="block text-[11px] font-semibold text-heritage-secondary mb-1">Details</label>
                   <textarea
                     rows={4}
                     value={feedbackText}
                     onChange={(e) => setFeedbackText(e.target.value)}
-                    placeholder="Describe any error, suggest improvement, or share your preparation feedback..."
-                    className="mt-1 w-full rounded-lg border border-slate-300 p-2.5 text-xs text-slate-800 focus:border-[#5b36e8] focus:outline-none"
+                    placeholder="Describe the issue or improvement..."
+                    className="w-full rounded-xl border border-heritage-border p-3 text-xs text-heritage-text focus:outline-none focus:ring-1 focus:ring-heritage-gold"
                   />
                 </div>
-                <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <div className="flex items-center justify-end gap-2 pt-2">
                   <button
                     onClick={() => setFeedbackModalOpen(false)}
-                    className="rounded-lg border border-slate-300 px-3 py-1.5 text-xs font-bold text-slate-700 hover:bg-slate-50"
+                    className="rounded-lg border border-heritage-border px-3 py-1.5 text-xs font-bold text-heritage-secondary hover:bg-heritage-ivory"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={() => setFeedbackSent(true)}
                     disabled={!feedbackText.trim()}
-                    className="rounded-lg bg-[#5b36e8] px-4 py-1.5 text-xs font-bold text-white shadow hover:bg-[#4a28cb] disabled:opacity-40"
+                    className="rounded-lg bg-heritage-burgundy px-4 py-1.5 text-xs font-bold text-white shadow hover:bg-heritage-wine disabled:opacity-40 transition"
                   >
                     Submit Feedback
                   </button>
@@ -969,7 +951,7 @@ function PrelimsPYQContent() {
 }
 
 /**
- * Question Card Item Component (Replicating exact IASBoard design)
+ * Question Card Item Component
  */
 function QuestionCardItem({
   question,
@@ -1009,34 +991,34 @@ function QuestionCardItem({
   const marksNeg = question.negativeMarks || (question.paperCode === "GS2" ? 0.833 : 0.666);
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm hover:shadow-md transition flex flex-col justify-between">
+    <div className="rounded-2xl border border-heritage-border bg-white p-5 shadow-card hover:shadow-hover transition flex flex-col justify-between">
       <div>
-        {/* Top Badges Row (Year, Subject, Topic, Difficulty, Marking) */}
+        {/* Top Badges Row */}
         <div className="flex flex-wrap items-center gap-1.5 mb-3">
           {/* Year Badge */}
-          <span className="rounded bg-slate-900 px-2.5 py-0.5 text-xs font-black text-white">
+          <span className="rounded bg-heritage-wine px-2.5 py-0.5 text-xs font-bold text-white">
             {question.year}
           </span>
           {/* Subject Badge */}
           {question.subject && (
-            <span className="rounded bg-blue-100 text-blue-800 border border-blue-200 px-2.5 py-0.5 text-xs font-semibold">
+            <span className="rounded bg-heritage-cream text-heritage-burgundy border border-heritage-border px-2.5 py-0.5 text-xs font-semibold">
               {question.subject}
             </span>
           )}
           {/* Topic Badge */}
           {question.topic && (
-            <span className="rounded bg-amber-50 text-amber-900 border border-amber-200 px-2.5 py-0.5 text-xs font-medium hidden sm:inline-block">
+            <span className="rounded bg-heritage-ivory text-heritage-secondary border border-heritage-border px-2.5 py-0.5 text-xs font-medium hidden sm:inline-block">
               {question.topic}
             </span>
           )}
           {/* Difficulty Badge */}
           {question.difficulty && (
-            <span className="rounded bg-amber-100 text-amber-800 px-2.5 py-0.5 text-xs font-semibold">
+            <span className="rounded bg-heritage-gold/20 text-heritage-burgundy border border-heritage-gold/30 px-2.5 py-0.5 text-xs font-semibold">
               {question.difficulty.toLowerCase()}
             </span>
           )}
           {/* Marks Badge */}
-          <span className="ml-auto text-[11px] font-mono text-slate-400">
+          <span className="ml-auto text-[11px] font-mono text-heritage-secondary">
             +{marksPos} / -{marksNeg}
           </span>
         </div>
@@ -1044,37 +1026,37 @@ function QuestionCardItem({
         {/* Question Statement */}
         <div className="mb-4">
           {(displayLanguage === "EN" || displayLanguage === "BOTH" || !question.questionTextHi) && (
-            <h2 className="text-sm sm:text-base font-bold text-slate-900 leading-snug">
+            <h2 className="font-serif text-sm sm:text-base font-bold text-heritage-text leading-snug">
               Q{question.questionNumber}. {question.questionTextEn || question.questionText}
             </h2>
           )}
 
           {(displayLanguage === "HI" || (displayLanguage === "BOTH" && question.questionTextHi)) && (
-            <h2 className="text-sm sm:text-base font-bold text-slate-800 font-hindi mt-1.5 leading-snug">
+            <h2 className="font-serif text-sm sm:text-base font-bold text-heritage-text font-hindi mt-1.5 leading-snug">
               प्र{question.questionNumber}. {question.questionTextHi}
             </h2>
           )}
         </div>
 
         {/* Clickable 4 Options (A, B, C, D) */}
-        <div className="space-y-2 mb-4">
+        <div className="space-y-2 mb-4 font-sans">
           {question.options.map((opt) => {
             const isSelected = attemptedCode === opt.code;
             const isThisOptionCorrect = opt.code === correctCode;
 
             let optionStyle =
-              "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50 text-slate-800";
+              "border-heritage-border bg-white hover:border-heritage-gold hover:bg-heritage-ivory/50 text-heritage-text";
 
             if (isRevealed) {
               if (isThisOptionCorrect) {
-                optionStyle = "border-emerald-500 bg-emerald-50/70 text-emerald-950 font-semibold";
+                optionStyle = "border-emerald-500 bg-emerald-50/80 text-emerald-950 font-semibold";
               } else if (isSelected && !isThisOptionCorrect) {
                 optionStyle = "border-rose-400 bg-rose-50 text-rose-950 line-through opacity-80";
               } else {
-                optionStyle = "border-slate-100 bg-slate-50/50 text-slate-400";
+                optionStyle = "border-heritage-border/40 bg-heritage-ivory/30 text-heritage-secondary/70";
               }
             } else if (isSelected) {
-              optionStyle = "border-purple-600 bg-purple-50 text-purple-900 font-bold";
+              optionStyle = "border-heritage-burgundy bg-heritage-cream text-heritage-burgundy font-bold";
             }
 
             return (
@@ -1091,8 +1073,8 @@ function QuestionCardItem({
                       : isRevealed && isSelected && !isThisOptionCorrect
                       ? "bg-rose-500 text-white"
                       : isSelected
-                      ? "bg-[#5b36e8] text-white"
-                      : "bg-slate-100 text-slate-700"
+                      ? "bg-heritage-burgundy text-white"
+                      : "bg-heritage-cream border border-heritage-border text-heritage-burgundy"
                   }`}
                 >
                   {opt.code}
@@ -1103,7 +1085,7 @@ function QuestionCardItem({
                     <span>{opt.textEn || opt.text}</span>
                   )}
                   {(displayLanguage === "HI" || (displayLanguage === "BOTH" && opt.textHi)) && (
-                    <span className="block font-hindi text-slate-700 mt-0.5">{opt.textHi}</span>
+                    <span className="block font-hindi text-heritage-text mt-0.5">{opt.textHi}</span>
                   )}
                 </div>
 
@@ -1120,10 +1102,10 @@ function QuestionCardItem({
 
         {/* Revealed Explanation & Elimination Drawer */}
         {isRevealed && (
-          <div className="rounded-xl border border-purple-100 bg-purple-50/40 p-4 space-y-3 mb-4 text-xs animate-in fade-in duration-200">
+          <div className="rounded-xl border border-heritage-gold/30 bg-heritage-ivory/80 p-4 space-y-3 mb-4 text-xs animate-in fade-in duration-200">
             {/* Official Answer & Score Result */}
-            <div className="flex items-center justify-between pb-2 border-b border-purple-100">
-              <span className="font-extrabold text-purple-950 flex items-center gap-1.5">
+            <div className="flex items-center justify-between pb-2 border-b border-heritage-border/60">
+              <span className="font-bold text-heritage-burgundy flex items-center gap-1.5">
                 <CheckCircle2 className="h-4 w-4 text-emerald-600" /> Official UPSC Final Key:{" "}
                 <span className="rounded bg-emerald-600 text-white px-2 py-0.5 text-xs font-black">
                   Option {correctCode}
@@ -1140,13 +1122,13 @@ function QuestionCardItem({
               )}
             </div>
 
-            {/* UPSC Elimination Technique & Trap Analysis (Flagship Feature) */}
+            {/* UPSC Elimination Technique & Trap Analysis */}
             {question.explanation?.eliminationTechnique && (
-              <div className="rounded-lg bg-amber-50 border border-amber-200 p-3 text-amber-950 space-y-1">
-                <p className="font-extrabold flex items-center gap-1 text-[11px] text-amber-900 uppercase tracking-wider">
-                  <Sparkles className="h-3.5 w-3.5 text-amber-600" /> UPSC Elimination Technique & Trap Analysis
+              <div className="rounded-xl bg-heritage-cream/90 border border-heritage-gold/40 p-3 text-heritage-text space-y-1">
+                <p className="font-bold flex items-center gap-1.5 text-[11px] text-heritage-burgundy uppercase tracking-wider">
+                  <Sparkles className="h-3.5 w-3.5 text-heritage-gold" /> UPSC Elimination Technique & Trap Analysis
                 </p>
-                <p className="text-xs leading-relaxed text-amber-900">
+                <p className="text-xs leading-relaxed text-heritage-text">
                   {question.explanation.eliminationTechnique}
                 </p>
               </div>
@@ -1154,12 +1136,12 @@ function QuestionCardItem({
 
             {/* Pedagogical Explanation */}
             <div>
-              <p className="font-bold text-slate-800 mb-1">Detailed Explanation:</p>
-              <p className="leading-relaxed text-slate-700">
+              <p className="font-bold text-heritage-burgundy mb-1 uppercase tracking-wider text-[10px]">Detailed Explanation:</p>
+              <p className="leading-relaxed text-heritage-text">
                 {question.explanation?.detailedExplanation || question.explanation?.summary}
               </p>
               {question.explanation?.explanationHi && (
-                <p className="leading-relaxed text-slate-700 font-hindi mt-2 pt-2 border-t border-purple-100">
+                <p className="leading-relaxed text-heritage-text font-hindi mt-2 pt-2 border-t border-heritage-border/40">
                   {question.explanation.explanationHi}
                 </p>
               )}
@@ -1167,8 +1149,8 @@ function QuestionCardItem({
 
             {/* Source Citation */}
             {(question.explanation?.sourceCitation || question.citations?.[0]) && (
-              <p className="text-[11px] text-slate-500 pt-1 border-t border-purple-100">
-                <span className="font-bold">Source Reference:</span>{" "}
+              <p className="text-[11px] text-heritage-secondary pt-1 border-t border-heritage-border/60">
+                <span className="font-bold text-heritage-text">Source Reference:</span>{" "}
                 {question.explanation?.sourceCitation || question.citations?.[0]?.sourceName}
               </p>
             )}
@@ -1176,23 +1158,23 @@ function QuestionCardItem({
         )}
       </div>
 
-      {/* Card Action Footer (Bookmark, Study Note, Share, Reveal Toggle) */}
-      <div className="flex items-center justify-between pt-3 border-t border-slate-100 text-slate-400 text-xs">
+      {/* Card Action Footer */}
+      <div className="flex items-center justify-between pt-3 border-t border-heritage-border/60 text-heritage-secondary text-xs">
         <div className="flex items-center gap-3">
           <button
             onClick={onToggleBookmark}
             className={`flex items-center gap-1 transition ${
-              isBookmarked ? "text-amber-500 font-bold" : "hover:text-slate-700"
+              isBookmarked ? "text-heritage-burgundy font-bold" : "hover:text-heritage-text"
             }`}
             title="Bookmark for revision"
           >
-            <Bookmark className={`h-4 w-4 ${isBookmarked ? "fill-amber-500" : ""}`} />
+            <Bookmark className={`h-4 w-4 ${isBookmarked ? "fill-heritage-burgundy" : ""}`} />
             <span className="hidden sm:inline">Save</span>
           </button>
 
           <button
             onClick={onOpenNote}
-            className="flex items-center gap-1 hover:text-slate-700 transition"
+            className="flex items-center gap-1 hover:text-heritage-text transition"
             title="Add personal study note"
           >
             <FileEdit className="h-4 w-4" />
@@ -1201,7 +1183,7 @@ function QuestionCardItem({
 
           <button
             onClick={onCopyLink}
-            className="flex items-center gap-1 hover:text-slate-700 transition"
+            className="flex items-center gap-1 hover:text-heritage-text transition"
             title="Copy question link"
           >
             {isCopied ? <Check className="h-4 w-4 text-emerald-600" /> : <Share2 className="h-4 w-4" />}
@@ -1213,7 +1195,7 @@ function QuestionCardItem({
           {!isAttempted && (
             <button
               onClick={() => setShowExplanationManual((prev) => !prev)}
-              className="text-purple-700 font-bold hover:underline text-xs"
+              className="text-heritage-burgundy font-bold hover:underline text-xs"
             >
               {showExplanationManual ? "Hide Answer" : "Reveal Answer"}
             </button>
@@ -1229,8 +1211,8 @@ export default function PrelimsPYQPage() {
     <Suspense
       fallback={
         <div className="py-24 text-center">
-          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-purple-600 border-t-transparent mb-3" />
-          <p className="text-xs font-bold text-slate-500">
+          <div className="mx-auto h-8 w-8 animate-spin rounded-full border-4 border-heritage-burgundy border-t-transparent mb-3" />
+          <p className="text-xs font-bold text-heritage-secondary">
             Loading Pravaah UPSC Prelims PYQ Explorer Platform (GS Paper I & CSAT)...
           </p>
         </div>

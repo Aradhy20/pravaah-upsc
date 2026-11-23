@@ -19,7 +19,7 @@ interface UpgradeModalProps {
   onClose: () => void;
   featureTitle?: string;
   featureDescription?: string;
-  recommendedPlanCode?: "ACHIEVER" | "SCHOLAR";
+  recommendedPlanCode?: "ACHIEVER" | "SCHOLAR" | "ASPIRANT_PRO" | "ASPIRANT_PLUS" | "ASPIRANT_ELITE" | string;
 }
 
 export function UpgradeModal({

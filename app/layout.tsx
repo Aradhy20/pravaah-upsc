@@ -1,8 +1,21 @@
 import type { Metadata, Viewport } from "next";
+import { Inter, Lora } from "next/font/google";
 import "./globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { LanguageProvider } from "@/lib/i18n/context";
+
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap",
+});
+
+const lora = Lora({
+  subsets: ["latin"],
+  variable: "--font-lora",
+  display: "swap",
+});
 
 export const viewport: Viewport = {
   width: "device-width",
@@ -33,7 +46,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="min-h-screen bg-slate-50 text-slate-900 flex flex-col antialiased selection:bg-blue-100 selection:text-blue-900">
+      <body className={`${inter.variable} ${lora.variable} min-h-screen bg-[#FBF7F0] text-[#261B1E] flex flex-col antialiased selection:bg-[#741A2B]/15 selection:text-[#741A2B]`}>
         <LanguageProvider>
           <Header />
           <div className="flex-1">{children}</div>

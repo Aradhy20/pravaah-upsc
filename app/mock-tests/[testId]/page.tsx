@@ -52,11 +52,11 @@ export default function MockTestSessionPage() {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] flex-col items-center justify-center p-4 text-center">
-        <Loader2 className="h-10 w-10 animate-spin text-blue-600 mb-3" />
-        <h2 className="text-base font-bold text-slate-800">
+        <Loader2 className="h-10 w-10 animate-spin text-heritage-burgundy mb-3" />
+        <h2 className="font-serif text-base font-bold text-heritage-text">
           Preparing UPSC Examination Environment...
         </h2>
-        <p className="mt-1 text-xs text-slate-500">
+        <p className="mt-1 text-xs text-heritage-secondary">
           Enforcing anti-leak security, shuffling paper series, and initializing timer.
         </p>
       </div>
@@ -66,25 +66,25 @@ export default function MockTestSessionPage() {
   if (error || !sessionData) {
     const isSubscriptionError = error?.toLowerCase().includes("requires") || error?.toLowerCase().includes("plan");
     return (
-      <div className="mx-auto max-w-md my-16 rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-lg">
+      <div className="mx-auto max-w-md my-16 rounded-3xl border border-heritage-border bg-white p-8 text-center shadow-card">
         {isSubscriptionError ? (
           <>
-            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber-50 text-amber-600 border border-amber-200 shadow-sm">
-              <ShieldAlert className="h-7 w-7" />
+            <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-heritage-cream text-heritage-burgundy border border-heritage-gold/40 shadow-xs">
+              <ShieldAlert className="h-7 w-7 text-heritage-gold" />
             </div>
-            <h2 className="text-xl font-black text-slate-900">Achiever Pro Required</h2>
-            <p className="mt-2 text-xs text-slate-600 leading-relaxed font-normal">{error}</p>
+            <h2 className="font-serif text-xl font-bold text-heritage-text">Aspirant Pro Required</h2>
+            <p className="mt-2 text-xs text-heritage-secondary leading-relaxed font-normal">{error}</p>
             <div className="mt-6 flex flex-col gap-2.5">
               <button
                 onClick={() => setShowUpgradeModal(true)}
-                className="w-full flex items-center justify-center gap-2 rounded-xl bg-blue-700 px-4 py-3 text-xs font-bold text-white shadow-md hover:bg-blue-800 transition"
+                className="w-full flex items-center justify-center gap-2 rounded-xl bg-heritage-burgundy px-4 py-3 text-xs font-bold text-white shadow-xs hover:bg-heritage-wine transition"
               >
-                <Zap className="h-4 w-4" />
+                <Zap className="h-4 w-4 text-heritage-gold" />
                 <span>Unlock 2-Hour Exam Simulator Now</span>
               </button>
               <a
                 href="/mock-tests"
-                className="text-xs font-semibold text-slate-500 hover:underline mt-1"
+                className="text-xs font-semibold text-heritage-secondary hover:underline mt-1"
               >
                 Return to Mock Tests Catalogue
               </a>
@@ -95,17 +95,17 @@ export default function MockTestSessionPage() {
               onClose={() => setShowUpgradeModal(false)}
               featureTitle="Timed 2-Hour Examination Simulator"
               featureDescription="Experience authentic UPSC Prelims conditions with real-time negative marking (-0.66) and syllabus weakness analysis."
-              recommendedPlanCode="ACHIEVER"
+              recommendedPlanCode="ASPIRANT_PRO"
             />
           </>
         ) : (
           <>
             <AlertCircle className="mx-auto h-10 w-10 text-rose-500 mb-2" />
-            <h2 className="text-base font-bold text-slate-900">Session Launch Failed</h2>
-            <p className="mt-1 text-xs text-slate-600">{error || "Unknown session error"}</p>
+            <h2 className="font-serif text-base font-bold text-heritage-text">Session Launch Failed</h2>
+            <p className="mt-1 text-xs text-heritage-secondary">{error || "Unknown session error"}</p>
             <a
               href="/mock-tests"
-              className="mt-4 inline-block rounded-lg bg-slate-900 px-4 py-2 text-xs font-bold text-white hover:bg-slate-800 transition"
+              className="mt-4 inline-block rounded-xl bg-heritage-burgundy px-4 py-2 text-xs font-bold text-white hover:bg-heritage-wine transition"
             >
               Return to Mock Tests
             </a>

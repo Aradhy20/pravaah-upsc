@@ -15,182 +15,205 @@ import {
   BarChart2,
   Sliders,
   RotateCw,
+  FileText,
+  Video,
+  MapPin,
+  Award,
 } from "lucide-react";
 
 export function Footer() {
   return (
-    <footer className="mt-20 border-t border-slate-200 bg-white">
+    <footer className="mt-20 border-t border-[#E7DDD4] bg-[#F4EDE2]/80 text-[#261B1E]">
+      {/* Top Heritage Accent Bar */}
+      <div className="h-1 w-full bg-gradient-to-r from-[#741A2B] via-[#C69A4A] to-[#741A2B]" />
+
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:py-16">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-4">
-          {/* Col 1: Brand Info & Mission */}
-          <div>
-            <div className="flex items-center gap-2">
-              <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-blue-700 text-white shadow-sm">
-                <BookOpen className="h-4 w-4" />
+        <div className="grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-5">
+          {/* Col 1 & 2: Brand Heritage & Mission */}
+          <div className="lg:col-span-2">
+            <div className="flex items-center gap-3">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#741A2B] text-white shadow-card border border-[#C69A4A]/50">
+                <BookOpen className="h-5 w-5 text-[#E2C38E]" />
               </div>
-              <span className="text-lg font-black tracking-tight text-slate-900">
-                Pravaah <span className="text-blue-700">UPSC</span>
+              <span className="text-xl font-bold font-editorial tracking-tight text-[#261B1E]">
+                Pravaah <span className="text-[#741A2B]">UPSC</span>
               </span>
             </div>
-            <p className="mt-3 text-xs leading-relaxed text-slate-500">
-              High-fidelity UPSC Civil Services Examination preparation platform. Concept-driven Previous Year Question (PYQ) learning, diagnostic analytics, spaced mistake revision, and syllabus intelligence.
+            <p className="mt-3.5 text-xs sm:text-sm leading-relaxed text-[#786B68] max-w-md">
+              High-fidelity UPSC Civil Services Examination preparation platform. Built with Indian academic rigor: authentic past-year questions, concept-driven explanations, timed examination simulation, diagnostic telemetry, and spaced mistake revision.
             </p>
-            <div className="mt-4 p-3 bg-slate-50 rounded-xl border border-slate-100 text-[11px] text-slate-600">
-              <span className="font-bold text-slate-800 block mb-0.5">Core Academic Commitment:</span>
-              <span>Authentic UPSC PYQs • Official Series A Keys • Zero Synthetic Illusions</span>
+
+            <div className="mt-5 p-3.5 bg-white rounded-2xl border border-[#E7DDD4] text-[11px] text-[#786B68] max-w-md shadow-xs">
+              <div className="flex items-center gap-2 font-bold text-[#741A2B] mb-1">
+                <Shield className="h-3.5 w-3.5 text-[#C69A4A]" />
+                <span>Academic Integrity Guarantee</span>
+              </div>
+              <p className="leading-normal">
+                Authentic UPSC Question Papers • Official Series A Keys • Strict Data Separation: Practice Questions are never mixed into official PYQ tallies.
+              </p>
             </div>
           </div>
 
-          {/* Col 2: Learning Ecosystem */}
+          {/* Col 3: Core Study Engines */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-              Learning Ecosystem
-            </h3>
-            <ul className="mt-4 space-y-2.5 text-xs text-slate-600">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#C69A4A]">
+              Study Engines
+            </h4>
+            <ul className="mt-4 space-y-2 text-xs font-medium">
               <li>
-                <Link href="/pyqs?paper=GS1" className="hover:text-blue-600 transition flex items-center gap-1.5">
-                  <Compass className="h-3.5 w-3.5 text-blue-600" />
-                  <span>Prelims GS Paper I Archive</span>
+                <Link href="/pyqs" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Prelims PYQ Library
                 </Link>
               </li>
               <li>
-                <Link href="/csat-coach" className="hover:text-blue-600 transition flex items-center gap-1.5">
-                  <BarChart2 className="h-3.5 w-3.5 text-purple-600" />
-                  <span>Dedicated CSAT Survival Coach</span>
+                <Link href="/csat-coach" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  CSAT Survival Coach
                 </Link>
               </li>
               <li>
-                <Link href="/syllabus/intelligence" className="hover:text-blue-600 transition flex items-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5 text-indigo-600" />
-                  <span>Syllabus Intelligence Map</span>
+                <Link href="/mock-tests" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Timed Mock Simulator
                 </Link>
               </li>
               <li>
-                <Link href="/current-affairs" className="hover:text-blue-600 transition flex items-center gap-1.5">
-                  <Layers className="h-3.5 w-3.5 text-teal-600" />
-                  <span>Current Affairs to PYQs</span>
+                <Link href="/mains" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Mains Answer Studio
                 </Link>
               </li>
               <li>
-                <Link href="/daily-quiz" className="hover:text-blue-600 transition flex items-center gap-1.5">
-                  <CheckCircle className="h-3.5 w-3.5 text-emerald-600" />
-                  <span>Daily 5-MCQ Diagnostic Quiz</span>
+                <Link href="/daily-quiz" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  5-Question Daily Quiz
+                </Link>
+              </li>
+              <li>
+                <Link href="/revision" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Smart Mistake Queue (SM-2)
+                </Link>
+              </li>
+              <li>
+                <Link href="/study-planner" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Daily Study Planner
+                </Link>
+              </li>
+              <li>
+                <Link href="/mission-control" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Mission Control
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 3: Preparation & Intelligence Tools */}
+          {/* Col 4: Knowledge Vault */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-              Preparation & Practice
-            </h3>
-            <ul className="mt-4 space-y-2.5 text-xs text-slate-600">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#C69A4A]">
+              Knowledge Vault
+            </h4>
+            <ul className="mt-4 space-y-2 text-xs font-medium">
               <li>
-                <Link href="/mission-control" className="hover:text-blue-600 transition flex items-center gap-1.5">
-                  <Sparkles className="h-3.5 w-3.5 text-blue-600" />
-                  <span>Pravaah Mission Control</span>
+                <Link href="/syllabus" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Syllabus Matrix
                 </Link>
               </li>
               <li>
-                <Link href="/mains" className="hover:text-blue-600 transition flex items-center gap-1.5">
-                  <BookOpen className="h-3.5 w-3.5 text-rose-600" />
-                  <span>Mains Answer Evaluation Lab</span>
+                <Link href="/syllabus/intelligence" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Syllabus Intelligence
                 </Link>
               </li>
               <li>
-                <Link href="/revision" className="hover:text-blue-600 transition flex items-center gap-1.5">
-                  <RotateCw className="h-3.5 w-3.5 text-amber-600" />
-                  <span>Mistake Intelligence & SM-2</span>
+                <Link href="/current-affairs" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Daily Current Affairs & PYQs
                 </Link>
               </li>
               <li>
-                <Link href="/mock-tests" className="hover:text-blue-600 transition flex items-center gap-1.5">
-                  <Clock className="h-3.5 w-3.5 text-indigo-600" />
-                  <span>Timed Mock Examination</span>
+                <Link href="/video-academy" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Video Academy
                 </Link>
               </li>
               <li>
-                <Link href="/study-planner" className="hover:text-blue-600 transition flex items-center gap-1.5">
-                  <Sliders className="h-3.5 w-3.5 text-slate-600" />
-                  <span>Personal Study Planner</span>
+                <Link href="/topper-copies" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Topper Answer Copies
+                </Link>
+              </li>
+              <li>
+                <Link href="/map-lab" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Map Learning Lab
+                </Link>
+              </li>
+              <li>
+                <Link href="/ncert" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  NCERT Chapter Mapping
+                </Link>
+              </li>
+              <li>
+                <Link href="/interview" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  Personality Test & DAF
+                </Link>
+              </li>
+              <li>
+                <Link href="/exams" className="text-[#786B68] hover:text-[#741A2B] transition">
+                  UPSC 241-Exam Corpus
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Col 4: Support & Contact Details */}
+          {/* Col 5: Direct Support & Contact */}
           <div>
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-900">
-              Support & Contact
-            </h3>
-            <p className="mt-4 text-xs text-slate-500 leading-relaxed">
-              Direct academic, technical and translation assistance for Civil Services aspirants.
-            </p>
-            <div className="mt-3 space-y-2 text-xs">
-              <a
-                href="tel:+917351522153"
-                className="flex items-center gap-2 font-semibold text-slate-700 hover:text-blue-700 transition"
-              >
-                <Phone className="h-3.5 w-3.5 text-blue-600" />
-                <span>+91 7351522153</span>
-              </a>
+            <h4 className="text-xs font-bold uppercase tracking-wider text-[#C69A4A]">
+              Aspirant Support
+            </h4>
+            <div className="mt-4 space-y-2.5 text-xs text-[#786B68]">
+              <div className="p-3 bg-white rounded-xl border border-[#E7DDD4] shadow-xs">
+                <span className="font-bold text-[#261B1E] block mb-1">Direct Help Desk:</span>
+                <a
+                  href="tel:+917351522153"
+                  className="flex items-center gap-1.5 font-bold text-[#741A2B] hover:underline"
+                >
+                  <Phone className="h-3.5 w-3.5 text-[#C69A4A]" />
+                  <span>+91 7351522153</span>
+                </a>
+                <a
+                  href="https://wa.me/917351522153"
+                  target="_blank"
+                  rel="noreferrer"
+                  className="flex items-center gap-1.5 mt-1 font-semibold text-[#1E7E55] hover:underline"
+                >
+                  <MessageSquare className="h-3.5 w-3.5" />
+                  <span>WhatsApp Support</span>
+                </a>
+                <a
+                  href="mailto:jainaradhy123@gmail.com"
+                  className="flex items-center gap-1.5 mt-1 font-semibold text-[#786B68] hover:text-[#741A2B]"
+                >
+                  <Mail className="h-3.5 w-3.5" />
+                  <span className="truncate">jainaradhy123@gmail.com</span>
+                </a>
+              </div>
 
-              <a
-                href="https://wa.me/917351522153?text=Hi%20Pravaah%20UPSC%20Support%2C%20I%20am%20an%20aspirant%20and%20need%20assistance%20with%3A"
-                target="_blank"
-                rel="noreferrer"
-                className="flex items-center gap-2 font-semibold text-slate-700 hover:text-emerald-700 transition"
-              >
-                <MessageSquare className="h-3.5 w-3.5 text-emerald-600" />
-                <span>WhatsApp: +91 7351522153</span>
-              </a>
-
-              <a
-                href="mailto:jainaradhy123@gmail.com"
-                className="flex items-center gap-2 font-semibold text-slate-700 hover:text-indigo-700 transition"
-              >
-                <Mail className="h-3.5 w-3.5 text-indigo-600" />
-                <span>jainaradhy123@gmail.com</span>
-              </a>
-            </div>
-
-            <div className="mt-4 pt-3 border-t border-slate-100 flex flex-wrap gap-2.5 text-[11px] text-slate-500 font-medium">
-              <Link href="/contact" className="text-blue-700 font-bold hover:underline">
-                Contact Desk
-              </Link>
-              <span>•</span>
-              <Link href="/about" className="hover:underline">About</Link>
-              <span>•</span>
-              <Link href="/faq" className="hover:underline">FAQ</Link>
-              <span>•</span>
-              <Link href="/privacy" className="hover:underline">Privacy</Link>
-              <span>•</span>
-              <Link href="/terms" className="hover:underline">Terms</Link>
-            </div>
-            <div className="mt-2 text-[10px] text-slate-400">
-              Lead Architect: <span className="text-slate-600 font-semibold">Aradhy Jain</span>
+              <div className="pt-2 text-[11px] space-y-1">
+                <div>Lead Architect: <span className="font-bold text-[#261B1E]">Aradhy Jain</span></div>
+                <div>Operational Hours: 08:00 – 22:00 IST</div>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Banner */}
-        <div className="mt-12 border-t border-slate-200 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-400 gap-4">
-          <p>© 2026 Pravaah UPSC. Built with academic rigor for Civil Services Aspirants.</p>
-          <div className="flex items-center gap-4 text-slate-500">
-            <div className="flex items-center gap-1.5">
-              <Shield className="h-4 w-4 text-emerald-600" />
-              <span>Official Series A Answer Keys Verified</span>
-            </div>
-            <a
-              href="https://upsc.gov.in/examinations/previous-question-papers"
-              target="_blank"
-              rel="noreferrer"
-              className="inline-flex items-center gap-1 text-slate-500 hover:text-blue-700 hover:underline"
-            >
-              <span>UPSC.gov.in</span>
-              <ExternalLink className="h-3 w-3" />
-            </a>
+        {/* Bottom Bar: Copyright & Legal */}
+        <div className="mt-12 border-t border-[#E7DDD4] pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-[#786B68] gap-4">
+          <p>© 2026 Pravaah UPSC. Built with academic rigor for Civil Services Aspirants across India.</p>
+
+          <div className="flex flex-wrap items-center gap-4 text-xs">
+            <Link href="/about" className="hover:text-[#741A2B]">About Us</Link>
+            <span>•</span>
+            <Link href="/contact" className="hover:text-[#741A2B]">Contact</Link>
+            <span>•</span>
+            <Link href="/faq" className="hover:text-[#741A2B]">FAQ</Link>
+            <span>•</span>
+            <Link href="/pricing" className="hover:text-[#741A2B]">Membership</Link>
+            <span>•</span>
+            <Link href="/privacy" className="hover:text-[#741A2B]">Privacy Policy</Link>
+            <span>•</span>
+            <Link href="/terms" className="hover:text-[#741A2B]">Terms of Service</Link>
           </div>
         </div>
       </div>

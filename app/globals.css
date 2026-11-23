@@ -3,28 +3,35 @@
 @tailwind utilities;
 
 :root {
-  --background: #f7f9fc;
-  --foreground: #101828;
-  --brand-primary: #2453e6;
-  --brand-dark: #101828;
-  --brand-secondary: #4778f5;
-  --brand-body: #475467;
-  --brand-muted: #667085;
-  --brand-border: #e4e7ec;
+  --background: #FBF7F0; /* Warm Ivory */
+  --foreground: #261B1E; /* Primary Deep Maroon/Charcoal */
+  --brand-primary: #741A2B; /* Primary Burgundy */
+  --brand-dark: #3A101A; /* Dark Wine */
+  --brand-saffron: #C65A36; /* Saffron */
+  --brand-gold: #C69A4A; /* Antique Gold */
+  --brand-gold-light: #E2C38E;
+  --brand-body: #261B1E;
+  --brand-muted: #786B68; /* Secondary Warm Gray */
+  --brand-border: #E7DDD4; /* Heritage Border */
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   overflow-x: hidden;
 }
 
+/* Editorial Serif Headings */
+h1, h2, .font-editorial {
+  font-family: var(--font-lora), "Playfair Display", Georgia, serif;
+}
+
 /* Accessible interactive focus visible styles */
 *:focus-visible {
-  outline: 2px solid #2453e6;
+  outline: 2px solid #741A2B;
   outline-offset: 2px;
 }
 
@@ -46,20 +53,33 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #F5EFE6;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cbd5e1;
+  background: #D3C3B5;
   border-radius: 3px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #94a3b8;
+  background: #C69A4A;
 }
 
 /* Touch target helpers */
 .touch-target {
   min-height: 44px;
   min-width: 44px;
+}
+
+/* Subtle Indian Architectural Accent Helpers */
+.arch-card {
+  border-radius: 1.5rem 1.5rem 1rem 1rem;
+}
+
+.gold-accent-line {
+  background: linear-gradient(90deg, transparent 0%, #C69A4A 50%, transparent 100%);
+}
+
+.burgundy-glow {
+  box-shadow: 0 4px 20px -2px rgba(116, 26, 43, 0.12);
 }
 
 /* Devanagari Bilingual Typography Enhancement */

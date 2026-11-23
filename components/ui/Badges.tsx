@@ -2,7 +2,7 @@ import React from "react";
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: "brand" | "success" | "warning" | "error" | "neutral" | "outline";
+  variant?: "brand" | "gold" | "saffron" | "success" | "warning" | "error" | "neutral" | "outline";
   size?: "sm" | "md";
   className?: string;
 }
@@ -19,17 +19,19 @@ export function Badge({
   }[size];
 
   const variantStyles = {
-    brand: "bg-blue-50 text-[#2453E6] border border-blue-200/60",
-    success: "bg-emerald-50 text-[#12A878] border border-emerald-200/60",
-    warning: "bg-amber-50 text-[#F59E0B] border border-amber-200/60",
-    error: "bg-rose-50 text-[#DC2626] border border-rose-200/60",
-    neutral: "bg-[#F7F9FC] text-[#475467] border border-[#E4E7EC]",
-    outline: "bg-transparent text-[#475467] border border-[#D0D5DD]",
+    brand: "bg-[#F7ECEE] text-[#741A2B] border border-[#E8C5CB]",
+    gold: "bg-[#FBF4E6] text-[#8C6721] border border-[#E5C88E]",
+    saffron: "bg-[#FDF0EB] text-[#C65A36] border border-[#F2C8B8]",
+    success: "bg-[#EAF5EE] text-[#1E7E55] border border-[#BDE2CF]",
+    warning: "bg-[#FDF5E8] text-[#B07418] border border-[#F0D59E]",
+    error: "bg-[#FAECEC] text-[#A32D2D] border border-[#ECC4C4]",
+    neutral: "bg-[#F4EDE2] text-[#5D514E] border border-[#E7DDD4]",
+    outline: "bg-transparent text-[#786B68] border border-[#E7DDD4]",
   }[variant];
 
   return (
     <span
-      className={`inline-flex items-center gap-1 font-bold rounded-md leading-none ${sizeStyles} ${variantStyles} ${className}`}
+      className={`inline-flex items-center gap-1 font-bold rounded-lg leading-none ${sizeStyles} ${variantStyles} ${className}`}
     >
       {children}
     </span>

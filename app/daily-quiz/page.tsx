@@ -103,11 +103,11 @@ export default function DailyQuizPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+      <div className="min-h-screen bg-heritage-ivory flex flex-col font-sans">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="mt-2 text-sm text-slate-500">Loading today's quiz...</p>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-heritage-burgundy border-t-transparent"></div>
+            <p className="mt-2 text-sm text-heritage-secondary font-medium">Loading today's quiz...</p>
           </div>
         </div>
       </div>
@@ -116,26 +116,26 @@ export default function DailyQuizPage() {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+      <div className="min-h-screen bg-heritage-ivory flex flex-col font-sans">
         <div className="flex-1 max-w-2xl mx-auto px-4 py-16 text-center">
-          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-200">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 border border-rose-200 shadow-xs">
             <AlertCircle className="h-7 w-7" />
           </div>
-          <h1 className="text-xl font-bold text-slate-900">Unable to Load Quiz</h1>
+          <h1 className="font-serif text-xl font-bold text-heritage-text">Unable to Load Quiz</h1>
           <p className="text-sm text-rose-700 mt-2">{error}</p>
           <div className="mt-6 flex flex-wrap justify-center gap-3">
             <button
               onClick={() => loadQuiz()}
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold shadow-sm transition"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-heritage-burgundy hover:bg-heritage-wine text-white text-sm font-bold shadow-xs transition"
             >
-              <RotateCw className="h-4 w-4" />
+              <RotateCw className="h-4 w-4 text-heritage-gold" />
               Retry Quiz Load
             </button>
             <Link
               href="/current-affairs"
-              className="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 text-sm font-semibold transition"
+              className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-white border border-heritage-border hover:bg-heritage-cream text-heritage-text text-sm font-semibold transition"
             >
-              <BookOpen className="h-4 w-4" />
+              <BookOpen className="h-4 w-4 text-heritage-gold" />
               Current Affairs
             </Link>
           </div>
@@ -146,18 +146,18 @@ export default function DailyQuizPage() {
 
   if (!quiz) {
     return (
-      <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+      <div className="min-h-screen bg-heritage-ivory flex flex-col font-sans">
         <div className="flex-1 max-w-2xl mx-auto px-4 py-16 text-center">
-          <AlertCircle className="h-12 w-12 text-slate-400 mx-auto mb-4" />
-          <h1 className="text-xl font-bold text-slate-900">No Quiz Available</h1>
-          <p className="text-sm text-slate-500 mt-2">
+          <AlertCircle className="h-12 w-12 text-heritage-gold mx-auto mb-4" />
+          <h1 className="font-serif text-xl font-bold text-heritage-text">No Quiz Available</h1>
+          <p className="text-sm text-heritage-secondary mt-2">
             Today's daily current affairs quiz has not been published yet. Please check back shortly.
           </p>
           <Link
             href="/current-affairs"
-            className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-blue-600 text-white text-sm font-semibold"
+            className="mt-6 inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-heritage-burgundy text-white text-sm font-bold shadow-xs hover:bg-heritage-wine transition"
           >
-            <BookOpen className="h-4 w-4" />
+            <BookOpen className="h-4 w-4 text-heritage-gold" />
             Explore Daily Current Affairs
           </Link>
         </div>
@@ -169,29 +169,29 @@ export default function DailyQuizPage() {
   const answeredCount = Object.keys(answers).length;
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-heritage-ivory flex flex-col font-sans">
       <main className="flex-1 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Banner */}
-        <div className="bg-white rounded-2xl border border-slate-200 p-6 shadow-sm mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="bg-white rounded-2xl border border-heritage-border p-6 shadow-card mb-6 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
           <div>
             <div className="flex items-center gap-2 mb-1">
-              <span className="px-2.5 py-0.5 rounded text-[11px] font-bold bg-blue-50 text-blue-700 border border-blue-200">
+              <span className="px-2.5 py-0.5 rounded-md text-[11px] font-bold bg-heritage-cream text-heritage-burgundy border border-heritage-border">
                 Daily Prelims Challenge
               </span>
-              <span className="text-xs text-slate-400">
+              <span className="text-xs text-heritage-secondary">
                 5 High-Yield Questions • Negative Marking (-0.66)
               </span>
             </div>
-            <h1 className="text-xl font-extrabold text-slate-900 tracking-tight">
+            <h1 className="font-serif text-xl sm:text-2xl font-bold text-heritage-text tracking-tight">
               {quiz.title}
             </h1>
             {archive.length > 0 && (
               <div className="mt-2.5 flex items-center gap-2">
-                <span className="text-xs font-semibold text-slate-500">Select Date:</span>
+                <span className="text-xs font-semibold text-heritage-secondary">Select Date:</span>
                 <select
                   value={selectedQuizId || quiz.id}
                   onChange={(e) => loadQuiz(e.target.value)}
-                  className="text-xs bg-slate-50 border border-slate-300 rounded-lg px-2.5 py-1 font-medium text-slate-700 hover:border-blue-500 transition-colors cursor-pointer"
+                  className="text-xs bg-heritage-ivory border border-heritage-border rounded-xl px-3 py-1 font-semibold text-heritage-text hover:border-heritage-gold transition-colors cursor-pointer"
                 >
                   {archive.map((item) => (
                     <option key={item.id} value={item.id}>
@@ -210,15 +210,15 @@ export default function DailyQuizPage() {
 
           {!submitted ? (
             <div className="text-right">
-              <span className="text-xs text-slate-500 block">Progress</span>
-              <span className="text-sm font-bold text-blue-700">
+              <span className="text-xs text-heritage-secondary block">Progress</span>
+              <span className="font-serif text-sm font-bold text-heritage-burgundy">
                 {answeredCount} / {quiz.totalQuestions} Answered
               </span>
             </div>
           ) : (
             <div className="text-right">
-              <span className="text-xs text-slate-500 block">Your Score</span>
-              <span className="text-lg font-black text-emerald-600">
+              <span className="text-xs text-heritage-secondary block">Your Score</span>
+              <span className="font-serif text-lg font-bold text-emerald-700">
                 {result?.score} / {result?.totalPossibleScore} marks
               </span>
             </div>
@@ -229,16 +229,16 @@ export default function DailyQuizPage() {
         {!submitted ? (
           <div>
             {/* Question Card */}
-            <div className="bg-white rounded-2xl border border-slate-200 p-6 sm:p-8 shadow-sm mb-6">
-              <div className="flex items-center justify-between text-xs text-slate-400 mb-4 pb-3 border-b border-slate-100">
-                <span className="font-bold text-slate-700">
+            <div className="bg-white rounded-2xl border border-heritage-border p-6 sm:p-8 shadow-card mb-6">
+              <div className="flex items-center justify-between text-xs text-heritage-secondary mb-4 pb-3 border-b border-heritage-border/60">
+                <span className="font-bold text-heritage-text">
                   Question {currentIndex + 1} of {quiz.totalQuestions}
                 </span>
                 {currentQ.relatedStory && (
                   <Link
                     href={`/current-affairs/${currentQ.relatedStory.slug}`}
                     target="_blank"
-                    className="text-blue-600 hover:underline flex items-center gap-1 font-medium"
+                    className="text-heritage-burgundy hover:underline flex items-center gap-1 font-medium"
                   >
                     Based on: {currentQ.relatedStory.title.slice(0, 35)}...
                   </Link>
@@ -246,12 +246,12 @@ export default function DailyQuizPage() {
               </div>
 
               {/* Question Text */}
-              <p className="text-sm sm:text-base font-semibold text-slate-900 mb-6 whitespace-pre-line leading-relaxed">
+              <p className="font-serif text-sm sm:text-base font-bold text-heritage-text mb-6 whitespace-pre-line leading-relaxed">
                 {currentQ.questionText}
               </p>
 
               {/* Options */}
-              <div className="space-y-3 mb-6">
+              <div className="space-y-3 mb-6 font-sans">
                 {currentQ.options.map((opt: any) => {
                   const isSelected = answers[currentQ.id] === opt.code;
                   return (
@@ -260,15 +260,15 @@ export default function DailyQuizPage() {
                       onClick={() => handleSelect(currentQ.id, opt.code)}
                       className={`w-full text-left p-3.5 rounded-xl border text-xs sm:text-sm flex items-start gap-3 transition-all ${
                         isSelected
-                          ? "border-blue-600 bg-blue-50/60 text-blue-900 font-semibold ring-2 ring-blue-600/20"
-                          : "border-slate-200 bg-white hover:bg-slate-50 text-slate-700"
+                          ? "border-heritage-burgundy bg-heritage-cream text-heritage-burgundy font-bold ring-1 ring-heritage-burgundy/30"
+                          : "border-heritage-border bg-white hover:border-heritage-gold hover:bg-heritage-ivory/50 text-heritage-text"
                       }`}
                     >
                       <span
-                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-xs font-bold ${
+                        className={`flex h-5 w-5 shrink-0 items-center justify-center rounded-lg text-xs font-bold ${
                           isSelected
-                            ? "bg-blue-600 text-white"
-                            : "bg-slate-100 text-slate-600"
+                            ? "bg-heritage-burgundy text-white"
+                            : "border border-heritage-border bg-heritage-ivory text-heritage-burgundy"
                         }`}
                       >
                         {opt.code}
@@ -280,11 +280,11 @@ export default function DailyQuizPage() {
               </div>
 
               {/* Navigation Controls */}
-              <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+              <div className="flex items-center justify-between pt-4 border-t border-heritage-border/60">
                 <button
                   disabled={currentIndex === 0}
                   onClick={() => setCurrentIndex((prev) => prev - 1)}
-                  className="px-4 py-2 rounded-lg border border-slate-200 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-xl border border-heritage-border text-xs font-semibold text-heritage-secondary hover:bg-heritage-ivory disabled:opacity-40 disabled:cursor-not-allowed flex items-center gap-1.5 transition"
                 >
                   <ArrowLeft className="h-3.5 w-3.5" />
                   Previous
@@ -293,7 +293,7 @@ export default function DailyQuizPage() {
                 {currentIndex < quiz.totalQuestions - 1 ? (
                   <button
                     onClick={() => setCurrentIndex((prev) => prev + 1)}
-                    className="px-4 py-2 rounded-lg bg-slate-900 hover:bg-slate-800 text-white text-xs font-semibold flex items-center gap-1.5"
+                    className="px-4 py-2 rounded-xl bg-heritage-burgundy hover:bg-heritage-wine text-white text-xs font-bold flex items-center gap-1.5 transition shadow-xs"
                   >
                     Next Question
                     <ArrowRight className="h-3.5 w-3.5" />
@@ -302,7 +302,7 @@ export default function DailyQuizPage() {
                   <button
                     onClick={handleSubmit}
                     disabled={submitting}
-                    className="px-6 py-2 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-all shadow flex items-center gap-1.5"
+                    className="px-6 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold transition shadow-xs flex items-center gap-1.5"
                   >
                     {submitting ? "Grading..." : "Submit Daily Quiz"}
                     <CheckCircle className="h-3.5 w-3.5" />
@@ -320,12 +320,12 @@ export default function DailyQuizPage() {
                   <button
                     key={q.id}
                     onClick={() => setCurrentIndex(i)}
-                    className={`h-8 w-8 rounded-lg text-xs font-bold transition-all ${
+                    className={`h-8 w-8 rounded-xl text-xs font-bold transition-all ${
                       isCurrent
-                        ? "bg-blue-700 text-white ring-2 ring-blue-700/30"
+                        ? "bg-heritage-burgundy text-white ring-2 ring-heritage-gold"
                         : isAnswered
-                        ? "bg-blue-100 text-blue-800"
-                        : "bg-white border border-slate-200 text-slate-600 hover:bg-slate-50"
+                        ? "bg-heritage-cream border border-heritage-gold text-heritage-burgundy font-bold"
+                        : "bg-white border border-heritage-border text-heritage-secondary hover:bg-heritage-ivory"
                     }`}
                   >
                     {i + 1}
@@ -338,35 +338,35 @@ export default function DailyQuizPage() {
           /* SCORECARD & COMPREHENSIVE EXPLANATIONS */
           <div className="space-y-6">
             {/* Scorecard Hero */}
-            <div className="bg-gradient-to-br from-slate-900 to-indigo-950 rounded-2xl p-6 sm:p-8 text-white shadow-sm">
-              <div className="flex items-center gap-2 mb-2 text-indigo-300 text-xs font-bold">
+            <div className="bg-gradient-to-r from-heritage-burgundy to-heritage-wine rounded-2xl p-6 sm:p-8 text-white shadow-gold border border-heritage-gold/30">
+              <div className="flex items-center gap-2 mb-2 text-heritage-gold text-xs font-bold">
                 <Award className="h-4 w-4" />
                 Scorecard & Topic Analytics
               </div>
-              <h2 className="text-2xl font-black">{quiz.title}</h2>
+              <h2 className="font-serif text-2xl font-bold">{quiz.title}</h2>
 
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mt-6 pt-6 border-t border-white/10">
-                <div className="bg-white/5 rounded-xl p-3 border border-white/10 text-center">
-                  <span className="text-[11px] text-slate-400 block">Score</span>
-                  <span className="text-xl font-black text-emerald-400">
+                <div className="bg-white/10 rounded-xl p-3 border border-white/10 text-center">
+                  <span className="text-[11px] text-heritage-cream/80 block">Score</span>
+                  <span className="font-serif text-xl font-bold text-heritage-gold">
                     {result.score} / {result.totalPossibleScore}
                   </span>
                 </div>
-                <div className="bg-white/5 rounded-xl p-3 border border-white/10 text-center">
-                  <span className="text-[11px] text-slate-400 block">Accuracy</span>
-                  <span className="text-xl font-black text-blue-300">
+                <div className="bg-white/10 rounded-xl p-3 border border-white/10 text-center">
+                  <span className="text-[11px] text-heritage-cream/80 block">Accuracy</span>
+                  <span className="font-serif text-xl font-bold text-amber-200">
                     {result.accuracyPercent}%
                   </span>
                 </div>
-                <div className="bg-white/5 rounded-xl p-3 border border-white/10 text-center">
-                  <span className="text-[11px] text-slate-400 block">Correct</span>
-                  <span className="text-xl font-black text-emerald-400">
+                <div className="bg-white/10 rounded-xl p-3 border border-white/10 text-center">
+                  <span className="text-[11px] text-heritage-cream/80 block">Correct</span>
+                  <span className="font-serif text-xl font-bold text-emerald-300">
                     {result.correctCount}
                   </span>
                 </div>
-                <div className="bg-white/5 rounded-xl p-3 border border-white/10 text-center">
-                  <span className="text-[11px] text-slate-400 block">Incorrect</span>
-                  <span className="text-xl font-black text-rose-400">
+                <div className="bg-white/10 rounded-xl p-3 border border-white/10 text-center">
+                  <span className="text-[11px] text-heritage-cream/80 block">Incorrect</span>
+                  <span className="font-serif text-xl font-bold text-rose-300">
                     {result.incorrectCount}
                   </span>
                 </div>
@@ -375,16 +375,16 @@ export default function DailyQuizPage() {
               <div className="mt-6 flex flex-wrap gap-3">
                 <Link
                   href="/revision"
-                  className="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-xs font-bold text-white transition-all shadow flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-xl bg-heritage-cream text-heritage-burgundy text-xs font-bold transition-all shadow-xs flex items-center gap-1.5 hover:bg-white"
                 >
-                  <RotateCw className="h-3.5 w-3.5" />
+                  <RotateCw className="h-3.5 w-3.5 text-heritage-gold" />
                   Review Mistakes in Revision Queue
                 </Link>
                 <Link
                   href="/current-affairs"
-                  className="px-4 py-2 rounded-lg bg-white/10 hover:bg-white/20 text-xs font-bold text-white transition-all border border-white/10 flex items-center gap-1.5"
+                  className="px-4 py-2 rounded-xl bg-white/15 hover:bg-white/25 text-xs font-bold text-white transition-all border border-white/20 flex items-center gap-1.5"
                 >
-                  <BookOpen className="h-3.5 w-3.5" />
+                  <BookOpen className="h-3.5 w-3.5 text-heritage-gold" />
                   Read Full Current Affairs Cards
                 </Link>
               </div>
@@ -392,19 +392,19 @@ export default function DailyQuizPage() {
 
             {/* Explanations for all 5 questions */}
             <div className="space-y-6">
-              <h3 className="text-lg font-bold text-slate-900">
+              <h3 className="font-serif text-lg font-bold text-heritage-text">
                 Detailed Answers & Verification Explanations
               </h3>
 
               {result.gradedQuestions.map((q: any) => (
                 <div
                   key={q.id}
-                  className={`bg-white rounded-2xl border p-6 shadow-sm ${
-                    q.isCorrect ? "border-emerald-200" : "border-rose-200"
+                  className={`bg-white rounded-2xl border p-6 shadow-card ${
+                    q.isCorrect ? "border-emerald-300" : "border-rose-300"
                   }`}
                 >
                   <div className="flex items-center justify-between text-xs mb-3">
-                    <span className="font-bold text-slate-700">
+                    <span className="font-bold text-heritage-text">
                       Question #{q.orderIndex}
                     </span>
                     {q.isCorrect ? (
@@ -418,20 +418,20 @@ export default function DailyQuizPage() {
                     )}
                   </div>
 
-                  <p className="text-sm font-semibold text-slate-900 mb-4 whitespace-pre-line leading-relaxed">
+                  <p className="font-serif text-sm font-bold text-heritage-text mb-4 whitespace-pre-line leading-relaxed">
                     {q.questionText}
                   </p>
 
-                  <div className="space-y-2 mb-4">
+                  <div className="space-y-2 mb-4 font-sans">
                     {q.options.map((opt: any) => {
                       const isCorrectOpt = opt.code === q.correctOption;
                       const isUserChoice = opt.code === q.selectedOption;
 
-                      let optClass = "border-slate-200 bg-white text-slate-700";
+                      let optClass = "border-heritage-border bg-white text-heritage-text";
                       if (isCorrectOpt) {
-                        optClass = "border-emerald-500 bg-emerald-50 text-emerald-900 font-bold";
+                        optClass = "border-emerald-500 bg-emerald-50 text-emerald-950 font-bold";
                       } else if (isUserChoice && !isCorrectOpt) {
-                        optClass = "border-rose-400 bg-rose-50 text-rose-900";
+                        optClass = "border-rose-400 bg-rose-50 text-rose-950";
                       }
 
                       return (
@@ -439,7 +439,7 @@ export default function DailyQuizPage() {
                           key={opt.code}
                           className={`p-3 rounded-xl border text-xs flex items-start gap-3 ${optClass}`}
                         >
-                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-slate-100 font-bold text-slate-700 text-[11px]">
+                          <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-lg bg-heritage-cream font-bold text-heritage-burgundy text-[11px] border border-heritage-border">
                             {opt.code}
                           </span>
                           <span className="leading-snug">{opt.text}</span>
@@ -448,8 +448,8 @@ export default function DailyQuizPage() {
                     })}
                   </div>
 
-                  <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-700 leading-relaxed">
-                    <span className="font-bold text-slate-900 block mb-1">
+                  <div className="p-4 rounded-xl bg-heritage-ivory border border-heritage-gold/30 text-xs text-heritage-text leading-relaxed">
+                    <span className="font-bold text-heritage-burgundy block mb-1 uppercase tracking-wider text-[10px]">
                       Official Explanation:
                     </span>
                     {q.explanation}

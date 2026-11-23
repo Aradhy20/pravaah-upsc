@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useRef, useEffect } from "react";
-import { ChevronDown, ChevronRight, ChevronLeft } from "lucide-react";
+import { ChevronRight, ChevronLeft } from "lucide-react";
 
 interface TabItem {
   id: string;
@@ -21,7 +21,7 @@ export function Tabs({ tabs, activeTab, onChange, className = "" }: TabsProps) {
   return (
     <div
       role="tablist"
-      className={`inline-flex items-center gap-1 rounded-xl bg-[#F7F9FC] border border-[#E4E7EC] p-1 ${className}`}
+      className={`inline-flex items-center gap-1 rounded-xl bg-[#F4EDE2] border border-[#E7DDD4] p-1 ${className}`}
     >
       {tabs.map((tab) => {
         const isActive = tab.id === activeTab;
@@ -31,10 +31,10 @@ export function Tabs({ tabs, activeTab, onChange, className = "" }: TabsProps) {
             role="tab"
             aria-selected={isActive}
             onClick={() => onChange(tab.id)}
-            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6] ${
+            className={`flex items-center gap-1.5 rounded-lg px-3 py-1.5 text-xs font-bold transition focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#741A2B] ${
               isActive
-                ? "bg-white text-[#2453E6] shadow-xs"
-                : "text-[#475467] hover:text-[#101828] hover:bg-white/50"
+                ? "bg-white text-[#741A2B] shadow-xs border border-[#E7DDD4]"
+                : "text-[#786B68] hover:text-[#261B1E] hover:bg-white/50"
             }`}
           >
             {tab.icon && <span>{tab.icon}</span>}
@@ -42,7 +42,7 @@ export function Tabs({ tabs, activeTab, onChange, className = "" }: TabsProps) {
             {tab.count !== undefined && (
               <span
                 className={`ml-1 rounded-md px-1.5 py-0.2 text-[10px] ${
-                  isActive ? "bg-blue-100 text-[#2453E6]" : "bg-slate-200/80 text-[#667085]"
+                  isActive ? "bg-[#F7ECEE] text-[#741A2B]" : "bg-[#E7DDD4] text-[#786B68]"
                 }`}
               >
                 {tab.count}
@@ -67,22 +67,22 @@ interface BreadcrumbsProps {
 
 export function Breadcrumbs({ items, className = "" }: BreadcrumbsProps) {
   return (
-    <nav aria-label="Breadcrumb" className={`flex items-center text-xs text-[#667085] ${className}`}>
+    <nav aria-label="Breadcrumb" className={`flex items-center text-xs text-[#786B68] ${className}`}>
       <ol className="flex items-center gap-1.5 flex-wrap">
         {items.map((item, idx) => {
           const isLast = idx === items.length - 1;
           return (
             <li key={idx} className="flex items-center gap-1.5">
-              {idx > 0 && <ChevronRight className="h-3.5 w-3.5 text-[#98A2B3]" />}
+              {idx > 0 && <ChevronRight className="h-3.5 w-3.5 text-[#C69A4A]" />}
               {item.href && !isLast ? (
                 <a
                   href={item.href}
-                  className="font-medium text-[#475467] hover:text-[#2453E6] transition"
+                  className="font-medium text-[#786B68] hover:text-[#741A2B] transition"
                 >
                   {item.label}
                 </a>
               ) : (
-                <span className="font-bold text-[#101828]" aria-current={isLast ? "page" : undefined}>
+                <span className="font-bold text-[#261B1E]" aria-current={isLast ? "page" : undefined}>
                   {item.label}
                 </span>
               )}
@@ -110,25 +110,25 @@ export function Pagination({
   if (totalPages <= 1) return null;
 
   return (
-    <div className={`flex items-center justify-between border-t border-[#E4E7EC] pt-4 ${className}`}>
+    <div className={`flex items-center justify-between border-t border-[#E7DDD4] pt-4 ${className}`}>
       <button
         disabled={currentPage <= 1}
         onClick={() => onPageChange(currentPage - 1)}
-        className="inline-flex items-center gap-1 rounded-xl border border-[#E4E7EC] bg-white px-3 py-1.5 text-xs font-bold text-[#475467] hover:bg-[#F7F9FC] transition disabled:opacity-40 disabled:cursor-not-allowed"
+        className="inline-flex items-center gap-1 rounded-xl border border-[#E7DDD4] bg-white px-3 py-1.5 text-xs font-bold text-[#786B68] hover:bg-[#F4EDE2] transition disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <ChevronLeft className="h-4 w-4" />
         <span>Previous</span>
       </button>
 
-      <span className="text-xs font-semibold text-[#667085]">
-        Page <span className="font-bold text-[#101828]">{currentPage}</span> of{" "}
-        <span className="font-bold text-[#101828]">{totalPages}</span>
+      <span className="text-xs font-semibold text-[#786B68]">
+        Page <span className="font-bold text-[#261B1E]">{currentPage}</span> of{" "}
+        <span className="font-bold text-[#261B1E]">{totalPages}</span>
       </span>
 
       <button
         disabled={currentPage >= totalPages}
         onClick={() => onPageChange(currentPage + 1)}
-        className="inline-flex items-center gap-1 rounded-xl border border-[#E4E7EC] bg-white px-3 py-1.5 text-xs font-bold text-[#475467] hover:bg-[#F7F9FC] transition disabled:opacity-40 disabled:cursor-not-allowed"
+        className="inline-flex items-center gap-1 rounded-xl border border-[#E7DDD4] bg-white px-3 py-1.5 text-xs font-bold text-[#786B68] hover:bg-[#F4EDE2] transition disabled:opacity-40 disabled:cursor-not-allowed"
       >
         <span>Next</span>
         <ChevronRight className="h-4 w-4" />
@@ -168,7 +168,7 @@ export function DropdownMenu({
       <div onClick={() => setOpen(!open)}>{trigger}</div>
       {open && (
         <div
-          className={`absolute mt-2 z-50 rounded-2xl border border-[#E4E7EC] bg-white p-2 shadow-xl animate-in fade-in-50 zoom-in-95 ${
+          className={`absolute mt-2 z-50 rounded-2xl border border-[#E7DDD4] bg-white p-2 shadow-hover animate-in fade-in-50 zoom-in-95 ${
             align === "right" ? "right-0" : "left-0"
           } ${className}`}
         >

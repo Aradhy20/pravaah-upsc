@@ -55,35 +55,35 @@ export default function CurrentAffairsPage() {
   }, [selectedPaper, searchQuery]);
 
   return (
-    <div className="min-h-screen bg-slate-50 flex flex-col font-sans">
+    <div className="min-h-screen bg-heritage-ivory flex flex-col font-sans">
       <main className="flex-1 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 w-full">
         {/* Hero Section */}
-        <div className="bg-gradient-to-r from-blue-900 via-indigo-900 to-slate-900 rounded-2xl p-6 sm:p-10 text-white shadow-sm mb-8">
+        <div className="bg-gradient-to-r from-heritage-wine via-heritage-burgundy to-heritage-wine rounded-2xl p-6 sm:p-10 text-white shadow-gold border border-heritage-gold/30 mb-8">
           <div className="max-w-3xl">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/20 text-blue-200 text-xs font-semibold mb-4 border border-blue-400/20">
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-heritage-cream/15 text-heritage-gold text-xs font-bold mb-4 border border-heritage-gold/30">
               <Sparkles className="h-3.5 w-3.5" />
               Official Source-Aware Intelligence Pipeline
             </div>
-            <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight">
-              Daily Current Affairs <span className="text-blue-400">Connected to PYQs</span>
+            <h1 className="font-serif text-2xl sm:text-4xl font-bold tracking-tight">
+              Daily Current Affairs <span className="text-heritage-gold">Connected to PYQs</span>
             </h1>
-            <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
-              Every story is sourced from authoritative public releases (PIB, RBI, Ministries, PRS), mapped to the UPSC syllabus, and linked directly to historical questions from our verified 121 question bank (1995–2024 Prelims Series A: 74 GS1 & 47 CSAT).
+            <p className="mt-3 text-heritage-cream/90 text-sm sm:text-base leading-relaxed">
+              Every story is sourced from authoritative public releases (PIB, RBI, Ministries, PRS), mapped to the UPSC syllabus, and linked directly to historical questions from our verified question bank (1995–2024 Prelims Series A: 74 GS1 & 47 CSAT).
             </p>
 
             <div className="mt-6 flex flex-wrap gap-4 items-center">
               <Link
                 href="/daily-quiz"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-semibold transition-all shadow"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-heritage-burgundy hover:bg-heritage-wine text-white text-sm font-bold transition-all shadow-xs border border-heritage-gold/30"
               >
-                <CheckCircle className="h-4 w-4" />
+                <CheckCircle className="h-4 w-4 text-heritage-gold" />
                 Attempt Today's 5-Question Quiz
               </Link>
               <Link
                 href="/study-planner"
-                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-sm font-semibold transition-all border border-white/10"
+                className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 text-white text-sm font-semibold transition-all border border-white/20"
               >
-                <BookOpen className="h-4 w-4" />
+                <BookOpen className="h-4 w-4 text-heritage-cream" />
                 Today's Study Plan
               </Link>
             </div>
@@ -91,17 +91,17 @@ export default function CurrentAffairsPage() {
         </div>
 
         {/* Filter & Search Bar */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center mb-6 bg-white p-4 rounded-xl border border-slate-200 shadow-sm">
+        <div className="flex flex-col sm:flex-row gap-4 justify-between items-center mb-6 bg-white p-4 rounded-2xl border border-heritage-border shadow-card">
           {/* Syllabus Paper Tabs */}
           <div className="flex flex-wrap gap-2 w-full sm:w-auto">
             {["ALL", "GS1", "GS2", "GS3", "GS4"].map((paper) => (
               <button
                 key={paper}
                 onClick={() => setSelectedPaper(paper)}
-                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all ${
+                className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all ${
                   selectedPaper === paper
-                    ? "bg-blue-700 text-white shadow-sm"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    ? "bg-heritage-burgundy text-white shadow-xs"
+                    : "bg-heritage-ivory text-heritage-secondary hover:bg-heritage-cream hover:text-heritage-text border border-heritage-border"
                 }`}
               >
                 {paper === "ALL" ? "All Papers" : `Mains ${paper}`}
@@ -110,51 +110,51 @@ export default function CurrentAffairsPage() {
           </div>
 
           {/* Search input */}
-          <div className="relative w-full sm:w-72">
-            <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+          <div className="relative w-full sm:w-80">
+            <Search className="absolute left-3.5 top-2.5 h-4 w-4 text-heritage-secondary" />
             <input
               type="text"
-              placeholder="Search current affairs..."
+              placeholder="Search PIB briefings, treaties, policies..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full pl-9 pr-4 py-1.5 text-sm rounded-lg border border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-600 focus:border-transparent"
+              className="w-full pl-10 pr-4 py-2 text-xs sm:text-sm rounded-xl border border-heritage-border bg-heritage-ivory/40 focus:outline-none focus:ring-2 focus:ring-heritage-gold/20 focus:border-heritage-gold text-heritage-text placeholder:text-heritage-secondary/70"
             />
           </div>
         </div>
 
         {/* Stories Feed */}
         {error ? (
-          <div className="bg-white rounded-xl p-8 text-center border border-rose-200 shadow-sm max-w-xl mx-auto my-8">
+          <div className="bg-white rounded-2xl p-8 text-center border border-rose-200 shadow-card max-w-xl mx-auto my-8">
             <div className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-rose-50 text-rose-600 mb-3 border border-rose-100">
               <BookOpen className="h-6 w-6" />
             </div>
-            <h3 className="text-base font-bold text-slate-900">Current Affairs Unavailable</h3>
+            <h3 className="font-serif text-base font-bold text-heritage-text">Current Affairs Unavailable</h3>
             <p className="text-xs text-rose-700 mt-1 mb-4">{error}</p>
             <button
               onClick={() => fetchStories()}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold transition shadow-sm"
+              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-heritage-burgundy hover:bg-heritage-wine text-white text-xs font-bold transition shadow-xs"
             >
               Retry Loading Stories
             </button>
           </div>
         ) : loading ? (
           <div className="py-20 text-center">
-            <div className="inline-block animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-            <p className="mt-3 text-sm text-slate-500 font-medium">Loading verified current affairs...</p>
+            <div className="inline-block animate-spin rounded-full h-8 w-8 border-4 border-heritage-burgundy border-t-transparent"></div>
+            <p className="mt-3 text-sm text-heritage-secondary font-medium">Loading verified current affairs...</p>
           </div>
         ) : stories.length === 0 ? (
-          <div className="bg-white rounded-xl p-12 text-center border border-slate-200">
-            <BookOpen className="h-10 w-10 text-slate-300 mx-auto mb-3" />
-            <h3 className="text-base font-bold text-slate-800">No stories found</h3>
-            <p className="text-sm text-slate-500 mt-1">Try adjusting your syllabus filter or search query.</p>
+          <div className="bg-white rounded-2xl p-12 text-center border border-heritage-border shadow-card">
+            <BookOpen className="h-10 w-10 text-heritage-gold mx-auto mb-3" />
+            <h3 className="font-serif text-base font-bold text-heritage-text">No stories found</h3>
+            <p className="text-sm text-heritage-secondary mt-1">Try adjusting your syllabus filter or search query.</p>
           </div>
         ) : (
           <div className="space-y-4">
             <div className="flex flex-wrap items-center justify-between gap-2 px-1">
-              <span className="text-xs font-semibold text-slate-500">
-                Displaying <span className="text-slate-800 font-bold">{stories.length}</span> {stories.length === total ? "curated stories" : `of ${total} total stories`}
+              <span className="text-xs font-semibold text-heritage-secondary">
+                Displaying <span className="text-heritage-text font-bold">{stories.length}</span> {stories.length === total ? "curated stories" : `of ${total} total stories`}
               </span>
-              <span className="text-xs font-medium text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
+              <span className="text-xs font-medium text-emerald-800 bg-emerald-50 px-2.5 py-1 rounded-md border border-emerald-200">
                 ● 100% Sourced from Official Portals (PIB, RBI, MoEFCC, PRS)
               </span>
             </div>
@@ -162,21 +162,21 @@ export default function CurrentAffairsPage() {
             {stories.map((story) => (
               <div
                 key={story.id}
-                className="bg-white rounded-xl border border-slate-200 shadow-sm hover:shadow-md transition-shadow flex flex-col justify-between overflow-hidden"
+                className="bg-white rounded-2xl border border-heritage-border shadow-card hover:shadow-hover transition-shadow flex flex-col justify-between overflow-hidden"
               >
                 <div className="p-5 sm:p-6">
                   {/* Metadata Header */}
                   <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                     <div className="flex items-center gap-2">
-                      <span className="px-2.5 py-1 rounded-md text-xs font-bold bg-blue-50 text-blue-700 border border-blue-200">
+                      <span className="px-2.5 py-1 rounded-md text-xs font-bold bg-heritage-cream text-heritage-burgundy border border-heritage-border">
                         {story.topics[0]?.paper || "GS"}
                       </span>
-                      <span className="text-xs font-medium text-slate-500 truncate max-w-[200px]">
+                      <span className="text-xs font-medium text-heritage-secondary truncate max-w-[200px]">
                         {story.sourceName}
                       </span>
                     </div>
-                    <div className="flex items-center gap-1 text-xs text-slate-400">
-                      <Calendar className="h-3.5 w-3.5" />
+                    <div className="flex items-center gap-1 text-xs text-heritage-secondary">
+                      <Calendar className="h-3.5 w-3.5 text-heritage-gold" />
                       {new Date(story.publishedAt).toLocaleDateString("en-IN", {
                         day: "numeric",
                         month: "short",
@@ -187,13 +187,13 @@ export default function CurrentAffairsPage() {
 
                   {/* Story Title */}
                   <Link href={`/current-affairs/${story.slug}`}>
-                    <h2 className="text-lg font-bold text-slate-900 hover:text-blue-700 transition-colors leading-snug">
+                    <h2 className="font-serif text-lg font-bold text-heritage-text hover:text-heritage-burgundy transition-colors leading-snug">
                       {story.title}
                     </h2>
                   </Link>
 
                   {/* Concise Summary */}
-                  <p className="mt-2.5 text-sm text-slate-600 leading-relaxed line-clamp-3">
+                  <p className="mt-2.5 text-sm text-heritage-secondary leading-relaxed line-clamp-3">
                     {story.summary}
                   </p>
 
@@ -203,7 +203,7 @@ export default function CurrentAffairsPage() {
                       {story.terms.slice(0, 4).map((term: string, idx: number) => (
                         <span
                           key={idx}
-                          className="px-2 py-0.5 rounded text-[11px] font-medium bg-slate-100 text-slate-600"
+                          className="px-2 py-0.5 rounded text-[11px] font-medium bg-heritage-ivory text-heritage-text border border-heritage-border"
                         >
                           {term}
                         </span>
@@ -213,13 +213,13 @@ export default function CurrentAffairsPage() {
 
                   {/* Connected Historical PYQ Banner */}
                   {story.linkedPyqsCount > 0 && (
-                    <div className="mt-4 p-3 bg-indigo-50/70 rounded-lg border border-indigo-100 flex items-start gap-2.5">
-                      <Clock className="h-4 w-4 text-indigo-700 mt-0.5 shrink-0" />
+                    <div className="mt-4 p-3 bg-heritage-cream/80 rounded-xl border border-heritage-gold/30 flex items-start gap-2.5">
+                      <Clock className="h-4 w-4 text-heritage-gold mt-0.5 shrink-0" />
                       <div className="text-xs">
-                        <span className="font-bold text-indigo-900">
+                        <span className="font-bold text-heritage-burgundy">
                           {story.linkedPyqsCount} Historical UPSC Question{story.linkedPyqsCount > 1 ? "s" : ""} Connected:
                         </span>{" "}
-                        <span className="text-indigo-800">
+                        <span className="text-heritage-text font-medium">
                           {story.linkedPyqs.map((q: any) => `UPSC ${q.year} ${q.paper} Q#${q.questionNumber}`).join(", ")}
                         </span>
                       </div>
@@ -228,13 +228,13 @@ export default function CurrentAffairsPage() {
                 </div>
 
                 {/* Footer action */}
-                <div className="px-5 sm:px-6 py-3.5 bg-slate-50 border-t border-slate-100 flex items-center justify-between">
-                  <span className="text-xs font-semibold text-slate-500">
+                <div className="px-5 sm:px-6 py-3.5 bg-heritage-ivory/60 border-t border-heritage-border/60 flex items-center justify-between">
+                  <span className="text-xs font-semibold text-heritage-secondary">
                     {story.topics[0]?.name?.split(":")[0] || "General Studies"}
                   </span>
                   <Link
                     href={`/current-affairs/${story.slug}`}
-                    className="inline-flex items-center gap-1 text-xs font-bold text-blue-700 hover:text-blue-800"
+                    className="inline-flex items-center gap-1 text-xs font-bold text-heritage-burgundy hover:text-heritage-wine"
                   >
                     Read Full Card & PYQs
                     <ArrowRight className="h-3.5 w-3.5" />

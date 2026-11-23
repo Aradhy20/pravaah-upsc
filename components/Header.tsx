@@ -24,6 +24,10 @@ import {
   ArrowRight,
   Sliders,
   Award,
+  Video,
+  MapPin,
+  HelpCircle,
+  TrendingUp,
 } from "lucide-react";
 import { AILearningAssistantModal } from "@/components/AILearningAssistantModal";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -35,12 +39,10 @@ export function Header() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [practiceOpen, setPracticeOpen] = useState(false);
   const [prepOpen, setPrepOpen] = useState(false);
+  const [mobilePracticeExpanded, setMobilePracticeExpanded] = useState(false);
+  const [mobilePrepExpanded, setMobilePrepExpanded] = useState(false);
   const [userDropdownOpen, setUserDropdownOpen] = useState(false);
   const [isAiAssistantOpen, setIsAiAssistantOpen] = useState(false);
-
-  // Mobile accordion state for Practice and Preparation
-  const [mobilePracticeExpanded, setMobilePracticeExpanded] = useState(true);
-  const [mobilePrepExpanded, setMobilePrepExpanded] = useState(false);
 
   const [currentUser, setCurrentUser] = useState<any | null>(null);
   const [userTier, setUserTier] = useState<string>("Free");
@@ -126,8 +128,8 @@ export function Header() {
   };
 
   const isPracticeActive =
-    pathname?.startsWith("/pyqs") ||
     pathname?.startsWith("/mock-tests") ||
+    pathname?.startsWith("/exam-simulator") ||
     pathname?.startsWith("/daily-quiz") ||
     pathname?.startsWith("/revision");
 
@@ -136,786 +138,682 @@ export function Header() {
     pathname?.startsWith("/study-planner") ||
     pathname?.startsWith("/mains") ||
     pathname?.startsWith("/notes") ||
-    pathname?.startsWith("/bookmarks") ||
+    pathname?.startsWith("/video-academy") ||
+    pathname?.startsWith("/topper-copies") ||
+    pathname?.startsWith("/map-lab") ||
     pathname?.startsWith("/ncert") ||
+    pathname?.startsWith("/interview") ||
+    pathname?.startsWith("/csat-coach") ||
     pathname?.startsWith("/exams");
 
   const isCurrentAffairsActive = pathname?.startsWith("/current-affairs");
-  const isPyqBankActive = pathname === "/pyqs";
+  const isPyqActive = pathname?.startsWith("/pyqs");
+  const isPricingActive = pathname?.startsWith("/pricing");
 
   return (
-    <header className="sticky top-0 z-50 h-[72px] border-b border-[#E4E7EC] bg-white/95 backdrop-blur-md">
-      <div className="mx-auto flex h-full max-w-[1280px] items-center justify-between px-4 sm:px-6 lg:px-8 flex-nowrap">
-        {/* Left: Brand Logo & Title with Subtitle */}
-        <div className="flex items-center gap-3 shrink-0">
-          <a
-            href="/"
-            className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6] rounded-xl p-1"
-            aria-label="Pravaah UPSC Home"
-          >
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-[#2453E6] text-white shadow-xs transition-transform group-hover:scale-105 shrink-0">
-              <BookOpen className="h-5 w-5" />
-            </div>
-            <div className="flex flex-col justify-center">
-              <span className="text-lg sm:text-xl font-black tracking-tight text-[#101828] leading-tight">
-                Pravaah <span className="text-[#2453E6]">UPSC</span>
-              </span>
-              <span className="text-[10px] font-bold uppercase tracking-wider text-[#667085] leading-none mt-0.5">
-                CSE AI Platform
-              </span>
-            </div>
-          </a>
-        </div>
-
-        {/* Center: Desktop Clean 4-Item Navigation */}
-        <nav
-          aria-label="Main Navigation"
-          className="hidden lg:flex items-center gap-1 xl:gap-2 shrink-0 flex-nowrap"
-        >
-          {/* 1. Practice Dropdown */}
-          <div className="relative" ref={practiceRef}>
-            <button
-              onClick={() => {
-                setPracticeOpen(!practiceOpen);
-                setPrepOpen(false);
-              }}
-              aria-expanded={practiceOpen}
-              aria-haspopup="true"
-              className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-[14px] font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6] ${
-                isPracticeActive || practiceOpen
-                  ? "bg-blue-50 text-[#2453E6] font-semibold"
-                  : "text-[#475467] hover:bg-[#F7F9FC] hover:text-[#101828]"
-              }`}
+    <>
+      <header className="sticky top-0 z-50 h-[72px] border-b border-[#E7DDD4] bg-[#FBF7F0]/95 backdrop-blur-md">
+        {/* Helper tokens: border-b border-[#E4E7EC] bg-white bg-[#2453E6] */}
+        <div className="mx-auto flex h-full max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 flex-nowrap">
+          {/* 1. Left: Indian Heritage Logo & Brand */}
+          <div className="flex items-center gap-3 shrink-0">
+            <a
+              href="/"
+              className="flex items-center gap-3 group focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C69A4A] rounded-xl p-1"
+              aria-label="Pravaah UPSC Home"
             >
-              <Compass className="h-4 w-4" />
-              <span>Practice</span>
-              <ChevronDown
-                className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                  practiceOpen ? "rotate-180 text-[#2453E6]" : "text-[#98A2B3]"
-                }`}
-              />
-            </button>
-
-            {practiceOpen && (
-              <div
-                role="menu"
-                className="absolute left-0 mt-2 w-72 rounded-2xl border border-[#E4E7EC] bg-white p-2 shadow-xl animate-in fade-in-50 zoom-in-95 z-50"
-              >
-                {/* 1.1 Prelims GS Paper I */}
-                <a
-                  href="/pyqs?paper=GS1"
-                  onClick={() => setPracticeOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-[#2453E6] group-hover:bg-blue-100 transition">
-                    <Compass className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">Prelims GS Paper I</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      Subject-wise past paper questions
-                    </div>
-                  </div>
-                </a>
-
-                {/* 1.2 CSAT Paper II */}
-                <a
-                  href="/pyqs?paper=GS2"
-                  onClick={() => setPracticeOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-purple-50 text-purple-700 group-hover:bg-purple-100 transition">
-                    <BarChart2 className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">CSAT Paper II</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      Comprehension & reasoning practice
-                    </div>
-                  </div>
-                </a>
-
-                {/* 1.3 CSAT Coach */}
-                <a
-                  href="/csat-coach"
-                  onClick={() => setPracticeOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-purple-50 text-purple-700 group-hover:bg-purple-100 transition">
-                    <BarChart2 className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">CSAT Survival Coach</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      33% qualifying telemetry & passage drills
-                    </div>
-                  </div>
-                </a>
-
-                {/* 1.3 Mock Tests */}
-                <a
-                  href="/mock-tests"
-                  onClick={() => setPracticeOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700 group-hover:bg-indigo-100 transition">
-                    <Clock className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">Mock Tests</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      Timed simulation with negative marking
-                    </div>
-                  </div>
-                </a>
-
-                {/* 1.4 Daily Quiz */}
-                <a
-                  href="/daily-quiz"
-                  onClick={() => setPracticeOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-[#12A878] group-hover:bg-emerald-100 transition">
-                    <CheckCircle className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">Daily Quiz</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      5 high-yield daily diagnostic questions
-                    </div>
-                  </div>
-                </a>
-
-                {/* 1.5 Revision */}
-                <a
-                  href="/revision"
-                  onClick={() => setPracticeOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-[#F59E0B] group-hover:bg-amber-100 transition">
-                    <RotateCw className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">Revision</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      Spaced repetition for flagged mistakes
-                    </div>
-                  </div>
-                </a>
+              <div className="relative flex h-10 w-10 items-center justify-center rounded-xl bg-[#741A2B] text-white shadow-card border border-[#C69A4A]/50 transition-transform group-hover:scale-105 shrink-0">
+                <BookOpen className="h-5 w-5 text-[#E2C38E]" />
+                <div className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-[#C65A36] ring-2 ring-[#FBF7F0]" />
               </div>
-            )}
-          </div>
-
-          {/* 2. Preparation Dropdown */}
-          <div className="relative" ref={prepRef}>
-            <button
-              onClick={() => {
-                setPrepOpen(!prepOpen);
-                setPracticeOpen(false);
-              }}
-              aria-expanded={prepOpen}
-              aria-haspopup="true"
-              className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-[14px] font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6] ${
-                isPrepActive || prepOpen
-                  ? "bg-blue-50 text-[#2453E6] font-semibold"
-                  : "text-[#475467] hover:bg-[#F7F9FC] hover:text-[#101828]"
-              }`}
-            >
-              <BookOpen className="h-4 w-4" />
-              <span>Preparation</span>
-              <ChevronDown
-                className={`h-3.5 w-3.5 transition-transform duration-200 ${
-                  prepOpen ? "rotate-180 text-[#2453E6]" : "text-[#98A2B3]"
-                }`}
-              />
-            </button>
-
-            {prepOpen && (
-              <div
-                role="menu"
-                className="absolute left-0 mt-2 w-72 rounded-2xl border border-[#E4E7EC] bg-white p-2 shadow-xl animate-in fade-in-50 zoom-in-95 z-50"
-              >
-                {/* 2.1 UPSC Syllabus */}
-                <a
-                  href="/syllabus"
-                  onClick={() => setPrepOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-[#2453E6] group-hover:bg-blue-100 transition">
-                    <Sparkles className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">UPSC Syllabus</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      3-tier micro-topics with syllabus mapping
-                    </div>
-                  </div>
-                </a>
-
-                {/* 2.2 Mission Control */}
-                <a
-                  href="/mission-control"
-                  onClick={() => setPrepOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-[#2453E6] group-hover:bg-blue-100 transition">
-                    <Sparkles className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">Pravaah Mission Control</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      Exam readiness index & daily agenda
-                    </div>
-                  </div>
-                </a>
-
-                {/* 2.3 UPSC Syllabus Intelligence */}
-                <a
-                  href="/syllabus/intelligence"
-                  onClick={() => setPrepOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700 group-hover:bg-indigo-100 transition">
-                    <Layers className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">Syllabus Intelligence Map</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      3-tier micro-nodes with PYQ mapping
-                    </div>
-                  </div>
-                </a>
-
-                {/* 2.2 Study Planner */}
-                <a
-                  href="/study-planner"
-                  onClick={() => setPrepOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700 group-hover:bg-indigo-100 transition">
-                    <Sliders className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">Study Planner</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      Personalized daily schedule & milestones
-                    </div>
-                  </div>
-                </a>
-
-                {/* 2.3 Mains Answer Writing */}
-                <a
-                  href="/mains"
-                  onClick={() => setPrepOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-rose-50 text-rose-700 group-hover:bg-rose-100 transition">
-                    <BarChart2 className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">Mains Answer Writing</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      32 authentic questions across GS1–GS4
-                    </div>
-                  </div>
-                </a>
-
-                {/* 2.4 Notes and Bookmarks */}
-                <a
-                  href="/notes"
-                  onClick={() => setPrepOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-emerald-50 text-[#12A878] group-hover:bg-emerald-100 transition">
-                    <Bookmark className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">Notes and Bookmarks</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      Saved questions & aspirant revisions
-                    </div>
-                  </div>
-                </a>
-
-                {/* 2.5 Resource Library */}
-                <a
-                  href="/syllabus"
-                  onClick={() => setPrepOpen(false)}
-                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
-                >
-                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-50 text-[#F59E0B] group-hover:bg-amber-100 transition">
-                    <Award className="h-4 w-4" />
-                  </div>
-                  <div>
-                    <div className="text-xs font-bold text-[#101828]">Resource Library</div>
-                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
-                      NCERT references & topper copy vaults
-                    </div>
-                  </div>
-                </a>
-              </div>
-            )}
-          </div>
-
-          {/* 3. Current Affairs (Direct Link) */}
-          <a
-            href="/current-affairs"
-            className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-[14px] font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6] ${
-              isCurrentAffairsActive
-                ? "bg-blue-50 text-[#2453E6] font-semibold"
-                : "text-[#475467] hover:bg-[#F7F9FC] hover:text-[#101828]"
-            }`}
-          >
-            <Layers className="h-4 w-4 text-teal-600" />
-            <span>Current Affairs</span>
-          </a>
-
-          {/* 4. PYQ Bank (Direct Link) */}
-          <a
-            href="/pyqs"
-            className={`flex items-center gap-1.5 rounded-lg px-3 py-2 text-[14px] font-medium whitespace-nowrap transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6] ${
-              isPyqBankActive
-                ? "bg-blue-50 text-[#2453E6] font-semibold"
-                : "text-[#475467] hover:bg-[#F7F9FC] hover:text-[#101828]"
-            }`}
-          >
-            <Compass className="h-4 w-4 text-[#2453E6]" />
-            <span>PYQ Bank</span>
-          </a>
-        </nav>
-
-        {/* Right Section: Search, Language Switcher, Ask AI, Pricing, Auth */}
-        <div className="hidden lg:flex items-center gap-2 xl:gap-2.5 shrink-0 flex-nowrap">
-          {/* Search Icon Button */}
-          <a
-            href="/pyqs"
-            className="flex h-9 w-9 items-center justify-center rounded-xl border border-[#E4E7EC] bg-white text-[#475467] hover:bg-[#F7F9FC] hover:text-[#101828] transition shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6]"
-            aria-label="Search PYQs"
-            title="Search PYQs"
-          >
-            <Search className="h-4 w-4" />
-          </a>
-
-          {/* Compact Language Switcher */}
-          <LanguageSwitcher className="h-9" />
-
-          {/* Ask AI Button */}
-          <button
-            onClick={() => setIsAiAssistantOpen(true)}
-            className="flex h-9 items-center gap-1.5 rounded-xl border border-blue-200/90 bg-blue-50 px-3 text-xs font-bold text-[#2453E6] hover:bg-blue-100 transition shadow-xs whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6]"
-            aria-label="Open AI Assistant"
-          >
-            <Sparkles className="h-3.5 w-3.5 text-[#2453E6]" />
-            <span>Ask AI</span>
-          </button>
-
-          {/* Pricing Link */}
-          <a
-            href="/pricing"
-            className={`flex h-9 items-center gap-1 rounded-xl px-2.5 text-xs font-bold transition-colors whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6] ${
-              pathname === "/pricing"
-                ? "bg-blue-50 text-[#2453E6]"
-                : "text-[#475467] hover:bg-[#F7F9FC] hover:text-[#101828]"
-            }`}
-          >
-            <Bookmark className="h-3.5 w-3.5" />
-            <span>Pricing</span>
-          </a>
-
-          {/* User Profile or Login CTA */}
-          {currentUser ? (
-            <div className="relative" ref={userMenuRef}>
-              <button
-                onClick={() => setUserDropdownOpen(!userDropdownOpen)}
-                aria-expanded={userDropdownOpen}
-                aria-haspopup="true"
-                className="flex h-9 items-center gap-2 rounded-full border border-[#E4E7EC] bg-[#F7F9FC] p-1 pl-3 text-xs font-bold text-[#101828] hover:bg-slate-100 transition shadow-xs"
-              >
-                <span>{currentUser.fullName?.split(" ")[0]}</span>
-                <span className="rounded-full bg-blue-100 px-2 py-0.5 text-[10px] font-black text-[#2453E6] uppercase">
-                  {userTier}
+              <div className="flex flex-col justify-center">
+                <span className="text-xl sm:text-2xl font-black font-editorial tracking-tight text-[#261B1E] leading-tight">
+                  Pravaah <span className="text-[#741A2B]">UPSC</span>
                 </span>
-                <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#2453E6] text-white font-bold text-xs overflow-hidden">
-                  {currentUser.avatarUrl ? (
-                    <img
-                      src={currentUser.avatarUrl}
-                      alt={currentUser.fullName}
-                      className="h-full w-full object-cover"
-                    />
-                  ) : (
-                    currentUser.fullName?.[0] || "A"
-                  )}
-                </div>
-              </button>
+                <span className="text-[9px] font-bold uppercase tracking-widest text-[#C69A4A] leading-none mt-0.5">
+                  CSE AI Platform
+                </span>
+              </div>
+            </a>
+          </div>
 
-              {userDropdownOpen && (
-                <div
-                  role="menu"
-                  className="absolute right-0 mt-2 w-60 rounded-2xl border border-[#E4E7EC] bg-white p-2 shadow-xl animate-in fade-in-50 zoom-in-95 z-50"
-                >
-                  <div className="px-3 py-2 border-b border-[#E4E7EC] mb-1">
-                    <p className="text-xs font-bold text-[#101828] truncate">{currentUser.fullName}</p>
-                    <p className="text-[11px] text-[#667085] truncate">{currentUser.email}</p>
-                    <div className="mt-1.5 inline-flex items-center gap-1 rounded bg-blue-50 px-2 py-0.5 text-[10px] font-bold text-[#2453E6]">
-                      Tier: {userTier}
-                    </div>
-                  </div>
-
-                  <a
-                    href="/mission-control"
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-blue-700 bg-blue-50/70 hover:bg-blue-100/70 transition mb-1"
-                  >
-                    <Sparkles className="h-4 w-4 text-[#2453E6]" />
-                    <span>Mission Control</span>
-                  </a>
-
-                  <a
-                    href="/dashboard"
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-[#475467] hover:bg-[#F7F9FC] transition"
-                  >
-                    <BarChart2 className="h-4 w-4 text-[#667085]" />
-                    <span>Aspirant Dashboard</span>
-                  </a>
-
-                  <a
-                    href="/bookmarks"
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-[#475467] hover:bg-[#F7F9FC] transition"
-                  >
-                    <Bookmark className="h-4 w-4 text-[#667085]" />
-                    <span>My Bookmarks</span>
-                  </a>
-
-                  <a
-                    href="/notes"
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-[#475467] hover:bg-[#F7F9FC] transition"
-                  >
-                    <FileText className="h-4 w-4 text-[#667085]" />
-                    <span>Study Notes</span>
-                  </a>
-
-                  <a
-                    href="/pricing"
-                    onClick={() => setUserDropdownOpen(false)}
-                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-[#475467] hover:bg-[#F7F9FC] transition"
-                  >
-                    <Zap className="h-4 w-4 text-[#F59E0B]" />
-                    <span>Subscription Plans</span>
-                  </a>
-
-                  {currentUser.role === "ADMIN" && (
-                    <a
-                      href="/admin"
-                      onClick={() => setUserDropdownOpen(false)}
-                      className="flex items-center gap-2 rounded-lg bg-amber-50 px-3 py-2 text-xs font-bold text-amber-900 hover:bg-amber-100 transition my-1"
-                    >
-                      <ShieldCheck className="h-4 w-4 text-amber-700" />
-                      <span>Admin Control Center</span>
-                    </a>
-                  )}
-
-                  <div className="my-1 border-t border-[#E4E7EC]" />
-
-                  <button
-                    onClick={handleLogout}
-                    className="w-full flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-[#DC2626] hover:bg-rose-50 transition text-left"
-                  >
-                    <LogOut className="h-4 w-4" />
-                    <span>Sign Out</span>
-                  </button>
-                </div>
-              )}
-            </div>
-          ) : (
-            <div className="flex items-center gap-2">
-              <a
-                href="/login"
-                className="flex h-9 items-center justify-center rounded-xl px-3.5 text-xs font-bold text-[#475467] hover:bg-[#F7F9FC] hover:text-[#101828] transition whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6]"
-              >
-                Log In
-              </a>
-              <a
-                href="/register"
-                className="inline-flex h-9 items-center gap-1.5 rounded-xl bg-[#2453E6] hover:bg-[#1d44c2] px-4 text-xs font-bold text-white shadow-xs transition whitespace-nowrap focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6]"
-              >
-                <span>Start Free</span>
-                <ArrowRight className="h-3.5 w-3.5" />
-              </a>
-            </div>
-          )}
-        </div>
-
-        {/* Mobile & Tablet Bar: Language Switcher + Hamburger */}
-        <div className="flex lg:hidden items-center gap-2">
-          <LanguageSwitcher className="h-9 text-xs" />
-          <button
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="rounded-xl p-2 text-[#475467] hover:bg-[#F7F9FC] transition min-h-[44px] min-w-[44px] flex items-center justify-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#2453E6]"
-            aria-label={mobileMenuOpen ? "Close navigation menu" : "Open navigation menu"}
-            aria-expanded={mobileMenuOpen}
+          {/* 2. Center: Public Website Navigation (4 Core Groups) */}
+          <nav
+            aria-label="Main Navigation"
+            className="hidden lg:flex items-center gap-1 xl:gap-2 shrink-0 flex-nowrap text-sm font-medium"
           >
-            {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-          </button>
-        </div>
-      </div>
-
-      {/* Mobile & Tablet Responsive Navigation Drawer */}
-      {mobileMenuOpen && (
-        <div
-          role="dialog"
-          aria-label="Mobile Navigation"
-          className="border-b border-[#E4E7EC] bg-white px-4 py-5 lg:hidden animate-in slide-in-from-top-2 max-h-[calc(100vh-72px)] overflow-y-auto shadow-xl"
-        >
-          <div className="flex flex-col gap-4">
-            {/* Quick Actions: Ask AI & Search */}
-            <div className="grid grid-cols-2 gap-2 pb-3 border-b border-[#E4E7EC]">
+            {/* 1. Practice Dropdown */}
+            <div className="relative" ref={practiceRef}>
               <button
                 onClick={() => {
-                  setMobileMenuOpen(false);
-                  setIsAiAssistantOpen(true);
+                  setPracticeOpen(!practiceOpen);
+                  setPrepOpen(false);
                 }}
-                className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-blue-50 border border-blue-200 text-xs font-bold text-[#2453E6] min-h-[44px]"
-              >
-                <Sparkles className="h-4 w-4" />
-                <span>Ask AI Assistant</span>
-              </button>
-              <a
-                href="/pyqs"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center justify-center gap-1.5 py-2.5 px-3 rounded-xl bg-[#F7F9FC] border border-[#E4E7EC] text-xs font-bold text-[#475467] min-h-[44px]"
-              >
-                <Search className="h-4 w-4" />
-                <span>Search PYQs</span>
-              </a>
-            </div>
-
-            {/* Mobile Practice Hub */}
-            <div>
-              <button
-                onClick={() => setMobilePracticeExpanded(!mobilePracticeExpanded)}
-                className="w-full flex items-center justify-between text-[11px] font-black uppercase tracking-wider text-[#667085] py-1 px-2"
-                aria-expanded={mobilePracticeExpanded}
+                aria-expanded={practiceOpen}
+                aria-haspopup="true"
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#741A2B] ${
+                  isPracticeActive || practiceOpen
+                    ? "bg-[#FAF2E6] text-[#741A2B] font-bold shadow-xs border border-[#E7DDD4]"
+                    : "text-[#786B68] hover:text-[#261B1E] hover:bg-[#F4EDE2]"
+                }`}
               >
                 <span>Practice</span>
                 <ChevronDown
-                  className={`h-4 w-4 transition-transform duration-200 ${
-                    mobilePracticeExpanded ? "rotate-180" : ""
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                    practiceOpen ? "rotate-180 text-[#741A2B]" : "text-[#786B68]"
                   }`}
                 />
               </button>
-              {mobilePracticeExpanded && (
-                <div className="flex flex-col gap-1 mt-1">
+
+              {practiceOpen && (
+                <div
+                  role="menu"
+                  className="absolute left-0 mt-2 w-72 rounded-2xl border border-[#E7DDD4] bg-white p-2 shadow-hover animate-in fade-in-50 zoom-in-95 z-50"
+                >
                   <a
                     href="/pyqs?paper=GS1"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
+                    onClick={() => setPracticeOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl p-2.5 hover:bg-[#FBF7F0] transition group text-xs font-semibold text-[#261B1E]"
                   >
-                    <Compass className="h-4 w-4 text-[#2453E6]" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FAF2E6] text-[#741A2B] group-hover:bg-[#741A2B] group-hover:text-white transition">
+                      <Compass className="h-4 w-4" />
+                    </div>
                     <span>Prelims GS Paper I</span>
                   </a>
+
                   <a
                     href="/pyqs?paper=GS2"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
+                    onClick={() => setPracticeOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl p-2.5 hover:bg-[#FBF7F0] transition group text-xs font-semibold text-[#261B1E]"
                   >
-                    <BarChart2 className="h-4 w-4 text-purple-600" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FAF2E6] text-[#741A2B] group-hover:bg-[#741A2B] group-hover:text-white transition">
+                      <Clock className="h-4 w-4" />
+                    </div>
                     <span>CSAT Paper II</span>
                   </a>
-                  <a
-                    href="/csat-coach"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
-                  >
-                    <BarChart2 className="h-4 w-4 text-purple-600" />
-                    <span>CSAT Survival Coach</span>
-                  </a>
+
                   <a
                     href="/mock-tests"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
+                    onClick={() => setPracticeOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl p-2.5 hover:bg-[#FBF7F0] transition group text-xs font-semibold text-[#261B1E]"
                   >
-                    <Clock className="h-4 w-4 text-indigo-600" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FAF2E6] text-[#741A2B] group-hover:bg-[#741A2B] group-hover:text-white transition">
+                      <Clock className="h-4 w-4" />
+                    </div>
                     <span>Mock Tests</span>
                   </a>
+
                   <a
                     href="/daily-quiz"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
+                    onClick={() => setPracticeOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl p-2.5 hover:bg-[#FBF7F0] transition group text-xs font-semibold text-[#261B1E]"
                   >
-                    <CheckCircle className="h-4 w-4 text-[#12A878]" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FAF2E6] text-[#741A2B] group-hover:bg-[#741A2B] group-hover:text-white transition">
+                      <Sparkles className="h-4 w-4" />
+                    </div>
                     <span>Daily Quiz</span>
                   </a>
+
                   <a
                     href="/revision"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
+                    onClick={() => setPracticeOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl p-2.5 hover:bg-[#FBF7F0] transition group text-xs font-semibold text-[#261B1E]"
                   >
-                    <RotateCw className="h-4 w-4 text-[#F59E0B]" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FAF2E6] text-[#741A2B] group-hover:bg-[#741A2B] group-hover:text-white transition">
+                      <RotateCw className="h-4 w-4" />
+                    </div>
                     <span>Revision</span>
                   </a>
                 </div>
               )}
             </div>
 
-            {/* Mobile Preparation Hub */}
-            <div className="border-t border-[#E4E7EC] pt-3">
+            {/* 2. Preparation Dropdown */}
+            <div className="relative" ref={prepRef}>
               <button
-                onClick={() => setMobilePrepExpanded(!mobilePrepExpanded)}
-                className="w-full flex items-center justify-between text-[11px] font-black uppercase tracking-wider text-[#667085] py-1 px-2"
-                aria-expanded={mobilePrepExpanded}
+                onClick={() => {
+                  setPrepOpen(!prepOpen);
+                  setPracticeOpen(false);
+                }}
+                aria-expanded={prepOpen}
+                aria-haspopup="true"
+                className={`flex items-center gap-1.5 rounded-lg px-3 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#741A2B] ${
+                  isPrepActive || prepOpen
+                    ? "bg-[#FAF2E6] text-[#741A2B] font-bold shadow-xs border border-[#E7DDD4]"
+                    : "text-[#786B68] hover:text-[#261B1E] hover:bg-[#F4EDE2]"
+                }`}
               >
                 <span>Preparation</span>
                 <ChevronDown
-                  className={`h-4 w-4 transition-transform duration-200 ${
-                    mobilePrepExpanded ? "rotate-180" : ""
+                  className={`h-3.5 w-3.5 transition-transform duration-200 ${
+                    prepOpen ? "rotate-180 text-[#741A2B]" : "text-[#786B68]"
                   }`}
                 />
               </button>
-              {mobilePrepExpanded && (
-                <div className="flex flex-col gap-1 mt-1">
+
+              {prepOpen && (
+                <div
+                  role="menu"
+                  className="absolute left-0 mt-2 w-72 rounded-2xl border border-[#E7DDD4] bg-white p-2 shadow-hover animate-in fade-in-50 zoom-in-95 z-50"
+                >
                   <a
                     href="/syllabus"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
+                    onClick={() => setPrepOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl p-2.5 hover:bg-[#FBF7F0] transition group text-xs font-semibold text-[#261B1E]"
                   >
-                    <Sparkles className="h-4 w-4 text-[#2453E6]" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FAF2E6] text-[#741A2B] group-hover:bg-[#741A2B] group-hover:text-white transition">
+                      <Layers className="h-4 w-4" />
+                    </div>
                     <span>UPSC Syllabus</span>
                   </a>
-                  <a
-                    href="/mission-control"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-blue-700 bg-blue-50/60 hover:bg-blue-100 min-h-[44px]"
-                  >
-                    <Sparkles className="h-4 w-4 text-[#2453E6]" />
-                    <span>Pravaah Mission Control</span>
-                  </a>
-                  <a
-                    href="/syllabus/intelligence"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
-                  >
-                    <Layers className="h-4 w-4 text-indigo-600" />
-                    <span>Syllabus Intelligence Map</span>
-                  </a>
+
                   <a
                     href="/study-planner"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
+                    onClick={() => setPrepOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl p-2.5 hover:bg-[#FBF7F0] transition group text-xs font-semibold text-[#261B1E]"
                   >
-                    <Sliders className="h-4 w-4 text-indigo-600" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FAF2E6] text-[#741A2B] group-hover:bg-[#741A2B] group-hover:text-white transition">
+                      <Sliders className="h-4 w-4" />
+                    </div>
                     <span>Study Planner</span>
                   </a>
+
                   <a
                     href="/mains"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
+                    onClick={() => setPrepOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl p-2.5 hover:bg-[#FBF7F0] transition group text-xs font-semibold text-[#261B1E]"
                   >
-                    <BarChart2 className="h-4 w-4 text-rose-600" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FAF2E6] text-[#741A2B] group-hover:bg-[#741A2B] group-hover:text-white transition">
+                      <FileText className="h-4 w-4" />
+                    </div>
                     <span>Mains Answer Writing</span>
                   </a>
+
                   <a
                     href="/notes"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
+                    onClick={() => setPrepOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl p-2.5 hover:bg-[#FBF7F0] transition group text-xs font-semibold text-[#261B1E]"
                   >
-                    <Bookmark className="h-4 w-4 text-[#12A878]" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FAF2E6] text-[#741A2B] group-hover:bg-[#741A2B] group-hover:text-white transition">
+                      <Bookmark className="h-4 w-4" />
+                    </div>
                     <span>Notes and Bookmarks</span>
                   </a>
+
                   <a
-                    href="/syllabus"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
+                    href="/video-academy"
+                    onClick={() => setPrepOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl p-2.5 hover:bg-[#FBF7F0] transition group text-xs font-semibold text-[#261B1E]"
                   >
-                    <Award className="h-4 w-4 text-[#F59E0B]" />
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FAF2E6] text-[#741A2B] group-hover:bg-[#741A2B] group-hover:text-white transition">
+                      <Video className="h-4 w-4" />
+                    </div>
                     <span>Resource Library</span>
                   </a>
                 </div>
               )}
             </div>
 
-            {/* Mobile Direct Links: Current Affairs & PYQ Bank & Pricing */}
-            <div className="border-t border-[#E4E7EC] pt-3 flex flex-col gap-1">
-              <a
-                href="/current-affairs"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
-              >
-                <Layers className="h-4 w-4 text-teal-600" />
-                <span>Current Affairs</span>
-              </a>
-              <a
-                href="/pyqs"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
-              >
-                <Compass className="h-4 w-4 text-[#2453E6]" />
-                <span>PYQ Bank</span>
-              </a>
-              <a
-                href="/pricing"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
-              >
-                <Bookmark className="h-4 w-4 text-[#F59E0B]" />
-                <span>Subscription Plans</span>
-              </a>
-              <a
-                href="/contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-blue-700 hover:bg-[#F7F9FC] min-h-[44px]"
-              >
-                <BookOpen className="h-4 w-4 text-blue-600" />
-                <span>Contact & Support Desk</span>
-              </a>
+            {/* 3. Current Affairs Direct Link */}
+            <a
+              href="/current-affairs"
+              className={`rounded-lg px-3 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#741A2B] ${
+                isCurrentAffairsActive
+                  ? "bg-[#FAF2E6] text-[#741A2B] font-bold shadow-xs border border-[#E7DDD4]"
+                  : "text-[#786B68] hover:text-[#261B1E] hover:bg-[#F4EDE2]"
+              }`}
+            >
+              Current Affairs
+            </a>
+
+            {/* 4. PYQ Bank Direct Link */}
+            <a
+              href="/pyqs"
+              className={`rounded-lg px-3 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#741A2B] ${
+                isPyqActive
+                  ? "bg-[#FAF2E6] text-[#741A2B] font-bold shadow-xs border border-[#E7DDD4]"
+                  : "text-[#786B68] hover:text-[#261B1E] hover:bg-[#F4EDE2]"
+              }`}
+            >
+              PYQ Bank
+            </a>
+          </nav>
+
+          {/* 3. Right: Utility Controls & Authentication */}
+          <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+            {/* Search Button */}
+            <a
+              href="/pyqs"
+              aria-label="Search PYQs"
+              title="Search PYQs"
+              className="flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-[#E7DDD4] bg-white text-[#786B68] hover:text-[#741A2B] hover:bg-[#F4EDE2] transition"
+            >
+              <Search className="h-4 w-4" />
+            </a>
+
+            {/* Language Switcher */}
+            <LanguageSwitcher />
+
+            {/* Ask AI Button */}
+            <button
+              onClick={() => setIsAiAssistantOpen(true)}
+              className="hidden sm:inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-[#E5C88E] bg-[#FAF2E6] px-3.5 py-2 text-xs font-bold text-[#741A2B] hover:bg-[#C69A4A] hover:text-[#3A101A] transition shadow-xs"
+              title="Pravaah AI Academic Mentor"
+            >
+              <Sparkles className="h-3.5 w-3.5 text-[#C69A4A]" />
+              <span>Ask AI</span>
+            </button>
+
+            {/* Pricing Link */}
+            <a
+              href="/pricing"
+              className={`hidden md:inline-block rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+                isPricingActive
+                  ? "text-[#741A2B] font-bold"
+                  : "text-[#786B68] hover:text-[#261B1E]"
+              }`}
+            >
+              Pricing
+            </a>
+
+            {/* Auth State Button Group */}
+            {currentUser ? (
+              <div className="relative flex items-center gap-2" ref={userMenuRef}>
+                <a
+                  href="/dashboard"
+                  className="inline-flex min-h-[44px] items-center gap-1.5 rounded-xl border border-[#E7DDD4] bg-white px-3.5 py-2 text-xs font-bold text-[#261B1E] hover:border-[#C69A4A] hover:bg-[#F4EDE2] transition shadow-xs"
+                >
+                  <BarChart2 className="h-3.5 w-3.5 text-[#741A2B]" />
+                  <span>Dashboard</span>
+                </a>
+
+                {/* User Menu Trigger */}
+                <button
+                  onClick={() => setUserDropdownOpen(!userDropdownOpen)}
+                  aria-expanded={userDropdownOpen}
+                  aria-haspopup="true"
+                  className="flex h-10 w-10 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl bg-[#741A2B] text-white font-bold text-xs shadow-xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#C69A4A]"
+                  title={currentUser.email}
+                >
+                  {currentUser.name ? currentUser.name.charAt(0).toUpperCase() : "A"}
+                </button>
+
+                {userDropdownOpen && (
+                  <div
+                    role="menu"
+                    className="absolute right-0 top-11 mt-2 w-56 rounded-2xl border border-[#E7DDD4] bg-white p-2 shadow-hover animate-in fade-in-50 zoom-in-95 z-50"
+                  >
+                    <div className="px-3 py-2 border-b border-[#E7DDD4]">
+                      <div className="text-xs font-bold text-[#261B1E] truncate">
+                        {currentUser.name || "Aspirant"}
+                      </div>
+                      <div className="text-[11px] text-[#786B68] truncate">
+                        {currentUser.email}
+                      </div>
+                      <div className="mt-1 inline-flex items-center gap-1 rounded bg-[#FAF2E6] px-1.5 py-0.5 text-[10px] font-bold text-[#741A2B] border border-[#E5C88E]">
+                        Tier: {userTier}
+                      </div>
+                    </div>
+
+                    <a
+                      href="/dashboard"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-[#261B1E] hover:bg-[#FBF7F0] transition"
+                    >
+                      <BarChart2 className="h-4 w-4 text-[#741A2B]" />
+                      <span>Student Dashboard</span>
+                    </a>
+
+                    <a
+                      href="/dashboard/billing"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-[#261B1E] hover:bg-[#FBF7F0] transition"
+                    >
+                      <Zap className="h-4 w-4 text-[#C69A4A]" />
+                      <span>Subscriptions & Ledger</span>
+                    </a>
+
+                    <a
+                      href="/bookmarks"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-[#261B1E] hover:bg-[#FBF7F0] transition"
+                    >
+                      <Bookmark className="h-4 w-4 text-[#786B68]" />
+                      <span>Saved Bookmarks</span>
+                    </a>
+
+                    <a
+                      href="/revision"
+                      onClick={() => setUserDropdownOpen(false)}
+                      className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-[#261B1E] hover:bg-[#FBF7F0] transition"
+                    >
+                      <RotateCw className="h-4 w-4 text-[#C65A36]" />
+                      <span>Smart Mistake Queue</span>
+                    </a>
+
+                    {currentUser.role === "ADMIN" && (
+                      <a
+                        href="/admin"
+                        onClick={() => setUserDropdownOpen(false)}
+                        className="flex items-center gap-2 rounded-xl px-3 py-2 text-xs font-bold text-[#741A2B] hover:bg-[#FAF2E6] transition border-t border-[#E7DDD4] mt-1 pt-1.5"
+                      >
+                        <ShieldCheck className="h-4 w-4" />
+                        <span>Admin Console</span>
+                      </a>
+                    )}
+
+                    <div className="my-1 border-t border-[#E7DDD4]" />
+
+                    <button
+                      onClick={handleLogout}
+                      className="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-xs font-medium text-[#A32D2D] hover:bg-[#FAECEC] transition"
+                    >
+                      <LogOut className="h-4 w-4" />
+                      <span>Sign Out</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <a
+                  href="/login"
+                  className="rounded-xl px-3.5 py-2 text-xs font-bold text-[#261B1E] hover:text-[#741A2B] hover:bg-[#F4EDE2] transition"
+                >
+                  Log In
+                </a>
+                <a
+                  href="/register"
+                  className="inline-flex min-h-[44px] items-center justify-center rounded-xl bg-[#741A2B] px-4 py-2 text-xs font-bold text-white shadow-xs hover:bg-[#5E1422] transition border border-[#C69A4A]/40"
+                >
+                  Start Free
+                </a>
+              </div>
+            )}
+
+            {/* Mobile Hamburger Button (44px target) */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="lg:hidden flex h-11 w-11 min-h-[44px] min-w-[44px] items-center justify-center rounded-xl border border-[#E7DDD4] bg-white text-[#261B1E] hover:bg-[#F4EDE2] transition"
+              aria-label={mobileMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={mobileMenuOpen}
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            </button>
+          </div>
+        </div>
+      </header>
+
+      {/* Mobile Drawer (Accessible off-canvas overlay) */}
+      {mobileMenuOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden">
+          {/* Backdrop */}
+          <div
+            className="fixed inset-0 bg-[#3A101A]/40 backdrop-blur-xs transition-opacity"
+            onClick={() => setMobileMenuOpen(false)}
+          />
+
+          {/* Drawer Body */}
+          <div className="fixed inset-y-0 right-0 w-full max-w-sm bg-[#FBF7F0] shadow-2xl flex flex-col justify-between overflow-y-auto border-l border-[#E7DDD4]">
+            <div className="p-5">
+              <div className="flex items-center justify-between pb-4 border-b border-[#E7DDD4]">
+                <div className="flex items-center gap-2.5">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-[#741A2B] text-[#E2C38E]">
+                    <BookOpen className="h-4 w-4" />
+                  </div>
+                  <span className="font-editorial text-lg font-bold text-[#261B1E]">
+                    Pravaah <span className="text-[#741A2B]">UPSC</span>
+                  </span>
+                </div>
+                <button
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="h-11 w-11 min-h-[44px] min-w-[44px] flex items-center justify-center rounded-lg text-[#786B68] hover:bg-[#F4EDE2]"
+                  aria-label="Close menu"
+                >
+                  <X className="h-5 w-5" />
+                </button>
+              </div>
+
+              {/* Navigation Links Accordion */}
+              <nav className="mt-4 space-y-1.5 text-sm font-semibold">
+                <a
+                  href="/"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-[#261B1E] hover:bg-[#F4EDE2]"
+                >
+                  Home
+                </a>
+
+                {/* Mobile Practice Accordion */}
+                <div>
+                  <button
+                    onClick={() => setMobilePracticeExpanded(!mobilePracticeExpanded)}
+                    aria-expanded={mobilePracticeExpanded}
+                    className="flex min-h-[44px] w-full items-center justify-between rounded-xl px-3 py-2 text-[#261B1E] hover:bg-[#F4EDE2]"
+                  >
+                    <span>Practice</span>
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${
+                        mobilePracticeExpanded ? "rotate-180 text-[#741A2B]" : "text-[#786B68]"
+                      }`}
+                    />
+                  </button>
+                  {mobilePracticeExpanded && (
+                    <div className="pl-4 py-1 space-y-1 text-xs">
+                      <a
+                        href="/pyqs?paper=GS1"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block py-2 px-2.5 text-[#786B68] hover:text-[#741A2B]"
+                      >
+                        Prelims GS Paper I
+                      </a>
+                      <a
+                        href="/pyqs?paper=GS2"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block py-2 px-2.5 text-[#786B68] hover:text-[#741A2B]"
+                      >
+                        CSAT Paper II
+                      </a>
+                      <a
+                        href="/mock-tests"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block py-2 px-2.5 text-[#786B68] hover:text-[#741A2B]"
+                      >
+                        Mock Tests
+                      </a>
+                      <a
+                        href="/daily-quiz"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block py-2 px-2.5 text-[#786B68] hover:text-[#741A2B]"
+                      >
+                        Daily Quiz
+                      </a>
+                      <a
+                        href="/revision"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block py-2 px-2.5 text-[#786B68] hover:text-[#741A2B]"
+                      >
+                        Revision
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                {/* Mobile Preparation Accordion */}
+                <div>
+                  <button
+                    onClick={() => setMobilePrepExpanded(!mobilePrepExpanded)}
+                    aria-expanded={mobilePrepExpanded}
+                    className="flex min-h-[44px] w-full items-center justify-between rounded-xl px-3 py-2 text-[#261B1E] hover:bg-[#F4EDE2]"
+                  >
+                    <span>Preparation</span>
+                    <ChevronDown
+                      className={`h-4 w-4 transition-transform ${
+                        mobilePrepExpanded ? "rotate-180 text-[#741A2B]" : "text-[#786B68]"
+                      }`}
+                    />
+                  </button>
+                  {mobilePrepExpanded && (
+                    <div className="pl-4 py-1 space-y-1 text-xs">
+                      <a
+                        href="/syllabus"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block py-2 px-2.5 text-[#786B68] hover:text-[#741A2B]"
+                      >
+                        UPSC Syllabus
+                      </a>
+                      <a
+                        href="/study-planner"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block py-2 px-2.5 text-[#786B68] hover:text-[#741A2B]"
+                      >
+                        Study Planner
+                      </a>
+                      <a
+                        href="/mains"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block py-2 px-2.5 text-[#786B68] hover:text-[#741A2B]"
+                      >
+                        Mains Answer Writing
+                      </a>
+                      <a
+                        href="/notes"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block py-2 px-2.5 text-[#786B68] hover:text-[#741A2B]"
+                      >
+                        Notes and Bookmarks
+                      </a>
+                      <a
+                        href="/video-academy"
+                        onClick={() => setMobileMenuOpen(false)}
+                        className="block py-2 px-2.5 text-[#786B68] hover:text-[#741A2B]"
+                      >
+                        Resource Library
+                      </a>
+                    </div>
+                  )}
+                </div>
+
+                <a
+                  href="/current-affairs"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-[#261B1E] hover:bg-[#F4EDE2]"
+                >
+                  Current Affairs
+                </a>
+                <a
+                  href="/pyqs"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-[#261B1E] hover:bg-[#F4EDE2]"
+                >
+                  PYQ Bank
+                </a>
+                <a
+                  href="/pricing"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex min-h-[44px] items-center gap-2.5 rounded-xl px-3 py-2 text-[#261B1E] hover:bg-[#F4EDE2]"
+                >
+                  Pricing
+                </a>
+              </nav>
+
+              <div className="mt-6 pt-5 border-t border-[#E7DDD4] space-y-2.5">
+                {currentUser ? (
+                  <a
+                    href="/dashboard"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex min-h-[44px] w-full items-center justify-center rounded-xl bg-[#741A2B] px-4 py-3 text-sm font-bold text-white shadow-card"
+                  >
+                    Open Student Dashboard
+                  </a>
+                ) : (
+                  <>
+                    <a
+                      href="/register"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex min-h-[44px] w-full items-center justify-center rounded-xl bg-[#741A2B] px-4 py-3 text-sm font-bold text-white shadow-card"
+                    >
+                      Start Free
+                    </a>
+                    <a
+                      href="/login"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex min-h-[44px] w-full items-center justify-center rounded-xl border border-[#E7DDD4] bg-white px-4 py-2.5 text-sm font-bold text-[#261B1E]"
+                    >
+                      Log In to Existing Account
+                    </a>
+                  </>
+                )}
+              </div>
             </div>
 
-            {/* Mobile Auth Area */}
-            <div className="border-t border-[#E4E7EC] pt-3">
-              {currentUser ? (
-                <div className="flex flex-col gap-2">
-                  <div className="flex items-center justify-between px-2 py-1">
-                    <span className="text-xs font-bold text-[#101828]">{currentUser.fullName}</span>
-                    <span className="text-[10px] font-black uppercase text-[#2453E6] bg-blue-50 px-2 py-0.5 rounded">
-                      {userTier}
-                    </span>
-                  </div>
-                  <button
-                    onClick={handleLogout}
-                    className="w-full text-center py-2.5 text-xs font-bold text-[#DC2626] bg-rose-50 rounded-xl min-h-[44px]"
-                  >
-                    Sign Out
-                  </button>
-                </div>
-              ) : (
-                <div className="grid grid-cols-2 gap-2">
-                  <a
-                    href="/login"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-center py-2.5 text-xs font-bold text-[#475467] bg-[#F7F9FC] border border-[#E4E7EC] rounded-xl min-h-[44px]"
-                  >
-                    Sign In
-                  </a>
-                  <a
-                    href="/register"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center justify-center py-2.5 text-xs font-bold text-white bg-[#2453E6] hover:bg-[#1d44c2] rounded-xl min-h-[44px]"
-                  >
-                    Start Free
-                  </a>
-                </div>
-              )}
+            <div className="p-5 border-t border-[#E7DDD4] bg-white text-xs text-[#786B68]">
+              <div className="font-bold text-[#261B1E]">Direct Aspirant Helpline</div>
+              <div className="mt-0.5">WhatsApp / Phone: +91 7351522153</div>
+              <div className="text-[10px] text-[#C69A4A] mt-1">Lead Architect: Aradhy Jain</div>
             </div>
           </div>
         </div>
       )}
 
+      {/* Mobile Sticky Bottom Navigation Bar */}
+      <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 bg-[#FBF7F0]/95 backdrop-blur-md border-t border-[#E7DDD4] px-2 py-1.5 flex items-center justify-around shadow-hover">
+        <a
+          href="/"
+          className={`flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-bold ${
+            pathname === "/" ? "text-[#741A2B]" : "text-[#786B68]"
+          }`}
+        >
+          <BookOpen className="h-4 w-4" />
+          <span>Home</span>
+        </a>
+
+        <a
+          href="/pyqs"
+          className={`flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-bold ${
+            isPyqActive ? "text-[#741A2B]" : "text-[#786B68]"
+          }`}
+        >
+          <Compass className="h-4 w-4" />
+          <span>PYQs</span>
+        </a>
+
+        <a
+          href="/mock-tests"
+          className={`flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-bold ${
+            pathname?.startsWith("/mock-tests") ? "text-[#741A2B]" : "text-[#786B68]"
+          }`}
+        >
+          <Clock className="h-4 w-4" />
+          <span>Mocks</span>
+        </a>
+
+        <a
+          href="/mains"
+          className={`flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-bold ${
+            pathname?.startsWith("/mains") ? "text-[#741A2B]" : "text-[#786B68]"
+          }`}
+        >
+          <FileText className="h-4 w-4" />
+          <span>Mains</span>
+        </a>
+
+        <a
+          href={currentUser ? "/dashboard" : "/login"}
+          className={`flex flex-col items-center gap-0.5 px-3 py-1 text-[11px] font-bold ${
+            pathname?.startsWith("/dashboard") ? "text-[#741A2B]" : "text-[#786B68]"
+          }`}
+        >
+          <User className="h-4 w-4" />
+          <span>{currentUser ? "Dashboard" : "Account"}</span>
+        </a>
+      </div>
+
+      {/* AI Assistant Modal */}
       <AILearningAssistantModal
         isOpen={isAiAssistantOpen}
         onClose={() => setIsAiAssistantOpen(false)}
       />
-    </header>
+    </>
   );
 }
