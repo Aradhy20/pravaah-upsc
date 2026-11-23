@@ -10,6 +10,19 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
+        brand: {
+          primary: "#2453E6",
+          dark: "#101828",
+          secondary: "#4778F5",
+          light: "#F7F9FC",
+          white: "#FFFFFF",
+          body: "#475467",
+          muted: "#667085",
+          border: "#E4E7EC",
+          success: "#12A878",
+          warning: "#F59E0B",
+          error: "#DC2626",
+        },
         academic: {
           50: "#f8fafc",
           100: "#f1f5f9",

@@ -3,8 +3,14 @@
 @tailwind utilities;
 
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
+  --background: #f7f9fc;
+  --foreground: #101828;
+  --brand-primary: #2453e6;
+  --brand-dark: #101828;
+  --brand-secondary: #4778f5;
+  --brand-body: #475467;
+  --brand-muted: #667085;
+  --brand-border: #e4e7ec;
 }
 
 body {
@@ -13,6 +19,25 @@ body {
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+}
+
+/* Accessible interactive focus visible styles */
+*:focus-visible {
+  outline: 2px solid #2453e6;
+  outline-offset: 2px;
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }
 
 /* Academic Custom Scrollbar */
