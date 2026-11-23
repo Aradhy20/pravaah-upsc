@@ -36,8 +36,29 @@ export async function POST(request: NextRequest) {
       for (let i = startIndex; i < lines.length; i++) {
         const line = lines[i].trim();
         if (!line) continue;
-        // Simple comma split handling quotes
-        const parts = line.split(",").map((p) => p.trim().replace(/^["']|["']$/g, ""));
+        
+        // Proper CSV parsing supporting commas inside quotes
+        const parts: string[] = [];
+        let cur = "";
+        let inQuotes = false;
+        for (let j = 0; j < line.length; j++) {
+          const c = line[j];
+          if (c === '"') {
+            if (inQuotes && line[j + 1] === '"') {
+              cur += '"';
+              j++;
+            } else {
+              inQuotes = !inQuotes;
+            }
+          } else if (c === ',' && !inQuotes) {
+            parts.push(cur.trim().replace(/^["']|["']$/g, ""));
+            cur = "";
+          } else {
+            cur += c;
+          }
+        }
+        parts.push(cur.trim().replace(/^["']|["']$/g, ""));
+
         if (parts.length >= 7) {
           // Format: qNum, questionText, optA, optB, optC, optD, correctOpt, explanation, difficulty
           const [qNum, qText, optA, optB, optC, optD, correctOpt, expl = "", diff = "MEDIUM"] = parts;

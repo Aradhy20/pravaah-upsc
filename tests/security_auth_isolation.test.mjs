@@ -324,4 +324,16 @@ ${uniqueQNum},"With reference to Indian history, who founded the Servants of Ind
   const reImportJson = await reImportRes.json();
   assert.equal(reImportJson.data.duplicateCount, 1, "Duplicate question must be detected");
   assert.equal(reImportJson.data.importedCount, 0, "Duplicate question must not be re-imported");
+
+  // 3. Clean up test imported question so tests remain idempotent and leak-free
+  const paper = await prisma.paper.findUnique({ where: { code: "GS1" } });
+  if (paper) {
+    await prisma.question.deleteMany({
+      where: {
+        paperId: paper.id,
+        year: 2024,
+        questionNumber: uniqueQNum,
+      },
+    });
+  }
 });

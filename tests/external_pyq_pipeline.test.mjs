@@ -59,7 +59,7 @@ test('External PYQ Pipeline (ExamGOAL, ExamSIDE & Human Peritus) Test Suite', as
 
   // Test 3: Quality Gate Validation
   await t.test('3. validateQuestionRecord enforces 4 options and strict UPSC marking schemes', async () => {
-    const { validateQuestionRecord } = await import('../scripts/pyq/validate-records.ts');
+    const { validateQuestionRecord } = await import('../scripts/pyq/validate-records.js');
 
     const validGS1 = {
       year: 2024,

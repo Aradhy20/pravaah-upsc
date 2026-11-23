@@ -7,10 +7,11 @@ const globalForPrisma = globalThis as unknown as {
 // Check for primary or Vercel integration environment variables
 const resolvedDatabaseUrl =
   process.env.DATABASE_URL ||
+  process.env.STORAGE_DATABASE_URL ||
+  process.env.STORAGE_DATABASE_URL_POOLED ||
   process.env.STORAGE_URL ||
   process.env.STORAGE_PRISMA_DATABASE_URL ||
   process.env.STORAGE_POSTGRES_URL ||
-  process.env.STORAGE_DATABASE_URL ||
   process.env.STORAGE_URL_NON_POOLING ||
   process.env.POSTGRES_PRISMA_URL ||
   process.env.POSTGRES_URL ||
