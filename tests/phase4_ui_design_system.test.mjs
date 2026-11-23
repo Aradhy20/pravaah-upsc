@@ -29,7 +29,7 @@ test("Phase 4: Desktop Navbar Single-Line Structure & Dropdowns", async () => {
   // Center navigation items
   assert.ok(html.includes("Practice"), "Practice dropdown must exist");
   assert.ok(html.includes("Preparation"), "Preparation dropdown must exist");
-  assert.ok(html.includes("Aspirant Flow"), "Aspirant Flow link must exist");
+  assert.ok(html.includes("Current Affairs"), "Current Affairs link must exist");
   assert.ok(html.includes("PYQ Bank"), "PYQ Bank link must exist");
 
   // Right navigation items
