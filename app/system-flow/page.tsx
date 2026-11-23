@@ -96,7 +96,7 @@ export default function SystemFlowPage() {
       step: 3,
       time: "10:00 – 13:00",
       title: "Targeted PYQ Deep Drill (2019 – 2024)",
-      tagline: "Master 1,079 verified questions with elimination techniques",
+      tagline: "Master 121 verified questions with elimination techniques",
       icon: Compass,
       accent: "from-sky-600 to-blue-700",
       badgeColor: "bg-sky-50 text-sky-700 border-sky-200",
@@ -306,7 +306,7 @@ export default function SystemFlowPage() {
                 </div>
                 <div className="shrink-0 flex items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 rounded-lg bg-emerald-100 px-3 py-1.5 text-xs font-bold text-emerald-800">
-                    <Check className="h-3.5 w-3.5" /> 1,079 Verified Questions
+                    <Check className="h-3.5 w-3.5" /> 121 Verified Questions
                   </span>
                   <span className="inline-flex items-center gap-1.5 rounded-lg bg-blue-100 px-3 py-1.5 text-xs font-bold text-blue-800">
                     <ShieldCheck className="h-3.5 w-3.5" /> Official Keys

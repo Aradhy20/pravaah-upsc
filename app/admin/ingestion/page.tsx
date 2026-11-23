@@ -87,9 +87,9 @@ export default function AdminIngestionDashboardPage() {
     staleSources: 0,
     lastSuccessfulCheck: new Date().toISOString(),
     totalDocumentsDiscovered: 22,
-    publishedQuestions: 1079,
-    awaitingReviewQuestions: 14,
-    totalQuestions: 1093,
+    publishedQuestions: 121,
+    awaitingReviewQuestions: 0,
+    totalQuestions: 121,
     publishedStories: 5,
     failedImports: 0,
     duplicateCandidateGroups: 65,
@@ -275,7 +275,7 @@ export default function AdminIngestionDashboardPage() {
               <ShieldCheck className="h-4 w-4 text-blue-600" />
               Examination Category Distribution
             </h2>
-            <span className="text-xs font-semibold text-slate-400">1,079+ Verified Questions</span>
+            <span className="text-xs font-semibold text-slate-400">121 Verified Questions</span>
           </div>
           <div className="flex flex-wrap gap-2">
             <div className="flex-1 min-w-[100px] rounded-xl bg-blue-50/70 border border-blue-200 p-2.5 text-center">

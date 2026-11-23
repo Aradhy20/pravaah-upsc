@@ -15,6 +15,7 @@ import {
   AlertCircle,
   Eye,
   CheckSquare,
+  ShieldCheck,
 } from "lucide-react";
 import { useLanguage } from "@/lib/i18n/context";
 
@@ -489,7 +490,7 @@ export default function MainsWorkspacePage() {
 
                     {/* Missing points to include */}
                     {aiEvaluation.missingPoints?.length > 0 && (
-                      <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs">
+                      <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-xs mb-4">
                         <span className="font-bold text-amber-900 block mb-1">Recommended Value Additions:</span>
                         <ul className="list-disc list-inside space-y-0.5 text-amber-800 text-[11px]">
                           {aiEvaluation.missingPoints.map((pt: string, idx: number) => (
@@ -498,6 +499,17 @@ export default function MainsWorkspacePage() {
                         </ul>
                       </div>
                     )}
+
+                    {/* Official Examiner Guidance Disclaimer */}
+                    <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-[11px] text-slate-500 leading-relaxed flex items-start gap-2">
+                      <ShieldCheck className="h-4 w-4 text-slate-400 shrink-0 mt-0.5" />
+                      <div>
+                        <span className="font-semibold text-slate-700">Examiner Disclaimer: </span>
+                        {language === "hi"
+                          ? "प्रवाह एआई मूल्यांकन एक शैक्षणिक स्व-मूल्यांकन रूब्रिक है जो मानक यूपीएससी मापदंडों पर आधारित है। यह वास्तविक परीक्षक की व्यक्तिगत दृष्टि का विकल्प नहीं है और अंकों की कोई औपचारिक गारंटी नहीं देता।"
+                          : "Pravaah AI evaluation is an algorithmic diagnostic tool calibrated against official UPSC CSE rubrics (Intro, Body Dimensions, Empirical Evidence, Conclusion) to aid self-reflection. It does not replace human examiner subjectivity or guarantee UPSC marks."}
+                      </div>
+                    </div>
                   </div>
                 )}
 

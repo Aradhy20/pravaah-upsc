@@ -16,35 +16,38 @@ model Role {
 }
 
 model User {
-  id           String            @id @default(cuid())
-  email        String            @unique
-  passwordHash String
-  fullName     String
-  avatarUrl    String?
-  googleId     String?           @unique
-  roleId       String
-  role         Role              @relation(fields: [roleId], references: [id])
-  profile      UserProfile?
-  attempts     UserAttempt[]
-  responses    UserResponse[]
-  testSessions TestSession[]
-  bookmarks    Bookmark[]
-  notes        UserNote[]
-  schedules    ReviewSchedule[]
-  goals        StudyGoal[]
-  activities   StudyActivity[]
-  imports      ContentImportJob[]
-  auditLogs    AuditLog[]
-  subscriptions Subscription[]
-  payments      PaymentRecord[]
-  refunds       RefundRecord[]
+  id                String                      @id @default(cuid())
+  email             String                      @unique
+  passwordHash      String
+  fullName          String
+  avatarUrl         String?
+  googleId          String?                     @unique
+  roleId            String
+  role              Role                        @relation(fields: [roleId], references: [id])
+  profile           UserProfile?
+  attempts          UserAttempt[]
+  responses         UserResponse[]
+  testSessions      TestSession[]
+  bookmarks         Bookmark[]
+  notes             UserNote[]
+  schedules         ReviewSchedule[]
+  goals             StudyGoal[]
+  activities        StudyActivity[]
+  imports           ContentImportJob[]
+  auditLogs         AuditLog[]
+  subscriptions     Subscription[]
+  payments          PaymentRecord[]
+  refunds           RefundRecord[]
   dailyQuizAttempts DailyQuizAttempt[]
-  mainsDrafts   MainsDraft[]
-  videoProgress VideoProgress[]
-  sessions      Session[]
-  paymentOrders PaymentOrder[]
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+  mainsDrafts       MainsDraft[]
+  videoProgress     VideoProgress[]
+  sessions          Session[]
+  paymentOrders     PaymentOrder[]
+  topicProgress     UserTopicProgress[]
+  mistakes          UserMistakeClassification[]
+  supportTickets    SupportTicket[]
+  createdAt         DateTime                    @default(now())
+  updatedAt         DateTime                    @updatedAt
 }
 
 model UserProfile {
@@ -57,7 +60,8 @@ model UserProfile {
   dailyGoalMinutes  Int      @default(60)
   dailyStudyHours   Float    @default(4.0)
   preferredLanguage String   @default("en") // "en" | "hi"
-  weakSubjects      String?  // JSON string of weak subjects
+  weakSubjects      String? // JSON string of weak subjects
+  strongSubjects    String? // JSON string of strong subjects
   preparationStage  String?  @default("BEGINNER") // BEGINNER, INTERMEDIATE, ADVANCED
   readinessIndex    Float    @default(0.0)
   createdAt         DateTime @default(now())
@@ -83,20 +87,20 @@ model ExamStage {
 }
 
 model Paper {
-  id              String      @id @default(cuid())
+  id              String     @id @default(cuid())
   stageId         String
-  stage           ExamStage   @relation(fields: [stageId], references: [id], onDelete: Cascade)
-  code            String      @unique // e.g., "GS1", "GS2"
+  stage           ExamStage  @relation(fields: [stageId], references: [id], onDelete: Cascade)
+  code            String     @unique // e.g., "GS1", "GS2"
   name            String
-  totalQuestions  Int         @default(100)
-  totalMarks      Int         @default(200)
-  durationMinutes Int         @default(120)
-  positiveMark    Float       @default(2.0)
-  negativeMark    Float       @default(0.666)
+  totalQuestions  Int        @default(100)
+  totalMarks      Int        @default(200)
+  durationMinutes Int        @default(120)
+  positiveMark    Float      @default(2.0)
+  negativeMark    Float      @default(0.666)
   subjects        Subject[]
   questions       Question[]
   tests           Test[]
-  createdAt       DateTime    @default(now())
+  createdAt       DateTime   @default(now())
 }
 
 model Subject {
@@ -111,16 +115,17 @@ model Subject {
 }
 
 model Topic {
-  id          String          @id @default(cuid())
-  subjectId   String
-  subject     Subject         @relation(fields: [subjectId], references: [id], onDelete: Cascade)
-  name        String
-  slug        String
-  description String?
-  parentId    String?
-  questions   QuestionTopic[]
-  subtopics   Subtopic[]
-  createdAt   DateTime        @default(now())
+  id           String              @id @default(cuid())
+  subjectId    String
+  subject      Subject             @relation(fields: [subjectId], references: [id], onDelete: Cascade)
+  name         String
+  slug         String
+  description  String?
+  parentId     String?
+  questions    QuestionTopic[]
+  subtopics    Subtopic[]
+  userProgress UserTopicProgress[]
+  createdAt    DateTime            @default(now())
 }
 
 model SyllabusNode {
@@ -134,57 +139,58 @@ model SyllabusNode {
 }
 
 model Question {
-  id             String             @id @default(cuid())
-  recordId       String?
-  questionGroupId String?           // Shared ID linking English and Hindi equivalents
-  examId         String?
-  examYearId     String?
-  stageId        String?
-  paperId        String
-  paper          Paper              @relation(fields: [paperId], references: [id], onDelete: Cascade)
-  year           Int
-  questionNumber Int
-  questionType   String             @default("MCQ") // MCQ, SUBJECTIVE_MAINS, ESSAY
-  questionText   String
-  questionTextEn String?
-  questionTextHi String?
-  questionFormat String?            @default("SINGLE_CHOICE") // SINGLE_CHOICE, MULTI_STATEMENT, MATCH_FOLLOWING, ASSERTION_REASONING, CHRONOLOGY, COMPREHENSION
-  translationStatus String            @default("TRANSLATION_MISSING") // ORIGINAL_SOURCE, HUMAN_VERIFIED, MACHINE_TRANSLATED_REVIEW_REQUIRED, TRANSLATION_MISSING
-  examStage      String             @default("PRELIMS") // PRELIMS, MAINS, INTERVIEW
-  sourceReference String?
-  difficulty     String             @default("MEDIUM") // EASY, MEDIUM, HARD
-  difficultyLevel String?           @default("MEDIUM")
-  subjectId      String?
-  topicId        String?
-  subtopicId     String?
-  marks          Float?             @default(2.0)
-  negativeMarks  Float?             @default(0.666)
-  sourceId       String?
-  sourcePage     String?
-  language       String             @default("English") // English, Hindi, Bilingual
-  isStatic       Boolean            @default(true)
-  status         String             @default("DRAFT") // DRAFT, NEEDS_REVIEW, VERIFIED, PUBLISHED, ARCHIVED
-  verifiedAt     DateTime?
-  options        QuestionOption[]
-  explanation    Explanation?
-  answerKeys     AnswerKeyVersion[]
-  answers        QuestionAnswer[]
-  syllabusMappings QuestionSyllabusMapping[]
-  citations      SourceCitation[]
-  topics         QuestionTopic[]
-  sources        QuestionSource[]
-  testQuestions  TestQuestion[]
-  attempts       UserAttempt[]
-  responses      UserResponse[]
-  bookmarks      Bookmark[]
-  notes          UserNote[]
-  schedules      ReviewSchedule[]
-  storyLinks     StoryQuestionLink[]
-  ncertLinks     NCERTChapterQuestionLink[]
-  verificationStatus String         @default("OFFICIALLY_VERIFIED") // OFFICIALLY_VERIFIED, INDEPENDENTLY_CORROBORATED, EXPERT_REVIEWED, PENDING_VERIFICATION, DISPUTED
-  examCategory   String             @default("CSE") // CSE, CDS, NDA, CAPF, EPFO, ESE
-  createdAt      DateTime           @default(now())
-  updatedAt      DateTime           @updatedAt
+  id                     String                      @id @default(cuid())
+  recordId               String?
+  questionGroupId        String? // Shared ID linking English and Hindi equivalents
+  examId                 String?
+  examYearId             String?
+  stageId                String?
+  paperId                String
+  paper                  Paper                       @relation(fields: [paperId], references: [id], onDelete: Cascade)
+  year                   Int
+  questionNumber         Int
+  questionType           String                      @default("MCQ") // MCQ, SUBJECTIVE_MAINS, ESSAY
+  questionText           String
+  questionTextEn         String?
+  questionTextHi         String?
+  questionFormat         String?                     @default("SINGLE_CHOICE") // SINGLE_CHOICE, MULTI_STATEMENT, MATCH_FOLLOWING, ASSERTION_REASONING, CHRONOLOGY, COMPREHENSION
+  translationStatus      String                      @default("TRANSLATION_MISSING") // ORIGINAL_SOURCE, HUMAN_VERIFIED, MACHINE_TRANSLATED_REVIEW_REQUIRED, TRANSLATION_MISSING
+  examStage              String                      @default("PRELIMS") // PRELIMS, MAINS, INTERVIEW
+  sourceReference        String?
+  difficulty             String                      @default("MEDIUM") // EASY, MEDIUM, HARD
+  difficultyLevel        String?                     @default("MEDIUM")
+  subjectId              String?
+  topicId                String?
+  subtopicId             String?
+  marks                  Float?                      @default(2.0)
+  negativeMarks          Float?                      @default(0.666)
+  sourceId               String?
+  sourcePage             String?
+  language               String                      @default("English") // English, Hindi, Bilingual
+  isStatic               Boolean                     @default(true)
+  status                 String                      @default("DRAFT") // DRAFT, NEEDS_REVIEW, VERIFIED, PUBLISHED, ARCHIVED
+  verifiedAt             DateTime?
+  options                QuestionOption[]
+  explanation            Explanation?
+  answerKeys             AnswerKeyVersion[]
+  answers                QuestionAnswer[]
+  syllabusMappings       QuestionSyllabusMapping[]
+  citations              SourceCitation[]
+  topics                 QuestionTopic[]
+  sources                QuestionSource[]
+  testQuestions          TestQuestion[]
+  attempts               UserAttempt[]
+  responses              UserResponse[]
+  bookmarks              Bookmark[]
+  notes                  UserNote[]
+  schedules              ReviewSchedule[]
+  storyLinks             StoryQuestionLink[]
+  ncertLinks             NCERTChapterQuestionLink[]
+  mistakeClassifications UserMistakeClassification[]
+  verificationStatus     String                      @default("OFFICIALLY_VERIFIED") // OFFICIALLY_VERIFIED, INDEPENDENTLY_CORROBORATED, EXPERT_REVIEWED, PENDING_VERIFICATION, DISPUTED
+  examCategory           String                      @default("CSE") // CSE, CDS, NDA, CAPF, EPFO, ESE
+  createdAt              DateTime                    @default(now())
+  updatedAt              DateTime                    @updatedAt
 
   @@unique([paperId, year, questionNumber])
   @@index([year, paperId, status])
@@ -196,17 +202,17 @@ model Question {
 model QuestionStagingRecord {
   id                   String    @id @default(cuid())
   importJobId          String?
-  sourceReference      String?   // Document URL, booklet code, or paper series
+  sourceReference      String? // Document URL, booklet code, or paper series
   examCategory         String    @default("CSE") // CSE, CDS, NDA, etc.
   examStage            String    @default("PRELIMS") // PRELIMS, MAINS
   year                 Int
-  paperCode            String    // GS1, GS2
+  paperCode            String // GS1, GS2
   questionNumber       Int
   questionFormat       String    @default("SINGLE_CHOICE") // SINGLE_CHOICE, MULTI_STATEMENT, MATCH_FOLLOWING, ASSERTION_REASONING, CHRONOLOGY, COMPREHENSION
   questionTextEn       String
   questionTextHi       String?
-  optionsJson          String    // JSON string of [{ code: "A", textEn: "...", textHi: "...", isCorrect: true }]
-  officialAnswer       String?   // A, B, C, D
+  optionsJson          String // JSON string of [{ code: "A", textEn: "...", textHi: "...", isCorrect: true }]
+  officialAnswer       String? // A, B, C, D
   explanationEn        String?
   explanationHi        String?
   sourceCitation       String?
@@ -214,9 +220,9 @@ model QuestionStagingRecord {
   topicSlug            String?
   difficulty           String    @default("MEDIUM")
   translationStatus    String    @default("TRANSLATION_MISSING") // ORIGINAL_SOURCE, HUMAN_VERIFIED, MACHINE_TRANSLATED_REVIEW_REQUIRED, TRANSLATION_MISSING
-  validationErrorsJson String?   // JSON array of detected validation issues
+  validationErrorsJson String? // JSON array of detected validation issues
   workflowStatus       String    @default("IMPORTED") // IMPORTED, EXTRACTION_COMPLETED, AWAITING_VERIFICATION, VERIFIED, APPROVED_FOR_PUBLICATION, PUBLISHED, REJECTED_OR_ARCHIVED
-  publishedQuestionId  String?   // Pointer to Question.id once promoted
+  publishedQuestionId  String? // Pointer to Question.id once promoted
   reviewedBy           String?
   reviewedAt           DateTime?
   rejectionReason      String?
@@ -229,19 +235,19 @@ model QuestionStagingRecord {
 }
 
 model QuestionOption {
-  id           String       @id @default(cuid())
-  questionId   String
-  question     Question     @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  optionCode   String       // A, B, C, D
-  optionLabel  String?      // A, B, C, D
-  optionText   String
-  optionTextEn String?
-  optionTextHi String?
-  translationStatus String?      @default("TRANSLATION_MISSING") // ORIGINAL_SOURCE, HUMAN_VERIFIED, MACHINE_TRANSLATED_REVIEW_REQUIRED, TRANSLATION_MISSING
-  optionOrder  Int          @default(1)
-  isCorrect    Boolean      @default(false)
-  responses    UserResponse[]
-  createdAt    DateTime     @default(now())
+  id                String         @id @default(cuid())
+  questionId        String
+  question          Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  optionCode        String // A, B, C, D
+  optionLabel       String? // A, B, C, D
+  optionText        String
+  optionTextEn      String?
+  optionTextHi      String?
+  translationStatus String?        @default("TRANSLATION_MISSING") // ORIGINAL_SOURCE, HUMAN_VERIFIED, MACHINE_TRANSLATED_REVIEW_REQUIRED, TRANSLATION_MISSING
+  optionOrder       Int            @default(1)
+  isCorrect         Boolean        @default(false)
+  responses         UserResponse[]
+  createdAt         DateTime       @default(now())
 
   @@unique([questionId, optionCode])
 }
@@ -270,7 +276,7 @@ model QuestionAnswer {
   questionId         String
   question           Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
   answerText         String?
-  answerOption       String    // A, B, C, D, or DROPPED
+  answerOption       String // A, B, C, D, or DROPPED
   answerType         String    @default("FINAL") // FINAL, PROVISIONAL, AMBIGUOUS, DROPPED
   answerKeyType      String    @default("UPSC_FINAL_KEY") // UPSC_FINAL_KEY, UPSC_PROVISIONAL_KEY, PROVIDER_DERIVED, FACULTY_DERIVED, UNVERIFIED, NO_KEY_FOUND
   answerProvenance   String    @default("UPSC_OFFICIAL_FINAL")
@@ -287,7 +293,7 @@ model AnswerKeyVersion {
   id              String   @id @default(cuid())
   questionId      String
   question        Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  officialAnswer  String   // A, B, C, D, or DROPPED
+  officialAnswer  String // A, B, C, D, or DROPPED
   sourceType      String   @default("UPSC_OFFICIAL_FINAL")
   sourceReference String?
   notes           String?
@@ -305,22 +311,22 @@ model QuestionTopic {
 }
 
 model SourceDocument {
-  id          String           @id @default(cuid())
-  title       String
-  sourceUrl   String
-  fileHash    String?
-  paperCode   String?
-  year        Int?
-  sources     QuestionSource[]
-  createdAt   DateTime         @default(now())
+  id        String           @id @default(cuid())
+  title     String
+  sourceUrl String
+  fileHash  String?
+  paperCode String?
+  year      Int?
+  sources   QuestionSource[]
+  createdAt DateTime         @default(now())
 }
 
 model QuestionSource {
-  id          String         @id @default(cuid())
-  questionId  String
-  question    Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  documentId  String
-  document    SourceDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  id         String         @id @default(cuid())
+  questionId String
+  question   Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  documentId String
+  document   SourceDocument @relation(fields: [documentId], references: [id], onDelete: Cascade)
 }
 
 model Test {
@@ -337,35 +343,35 @@ model Test {
 }
 
 model TestQuestion {
-  id          String   @id @default(cuid())
-  testId      String
-  test        Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
-  questionId  String
-  question    Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  orderIndex  Int
+  id         String   @id @default(cuid())
+  testId     String
+  test       Test     @relation(fields: [testId], references: [id], onDelete: Cascade)
+  questionId String
+  question   Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  orderIndex Int
 
   @@unique([testId, questionId])
 }
 
 model TestSession {
-  id                   String         @id @default(cuid())
-  userId               String
-  user                 User           @relation(fields: [userId], references: [id], onDelete: Cascade)
-  testId               String
-  test                 Test           @relation(fields: [testId], references: [id], onDelete: Cascade)
-  status               String         @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED, ABANDONED
-  startedAt            DateTime       @default(now())
-  submittedAt          DateTime?
-  totalTimeSpentSeconds Int           @default(0)
-  totalQuestions       Int            @default(0)
-  attemptedCount       Int            @default(0)
-  correctCount         Int            @default(0)
-  incorrectCount       Int            @default(0)
-  unattemptedCount     Int            @default(0)
-  rawScore             Float          @default(0.0)
-  negativeMarks        Float          @default(0.0)
-  netScore             Float          @default(0.0)
-  responses            UserResponse[]
+  id                    String         @id @default(cuid())
+  userId                String
+  user                  User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  testId                String
+  test                  Test           @relation(fields: [testId], references: [id], onDelete: Cascade)
+  status                String         @default("IN_PROGRESS") // IN_PROGRESS, COMPLETED, ABANDONED
+  startedAt             DateTime       @default(now())
+  submittedAt           DateTime?
+  totalTimeSpentSeconds Int            @default(0)
+  totalQuestions        Int            @default(0)
+  attemptedCount        Int            @default(0)
+  correctCount          Int            @default(0)
+  incorrectCount        Int            @default(0)
+  unattemptedCount      Int            @default(0)
+  rawScore              Float          @default(0.0)
+  negativeMarks         Float          @default(0.0)
+  netScore              Float          @default(0.0)
+  responses             UserResponse[]
 }
 
 model UserAttempt {
@@ -431,18 +437,18 @@ model UserNote {
 }
 
 model ReviewSchedule {
-  id              String    @id @default(cuid())
+  id              String   @id @default(cuid())
   userId          String
-  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   questionId      String
-  question        Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
-  repetitionCount Int       @default(0)
-  intervalDays    Int       @default(1)
-  easeFactor      Float     @default(2.5)
+  question        Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  repetitionCount Int      @default(0)
+  intervalDays    Int      @default(1)
+  easeFactor      Float    @default(2.5)
   nextReviewDate  DateTime
-  isResolved      Boolean   @default(false)
-  createdAt       DateTime  @default(now())
-  updatedAt       DateTime  @updatedAt
+  isResolved      Boolean  @default(false)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
 
   @@unique([userId, questionId])
   @@index([userId, isResolved, nextReviewDate])
@@ -474,7 +480,7 @@ model StudyActivity {
   id              String   @id @default(cuid())
   userId          String
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  activityType    String   // mcq_attempted, test_completed, note_added, revision_done
+  activityType    String // mcq_attempted, test_completed, note_added, revision_done
   label           String
   refId           String?
   durationSeconds Int      @default(0)
@@ -482,38 +488,38 @@ model StudyActivity {
 }
 
 model ContentImportJob {
-  id               String   @id @default(cuid())
-  adminId          String
-  admin            User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  fileName         String
-  paperYear        Int
-  paperCode        String
-  totalRecords     Int      @default(0)
-  importedCount    Int      @default(0)
-  rejectedCount    Int      @default(0)
-  status           String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
-  errorReportJson  String?
-  createdAt        DateTime @default(now())
+  id              String   @id @default(cuid())
+  adminId         String
+  admin           User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  fileName        String
+  paperYear       Int
+  paperCode       String
+  totalRecords    Int      @default(0)
+  importedCount   Int      @default(0)
+  rejectedCount   Int      @default(0)
+  status          String   @default("PENDING") // PENDING, PROCESSING, COMPLETED, FAILED
+  errorReportJson String?
+  createdAt       DateTime @default(now())
 }
 
 model ContentReview {
-  id           String   @id @default(cuid())
-  questionId   String
-  reviewerId   String
-  action       String   // APPROVED, REJECTED, EDITED
-  comments     String?
-  reviewedAt   DateTime @default(now())
+  id         String   @id @default(cuid())
+  questionId String
+  reviewerId String
+  action     String // APPROVED, REJECTED, EDITED
+  comments   String?
+  reviewedAt DateTime @default(now())
 }
 
 model AuditLog {
-  id           String   @id @default(cuid())
-  adminId      String
-  admin        User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
-  action       String   // CREATE, UPDATE, DELETE, PUBLISH, UNPUBLISH, ANSWER_KEY_CHANGE
-  entityType   String   // QUESTION, ANSWER_KEY, IMPORT_JOB
-  entityId     String
-  detailsJson  String?
-  timestamp    DateTime @default(now())
+  id          String   @id @default(cuid())
+  adminId     String
+  admin       User     @relation(fields: [adminId], references: [id], onDelete: Cascade)
+  action      String // CREATE, UPDATE, DELETE, PUBLISH, UNPUBLISH, ANSWER_KEY_CHANGE
+  entityType  String // QUESTION, ANSWER_KEY, IMPORT_JOB
+  entityId    String
+  detailsJson String?
+  timestamp   DateTime @default(now())
 }
 
 model Plan {
@@ -536,8 +542,8 @@ model PlanPrice {
   id              String   @id @default(cuid())
   planId          String
   plan            Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
-  billingInterval String   // "MONTHLY", "QUARTERLY", "ANNUAL"
-  amountRupees    Float    // e.g. 0, 499, 1299, 3999
+  billingInterval String // "MONTHLY", "QUARTERLY", "ANNUAL"
+  amountRupees    Float // e.g. 0, 499, 1299, 3999
   currency        String   @default("INR")
   discountPercent Int      @default(0)
   isActive        Boolean  @default(true)
@@ -550,10 +556,10 @@ model PlanFeature {
   id          String   @id @default(cuid())
   planId      String
   plan        Plan     @relation(fields: [planId], references: [id], onDelete: Cascade)
-  featureCode String   // "PYQ_BROWSE", "LEARN_EXPLANATIONS", "BOOKMARKS_LIMIT", "TIMED_EXAMS", "ADVANCED_ANALYTICS", "MISTAKE_REVISION"
+  featureCode String // "PYQ_BROWSE", "LEARN_EXPLANATIONS", "BOOKMARKS_LIMIT", "TIMED_EXAMS", "ADVANCED_ANALYTICS", "MISTAKE_REVISION"
   featureName String
   isIncluded  Boolean  @default(true)
-  limitValue  Int?     // null = unlimited, or e.g. 5, 50
+  limitValue  Int? // null = unlimited, or e.g. 5, 50
   tooltip     String?
   createdAt   DateTime @default(now())
 
@@ -595,7 +601,7 @@ model SubscriptionEvent {
   id             String       @id @default(cuid())
   subscriptionId String
   subscription   Subscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
-  eventType      String       // "CREATED", "ACTIVATED", "RENEWED", "CANCELED", "PAYMENT_FAILED", "PLAN_CHANGED"
+  eventType      String // "CREATED", "ACTIVATED", "RENEWED", "CANCELED", "PAYMENT_FAILED", "PLAN_CHANGED"
   payloadJson    String?
   createdAt      DateTime     @default(now())
 }
@@ -612,7 +618,7 @@ model PaymentRecord {
   provider       String         @default("SANDBOX") // "RAZORPAY", "STRIPE", "SANDBOX"
   providerTxId   String?        @unique
   idempotencyKey String?        @unique
-  paymentMethod  String?        // "UPI", "CARD", "NETBANKING"
+  paymentMethod  String? // "UPI", "CARD", "NETBANKING"
   receiptNumber  String?
   refunds        RefundRecord[]
   createdAt      DateTime       @default(now())
@@ -639,32 +645,32 @@ model RefundRecord {
 // ==========================================
 
 model PaymentOrder {
-  id                String                @id @default(cuid())
-  clientOrderId     String                @unique // Internal unique reference, e.g. "UPICHECKOUT_1731718000_abc"
-  gatewayOrderId    String?               @unique // External UPI Gateway order_id, e.g. "ORD20261115ABC12345"
-  userId            String
-  user              User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productType       String                @default("SUBSCRIPTION") // "SUBSCRIPTION", "TEST_SERIES", "MAINS_EVALUATION", "COURSE"
-  productId         String?               // Plan code ("ACHIEVER") or Test ID
-  subscriptionId    String?
-  subscription      Subscription?         @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
-  amount            Float                 // Amount in INR rupees (e.g. 5499.00)
-  amountPaise       Int                   // Amount in integer paise (e.g. 549900)
-  currency          String                @default("INR")
-  status            String                @default("PENDING") // "PENDING", "PROCESSING", "PAID", "FAILED", "EXPIRED", "UNDER_REVIEW", "REFUNDED"
-  environment       String                @default("sandbox") // "live" or "sandbox"
-  isTest            Boolean               @default(true)
-  paymentUrl        String?
-  upiIntent         String?
-  utr               String?               // Bank transaction reference / UTR
-  metadataJson      String?               // JSON metadata (e.g. billing interval, items)
-  expiresAt         DateTime?
-  paidAt            DateTime?
-  verifiedAt        DateTime?
-  lastCheckedAt     DateTime?
-  webhookEvents     PaymentWebhookEvent[]
-  createdAt         DateTime              @default(now())
-  updatedAt         DateTime              @updatedAt
+  id             String                @id @default(cuid())
+  clientOrderId  String                @unique // Internal unique reference, e.g. "UPICHECKOUT_1731718000_abc"
+  gatewayOrderId String?               @unique // External UPI Gateway order_id, e.g. "ORD20261115ABC12345"
+  userId         String
+  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productType    String                @default("SUBSCRIPTION") // "SUBSCRIPTION", "TEST_SERIES", "MAINS_EVALUATION", "COURSE"
+  productId      String? // Plan code ("ACHIEVER") or Test ID
+  subscriptionId String?
+  subscription   Subscription?         @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  amount         Float // Amount in INR rupees (e.g. 5499.00)
+  amountPaise    Int // Amount in integer paise (e.g. 549900)
+  currency       String                @default("INR")
+  status         String                @default("PENDING") // "PENDING", "PROCESSING", "PAID", "FAILED", "EXPIRED", "UNDER_REVIEW", "REFUNDED"
+  environment    String                @default("sandbox") // "live" or "sandbox"
+  isTest         Boolean               @default(true)
+  paymentUrl     String?
+  upiIntent      String?
+  utr            String? // Bank transaction reference / UTR
+  metadataJson   String? // JSON metadata (e.g. billing interval, items)
+  expiresAt      DateTime?
+  paidAt         DateTime?
+  verifiedAt     DateTime?
+  lastCheckedAt  DateTime?
+  webhookEvents  PaymentWebhookEvent[]
+  createdAt      DateTime              @default(now())
+  updatedAt      DateTime              @updatedAt
 
   @@index([userId, status])
   @@index([status, createdAt])
@@ -675,14 +681,14 @@ model PaymentOrder {
 model PaymentWebhookEvent {
   id             String        @id @default(cuid())
   eventId        String        @unique // UUID from X-Event-Id header and payload event_id
-  eventSequence  Int?          // Monotonically increasing sequence number from outbox
-  eventType      String        // e.g. "order.paid", "order.expired", "order.under_review"
-  orderId        String?       // Gateway order_id
+  eventSequence  Int? // Monotonically increasing sequence number from outbox
+  eventType      String // e.g. "order.paid", "order.expired", "order.under_review"
+  orderId        String? // Gateway order_id
   paymentOrderId String?
   paymentOrder   PaymentOrder? @relation(fields: [paymentOrderId], references: [id], onDelete: SetNull)
   environment    String        @default("sandbox") // "live" or "sandbox"
-  signature      String?       // X-Signature header
-  rawPayload     String        // Exact raw JSON body
+  signature      String? // X-Signature header
+  rawPayload     String // Exact raw JSON body
   status         String        @default("PROCESSED") // "PROCESSED", "IGNORED", "FAILED"
   errorDetails   String?
   occurredAt     DateTime?
@@ -698,39 +704,39 @@ model PaymentWebhookEvent {
 // ==========================================
 
 model CurrentAffairsStory {
-  id               String               @id @default(cuid())
-  title            String
-  slug             String               @unique
-  summary          String
-  content          String
+  id                String              @id @default(cuid())
+  title             String
+  slug              String              @unique
+  summary           String
+  content           String
   importancePrelims String?
-  importanceMains  String?
-  sourceName       String               // e.g. "PIB Delhi", "The Hindu", "PRS Legislative"
-  sourceUrl        String
-  sourceDate       DateTime?
-  publishedAt      DateTime             @default(now())
-  status           String               @default("PUBLISHED") // "PUBLISHED", "FACT_CHECK_REQUIRED", "DRAFT", "ARCHIVED"
-  termsList        String?              // Comma-separated or JSON list of key terms
-  prelimsFodder    String?
-  mainsFodder      String?
-  viewCount        Int                  @default(0)
-  topics           StoryTopic[]
-  questionLinks    StoryQuestionLink[]
-  quizQuestions    DailyQuizQuestion[]
-  createdAt        DateTime             @default(now())
-  updatedAt        DateTime             @updatedAt
+  importanceMains   String?
+  sourceName        String // e.g. "PIB Delhi", "The Hindu", "PRS Legislative"
+  sourceUrl         String
+  sourceDate        DateTime?
+  publishedAt       DateTime            @default(now())
+  status            String              @default("PUBLISHED") // "PUBLISHED", "FACT_CHECK_REQUIRED", "DRAFT", "ARCHIVED"
+  termsList         String? // Comma-separated or JSON list of key terms
+  prelimsFodder     String?
+  mainsFodder       String?
+  viewCount         Int                 @default(0)
+  topics            StoryTopic[]
+  questionLinks     StoryQuestionLink[]
+  quizQuestions     DailyQuizQuestion[]
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @updatedAt
 
   @@index([status, publishedAt])
 }
 
 model StoryTopic {
-  id             String              @id @default(cuid())
-  storyId        String
-  story          CurrentAffairsStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
-  syllabusPaper  String              // "GS1", "GS2", "GS3", "GS4", "PRELIMS"
-  topicName      String
-  confidence     Float               @default(0.95)
-  createdAt      DateTime            @default(now())
+  id            String              @id @default(cuid())
+  storyId       String
+  story         CurrentAffairsStory @relation(fields: [storyId], references: [id], onDelete: Cascade)
+  syllabusPaper String // "GS1", "GS2", "GS3", "GS4", "PRELIMS"
+  topicName     String
+  confidence    Float               @default(0.95)
+  createdAt     DateTime            @default(now())
 }
 
 model StoryQuestionLink {
@@ -769,7 +775,7 @@ model DailyQuizQuestion {
   optionB       String
   optionC       String
   optionD       String
-  correctOption String               // "A", "B", "C", "D"
+  correctOption String // "A", "B", "C", "D"
   explanation   String
   createdAt     DateTime             @default(now())
 }
@@ -783,7 +789,7 @@ model DailyQuizAttempt {
   score           Float
   totalMarks      Float     @default(10.0)
   accuracyPercent Float
-  answersJson     String    // JSON string of user answers { questionId: selectedOption }
+  answersJson     String // JSON string of user answers { questionId: selectedOption }
   completedAt     DateTime  @default(now())
 
   @@unique([userId, dailyQuizId])
@@ -794,24 +800,24 @@ model DailyQuizAttempt {
 // ==========================================
 
 model ExamDirectory {
-  id                         String   @id @default(cuid())
-  code                       String   @unique // "CSE", "IFS", "CDS", "NDA", "CAPF", "ESE", "CMS", "EPFO"
-  name                       String
-  conductingBody             String   @default("UPSC")
-  category                   String   @default("Civil Services") // "Defence", "Engineering", "Medical", etc.
-  overview                   String
-  eligibilityQualifications  String
-  ageLimit                   String
-  attemptsAllowed            String
-  stagesDescription          String
-  officialNotificationUrl    String
-  syllabusOverview           String
-  examCycleDates             String?  // e.g. "Notification: Feb, Prelims: May, Mains: Sep"
-  totalVacanciesTypical      String?
-  isActive                   Boolean  @default(true)
-  orderIndex                 Int      @default(1)
-  createdAt                  DateTime @default(now())
-  updatedAt                  DateTime @updatedAt
+  id                        String   @id @default(cuid())
+  code                      String   @unique // "CSE", "IFS", "CDS", "NDA", "CAPF", "ESE", "CMS", "EPFO"
+  name                      String
+  conductingBody            String   @default("UPSC")
+  category                  String   @default("Civil Services") // "Defence", "Engineering", "Medical", etc.
+  overview                  String
+  eligibilityQualifications String
+  ageLimit                  String
+  attemptsAllowed           String
+  stagesDescription         String
+  officialNotificationUrl   String
+  syllabusOverview          String
+  examCycleDates            String? // e.g. "Notification: Feb, Prelims: May, Mains: Sep"
+  totalVacanciesTypical     String?
+  isActive                  Boolean  @default(true)
+  orderIndex                Int      @default(1)
+  createdAt                 DateTime @default(now())
+  updatedAt                 DateTime @updatedAt
 }
 
 // ==========================================
@@ -820,7 +826,7 @@ model ExamDirectory {
 
 model MainsQuestion {
   id                String       @id @default(cuid())
-  paperCode         String       // "GS1", "GS2", "GS3", "GS4", "ESSAY"
+  paperCode         String // "GS1", "GS2", "GS3", "GS4", "ESSAY"
   year              Int
   questionNumber    Int
   questionText      String
@@ -829,8 +835,8 @@ model MainsQuestion {
   sourceReference   String?
   marks             Int          @default(10) // 10 or 15 marks
   wordLimit         Int          @default(150) // 150 or 250 words
-  theme             String       // e.g. "Modern History", "Governance", "Ethics Case Study"
-  frameworkGuidance String?      // Introduction, Body dimensions, Conclusion guidance
+  theme             String // e.g. "Modern History", "Governance", "Ethics Case Study"
+  frameworkGuidance String? // Introduction, Body dimensions, Conclusion guidance
   drafts            MainsDraft[]
   createdAt         DateTime     @default(now())
 
@@ -839,20 +845,20 @@ model MainsQuestion {
 }
 
 model MainsDraft {
-  id                   String        @id @default(cuid())
-  userId               String
-  user                 User          @relation(fields: [userId], references: [id], onDelete: Cascade)
-  mainsQuestionId      String
-  mainsQuestion        MainsQuestion @relation(fields: [mainsQuestionId], references: [id], onDelete: Cascade)
-  userAnswer           String
-  wordCount            Int           @default(0)
-  timeSpentSeconds     Int           @default(0)
-  selfEvaluationScore  Float?
-  selfEvaluationNotes  String?
-  aiFeedbackJson       String?
-  isSubmitted          Boolean       @default(false)
-  createdAt            DateTime      @default(now())
-  updatedAt            DateTime      @updatedAt
+  id                  String        @id @default(cuid())
+  userId              String
+  user                User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  mainsQuestionId     String
+  mainsQuestion       MainsQuestion @relation(fields: [mainsQuestionId], references: [id], onDelete: Cascade)
+  userAnswer          String
+  wordCount           Int           @default(0)
+  timeSpentSeconds    Int           @default(0)
+  selfEvaluationScore Float?
+  selfEvaluationNotes String?
+  aiFeedbackJson      String?
+  isSubmitted         Boolean       @default(false)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
 
   @@unique([userId, mainsQuestionId])
   @@index([userId, isSubmitted])
@@ -864,7 +870,7 @@ model MainsDraft {
 
 model BackgroundJob {
   id           String    @id @default(cuid())
-  jobType      String    // "SOURCE_AUDIT", "CURRENT_AFFAIRS_CRAWL", "PAPER_DISCOVERY", "STALENESS_CHECK"
+  jobType      String // "SOURCE_AUDIT", "CURRENT_AFFAIRS_CRAWL", "PAPER_DISCOVERY", "STALENESS_CHECK"
   status       String    @default("QUEUED") // "QUEUED", "RUNNING", "SUCCESS", "FAILED"
   summary      String?
   errorDetails String?
@@ -878,9 +884,9 @@ model SourceRegistryRecord {
   sourceId         String    @unique
   sourceName       String
   canonicalDomain  String
-  sourceType       String    // "OFFICIAL_GOVERNMENT", "EDUCATIONAL_CORROBORATION", "SEARCH_DISCOVERY"
+  sourceType       String // "OFFICIAL_GOVERNMENT", "EDUCATIONAL_CORROBORATION", "SEARCH_DISCOVERY"
   priority         Int       @default(1) // 1: Highest (Official), 2: Educational, 3: Search
-  collectionMethod String    // "DOCUMENT_DOWNLOAD", "INDEX_ONLY", "METADATA_DEEP_LINK"
+  collectionMethod String // "DOCUMENT_DOWNLOAD", "INDEX_ONLY", "METADATA_DEEP_LINK"
   termsUrl         String?
   robotsStatus     String    @default("ALLOWED") // "ALLOWED", "DISALLOWED", "RESTRICTED"
   lastStatusCode   Int       @default(200)
@@ -897,12 +903,12 @@ model SourceRegistryRecord {
 
 model NCERTBook {
   id                String         @id @default(cuid())
-  classNumber       Int            // 6, 7, 8, 9, 10, 11, 12
-  subject           String         // "History", "Geography", "Polity", "Economy", "Science", "Sociology"
-  bookTitle         String         // e.g. "Indian Constitution at Work", "Themes in Indian History - Part I"
+  classNumber       Int // 6, 7, 8, 9, 10, 11, 12
+  subject           String // "History", "Geography", "Polity", "Economy", "Science", "Sociology"
+  bookTitle         String // e.g. "Indian Constitution at Work", "Themes in Indian History - Part I"
   medium            String         @default("English")
   coverUrl          String?
-  officialPortalUrl String         // Link to official portal at ncert.nic.in / epathshala.nic.in
+  officialPortalUrl String // Link to official portal at ncert.nic.in / epathshala.nic.in
   copyrightNotice   String         @default("Copyright © National Council of Educational Research and Training (NCERT), New Delhi. Links provided for educational navigation under fair dealing.")
   chapters          NCERTChapter[]
   createdAt         DateTime       @default(now())
@@ -913,18 +919,18 @@ model NCERTBook {
 }
 
 model NCERTChapter {
-  id                String                     @id @default(cuid())
-  bookId            String
-  book              NCERTBook                  @relation(fields: [bookId], references: [id], onDelete: Cascade)
-  chapterNumber     Int
-  chapterTitle      String
-  slug              String
-  officialPdfUrl    String                     // Official NCERT reader URL
-  keyTopics         String                     // Key syllabus concepts covered
-  summary           String?                    // Independently authored educational summary
-  questionLinks     NCERTChapterQuestionLink[]
-  createdAt         DateTime                   @default(now())
-  updatedAt         DateTime                   @updatedAt
+  id             String                     @id @default(cuid())
+  bookId         String
+  book           NCERTBook                  @relation(fields: [bookId], references: [id], onDelete: Cascade)
+  chapterNumber  Int
+  chapterTitle   String
+  slug           String
+  officialPdfUrl String // Official NCERT reader URL
+  keyTopics      String // Key syllabus concepts covered
+  summary        String? // Independently authored educational summary
+  questionLinks  NCERTChapterQuestionLink[]
+  createdAt      DateTime                   @default(now())
+  updatedAt      DateTime                   @updatedAt
 
   @@unique([bookId, chapterNumber])
   @@index([chapterTitle])
@@ -950,8 +956,8 @@ model NCERTChapterQuestionLink {
 
 model HistoricalExamPeriod {
   id                 String   @id @default(cuid())
-  examCode           String   // "CSE", "CDS", "NDA", etc.
-  periodLabel        String   // e.g. "1979-2010 (Kothari Pattern - Optional in Prelims)"
+  examCode           String // "CSE", "CDS", "NDA", etc.
+  periodLabel        String // e.g. "1979-2010 (Kothari Pattern - Optional in Prelims)"
   startYear          Int
   endYear            Int?
   patternDescription String
@@ -965,8 +971,8 @@ model HistoricalExamPeriod {
 
 model ExtractionJob {
   id              String    @id @default(cuid())
-  jobType         String    // "PDF_EXTRACTION", "OCR_SCAN", "ANSWER_KEY_SYNC", "CLASSIFICATION"
-  targetSource    String    // "UPSC_OFFICIAL", "NCERT_PORTAL", "ARCHIVE"
+  jobType         String // "PDF_EXTRACTION", "OCR_SCAN", "ANSWER_KEY_SYNC", "CLASSIFICATION"
+  targetSource    String // "UPSC_OFFICIAL", "NCERT_PORTAL", "ARCHIVE"
   examCode        String
   year            Int
   paperCode       String
@@ -984,7 +990,7 @@ model ExtractionJob {
 
 model DataQualityReport {
   id                  String   @id @default(cuid())
-  reportType          String   // "DUPLICATE_CHECK", "OCR_AUDIT", "ANSWER_VERIFICATION"
+  reportType          String // "DUPLICATE_CHECK", "OCR_AUDIT", "ANSWER_VERIFICATION"
   totalAudited        Int      @default(0)
   duplicatesFound     Int      @default(0)
   missingOptionsFound Int      @default(0)
@@ -999,13 +1005,13 @@ model DataQualityReport {
 
 model ExamYear {
   id                 String   @id @default(cuid())
-  examFamily         String   // e.g. "Civil Services Examination (CSE)", "Combined Defence Services (CDS)"
-  year               Int      // 1995 to 2026
-  paperOrStage       String?  // e.g. "Prelims GS I; Prelims CSAT", "GS1-GS4 and Essay"
+  examFamily         String // e.g. "Civil Services Examination (CSE)", "Combined Defence Services (CDS)"
+  year               Int // 1995 to 2026
+  paperOrStage       String? // e.g. "Prelims GS I; Prelims CSAT", "GS1-GS4 and Essay"
   language           String   @default("English/Hindi")
   officialSourceUrl  String?
   downloadStatus     String   @default("NOT_HARVESTED") // NOT_HARVESTED, DISCOVERED, DOWNLOADED, EXTRACTED, VERIFIED, ACCESS_BLOCKED
-  verificationStatus String   @default("NOT_VERIFIED")  // NOT_VERIFIED, OFFICIALLY_VERIFIED, SECONDARY_CORROBORATED
+  verificationStatus String   @default("NOT_VERIFIED") // NOT_VERIFIED, OFFICIALLY_VERIFIED, SECONDARY_CORROBORATED
   notes              String?
   createdAt          DateTime @default(now())
   updatedAt          DateTime @updatedAt
@@ -1029,18 +1035,18 @@ model Subtopic {
 }
 
 model SyllabusTopic {
-  id                 String                    @id @default(cuid())
-  examId             String?
-  paperId            String?
-  subjectId          String?
-  topicId            String?
-  subtopicId         String?
-  subtopic           Subtopic?                 @relation(fields: [subtopicId], references: [id], onDelete: SetNull)
-  syllabusVersion    String                    @default("2024-2026")
-  syllabusText       String
-  officialSourceUrl  String?
-  questionMappings   QuestionSyllabusMapping[]
-  createdAt          DateTime                  @default(now())
+  id                String                    @id @default(cuid())
+  examId            String?
+  paperId           String?
+  subjectId         String?
+  topicId           String?
+  subtopicId        String?
+  subtopic          Subtopic?                 @relation(fields: [subtopicId], references: [id], onDelete: SetNull)
+  syllabusVersion   String                    @default("2024-2026")
+  syllabusText      String
+  officialSourceUrl String?
+  questionMappings  QuestionSyllabusMapping[]
+  createdAt         DateTime                  @default(now())
 
   @@index([paperId, subjectId])
 }
@@ -1065,10 +1071,10 @@ model QuestionSyllabusMapping {
 model KnowledgeSource {
   id               String           @id @default(cuid())
   sourceName       String
-  sourceType       String           // OFFICIAL, SECONDARY_PROVIDER, RESEARCH, NEWS, STATUTORY
+  sourceType       String // OFFICIAL, SECONDARY_PROVIDER, RESEARCH, NEWS, STATUTORY
   canonicalUrl     String           @unique
   publisher        String
-  contentType      String           // PYQ, SYLLABUS, CURRENT_AFFAIRS, ANSWER_KEY, STUDY_MATERIAL
+  contentType      String // PYQ, SYLLABUS, CURRENT_AFFAIRS, ANSWER_KEY, STUDY_MATERIAL
   language         String           @default("English")
   rightsStatus     String           @default("PUBLIC_DOMAIN") // PUBLIC_DOMAIN, FAIR_DEALING_INDEX, COPYRIGHT_RESTRICTED
   accessStatus     String           @default("ACCESSIBLE") // ACCESSIBLE, LOGIN_REQUIRED, ACCESS_BLOCKED
@@ -1119,7 +1125,7 @@ model SourceCitation {
 model IngestionJobAudit {
   id              String    @id @default(cuid())
   sourceId        String?
-  jobType         String    // HARVEST_SYNC, BATCH_IMPORT, OCR_DIGITIZATION, DUPLICATE_DETECTION
+  jobType         String // HARVEST_SYNC, BATCH_IMPORT, OCR_DIGITIZATION, DUPLICATE_DETECTION
   status          String    @default("RUNNING") // RUNNING, COMPLETED, FAILED, PARTIAL
   startedAt       DateTime  @default(now())
   completedAt     DateTime?
@@ -1147,8 +1153,8 @@ model VideoLesson {
   youtubeUrl      String
   youtubeId       String
   durationMinutes Int             @default(15)
-  paperCode       String          // GS1, GS2, GS3, GS4, CSAT, ESSAY
-  subject         String          // Polity, Economy, History, Geography, Environment, Ethics, etc.
+  paperCode       String // GS1, GS2, GS3, GS4, CSAT, ESSAY
+  subject         String // Polity, Economy, History, Geography, Environment, Ethics, etc.
   topic           String
   facultyName     String?         @default("Pravaah Senior Faculty")
   thumbnailUrl    String?
@@ -1183,7 +1189,7 @@ model TopperCopy {
   rank            Int
   year            Int
   examType        String   @default("UPSC_CSE")
-  paperCode       String   // GS1, GS2, GS3, GS4, ESSAY, OPTIONAL
+  paperCode       String // GS1, GS2, GS3, GS4, ESSAY, OPTIONAL
   optionalSubject String?
   title           String
   titleHi         String?
@@ -1191,12 +1197,69 @@ model TopperCopy {
   pdfUrl          String?
   sampleAnswerUrl String?
   keyTakeaways    String?  @db.Text // Bullet points / annotations on diagrams & structuring
-  scoreMarks      String?  // e.g. "124/250"
+  scoreMarks      String? // e.g. "124/250"
   createdAt       DateTime @default(now())
 
   @@index([paperCode, year])
   @@index([rank])
 }
 
+// ==========================================
+// PHASE 5: INTELLIGENT LEARNING & SUPPORT
+// ==========================================
 
+model SupportTicket {
+  id           String    @id @default(cuid())
+  ticketNumber String    @unique // e.g. "PRV-TKT-202611-ABCD"
+  userId       String?
+  user         User?     @relation(fields: [userId], references: [id], onDelete: SetNull)
+  fullName     String
+  email        String
+  category     String // "ACCOUNT_LOGIN", "CONTENT_CORRECTION", "BILINGUAL", "TECHNICAL", "BILLING", "FEEDBACK", "OTHER"
+  subject      String
+  message      String    @db.Text
+  status       String    @default("OPEN") // "OPEN", "IN_PROGRESS", "RESOLVED", "CLOSED"
+  priority     String    @default("NORMAL") // "LOW", "NORMAL", "HIGH", "URGENT"
+  sourceIp     String?
+  resolvedAt   DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
 
+  @@index([email, status])
+  @@index([status, createdAt])
+}
+
+model UserTopicProgress {
+  id            String    @id @default(cuid())
+  userId        String
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  topicId       String
+  topic         Topic     @relation(fields: [topicId], references: [id], onDelete: Cascade)
+  status        String    @default("NOT_STARTED") // NOT_STARTED, LEARNING, PRACTISED, NEEDS_REVISION, MASTERED
+  confidence    Float     @default(0.0) // 0.0 to 1.0
+  notes         String?   @db.Text
+  lastStudiedAt DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@unique([userId, topicId])
+  @@index([userId, status])
+}
+
+model UserMistakeClassification {
+  id          String    @id @default(cuid())
+  userId      String
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  questionId  String
+  question    Question  @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  mistakeType String // "CONCEPT_NOT_UNDERSTOOD", "FORGOTTEN_FACT", "MISREAD_QUESTION", "INCORRECT_ELIMINATION", "CONFUSED_TWO_OPTIONS", "TIME_PRESSURE_CARELESS"
+  notes       String?   @db.Text
+  revisitedAt DateTime?
+  isResolved  Boolean   @default(false)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([userId, questionId])
+  @@index([userId, mistakeType])
+  @@index([userId, isResolved])
+}

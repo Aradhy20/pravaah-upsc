@@ -599,13 +599,13 @@ export default function SyllabusVaultPage() {
                       Months 9 to 11 • Prelims Intensive & PYQ Drill
                     </span>
                     <h3 className="text-lg font-bold text-slate-900 mt-1">
-                      1,079+ PYQ Deep Dive, CSAT & Mock Testing
+                      121+ Verified Question Deep Dive, CSAT & Mock Testing
                     </h3>
                     <p className="mt-2 text-sm text-slate-600 leading-relaxed">
-                      Shift 100% focus to Prelims. Solve all 1,079+ official questions from 2019-2024 on Pravaah UPSC. Memorize elimination techniques. Take 2-Hour timed mock exams every weekend. Regularly review mistake notebook to clear weak spots.
+                      Shift 100% focus to Prelims. Solve all 121 verified official questions from 1995-2024 on Pravaah UPSC. Memorize elimination techniques. Take 2-Hour timed mock exams every weekend. Regularly review mistake notebook to clear weak spots.
                     </p>
                     <div className="mt-3 flex flex-wrap gap-2">
-                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">1,079+ PYQ Explorer</span>
+                      <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">121 PYQ Explorer</span>
                       <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">Timed 2-Hour Mocks</span>
                       <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">CSAT Practice</span>
                       <span className="rounded-md bg-slate-100 px-2 py-1 text-xs font-medium text-slate-700">Mistake Revision</span>
@@ -645,7 +645,7 @@ export default function SyllabusVaultPage() {
           <div className="relative z-10 max-w-2xl mx-auto">
             <h2 className="text-2xl sm:text-3xl font-black">Ready to Put Strategy into Practice?</h2>
             <p className="mt-3 text-slate-300 text-sm sm:text-base">
-              Solve 1,079+ verified UPSC CSE questions with official UPSC answer keys, statement-by-statement evidence, and automated SuperMemo-2 mistake revision.
+              Solve 121 verified UPSC CSE questions with official UPSC answer keys, statement-by-statement evidence, and automated SuperMemo-2 mistake revision.
             </p>
             <div className="mt-6 flex flex-wrap items-center justify-center gap-4">
               <Link

@@ -211,17 +211,35 @@ async function main() {
     }
 
     const existingLinks = await prisma.storyQuestionLink.count({ where: { storyId: s.id } });
+    // Intelligently link questions only if topic and subject align; never link arbitrary CSAT questions
     if (existingLinks === 0 && pyqs.length > 0) {
-      const linkedPyq = pyqs[i % pyqs.length];
-      await prisma.storyQuestionLink.create({
-        data: {
-          storyId: s.id,
-          questionId: linkedPyq.id,
-          relationshipRationale:
-            "Direct conceptual relevance to UPSC Prelims theme on institutional mechanisms, statutory bodies, and policy frameworks.",
-        },
+      // Find candidate questions from GS1 only matching keywords
+      const titleLower = s.title.toLowerCase();
+      const matched = pyqs.find(q => {
+        if (q.paper?.code !== "GS1") return false;
+        const qText = q.questionText.toLowerCase();
+        if (titleLower.includes("governor") && qText.includes("governor")) return true;
+        if (titleLower.includes("election") && (qText.includes("parliament") || qText.includes("election"))) return true;
+        if (titleLower.includes("environment") || titleLower.includes("ramsar") || titleLower.includes("forest")) {
+          return qText.includes("green") || qText.includes("environment") || qText.includes("pollution");
+        }
+        if (titleLower.includes("rbi") || titleLower.includes("monetary") || titleLower.includes("pension")) {
+          return qText.includes("monetary") || qText.includes("bank") || qText.includes("capital");
+        }
+        return false;
       });
-      storyLinksAdded += 1;
+
+      if (matched) {
+        await prisma.storyQuestionLink.create({
+          data: {
+            storyId: s.id,
+            questionId: matched.id,
+            relationshipRationale:
+              "Verified thematic and syllabus connection to UPSC General Studies Paper I.",
+          },
+        });
+        storyLinksAdded += 1;
+      }
     }
   }
   console.log(`✅ Added ${storyTopicsAdded} StoryTopics and ${storyLinksAdded} StoryQuestionLinks.`);

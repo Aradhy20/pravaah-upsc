@@ -68,7 +68,7 @@ export default function CurrentAffairsPage() {
               Daily Current Affairs <span className="text-blue-400">Connected to PYQs</span>
             </h1>
             <p className="mt-3 text-slate-300 text-sm sm:text-base leading-relaxed">
-              Every story is sourced from authoritative public releases (PIB, RBI, Ministries, PRS), mapped to the UPSC syllabus, and linked directly to historical questions from our verified 1,079 question bank (2019–2024 Prelims Series A).
+              Every story is sourced from authoritative public releases (PIB, RBI, Ministries, PRS), mapped to the UPSC syllabus, and linked directly to historical questions from our verified 121 question bank (1995–2024 Prelims Series A: 74 GS1 & 47 CSAT).
             </p>
 
             <div className="mt-6 flex flex-wrap gap-4 items-center">

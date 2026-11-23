@@ -68,28 +68,30 @@ export async function GET(
           paper: t.syllabusPaper,
           name: t.topicName,
         })),
-        linkedPyqs: story.questionLinks.map((ql) => ({
-          id: ql.question.id,
-          year: ql.question.year,
-          questionNumber: ql.question.questionNumber,
-          paperCode: ql.question.paper.code,
-          paperName: ql.question.paper.name,
-          questionText: ql.question.questionText,
-          difficulty: ql.question.difficulty,
-          rationale: ql.relationshipRationale,
-          options: ql.question.options.map((o) => ({
-            code: o.optionCode,
-            text: o.optionText,
-            isCorrect: o.isCorrect,
+        linkedPyqs: story.questionLinks
+          .filter((ql) => ql.question && ql.question.paper)
+          .map((ql) => ({
+            id: ql.question.id,
+            year: ql.question.year,
+            questionNumber: ql.question.questionNumber,
+            paperCode: ql.question.paper.code,
+            paperName: ql.question.paper.name,
+            questionText: ql.question.questionText,
+            difficulty: ql.question.difficulty,
+            rationale: ql.relationshipRationale,
+            options: (ql.question.options || []).map((o) => ({
+              code: o.optionCode,
+              text: o.optionText,
+              isCorrect: o.isCorrect,
+            })),
+            explanation: ql.question.explanation
+              ? {
+                  core: ql.question.explanation.detailedExplanation,
+                  elimination: ql.question.explanation.eliminationTechnique,
+                  reference: ql.question.explanation.sourceCitation,
+                }
+              : null,
           })),
-          explanation: ql.question.explanation
-            ? {
-                core: ql.question.explanation.detailedExplanation,
-                elimination: ql.question.explanation.eliminationTechnique,
-                reference: ql.question.explanation.sourceCitation,
-              }
-            : null,
-        })),
         practiceQuestions: story.quizQuestions.map((q) => ({
           id: q.id,
           orderIndex: q.orderIndex,

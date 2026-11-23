@@ -317,7 +317,7 @@ export default function DailyStudyPlannerPage() {
               </div>
 
               <p className="text-xs text-slate-500 mb-4">
-                Directly connected previous-year questions from our verified 1,079 question database testing the same fundamental principles:
+                Directly connected previous-year questions from our verified 121 question database testing the same fundamental principles:
               </p>
 
               <div className="space-y-4">

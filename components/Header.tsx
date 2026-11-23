@@ -235,6 +235,23 @@ export function Header() {
                   </div>
                 </a>
 
+                {/* 1.3 CSAT Coach */}
+                <a
+                  href="/csat-coach"
+                  onClick={() => setPracticeOpen(false)}
+                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-purple-50 text-purple-700 group-hover:bg-purple-100 transition">
+                    <BarChart2 className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-[#101828]">CSAT Survival Coach</div>
+                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
+                      33% qualifying telemetry & passage drills
+                    </div>
+                  </div>
+                </a>
+
                 {/* 1.3 Mock Tests */}
                 <a
                   href="/mock-tests"
@@ -331,6 +348,40 @@ export function Header() {
                     <div className="text-xs font-bold text-[#101828]">UPSC Syllabus</div>
                     <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
                       3-tier micro-topics with syllabus mapping
+                    </div>
+                  </div>
+                </a>
+
+                {/* 2.2 Mission Control */}
+                <a
+                  href="/mission-control"
+                  onClick={() => setPrepOpen(false)}
+                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-blue-50 text-[#2453E6] group-hover:bg-blue-100 transition">
+                    <Sparkles className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-[#101828]">Pravaah Mission Control</div>
+                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
+                      Exam readiness index & daily agenda
+                    </div>
+                  </div>
+                </a>
+
+                {/* 2.3 UPSC Syllabus Intelligence */}
+                <a
+                  href="/syllabus/intelligence"
+                  onClick={() => setPrepOpen(false)}
+                  className="flex items-start gap-3 rounded-xl p-2.5 hover:bg-[#F7F9FC] transition group"
+                >
+                  <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-indigo-50 text-indigo-700 group-hover:bg-indigo-100 transition">
+                    <Layers className="h-4 w-4" />
+                  </div>
+                  <div>
+                    <div className="text-xs font-bold text-[#101828]">Syllabus Intelligence Map</div>
+                    <div className="text-[11px] text-[#667085] leading-tight mt-0.5">
+                      3-tier micro-nodes with PYQ mapping
                     </div>
                   </div>
                 </a>
@@ -511,6 +562,15 @@ export function Header() {
                   </div>
 
                   <a
+                    href="/mission-control"
+                    onClick={() => setUserDropdownOpen(false)}
+                    className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-blue-700 bg-blue-50/70 hover:bg-blue-100/70 transition mb-1"
+                  >
+                    <Sparkles className="h-4 w-4 text-[#2453E6]" />
+                    <span>Mission Control</span>
+                  </a>
+
+                  <a
                     href="/dashboard"
                     onClick={() => setUserDropdownOpen(false)}
                     className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs font-bold text-[#475467] hover:bg-[#F7F9FC] transition"
@@ -665,6 +725,14 @@ export function Header() {
                     <span>CSAT Paper II</span>
                   </a>
                   <a
+                    href="/csat-coach"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
+                  >
+                    <BarChart2 className="h-4 w-4 text-purple-600" />
+                    <span>CSAT Survival Coach</span>
+                  </a>
+                  <a
                     href="/mock-tests"
                     onClick={() => setMobileMenuOpen(false)}
                     className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
@@ -715,6 +783,22 @@ export function Header() {
                   >
                     <Sparkles className="h-4 w-4 text-[#2453E6]" />
                     <span>UPSC Syllabus</span>
+                  </a>
+                  <a
+                    href="/mission-control"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-blue-700 bg-blue-50/60 hover:bg-blue-100 min-h-[44px]"
+                  >
+                    <Sparkles className="h-4 w-4 text-[#2453E6]" />
+                    <span>Pravaah Mission Control</span>
+                  </a>
+                  <a
+                    href="/syllabus/intelligence"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-[#475467] hover:bg-[#F7F9FC] min-h-[44px]"
+                  >
+                    <Layers className="h-4 w-4 text-indigo-600" />
+                    <span>Syllabus Intelligence Map</span>
                   </a>
                   <a
                     href="/study-planner"
@@ -777,6 +861,14 @@ export function Header() {
               >
                 <Bookmark className="h-4 w-4 text-[#F59E0B]" />
                 <span>Subscription Plans</span>
+              </a>
+              <a
+                href="/contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="flex items-center gap-2.5 rounded-xl px-3 py-2.5 text-sm font-semibold text-blue-700 hover:bg-[#F7F9FC] min-h-[44px]"
+              >
+                <BookOpen className="h-4 w-4 text-blue-600" />
+                <span>Contact & Support Desk</span>
               </a>
             </div>
 
