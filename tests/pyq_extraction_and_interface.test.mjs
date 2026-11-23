@@ -35,7 +35,7 @@ test('PYQ Ingestion, Verification & API Interface Test Suite', async (t) => {
 
   // Test 2: GS1 Questions & Marking Scheme
   await t.test('2. GET /api/v1/pyqs?paper=GS1 returns GS1 questions with +2.0/-0.666 marking', async () => {
-    const res = await fetch(`${BASE_URL}/api/v1/pyqs?paper=GS1&limit=10`);
+    const res = await fetch(`${BASE_URL}/api/v1/pyqs?paper=GS1&year=2024&limit=10`);
     assert.strictEqual(res.status, 200);
 
     const json = await res.json();

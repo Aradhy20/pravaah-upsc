@@ -176,106 +176,109 @@ export async function publishStagedRecord(prisma: PrismaClient, stagingId: strin
     staged.optionsJson
   );
 
-  // Upsert canonical Question
-  const question = await prisma.question.upsert({
-    where: {
-      paperId_year_questionNumber: {
-        paperId: paper.id,
-        year: staged.year,
-        questionNumber: staged.questionNumber,
-      },
-    },
-    update: {
-      questionText: staged.questionTextEn,
-      questionTextEn: staged.questionTextEn,
-      questionTextHi: staged.questionTextHi,
-      questionFormat: staged.questionFormat,
-      translationStatus: staged.translationStatus,
-      difficulty: staged.difficulty,
-      marks: staged.paperCode === "GS1" ? 2.0 : 2.5,
-      negativeMarks: staged.paperCode === "GS1" ? 0.666 : 0.833,
-      sourceReference: staged.sourceReference,
-      status: "PUBLISHED",
-      verificationStatus: "OFFICIALLY_VERIFIED",
-    },
-    create: {
-      paperId: paper.id,
-      year: staged.year,
-      questionNumber: staged.questionNumber,
-      questionText: staged.questionTextEn,
-      questionTextEn: staged.questionTextEn,
-      questionTextHi: staged.questionTextHi,
-      questionFormat: staged.questionFormat,
-      translationStatus: staged.translationStatus,
-      difficulty: staged.difficulty,
-      marks: staged.paperCode === "GS1" ? 2.0 : 2.5,
-      negativeMarks: staged.paperCode === "GS1" ? 0.666 : 0.833,
-      sourceReference: staged.sourceReference,
-      status: "PUBLISHED",
-      verificationStatus: "OFFICIALLY_VERIFIED",
-    },
-  });
-
-  // Upsert QuestionOptions
-  for (const opt of options) {
-    await prisma.questionOption.upsert({
+  // Atomic publish transaction: ensures question, options and explanation are created atomically
+  return await prisma.$transaction(async (tx) => {
+    // Upsert canonical Question
+    const question = await tx.question.upsert({
       where: {
-        questionId_optionCode: {
-          questionId: question.id,
-          optionCode: opt.code,
+        paperId_year_questionNumber: {
+          paperId: paper.id,
+          year: staged.year,
+          questionNumber: staged.questionNumber,
         },
       },
       update: {
-        optionText: opt.textEn,
-        optionTextEn: opt.textEn,
-        optionTextHi: opt.textHi || null,
-        isCorrect: opt.isCorrect,
+        questionText: staged.questionTextEn,
+        questionTextEn: staged.questionTextEn,
+        questionTextHi: staged.questionTextHi,
+        questionFormat: staged.questionFormat,
+        translationStatus: staged.translationStatus,
+        difficulty: staged.difficulty,
+        marks: staged.paperCode === "GS1" ? 2.0 : 2.5,
+        negativeMarks: staged.paperCode === "GS1" ? 0.666 : 0.833,
+        sourceReference: staged.sourceReference,
+        status: "PUBLISHED",
+        verificationStatus: "OFFICIALLY_VERIFIED",
       },
       create: {
-        questionId: question.id,
-        optionCode: opt.code,
-        optionText: opt.textEn,
-        optionTextEn: opt.textEn,
-        optionTextHi: opt.textHi || null,
-        isCorrect: opt.isCorrect,
+        paperId: paper.id,
+        year: staged.year,
+        questionNumber: staged.questionNumber,
+        questionText: staged.questionTextEn,
+        questionTextEn: staged.questionTextEn,
+        questionTextHi: staged.questionTextHi,
+        questionFormat: staged.questionFormat,
+        translationStatus: staged.translationStatus,
+        difficulty: staged.difficulty,
+        marks: staged.paperCode === "GS1" ? 2.0 : 2.5,
+        negativeMarks: staged.paperCode === "GS1" ? 0.666 : 0.833,
+        sourceReference: staged.sourceReference,
+        status: "PUBLISHED",
+        verificationStatus: "OFFICIALLY_VERIFIED",
       },
     });
-  }
 
-  // Upsert Explanation if present
-  if (staged.explanationEn) {
-    await prisma.explanation.upsert({
-      where: { questionId: question.id },
-      update: {
-        summary: staged.explanationEn.slice(0, 200),
-        detailedExplanation: staged.explanationEn,
-        explanationEn: staged.explanationEn,
-        explanationHi: staged.explanationHi || null,
-        sourceCitation: staged.sourceCitation || staged.sourceReference,
-        translationStatus: staged.explanationHi ? "HUMAN_VERIFIED" : "ORIGINAL_SOURCE",
-      },
-      create: {
-        questionId: question.id,
-        summary: staged.explanationEn.slice(0, 200),
-        detailedExplanation: staged.explanationEn,
-        explanationEn: staged.explanationEn,
-        explanationHi: staged.explanationHi || null,
-        sourceCitation: staged.sourceCitation || staged.sourceReference,
-        translationStatus: staged.explanationHi ? "HUMAN_VERIFIED" : "ORIGINAL_SOURCE",
+    // Upsert QuestionOptions
+    for (const opt of options) {
+      await tx.questionOption.upsert({
+        where: {
+          questionId_optionCode: {
+            questionId: question.id,
+            optionCode: opt.code,
+          },
+        },
+        update: {
+          optionText: opt.textEn,
+          optionTextEn: opt.textEn,
+          optionTextHi: opt.textHi || null,
+          isCorrect: opt.isCorrect,
+        },
+        create: {
+          questionId: question.id,
+          optionCode: opt.code,
+          optionText: opt.textEn,
+          optionTextEn: opt.textEn,
+          optionTextHi: opt.textHi || null,
+          isCorrect: opt.isCorrect,
+        },
+      });
+    }
+
+    // Upsert Explanation if present
+    if (staged.explanationEn) {
+      await tx.explanation.upsert({
+        where: { questionId: question.id },
+        update: {
+          summary: staged.explanationEn.slice(0, 200),
+          detailedExplanation: staged.explanationEn,
+          explanationEn: staged.explanationEn,
+          explanationHi: staged.explanationHi || null,
+          sourceCitation: staged.sourceCitation || staged.sourceReference,
+          translationStatus: staged.explanationHi ? "HUMAN_VERIFIED" : "ORIGINAL_SOURCE",
+        },
+        create: {
+          questionId: question.id,
+          summary: staged.explanationEn.slice(0, 200),
+          detailedExplanation: staged.explanationEn,
+          explanationEn: staged.explanationEn,
+          explanationHi: staged.explanationHi || null,
+          sourceCitation: staged.sourceCitation || staged.sourceReference,
+          translationStatus: staged.explanationHi ? "HUMAN_VERIFIED" : "ORIGINAL_SOURCE",
+        },
+      });
+    }
+
+    // Update Staging Record
+    await tx.questionStagingRecord.update({
+      where: { id: stagingId },
+      data: {
+        workflowStatus: "PUBLISHED",
+        publishedQuestionId: question.id,
+        reviewedBy: adminId,
+        reviewedAt: new Date(),
       },
     });
-  }
 
-  // Update Staging Record
-  await prisma.questionStagingRecord.update({
-    where: { id: stagingId },
-    data: {
-      workflowStatus: "PUBLISHED",
-      publishedQuestionId: question.id,
-      reviewedBy: adminId,
-      reviewedAt: new Date(),
-    },
+    return question;
   });
-
-  return question;
 }

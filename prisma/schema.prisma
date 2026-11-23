@@ -1263,3 +1263,40 @@ model UserMistakeClassification {
   @@index([userId, mistakeType])
   @@index([userId, isResolved])
 }
+
+model InterviewQuestion {
+  id                  String   @id @default(cuid())
+  questionTextEn      String   @db.Text
+  questionTextHi      String?  @db.Text
+  contextEn           String?  @db.Text // Context / संदर्भ
+  contextHi           String?  @db.Text
+  sourceType          String   @default("CANDIDATE_REPORTED") // CANDIDATE_REPORTED, MOCK_INTERVIEW, DAF_THEME, SITUATIONAL
+  sourceAttribution   String?  // Candidate name, interview board year, or mock series
+  year                Int?
+  topic               String   // "Polity", "Home State", "Work Experience", "Ethics", "Current Affairs", etc.
+  tags                String?  // DAF, Home State, District, Education, Work Experience, Hobbies, Current Affairs, Ethical Dilemma, Public Administration, Situational Judgement
+  frameworkGuidance   String?  @db.Text
+  frameworkGuidanceHi String?  @db.Text
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+
+  @@index([sourceType, topic])
+  @@index([year])
+}
+
+model MapFeature {
+  id             String   @id @default(cuid())
+  name           String
+  nameHi         String?
+  category       String   // NATIONAL_PARK, RAMSAR_SITE, RIVER, MOUNTAIN_PASS, BIOSPHERE_RESERVE, PORT, MINERAL, STRAIT
+  stateOrCountry String
+  latitude       Float
+  longitude      Float
+  keyFacts       String   @db.Text
+  keyFactsHi     String?  @db.Text
+  upscReference  String?  // e.g. "UPSC CSE Prelims 2015 & 2019"
+  createdAt      DateTime @default(now())
+
+  @@index([category, stateOrCountry])
+}
+
