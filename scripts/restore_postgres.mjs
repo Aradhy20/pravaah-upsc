@@ -2,12 +2,23 @@ import { PrismaClient } from "@prisma/client";
 import fs from "fs";
 import path from "path";
 
-const prisma = new PrismaClient();
+const dbUrl =
+  process.env.DATABASE_URL ||
+  process.env.STORAGE_DATABASE_URL ||
+  process.env.STORAGE_DATABASE_URL_POOLED ||
+  process.env.STORAGE_URL ||
+  process.env.STORAGE_PRISMA_DATABASE_URL ||
+  process.env.STORAGE_POSTGRES_URL ||
+  process.env.POSTGRES_PRISMA_URL ||
+  process.env.POSTGRES_URL ||
+  process.env.PRISMA_DATABASE_URL;
 
+const prisma = new PrismaClient({
+  ...(dbUrl ? { datasourceUrl: dbUrl } : {}),
+});
+
+// Strict Authentic Curriculum & Question Bank Models (Excludes test users, simulated attempts, and mock payments)
 const RESTORE_ORDER = [
-  "Role",
-  "User",
-  "UserProfile",
   "Exam",
   "ExamDirectory",
   "ExamStage",
@@ -19,6 +30,7 @@ const RESTORE_ORDER = [
   "SyllabusTopic",
   "NCERTBook",
   "NCERTChapter",
+  "NCERTChapterQuestionLink",
   "KnowledgeSource",
   "ExamYear",
   "Question",
@@ -29,7 +41,7 @@ const RESTORE_ORDER = [
   "SourceCitation",
   "QuestionSyllabusMapping",
   "QuestionTopic",
-  "NCERTChapterQuestionLink",
+  "QuestionSource",
   "SourceDocument",
   "SourceRegistryRecord",
   "SourceRecord",
@@ -40,34 +52,9 @@ const RESTORE_ORDER = [
   "PlanPrice",
   "PlanFeature",
   "FeatureEntitlement",
-  "Subscription",
-  "SubscriptionEvent",
-  "PaymentRecord",
-  "PaymentOrder",
-  "PaymentWebhookEvent",
-  "RefundRecord",
-  "UserNote",
-  "Bookmark",
-  "UserAttempt",
-  "UserResponse",
-  "ReviewSchedule",
-  "StudyGoal",
-  "StudyActivity",
-  "Test",
-  "TestQuestion",
-  "TestSession",
-  "DailyQuiz",
-  "DailyQuizQuestion",
-  "DailyQuizAttempt",
   "MainsQuestion",
-  "MainsDraft",
   "VideoLesson",
-  "VideoProgress",
   "TopperCopy",
-  "ContentImportJob",
-  "ContentReview",
-  "AuditLog",
-  "IngestionJobAudit",
 ];
 
 async function restorePostgres() {

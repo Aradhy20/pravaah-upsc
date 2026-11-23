@@ -227,6 +227,82 @@ async function main() {
     } catch (e) {
       console.warn("⚠️ Plan check warning:", e.message);
     }
+
+    // 5. Ensure Authentic UPSC Question Bank & Curriculum exist
+    try {
+      const qCount = await prisma.question.count();
+      if (qCount === 0) {
+        console.log("🌱 Database Question table is empty. Restoring authentic UPSC question bank...");
+        const dumpPath = path.join(process.cwd(), "data", "backup", "postgres_full_dump.json");
+        if (fs.existsSync(dumpPath)) {
+          const rawData = fs.readFileSync(dumpPath, "utf-8");
+          const dump = JSON.parse(rawData);
+
+          const AUTHENTIC_MODELS = [
+            "Exam",
+            "ExamDirectory",
+            "ExamStage",
+            "Paper",
+            "Subject",
+            "Topic",
+            "Subtopic",
+            "SyllabusNode",
+            "SyllabusTopic",
+            "NCERTBook",
+            "NCERTChapter",
+            "NCERTChapterQuestionLink",
+            "KnowledgeSource",
+            "ExamYear",
+            "Question",
+            "QuestionOption",
+            "Explanation",
+            "QuestionAnswer",
+            "AnswerKeyVersion",
+            "SourceCitation",
+            "QuestionSyllabusMapping",
+            "QuestionTopic",
+            "QuestionSource",
+            "SourceDocument",
+            "SourceRegistryRecord",
+            "SourceRecord",
+            "CurrentAffairsStory",
+            "StoryTopic",
+            "StoryQuestionLink",
+            "MainsQuestion",
+            "VideoLesson",
+            "TopperCopy",
+          ];
+
+          for (const modelName of AUTHENTIC_MODELS) {
+            const accessor = modelName[0].toLowerCase() + modelName.slice(1);
+            const records = dump[modelName];
+            if (records && Array.isArray(records) && records.length > 0) {
+              const delegate = prisma[accessor];
+              if (typeof delegate?.createMany === "function") {
+                try {
+                  const res = await delegate.createMany({
+                    data: records,
+                    skipDuplicates: true,
+                  });
+                  console.log(`  ✓ Restored ${modelName.padEnd(25)}: ${res.count} records`);
+                } catch {
+                  for (const rec of records) {
+                    try {
+                      await delegate.create({ data: rec });
+                    } catch {}
+                  }
+                }
+              }
+            }
+          }
+          console.log("✅ Authentic UPSC Question Bank restored to database!");
+        }
+      } else {
+        console.log(`📊 Found ${qCount} existing questions in database. Skipping content seed.`);
+      }
+    } catch (e) {
+      console.warn("⚠️ Question bank check warning:", e.message);
+    }
   } catch (err) {
     console.warn("⚠️ Table synchronizer warning:", err.message);
   } finally {

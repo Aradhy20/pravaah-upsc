@@ -243,6 +243,79 @@ export async function ensureDatabaseTables(): Promise<DbSyncResult> {
       console.warn("Could not ensure Plan data:", e.message);
     }
 
+    // 5. Ensure Authentic UPSC Question Bank & Curriculum exist
+    try {
+      const qCount = await prisma.question.count();
+      if (qCount === 0) {
+        console.log("🌱 Database Question table is empty. Restoring authentic UPSC question bank...");
+        const dumpPath = path.join(process.cwd(), "data", "backup", "postgres_full_dump.json");
+        if (fs.existsSync(dumpPath)) {
+          const rawData = fs.readFileSync(dumpPath, "utf-8");
+          const dump = JSON.parse(rawData);
+
+          const AUTHENTIC_MODELS = [
+            "Exam",
+            "ExamDirectory",
+            "ExamStage",
+            "Paper",
+            "Subject",
+            "Topic",
+            "Subtopic",
+            "SyllabusNode",
+            "SyllabusTopic",
+            "NCERTBook",
+            "NCERTChapter",
+            "NCERTChapterQuestionLink",
+            "KnowledgeSource",
+            "ExamYear",
+            "Question",
+            "QuestionOption",
+            "Explanation",
+            "QuestionAnswer",
+            "AnswerKeyVersion",
+            "SourceCitation",
+            "QuestionSyllabusMapping",
+            "QuestionTopic",
+            "QuestionSource",
+            "SourceDocument",
+            "SourceRegistryRecord",
+            "SourceRecord",
+            "CurrentAffairsStory",
+            "StoryTopic",
+            "StoryQuestionLink",
+            "MainsQuestion",
+            "VideoLesson",
+            "TopperCopy",
+          ];
+
+          for (const modelName of AUTHENTIC_MODELS) {
+            const accessor = (modelName[0].toLowerCase() + modelName.slice(1)) as keyof typeof prisma;
+            const records = dump[modelName];
+            if (records && Array.isArray(records) && records.length > 0) {
+              const delegate = prisma[accessor] as any;
+              if (typeof delegate?.createMany === "function") {
+                try {
+                  await delegate.createMany({
+                    data: records,
+                    skipDuplicates: true,
+                  });
+                } catch {
+                  for (const rec of records) {
+                    try {
+                      await delegate.create({ data: rec });
+                    } catch {}
+                  }
+                }
+              }
+            }
+          }
+          console.log("✅ Authentic UPSC Question Bank restored to database!");
+        }
+      }
+    } catch (e: any) {
+      console.warn("Could not ensure Question bank data:", e.message);
+    }
+
     isSynced = true;
     return {
       success: true,

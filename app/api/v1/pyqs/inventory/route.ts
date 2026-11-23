@@ -79,25 +79,47 @@ export async function GET(request: NextRequest) {
 
     if (years.length === 0) {
       const fallback = getFallbackPYQInventory(paperCode);
-      return NextResponse.json(fallback);
+      return NextResponse.json(
+        {
+          ...fallback,
+          data: {
+            ...(fallback as any).data,
+            dataSource: "FALLBACK",
+          },
+        },
+        { headers: { "X-Data-Source": "FALLBACK" } }
+      );
     }
 
-    return NextResponse.json({
-      success: true,
-      data: {
-        total: gs1Count + gs2Count,
-        papers: {
-          GS1: gs1Count,
-          GS2: gs2Count,
+    return NextResponse.json(
+      {
+        success: true,
+        data: {
+          total: gs1Count + gs2Count,
+          papers: {
+            GS1: gs1Count,
+            GS2: gs2Count,
+          },
+          years,
+          subjects: formattedSubjects,
+          dataSource: "POSTGRESQL",
         },
-        years,
-        subjects: formattedSubjects,
       },
-    });
+      { headers: { "X-Data-Source": "POSTGRESQL" } }
+    );
   } catch (error: any) {
     console.warn("Graceful fallback in GET /api/v1/pyqs/inventory:", error.message);
     const { searchParams } = new URL(request.url);
     const fallback = getFallbackPYQInventory(searchParams.get("paper"));
-    return NextResponse.json(fallback);
+    return NextResponse.json(
+      {
+        ...fallback,
+        data: {
+          ...(fallback as any).data,
+          dataSource: "FALLBACK",
+        },
+      },
+      { headers: { "X-Data-Source": "FALLBACK" } }
+    );
   }
 }

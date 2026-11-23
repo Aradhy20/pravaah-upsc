@@ -249,21 +249,34 @@ export async function GET(request: NextRequest) {
         limit,
       });
       if (fallback.data.length > 0) {
-        return NextResponse.json(fallback);
+        return NextResponse.json(
+          {
+            ...fallback,
+            meta: {
+              ...(fallback as any).meta,
+              dataSource: "FALLBACK",
+            },
+          },
+          { headers: { "X-Data-Source": "FALLBACK" } }
+        );
       }
     }
 
-    return NextResponse.json({
-      success: true,
-      data: formatted,
-      meta: {
-        total,
-        page,
-        limit,
-        totalPages: Math.ceil(total / limit),
-        hasMore: skip + limit < total,
+    return NextResponse.json(
+      {
+        success: true,
+        data: formatted,
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+          hasMore: skip + limit < total,
+          dataSource: "POSTGRESQL",
+        },
       },
-    });
+      { headers: { "X-Data-Source": "POSTGRESQL" } }
+    );
   } catch (error: any) {
     console.warn("Graceful fallback in GET /api/v1/pyqs:", error.message);
     const { searchParams } = new URL(request.url);
@@ -274,6 +287,15 @@ export async function GET(request: NextRequest) {
       page: Math.max(1, parseInt(searchParams.get("page") || "1")),
       limit: Math.min(100, Math.max(1, parseInt(searchParams.get("limit") || "20"))),
     });
-    return NextResponse.json(fallback);
+    return NextResponse.json(
+      {
+        ...fallback,
+        meta: {
+          ...(fallback as any).meta,
+          dataSource: "FALLBACK",
+        },
+      },
+      { headers: { "X-Data-Source": "FALLBACK" } }
+    );
   }
 }

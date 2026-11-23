@@ -35,31 +35,47 @@ export async function GET(request: NextRequest) {
 
     if (questions.length === 0) {
       const yr = yearStr ? parseInt(yearStr, 10) : null;
-      return NextResponse.json(getFallbackMainsQuestions(paper, isNaN(yr as number) ? null : yr));
+      const fallback = getFallbackMainsQuestions(paper, isNaN(yr as number) ? null : yr);
+      return NextResponse.json(
+        {
+          ...fallback,
+          dataSource: "FALLBACK",
+        },
+        { headers: { "X-Data-Source": "FALLBACK" } }
+      );
     }
 
-    return NextResponse.json({
-      success: true,
-      total: questions.length,
-      questions: questions.map((q: any) => ({
-        id: q.id,
-        paperCode: q.paperCode,
-        year: q.year,
-        questionNumber: q.questionNumber,
-        questionText: q.questionText,
-        marks: q.marks,
-        wordLimit: q.wordLimit,
-        theme: q.theme,
-        frameworkGuidance: q.frameworkGuidance,
-        userDraft: q.drafts && q.drafts.length > 0 ? q.drafts[0] : null,
-      })),
-    });
+    return NextResponse.json(
+      {
+        success: true,
+        total: questions.length,
+        dataSource: "POSTGRESQL",
+        questions: questions.map((q: any) => ({
+          id: q.id,
+          paperCode: q.paperCode,
+          year: q.year,
+          questionNumber: q.questionNumber,
+          questionText: q.questionText,
+          marks: q.marks,
+          wordLimit: q.wordLimit,
+          theme: q.theme,
+          frameworkGuidance: q.frameworkGuidance,
+          userDraft: q.drafts && q.drafts.length > 0 ? q.drafts[0] : null,
+        })),
+      },
+      { headers: { "X-Data-Source": "POSTGRESQL" } }
+    );
   } catch (error: any) {
     console.warn("Graceful fallback in GET /api/v1/mains:", error.message);
     const { searchParams } = new URL(request.url);
     const yr = searchParams.get("year") ? parseInt(searchParams.get("year")!, 10) : null;
+    const fallback = getFallbackMainsQuestions(searchParams.get("paper"), isNaN(yr as number) ? null : yr);
     return NextResponse.json(
-      getFallbackMainsQuestions(searchParams.get("paper"), isNaN(yr as number) ? null : yr)
+      {
+        ...fallback,
+        dataSource: "FALLBACK",
+      },
+      { headers: { "X-Data-Source": "FALLBACK" } }
     );
   }
 }
