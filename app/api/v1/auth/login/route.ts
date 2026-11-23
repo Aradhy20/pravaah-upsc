@@ -39,10 +39,8 @@ export async function POST(request: NextRequest) {
     }
 
     const computedHash = hashPassword(password);
-    // Allow either hashed password match or demo password match
-    const isMatch =
-      user.passwordHash === computedHash ||
-      user.passwordHash.startsWith("pravaah_demo_hash_");
+    // Strict password verification - never allow bypass prefixes
+    const isMatch = user.passwordHash === computedHash;
 
     if (!isMatch) {
       return NextResponse.json(

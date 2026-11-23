@@ -3,7 +3,7 @@ import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
 
-const CRON_SECRET = process.env.CRON_SECRET || "pravaah_cron_secret_2026";
+const CRON_SECRET = process.env.CRON_SECRET || (process.env.NODE_ENV !== "production" ? "pravaah_cron_secret_2026" : undefined);
 
 export async function POST(request: NextRequest) {
   try {

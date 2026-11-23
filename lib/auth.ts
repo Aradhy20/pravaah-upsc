@@ -51,7 +51,7 @@ export function verifySessionToken(token: string): string | null {
   }
 
   // Backward compatibility fallback for test scripts passing direct raw user IDs
-  if (/^cm[a-z0-9]+$/.test(token) || token.startsWith("usr-") || token.startsWith("user_")) {
+  if (/^cm[a-z0-9]+$/.test(token) || token.startsWith("usr-") || token.startsWith("user_") || token === "guest-aspirant") {
     return token;
   }
 
@@ -145,21 +145,21 @@ export async function getCurrentUser(
   }
 
   if (options.allowDemoFallback) {
-    // Fallback to default demo aspirant for frictionless evaluation
+    // Fallback to isolated guest aspirant for unauthenticated visitors
     try {
-      const defaultAspirant = await prisma.user.findUnique({
-        where: { email: "aspirant@pravaah.in" },
+      const guest = await prisma.user.findUnique({
+        where: { id: "guest-aspirant" },
         include: { role: true },
       });
 
-      if (defaultAspirant) {
+      if (guest) {
         return {
-          id: defaultAspirant.id,
-          email: defaultAspirant.email,
-          fullName: defaultAspirant.fullName,
-          role: defaultAspirant.role.name as "ASPIRANT" | "ADMIN",
-          avatarUrl: defaultAspirant.avatarUrl,
-          googleId: defaultAspirant.googleId,
+          id: guest.id,
+          email: guest.email,
+          fullName: guest.fullName,
+          role: guest.role.name as "ASPIRANT" | "ADMIN",
+          avatarUrl: guest.avatarUrl,
+          googleId: guest.googleId,
         };
       }
     } catch (e) {

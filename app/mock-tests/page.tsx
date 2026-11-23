@@ -50,6 +50,9 @@ export default async function MockTestsPage() {
 
   try {
     const rawTests = await prisma.test.findMany({
+      where: {
+        questions: { some: {} },
+      },
       include: {
         paper: true,
         questions: true,
@@ -67,7 +70,7 @@ export default async function MockTestsPage() {
         description: t.description,
         year: t.year || 2024,
         paperCode: t.paper?.code || "GS1",
-        questionCount: t.questions?.length || 36,
+        questionCount: t.questions?.length ?? 0,
         durationMinutes: t.paper?.durationMinutes || 60,
       }));
     } else {

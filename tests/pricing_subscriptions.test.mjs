@@ -183,7 +183,10 @@ test('Subscription Checkout & Webhook Lifecycle: Safely Disabled for Cashfree Mi
 test('Subscription Cancellation API: Preserves Current Period Access', async () => {
   const cancelRes = await fetch(`${BASE_URL}/api/v1/user/subscription/cancel`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: {
+      'Content-Type': 'application/json',
+      'x-user-id': 'cmvqr30n000035y3b9qc5yjak',
+    },
     body: JSON.stringify({ reason: 'Automated acceptance test cancellation' }),
   });
 

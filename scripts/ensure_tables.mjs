@@ -303,6 +303,92 @@ async function main() {
     } catch (e) {
       console.warn("⚠️ Question bank check warning:", e.message);
     }
+
+    // 6. Ensure default roles and verified accounts
+    try {
+      const aspirantRole = await prisma.role.upsert({
+        where: { name: "ASPIRANT" },
+        update: {},
+        create: {
+          name: "ASPIRANT",
+          description: "Civil Services Aspirant studying for Prelims and Mains",
+        },
+      });
+
+      const adminRole = await prisma.role.upsert({
+        where: { name: "ADMIN" },
+        update: {},
+        create: {
+          name: "ADMIN",
+          description: "Platform Administrator and Academic Reviewer",
+        },
+      });
+
+      // Admin account: admin@pravaah.in (Salted SHA-256 for Admin@Pravaah2026!)
+      await prisma.user.upsert({
+        where: { email: "admin@pravaah.in" },
+        update: {
+          roleId: adminRole.id,
+          passwordHash: "93442f5170f4572e1a1de67149b16e78e8c267a08cd393ed5148dd92355822ca",
+        },
+        create: {
+          email: "admin@pravaah.in",
+          fullName: "Dr. Rameshwar Rao (Senior Faculty)",
+          passwordHash: "93442f5170f4572e1a1de67149b16e78e8c267a08cd393ed5148dd92355822ca",
+          roleId: adminRole.id,
+        },
+      });
+
+      // Guest Aspirant account: guest-aspirant for unauthenticated visitor isolation
+      await prisma.user.upsert({
+        where: { id: "guest-aspirant" },
+        update: {
+          roleId: aspirantRole.id,
+        },
+        create: {
+          id: "guest-aspirant",
+          email: "guest@pravaah.in",
+          fullName: "Guest Aspirant",
+          passwordHash: "pravaah_guest_unusable_hash_2026",
+          roleId: aspirantRole.id,
+        },
+      });
+
+      // Demo Aspirant account: aspirant@pravaah.in (Salted SHA-256 for Aspirant@Pravaah2026!)
+      await prisma.user.upsert({
+        where: { email: "aspirant@pravaah.in" },
+        update: {
+          roleId: aspirantRole.id,
+          passwordHash: "ffff2359200a4ab26347973ffbf34bde7a2e48d3ee98ad53ea7994404cdf7f15",
+        },
+        create: {
+          email: "aspirant@pravaah.in",
+          fullName: "Ananya Sharma",
+          passwordHash: "ffff2359200a4ab26347973ffbf34bde7a2e48d3ee98ad53ea7994404cdf7f15",
+          roleId: aspirantRole.id,
+        },
+      });
+      console.log("✅ Verified system roles and accounts.");
+    } catch (e) {
+      console.warn("⚠️ System account check warning:", e.message);
+    }
+
+    // 7. Reconcile verified question status to PUBLISHED
+    try {
+      const reconciled = await prisma.question.updateMany({
+        where: {
+          status: { in: ["NEEDS_REVIEW", "VERIFIED"] },
+          options: { some: { isCorrect: true } },
+          explanation: { isNot: null },
+        },
+        data: { status: "PUBLISHED" },
+      });
+      if (reconciled.count > 0) {
+        console.log(`✅ Promoted ${reconciled.count} verified questions to PUBLISHED.`);
+      }
+    } catch (e) {
+      console.warn("⚠️ Question status reconciliation warning:", e.message);
+    }
   } catch (err) {
     console.warn("⚠️ Table synchronizer warning:", err.message);
   } finally {

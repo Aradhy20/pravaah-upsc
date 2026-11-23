@@ -77,6 +77,12 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser(request);
+    if (!user || user.id === "guest-aspirant") {
+      return NextResponse.json(
+        { success: false, error: { code: "UNAUTHENTICATED", message: "Sign in required to update revision queue." } },
+        { status: 401 }
+      );
+    }
     const body = await request.json();
     const { scheduleId, questionId, action } = body; // action: "resolve" | "reschedule"
 

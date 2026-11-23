@@ -7,6 +7,12 @@ export const dynamic = "force-dynamic";
 export async function POST(request: NextRequest) {
   try {
     const user = await getCurrentUser(request);
+    if (!user || user.id === "guest-aspirant") {
+      return NextResponse.json(
+        { success: false, error: { code: "UNAUTHENTICATED", message: "Authentication required to manage subscriptions." } },
+        { status: 401 }
+      );
+    }
     const body = await request.json().catch(() => ({}));
     const { reason = "User requested cancellation" } = body;
 

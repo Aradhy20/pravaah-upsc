@@ -118,7 +118,10 @@ test("Anti-Leak Protection at Scale: Random Timed Exam Session from 2021 GS1", a
   // Start a timed mock test session with 2021 GS1 paper
   const startRes = await fetch(`${BASE_URL}/api/v1/tests/session/start`, {
     method: "POST",
-    headers: { "Content-Type": "application/json" },
+    headers: {
+      "Content-Type": "application/json",
+      "x-user-id": "cmvqr30n000035y3b9qc5yjak",
+    },
     body: JSON.stringify({ paperCode: "GS1", year: 2021 }),
   });
 
