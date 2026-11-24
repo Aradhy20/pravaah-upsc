@@ -27,6 +27,7 @@ export default function StudentBillingDashboard() {
   const [error, setError] = useState<string | null>(null);
   const [copied, setCopied] = useState(false);
   const [cancelling, setCancelling] = useState(false);
+  const [selectedReceipt, setSelectedReceipt] = useState<any | null>(null);
 
   const loadBilling = async () => {
     try {
@@ -381,7 +382,7 @@ export default function StudentBillingDashboard() {
                     </td>
                     <td className="py-2.5 px-3">
                       <button
-                        onClick={() => alert(`Official invoice ${inv.receiptNumber} is verified and archived.`)}
+                        onClick={() => setSelectedReceipt(inv)}
                         className="text-blue-600 hover:text-blue-700 underline font-medium"
                       >
                         View Receipt
@@ -435,6 +436,95 @@ export default function StudentBillingDashboard() {
           </a>
         </div>
       </div>
+
+      {/* Official Receipt Modal */}
+      {selectedReceipt && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4 backdrop-blur-xs">
+          <div className="w-full max-w-lg rounded-3xl bg-white p-6 sm:p-8 shadow-2xl border border-slate-200 animate-in fade-in zoom-in duration-200">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-4">
+              <div className="flex items-center gap-2">
+                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-200">
+                  <ShieldCheck className="h-5 w-5" />
+                </div>
+                <div>
+                  <h4 className="font-bold text-slate-900 text-sm">Official Transaction Receipt</h4>
+                  <p className="text-[11px] text-slate-500 font-mono">{selectedReceipt.receiptNumber}</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setSelectedReceipt(null)}
+                className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600"
+              >
+                ✕
+              </button>
+            </div>
+
+            <div className="mt-6 rounded-2xl bg-slate-50 border border-slate-100 p-5 space-y-3 text-xs">
+              <div className="flex justify-between items-center border-b border-slate-200/60 pb-2.5">
+                <span className="text-slate-500">Subscription Plan:</span>
+                <span className="font-bold text-slate-900">{plan.name}</span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Amount Paid:</span>
+                <span className="font-bold text-slate-900 text-sm">
+                  ₹{selectedReceipt.amount} {selectedReceipt.currency || "INR"}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Transaction Status:</span>
+                <span className="rounded-full bg-emerald-100 px-2.5 py-0.5 text-[10px] font-bold text-emerald-800 uppercase">
+                  {selectedReceipt.status || "SUCCESS"}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Payment Channel:</span>
+                <span className="font-medium text-slate-700">
+                  {selectedReceipt.paymentMethod || "Cashfree PG"}
+                </span>
+              </div>
+              <div className="flex justify-between items-center">
+                <span className="text-slate-500">Transaction Date:</span>
+                <span className="font-medium text-slate-700">
+                  {new Date(selectedReceipt.date).toLocaleDateString("en-IN", {
+                    day: "numeric",
+                    month: "long",
+                    year: "numeric",
+                  })}
+                </span>
+              </div>
+              {subscription && (
+                <div className="flex justify-between items-center border-t border-slate-200/60 pt-2.5">
+                  <span className="text-slate-500">Subscription Validity:</span>
+                  <span className="font-semibold text-emerald-700">
+                    Active through{" "}
+                    {new Date(subscription.currentPeriodEnd).toLocaleDateString("en-IN", {
+                      day: "numeric",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                  </span>
+                </div>
+              )}
+            </div>
+
+            <div className="mt-6 flex items-center justify-between gap-3">
+              <button
+                onClick={() => typeof window !== "undefined" && window.print()}
+                className="flex items-center gap-1.5 rounded-xl border border-slate-200 bg-white px-4 py-2 text-xs font-bold text-slate-700 hover:bg-slate-50 transition"
+              >
+                <FileText className="h-4 w-4 text-slate-500" />
+                <span>Print Invoice</span>
+              </button>
+              <button
+                onClick={() => setSelectedReceipt(null)}
+                className="rounded-xl bg-blue-600 px-5 py-2 text-xs font-bold text-white hover:bg-blue-700 transition"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

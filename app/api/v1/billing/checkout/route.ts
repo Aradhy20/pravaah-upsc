@@ -1,23 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
-import { PAYMENTS_DISABLED_MESSAGE } from "@/lib/payments";
+import { NextRequest } from "next/server";
+import { POST as createOrderPost } from "@/app/api/v1/payments/create-order/route";
 
 export const dynamic = "force-dynamic";
 
 /**
  * POST /api/v1/billing/checkout
- * 
- * Paid checkout is safely disabled while Cashfree merchant account is in review.
- * Returns HTTP 503 with standardized explanation.
+ *
+ * Alias route forwarding to official Cashfree order creation handler.
  */
-export async function POST(_request: NextRequest) {
-  return NextResponse.json(
-    {
-      success: false,
-      error: {
-        code: "PAYMENTS_DISABLED",
-        message: PAYMENTS_DISABLED_MESSAGE,
-      },
-    },
-    { status: 503 }
-  );
+export async function POST(request: NextRequest) {
+  return createOrderPost(request);
 }

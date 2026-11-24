@@ -15,10 +15,15 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const [subInfo, usageLedger, payments, packPurchases] = await Promise.all([
+    const [subInfo, usageLedger, payments, orders, packPurchases] = await Promise.all([
       getUserSubscription(user.id),
       getOrCreateUsageLedger(user.id),
       prisma.paymentRecord.findMany({
+        where: { userId: user.id },
+        orderBy: { createdAt: "desc" },
+        take: 20,
+      }),
+      prisma.paymentOrder.findMany({
         where: { userId: user.id },
         orderBy: { createdAt: "desc" },
         take: 20,
@@ -99,6 +104,20 @@ export async function GET(request: NextRequest) {
           status: p.status,
           receiptNumber: p.receiptNumber || `INV-${p.id.slice(-6).toUpperCase()}`,
           date: p.createdAt,
+          provider: p.provider,
+          paymentMethod: p.paymentMethod,
+        })),
+        orders: orders.map((o) => ({
+          id: o.id,
+          orderId: o.clientOrderId,
+          cashfreeOrderId: o.cashfreeOrderId || o.gatewayOrderId,
+          cashfreePaymentId: o.cashfreePaymentId,
+          amount: o.amount,
+          currency: o.currency,
+          status: o.status,
+          paymentMethod: o.paymentMethod,
+          date: o.createdAt,
+          paidAt: o.paidAt,
         })),
         packs: packPurchases.map((pp) => ({
           id: pp.id,

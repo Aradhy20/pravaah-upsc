@@ -1,6 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { checkAdminAccess } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import {
+  getCashfreeConfig,
+  isPaymentSystemEnabled,
+  getCashfreeProvider,
+} from "@/lib/payments";
+import { activateSubscriptionFromOrder } from "@/lib/payments/subscription-activator";
 
 export const dynamic = "force-dynamic";
 
@@ -30,6 +36,8 @@ export async function GET(request: NextRequest) {
       where.OR = [
         { clientOrderId: { contains: search, mode: "insensitive" } },
         { gatewayOrderId: { contains: search, mode: "insensitive" } },
+        { cashfreeOrderId: { contains: search, mode: "insensitive" } },
+        { cashfreePaymentId: { contains: search, mode: "insensitive" } },
         { utr: { contains: search, mode: "insensitive" } },
         { user: { email: { contains: search, mode: "insensitive" } } },
         { user: { fullName: { contains: search, mode: "insensitive" } } },
@@ -52,6 +60,7 @@ export async function GET(request: NextRequest) {
       todayPaidSum,
       monthPaidSum,
       orders,
+      recentWebhookLogs,
     ] = await Promise.all([
       prisma.paymentOrder.count(),
       prisma.paymentOrder.count({ where: { status: "PAID" } }),
@@ -81,19 +90,30 @@ export async function GET(request: NextRequest) {
             select: { id: true, fullName: true, email: true },
           },
           subscription: {
-            select: { id: true, status: true, currentPeriodEnd: true },
+            select: { id: true, status: true, currentPeriodEnd: true, plan: true },
           },
         },
+      }),
+      prisma.paymentWebhookEvent.findMany({
+        orderBy: { createdAt: "desc" },
+        take: 15,
       }),
     ]);
 
     const filteredTotal = await prisma.paymentOrder.count({ where });
+    const config = getCashfreeConfig();
 
     const paymentGatewayState = {
       provider: "CASHFREE",
-      status: "DISABLED_PENDING_MERCHANT_APPROVAL",
-      checkoutEnabled: false,
-      message: "Cashfree merchant onboarding is currently under review. Online checkout is safely disabled.",
+      status: config.isConfigured
+        ? config.environment === "PROD"
+          ? "LIVE_PRODUCTION"
+          : "SANDBOX_ACTIVE"
+        : "NEEDS_CONFIGURATION",
+      environment: config.environment,
+      checkoutEnabled: isPaymentSystemEnabled(),
+      apiVersion: config.apiVersion,
+      appUrl: config.appUrl,
     };
 
     return NextResponse.json({
@@ -114,6 +134,9 @@ export async function GET(request: NextRequest) {
         id: o.id,
         clientOrderId: o.clientOrderId,
         gatewayOrderId: o.gatewayOrderId,
+        cashfreeOrderId: o.cashfreeOrderId,
+        cashfreePaymentId: o.cashfreePaymentId,
+        paymentMethod: o.paymentMethod,
         user: o.user,
         productType: o.productType,
         productId: o.productId,
@@ -122,11 +145,20 @@ export async function GET(request: NextRequest) {
         status: o.status,
         environment: o.environment,
         isTest: o.isTest,
-        utr: o.utr,
         createdAt: o.createdAt.toISOString(),
         paidAt: o.paidAt?.toISOString(),
+        verifiedAt: o.verifiedAt?.toISOString(),
         expiresAt: o.expiresAt?.toISOString(),
         subscription: o.subscription,
+      })),
+      webhookLogs: recentWebhookLogs.map((w) => ({
+        id: w.id,
+        eventId: w.eventId,
+        eventType: w.eventType,
+        orderId: w.orderId,
+        status: w.status,
+        createdAt: w.createdAt.toISOString(),
+        processedAt: w.processedAt.toISOString(),
       })),
       pagination: {
         total: filteredTotal,
@@ -144,6 +176,13 @@ export async function GET(request: NextRequest) {
   }
 }
 
+/**
+ * POST /api/v1/admin/payments
+ *
+ * Admin action to trigger server-side re-verification of an order with Cashfree.
+ * Strictly adheres to security rule: Never allow an admin to falsely mark an
+ * unverified transaction as paid without genuine Cashfree API verification.
+ */
 export async function POST(request: NextRequest) {
   try {
     // 1. Strict Server-side Administrator Authorization
@@ -152,20 +191,87 @@ export async function POST(request: NextRequest) {
       return auth.response;
     }
 
+    const body = await request.json().catch(() => ({}));
+    const { orderId, action } = body;
+
+    if (!orderId) {
+      return NextResponse.json(
+        { success: false, error: "orderId is required" },
+        { status: 400 }
+      );
+    }
+
+    if (action === "SYNC_CASHFREE") {
+      const order = await prisma.paymentOrder.findFirst({
+        where: {
+          OR: [
+            { clientOrderId: orderId },
+            { gatewayOrderId: orderId },
+            { cashfreeOrderId: orderId },
+            { id: orderId },
+          ],
+        },
+      });
+
+      if (!order) {
+        return NextResponse.json(
+          { success: false, error: "Order not found in database." },
+          { status: 404 }
+        );
+      }
+
+      if (!isPaymentSystemEnabled()) {
+        return NextResponse.json(
+          { success: false, error: "Cashfree gateway credentials not configured on server." },
+          { status: 503 }
+        );
+      }
+
+      const provider = getCashfreeProvider();
+      const cfOrderId = order.cashfreeOrderId || order.gatewayOrderId || order.clientOrderId;
+      const verification = await provider.verifyPayment(cfOrderId);
+
+      if (verification.status === "PAID") {
+        await activateSubscriptionFromOrder({
+          orderId: order.id,
+          cashfreePaymentId: verification.paymentId,
+          paymentMethod: verification.paymentMethod,
+          paidAt: verification.paidAt,
+        });
+
+        return NextResponse.json({
+          success: true,
+          message: "Order successfully verified with Cashfree and activated.",
+          status: "PAID",
+          paymentId: verification.paymentId,
+        });
+      } else {
+        await prisma.paymentOrder.update({
+          where: { id: order.id },
+          data: {
+            status: verification.status,
+            lastCheckedAt: new Date(),
+          },
+        });
+
+        return NextResponse.json({
+          success: true,
+          message: `Cashfree reports order status as '${verification.status}'. Transaction cannot be marked as paid.`,
+          status: verification.status,
+        });
+      }
+    }
+
     return NextResponse.json(
       {
         success: false,
-        error: {
-          code: "MANUAL_OPERATIONS_DISCONTINUED",
-          message:
-            "Manual payment verification and UTR review workflows have been permanently discontinued. All online transactions will be handled through Cashfree once approved.",
-        },
+        error: "Direct manual status override is prohibited. Use action 'SYNC_CASHFREE' for server verification.",
       },
       { status: 400 }
     );
   } catch (error: any) {
     return NextResponse.json(
-      { success: false, error: "Failed to process request" },
+      { success: false, error: error.message || "Failed to process admin action" },
       { status: 500 }
     );
   }

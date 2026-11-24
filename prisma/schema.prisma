@@ -654,36 +654,43 @@ model RefundRecord {
 // ==========================================
 
 model PaymentOrder {
-  id             String                @id @default(cuid())
-  clientOrderId  String                @unique // Internal unique reference, e.g. "UPICHECKOUT_1731718000_abc"
-  gatewayOrderId String?               @unique // External UPI Gateway order_id, e.g. "ORD20261115ABC12345"
-  userId         String
-  user           User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
-  productType    String                @default("SUBSCRIPTION") // "SUBSCRIPTION", "TEST_SERIES", "MAINS_EVALUATION", "COURSE"
-  productId      String? // Plan code ("ACHIEVER") or Test ID
-  subscriptionId String?
-  subscription   Subscription?         @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
-  amount         Float // Amount in INR rupees (e.g. 5499.00)
-  amountPaise    Int // Amount in integer paise (e.g. 549900)
-  currency       String                @default("INR")
-  status         String                @default("PENDING") // "PENDING", "PROCESSING", "PAID", "FAILED", "EXPIRED", "UNDER_REVIEW", "REFUNDED"
-  environment    String                @default("sandbox") // "live" or "sandbox"
-  isTest         Boolean               @default(true)
-  paymentUrl     String?
-  upiIntent      String?
-  utr            String? // Bank transaction reference / UTR
-  metadataJson   String? // JSON metadata (e.g. billing interval, items)
-  expiresAt      DateTime?
-  paidAt         DateTime?
-  verifiedAt     DateTime?
-  lastCheckedAt  DateTime?
-  webhookEvents  PaymentWebhookEvent[]
-  createdAt      DateTime              @default(now())
-  updatedAt      DateTime              @updatedAt
+  id                String                @id @default(cuid())
+  clientOrderId     String                @unique // Internal unique reference, e.g. "CF_1731718000_abc"
+  gatewayOrderId    String?               @unique // External Gateway order_id, e.g. "order_..."
+  cashfreeOrderId   String?               @unique // Cashfree order_id, e.g. "order_..."
+  cashfreePaymentId String? // Cashfree payment_id (cf_payment_id)
+  paymentSessionId  String? // Cashfree payment_session_id for hosted web checkout
+  paymentMethod     String? // "upi", "card", "netbanking", "wallet"
+  planId            String? // ID of the Plan being purchased
+  userId            String
+  user              User                  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  productType       String                @default("SUBSCRIPTION") // "SUBSCRIPTION", "TEST_SERIES", "MAINS_EVALUATION", "COURSE"
+  productId         String? // Plan code ("ACHIEVER") or Test ID
+  subscriptionId    String?
+  subscription      Subscription?         @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  amount            Float // Amount in INR rupees (e.g. 5499.00)
+  amountPaise       Int // Amount in integer paise (e.g. 549900)
+  currency          String                @default("INR")
+  status            String                @default("PENDING") // "PENDING", "PROCESSING", "PAID", "FAILED", "EXPIRED", "UNDER_REVIEW", "REFUNDED", "CANCELLED"
+  environment       String                @default("sandbox") // "production" or "sandbox"
+  isTest            Boolean               @default(true)
+  paymentUrl        String?
+  upiIntent         String?
+  utr               String? // Bank transaction reference / UTR
+  metadataJson      String? // JSON metadata (e.g. billing interval, items)
+  failureReason     String?
+  expiresAt         DateTime?
+  paidAt            DateTime?
+  verifiedAt        DateTime?
+  lastCheckedAt     DateTime?
+  webhookEvents     PaymentWebhookEvent[]
+  createdAt         DateTime              @default(now())
+  updatedAt         DateTime              @updatedAt
 
   @@index([userId, status])
   @@index([status, createdAt])
   @@index([gatewayOrderId])
+  @@index([cashfreeOrderId])
   @@index([clientOrderId])
 }
 

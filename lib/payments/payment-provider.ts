@@ -61,3 +61,7 @@ export function getActivePaymentProvider(): PaymentProvider {
 
   return activeProviders.DISABLED;
 }
+
+export function getCashfreeProvider(): CashfreePaymentProvider {
+  return activeProviders.CASHFREE as CashfreePaymentProvider;
+}

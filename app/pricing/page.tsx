@@ -186,13 +186,47 @@ export default function PricingPage() {
     }
   };
 
-  const handlePlanClick = (plan: any) => {
+  const [checkoutLoading, setCheckoutLoading] = useState(false);
+  const [modalMessage, setModalMessage] = useState<string | null>(null);
+
+  const handlePlanClick = async (plan: any) => {
     if (plan.tier === 0) {
       window.location.href = "/register";
       return;
     }
     setSelectedPlan(plan);
-    setShowCheckoutModal(true);
+    setCheckoutLoading(true);
+    try {
+      const res = await fetch("/api/v1/payments/create-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          planCode: plan.code,
+          billingInterval,
+          couponCode: couponResult?.code || undefined,
+        }),
+      });
+      const json = await res.json();
+      if (res.status === 401) {
+        window.location.href = `/login?redirect=${encodeURIComponent("/pricing")}`;
+        return;
+      }
+      if (res.ok && json.success && json.data?.orderId) {
+        window.location.href = `/checkout/${json.data.orderId}`;
+        return;
+      } else {
+        setModalMessage(
+          json.error?.message ||
+            "Online payments are temporarily unavailable while our secure payment system is being configured. Please check back soon."
+        );
+        setShowCheckoutModal(true);
+      }
+    } catch {
+      setModalMessage("Online checkout is currently being initialized. Please check back shortly.");
+      setShowCheckoutModal(true);
+    } finally {
+      setCheckoutLoading(false);
+    }
   };
 
   const faqs = [
@@ -556,9 +590,9 @@ export default function PricingPage() {
               <div className="rounded-xl border border-heritage-gold/50 bg-heritage-cream/70 p-3.5 text-heritage-text">
                 <div className="flex items-center gap-1.5 font-bold mb-1 text-heritage-burgundy">
                   <Clock className="h-4 w-4 text-heritage-gold" />
-                  <span>Merchant Compliance Verification in Progress</span>
+                  <span>Cashfree Payment Gateway Notice</span>
                 </div>
-                Our payment gateway is currently undergoing official compliance onboarding with <strong>Cashfree Payments</strong>.
+                {modalMessage || "Our payment gateway is currently operating with official Cashfree Payments integration."}
               </div>
               <p>
                 In the meantime, <strong>all learning features, PYQ banks, AI mentor trials, and test simulators remain 100% free and operational</strong> for all registered students.

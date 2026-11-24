@@ -1,22 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
+import { POST as cashfreeWebhookPost } from "@/app/api/webhooks/cashfree/route";
 
 export const dynamic = "force-dynamic";
 
 /**
  * POST /api/v1/billing/webhook
- * 
- * Development and browser-triggered payment webhooks are permanently disabled.
- * Hardcoded secrets and mock subscription activation have been removed.
+ *
+ * Forwards directly to the official Cashfree webhook processor.
  */
-export async function POST(_request: NextRequest) {
-  return NextResponse.json(
-    {
-      success: false,
-      error: {
-        code: "WEBHOOK_DISABLED",
-        message: "Payment webhooks are inactive while Cashfree payment gateway transition is in progress.",
-      },
-    },
-    { status: 503 }
-  );
+export async function POST(request: NextRequest) {
+  return cashfreeWebhookPost(request);
 }
