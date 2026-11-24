@@ -154,24 +154,46 @@ export async function activateSubscriptionFromOrder(
         },
       });
 
-      // Create PaymentRecord for dual-entry accounting
-      const paymentRecord = await tx.paymentRecord.create({
-        data: {
-          userId: order.userId,
-          subscriptionId: sub.id,
-          amount: order.amount,
-          currency: order.currency || "INR",
-          status: "SUCCESS",
-          provider: "CASHFREE",
-          providerTxId:
-            cashfreePaymentId ||
-            order.cashfreePaymentId ||
-            order.cashfreeOrderId ||
-            order.clientOrderId,
-          paymentMethod: paymentMethod || order.paymentMethod || "ONLINE",
-          receiptNumber: `REC-${order.clientOrderId}`,
+      // Upsert PaymentRecord for dual-entry accounting (prevents P2002 if duplicate txId)
+      const txId =
+        cashfreePaymentId ||
+        order.cashfreePaymentId ||
+        order.cashfreeOrderId ||
+        order.clientOrderId;
+
+      let paymentRecord = await tx.paymentRecord.findFirst({
+        where: {
+          OR: [
+            { providerTxId: txId },
+            { receiptNumber: `REC-${order.clientOrderId}` },
+          ],
         },
       });
+
+      if (paymentRecord) {
+        paymentRecord = await tx.paymentRecord.update({
+          where: { id: paymentRecord.id },
+          data: {
+            status: "SUCCESS",
+            subscriptionId: sub.id,
+            paymentMethod: paymentMethod || order.paymentMethod || paymentRecord.paymentMethod,
+          },
+        });
+      } else {
+        paymentRecord = await tx.paymentRecord.create({
+          data: {
+            userId: order.userId,
+            subscriptionId: sub.id,
+            amount: order.amount,
+            currency: order.currency || "INR",
+            status: "SUCCESS",
+            provider: "CASHFREE",
+            providerTxId: txId,
+            paymentMethod: paymentMethod || order.paymentMethod || "ONLINE",
+            receiptNumber: `REC-${order.clientOrderId}`,
+          },
+        });
+      }
 
       // Create SubscriptionEvent audit entry
       await tx.subscriptionEvent.create({
