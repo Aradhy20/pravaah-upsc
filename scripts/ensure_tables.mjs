@@ -35,56 +35,96 @@ async function main() {
     const existingTableNames = new Set(existingRows.map((r) => r.table_name));
     console.log(`📊 Found ${existingTableNames.size} existing tables in database.`);
 
-    // 2. Read migration SQL
-    const migrationPath = path.join(
-      process.cwd(),
-      "prisma",
-      "migrations",
-      "20261122000000_init",
-      "migration.sql"
-    );
+    // 2. Read migration SQL across ALL migration folders
+    const migrationsBaseDir = path.join(process.cwd(), "prisma", "migrations");
+    let created = 0;
+    if (fs.existsSync(migrationsBaseDir)) {
+      const migrationFolders = fs
+        .readdirSync(migrationsBaseDir)
+        .filter((d) => {
+          try {
+            return fs.statSync(path.join(migrationsBaseDir, d)).isDirectory();
+          } catch {
+            return false;
+          }
+        })
+        .sort();
 
-    if (fs.existsSync(migrationPath)) {
-      const migrationSql = fs.readFileSync(migrationPath, "utf8");
-      const statements = migrationSql
-        .split(";")
-        .map((s) => s.trim())
-        .filter((s) => s.length > 0);
+      for (const folder of migrationFolders) {
+        const migrationFile = path.join(migrationsBaseDir, folder, "migration.sql");
+        if (!fs.existsSync(migrationFile)) continue;
 
-      let created = 0;
-      for (const rawStmt of statements) {
-        const match = rawStmt.match(/CREATE\s+TABLE\s+"([^"]+)"/i);
-        if (match) {
-          const tableName = match[1];
-          if (!existingTableNames.has(tableName)) {
-            const safeStmt = rawStmt.replace(/CREATE\s+TABLE\s+"/i, 'CREATE TABLE IF NOT EXISTS "');
+        const migrationSql = fs.readFileSync(migrationFile, "utf8");
+        const statements = migrationSql
+          .split(";")
+          .map((s) => s.trim())
+          .filter((s) => s.length > 0);
+
+        for (const rawStmt of statements) {
+          // A. If statement is ALTER TABLE ... ADD COLUMN ...
+          if (/ALTER\s+TABLE/i.test(rawStmt)) {
             try {
-              await prisma.$executeRawUnsafe(safeStmt);
-              created++;
-              existingTableNames.add(tableName);
-              console.log(`  ✓ Created missing table: ${tableName}`);
-            } catch (err) {
-              console.warn(`  ⚠️ Could not create table ${tableName}:`, err.message);
+              await prisma.$executeRawUnsafe(rawStmt);
+            } catch {
+              // Ignore if column already exists or table does not yet exist
+            }
+          }
+
+          // B. If statement is CREATE TABLE ...
+          const match = rawStmt.match(/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?(?:public\.)?"([^"]+)"/i);
+          if (match) {
+            const tableName = match[1];
+            if (!existingTableNames.has(tableName)) {
+              let safeStmt = rawStmt;
+              if (!/IF\s+NOT\s+EXISTS/i.test(safeStmt)) {
+                safeStmt = safeStmt.replace(/CREATE\s+TABLE\s+(?:public\.)?"/i, 'CREATE TABLE IF NOT EXISTS "');
+              }
+              try {
+                await prisma.$executeRawUnsafe(safeStmt);
+                created++;
+                existingTableNames.add(tableName);
+                console.log(`  ✓ Created missing table: ${tableName}`);
+              } catch (err) {
+                console.warn(`  ⚠️ Could not create table ${tableName}:`, err.message);
+              }
+            }
+          }
+
+          // C. If statement is CREATE INDEX ...
+          if (/CREATE\s+(UNIQUE\s+)?INDEX/i.test(rawStmt)) {
+            let safeIndexStmt = rawStmt;
+            if (!/IF\s+NOT\s+EXISTS/i.test(safeIndexStmt)) {
+              safeIndexStmt = safeIndexStmt.replace(/CREATE\s+(UNIQUE\s+)?INDEX\s+/i, (m, u) =>
+                u ? "CREATE UNIQUE INDEX IF NOT EXISTS " : "CREATE INDEX IF NOT EXISTS "
+              );
+            }
+            try {
+              await prisma.$executeRawUnsafe(safeIndexStmt);
+            } catch {
+              // Ignore index warnings
             }
           }
         }
       }
 
-      // Also ensure indices
-      for (const rawStmt of statements) {
-        if (/CREATE\s+(UNIQUE\s+)?INDEX/i.test(rawStmt)) {
-          const safeIndexStmt = rawStmt.replace(/CREATE\s+(UNIQUE\s+)?INDEX\s+/i, (m, u) =>
-            u ? "CREATE UNIQUE INDEX IF NOT EXISTS " : "CREATE INDEX IF NOT EXISTS "
-          );
-          try {
-            await prisma.$executeRawUnsafe(safeIndexStmt);
-          } catch {
-            // Ignore index warnings
-          }
-        }
-      }
+      console.log(`✅ Ensured tables and migrations. Newly created: ${created}. Total tables: ${existingTableNames.size}`);
+    }
 
-      console.log(`✅ Ensured tables. Newly created: ${created}. Total tables: ${existingTableNames.size}`);
+    // 2a. Explicit UserProfile columns verification (Critical Fix for Candidate Registration)
+    try {
+      await prisma.$executeRawUnsafe(`
+        ALTER TABLE "UserProfile" 
+        ADD COLUMN IF NOT EXISTS "strongSubjects" TEXT,
+        ADD COLUMN IF NOT EXISTS "weakSubjects" TEXT,
+        ADD COLUMN IF NOT EXISTS "dailyStudyHours" DOUBLE PRECISION DEFAULT 4.0,
+        ADD COLUMN IF NOT EXISTS "preferredLanguage" TEXT DEFAULT 'en',
+        ADD COLUMN IF NOT EXISTS "preparationStage" TEXT DEFAULT 'BEGINNER',
+        ADD COLUMN IF NOT EXISTS "readinessIndex" DOUBLE PRECISION DEFAULT 0.0,
+        ADD COLUMN IF NOT EXISTS "targetExam" TEXT DEFAULT 'UPSC_CSE';
+      `);
+      console.log("✅ UserProfile columns verified and synchronized.");
+    } catch (e) {
+      console.warn("⚠️ UserProfile sync warning:", e.message);
     }
 
     // 2b. Phase 3: Synchronize Question, Option, Explanation, MainsQuestion columns & QuestionStagingRecord table
@@ -198,294 +238,215 @@ async function main() {
           {
             featureCode: "UNLIMITED_BOOKMARKS",
             name: "Unlimited Bookmarks",
-            description: "Save unlimited questions for high-priority revision without quota limits",
+            description: "Save unlimited questions across all GS papers and subjects without cap",
             minTier: 2,
           },
           {
-            featureCode: "UNLIMITED_NOTES",
-            name: "Unlimited Study Notes",
-            description: "Maintain comprehensive textbook cross-references on questions",
-            minTier: 2,
+            featureCode: "BOOKMARKS_LIMIT",
+            name: "Free Bookmark Cap (5 items)",
+            description: "Free tier bookmark storage quota",
+            minTier: 0,
           },
           {
-            featureCode: "PRIORITY_ACCESS",
-            name: "Priority Access & Verification Audit",
-            description: "Priority access to freshly verified paper releases and coverage reports",
-            minTier: 3,
+            featureCode: "DAILY_PRACTICE_LIMIT",
+            name: "Daily Question Limit (3 questions)",
+            description: "Free tier practice question cap",
+            minTier: 0,
           },
         ];
 
-        for (const de of defaultEntitlements) {
+        for (const fe of defaultEntitlements) {
           await prisma.featureEntitlement.upsert({
-            where: { featureCode: de.featureCode },
-            update: { minTier: de.minTier },
-            create: de,
+            where: { featureCode: fe.featureCode },
+            create: fe,
+            update: { name: fe.name, description: fe.description, minTier: fe.minTier },
           });
         }
-        console.log("✅ Seeded/verified 5 FeatureEntitlement records.");
+        console.log("✅ Ensured feature entitlements.");
       }
-    } catch (e) {
-      console.warn("⚠️ FeatureEntitlement check warning:", e.message);
+    } catch (feErr) {
+      console.warn("⚠️ FeatureEntitlement check warning:", feErr.message);
     }
 
-    // 4. Ensure Plans and Prices exist
+    // 4. Ensure Plans and PlanPrices exist
     try {
       const planCount = await prisma.plan.count();
       if (planCount < 4) {
-        const defaultPlans = [
+        const plans = [
           {
             code: "FREE",
             name: "Aspirant Foundation",
-            tagline: "Essential UPSC PYQ practice with official answer keys",
             tier: 0,
-            isPopular: false,
-            orderIndex: 1,
+            description: "Start free with authentic PYQ exploration, personal bookmarks, and basic analytics.",
+            features: [
+              "Access to all 10,000+ authentic UPSC PYQs",
+              "Standard answer keys & basic explanations",
+              "1 full-length Prelims mock exam",
+              "Up to 5 saved bookmarks",
+              "Daily topic practice (3 questions/day)",
+              "Basic subject performance accuracy",
+              "Bilingual interface (Hindi & English)",
+              "Mobile-responsive practice player",
+            ],
             prices: [
-              { billingInterval: "MONTHLY", amountRupees: 0, discountPercent: 0 },
-              { billingInterval: "QUARTERLY", amountRupees: 0, discountPercent: 0 },
-              { billingInterval: "ANNUAL", amountRupees: 0, discountPercent: 0 },
+              { billingInterval: "FREE", amountRupees: 0 },
             ],
           },
           {
             code: "BEGINNER",
-            name: "Syllabus Sprint",
-            tagline: "Focused subject-wise practice for foundation building",
+            name: "Prelims Sprint",
             tier: 1,
-            isPopular: false,
-            orderIndex: 2,
+            description: "Focused practice for aspirants targeting upcoming Prelims with full question bank access.",
+            features: [
+              "Everything in Aspirant Foundation",
+              "Unlimited practice questions across all papers",
+              "15 full-length Prelims mock examinations",
+              "Detailed analytical explanations & micro-themes",
+              "Timed exam simulation mode with negative marking",
+              "Unlimited question bookmarks & custom tags",
+              "Speed & accuracy trend analytics",
+              "Question mistake revision notebook",
+            ],
             prices: [
-              { billingInterval: "MONTHLY", amountRupees: 399, discountPercent: 0 },
-              { billingInterval: "QUARTERLY", amountRupees: 999, discountPercent: 16 },
-              { billingInterval: "ANNUAL", amountRupees: 2999, discountPercent: 37 },
+              { billingInterval: "MONTHLY", amountRupees: 299 },
+              { billingInterval: "QUARTERLY", amountRupees: 799 },
+              { billingInterval: "ANNUAL", amountRupees: 1999 },
             ],
           },
           {
             code: "ACHIEVER",
-            name: "Prelims Pro",
-            tagline: "Complete examination simulator with authentic UPSC scoring",
+            name: "Comprehensive Scholar",
             tier: 2,
             isPopular: true,
-            orderIndex: 3,
+            description: "The complete preparation ecosystem for Prelims, Mains answer evaluation, and interview preparation.",
+            features: [
+              "Everything in Prelims Sprint",
+              "All 50+ Prelims mocks with all-India percentile",
+              "AI Mains Answer Evaluator (10 evaluations/month)",
+              "24/7 AI Personal UPSC Mentor & Study Coach",
+              "CSAT Master Coach with step-by-step logic",
+              "Interactive Prelims Map Lab with 300+ markers",
+              "Current affairs integration with connected PYQs",
+              "Topper copy comparative answer analysis",
+            ],
             prices: [
-              { billingInterval: "MONTHLY", amountRupees: 799, discountPercent: 0 },
-              { billingInterval: "QUARTERLY", amountRupees: 1899, discountPercent: 20 },
-              { billingInterval: "ANNUAL", amountRupees: 5499, discountPercent: 42 },
+              { billingInterval: "MONTHLY", amountRupees: 499 },
+              { billingInterval: "QUARTERLY", amountRupees: 1299 },
+              { billingInterval: "ANNUAL", amountRupees: 3499 },
             ],
           },
           {
             code: "SCHOLAR",
-            name: "Ranker Suite",
-            tagline: "For comprehensive multi-year revision and mock test mastery",
+            name: "Ranker's Circle",
             tier: 3,
-            isPopular: false,
-            orderIndex: 4,
+            description: "Uncapped, high-intensity preparation with unlimited AI evaluations, interview lab, and dedicated priority support.",
+            features: [
+              "Everything in Comprehensive Scholar",
+              "Unlimited AI Mains Answer Evaluations",
+              "Unlimited AI Mentor chats & custom study schedules",
+              "Personality Test (Interview) Lab simulator",
+              "Micro-theme trend forecaster & high-yield predictions",
+              "Downloadable offline PDF revision capsules",
+              "Priority doubt resolution within 2 hours",
+              "Dedicated 1-on-1 strategy audit calls",
+            ],
             prices: [
-              { billingInterval: "MONTHLY", amountRupees: 1299, discountPercent: 0 },
-              { billingInterval: "QUARTERLY", amountRupees: 2999, discountPercent: 23 },
-              { billingInterval: "ANNUAL", amountRupees: 8999, discountPercent: 42 },
+              { billingInterval: "MONTHLY", amountRupees: 999 },
+              { billingInterval: "QUARTERLY", amountRupees: 2499 },
+              { billingInterval: "ANNUAL", amountRupees: 5999 },
             ],
           },
         ];
 
-        for (const dp of defaultPlans) {
-          const { prices, ...planData } = dp;
-          const plan = await prisma.plan.upsert({
-            where: { code: planData.code },
-            update: planData,
-            create: planData,
+        for (const p of plans) {
+          const planRecord = await prisma.plan.upsert({
+            where: { code: p.code },
+            create: {
+              code: p.code,
+              name: p.name,
+              tier: p.tier,
+              description: p.description,
+              isPopular: p.isPopular || false,
+            },
+            update: {
+              name: p.name,
+              tier: p.tier,
+              description: p.description,
+              isPopular: p.isPopular || false,
+            },
           });
 
-          for (const pr of prices) {
-            const existingPrice = await prisma.planPrice.findFirst({
-              where: { planId: plan.id, billingInterval: pr.billingInterval },
+          // Ensure features
+          for (let i = 0; i < p.features.length; i++) {
+            const featText = p.features[i];
+            const existingFeat = await prisma.planFeature.findFirst({
+              where: { planId: planRecord.id, featureText: featText },
             });
-            if (!existingPrice) {
-              await prisma.planPrice.create({
+            if (!existingFeat) {
+              await prisma.planFeature.create({
                 data: {
-                  planId: plan.id,
-                  billingInterval: pr.billingInterval,
-                  amountRupees: pr.amountRupees,
-                  currency: "INR",
-                  discountPercent: pr.discountPercent,
-                  isActive: true,
+                  planId: planRecord.id,
+                  featureText: featText,
+                  displayOrder: i + 1,
+                  isIncluded: true,
                 },
               });
             }
           }
-        }
-        console.log("✅ Seeded/verified 4 Plans with complete billing intervals.");
-      }
-    } catch (e) {
-      console.warn("⚠️ Plan check warning:", e.message);
-    }
 
-    // 5. Ensure Authentic UPSC Question Bank & Curriculum exist
-    try {
-      const qCount = await prisma.question.count();
-      if (qCount === 0) {
-        console.log("🌱 Database Question table is empty. Restoring authentic UPSC question bank...");
-        const dumpPath = path.join(process.cwd(), "data", "backup", "postgres_full_dump.json");
-        if (fs.existsSync(dumpPath)) {
-          const rawData = fs.readFileSync(dumpPath, "utf-8");
-          const dump = JSON.parse(rawData);
-
-          const AUTHENTIC_MODELS = [
-            "Exam",
-            "ExamDirectory",
-            "ExamStage",
-            "Paper",
-            "Subject",
-            "Topic",
-            "Subtopic",
-            "SyllabusNode",
-            "SyllabusTopic",
-            "NCERTBook",
-            "NCERTChapter",
-            "NCERTChapterQuestionLink",
-            "KnowledgeSource",
-            "ExamYear",
-            "Question",
-            "QuestionOption",
-            "Explanation",
-            "QuestionAnswer",
-            "AnswerKeyVersion",
-            "SourceCitation",
-            "QuestionSyllabusMapping",
-            "QuestionTopic",
-            "QuestionSource",
-            "SourceDocument",
-            "SourceRegistryRecord",
-            "SourceRecord",
-            "CurrentAffairsStory",
-            "StoryTopic",
-            "StoryQuestionLink",
-            "MainsQuestion",
-            "VideoLesson",
-            "TopperCopy",
-          ];
-
-          for (const modelName of AUTHENTIC_MODELS) {
-            const accessor = modelName[0].toLowerCase() + modelName.slice(1);
-            const records = dump[modelName];
-            if (records && Array.isArray(records) && records.length > 0) {
-              const delegate = prisma[accessor];
-              if (typeof delegate?.createMany === "function") {
-                try {
-                  const res = await delegate.createMany({
-                    data: records,
-                    skipDuplicates: true,
-                  });
-                  console.log(`  ✓ Restored ${modelName.padEnd(25)}: ${res.count} records`);
-                } catch {
-                  for (const rec of records) {
-                    try {
-                      await delegate.create({ data: rec });
-                    } catch {}
-                  }
-                }
-              }
-            }
+          // Ensure prices
+          for (const pr of p.prices) {
+            await prisma.planPrice.upsert({
+              where: {
+                planId_billingInterval: {
+                  planId: planRecord.id,
+                  billingInterval: pr.billingInterval,
+                },
+              },
+              create: {
+                planId: planRecord.id,
+                billingInterval: pr.billingInterval,
+                amountRupees: pr.amountRupees,
+              },
+              update: {
+                amountRupees: pr.amountRupees,
+              },
+            });
           }
-          console.log("✅ Authentic UPSC Question Bank restored to database!");
         }
-      } else {
-        console.log(`📊 Found ${qCount} existing questions in database. Skipping content seed.`);
+        console.log("✅ Ensured plans, features, and prices.");
       }
-    } catch (e) {
-      console.warn("⚠️ Question bank check warning:", e.message);
+    } catch (planErr) {
+      console.warn("⚠️ Plan check warning:", planErr.message);
     }
 
-    // 6. Ensure default roles and verified accounts
+    // 5. Ensure System Roles and Accounts exist
     try {
-      const aspirantRole = await prisma.role.upsert({
-        where: { name: "ASPIRANT" },
-        update: {},
-        create: {
-          name: "ASPIRANT",
-          description: "Civil Services Aspirant studying for Prelims and Mains",
-        },
-      });
+      const roles = [
+        { name: "ASPIRANT", description: "Standard Civil Services Aspirant" },
+        { name: "ADMIN", description: "System Administrator" },
+        { name: "FACULTY", description: "Content & Subject Specialist" },
+      ];
 
-      const adminRole = await prisma.role.upsert({
-        where: { name: "ADMIN" },
-        update: {},
-        create: {
-          name: "ADMIN",
-          description: "Platform Administrator and Academic Reviewer",
-        },
-      });
+      for (const r of roles) {
+        await prisma.role.upsert({
+          where: { name: r.name },
+          create: r,
+          update: { description: r.description },
+        });
+      }
 
-      // Admin account: admin@pravaah.in (Salted SHA-256 for Admin@Pravaah2026!)
-      await prisma.user.upsert({
-        where: { email: "admin@pravaah.in" },
-        update: {
-          roleId: adminRole.id,
-          passwordHash: "93442f5170f4572e1a1de67149b16e78e8c267a08cd393ed5148dd92355822ca",
-        },
-        create: {
-          email: "admin@pravaah.in",
-          fullName: "Dr. Rameshwar Rao (Senior Faculty)",
-          passwordHash: "93442f5170f4572e1a1de67149b16e78e8c267a08cd393ed5148dd92355822ca",
-          roleId: adminRole.id,
-        },
-      });
-
-      // Guest Aspirant account: guest-aspirant for unauthenticated visitor isolation
-      await prisma.user.upsert({
-        where: { id: "guest-aspirant" },
-        update: {
-          roleId: aspirantRole.id,
-        },
-        create: {
-          id: "guest-aspirant",
-          email: "guest@pravaah.in",
-          fullName: "Guest Aspirant",
-          passwordHash: "pravaah_guest_unusable_hash_2026",
-          roleId: aspirantRole.id,
-        },
-      });
-
-      // Demo Aspirant account: aspirant@pravaah.in (Salted SHA-256 for Aspirant@Pravaah2026!)
-      await prisma.user.upsert({
-        where: { email: "aspirant@pravaah.in" },
-        update: {
-          roleId: aspirantRole.id,
-          passwordHash: "ffff2359200a4ab26347973ffbf34bde7a2e48d3ee98ad53ea7994404cdf7f15",
-        },
-        create: {
-          email: "aspirant@pravaah.in",
-          fullName: "Ananya Sharma",
-          passwordHash: "ffff2359200a4ab26347973ffbf34bde7a2e48d3ee98ad53ea7994404cdf7f15",
-          roleId: aspirantRole.id,
-        },
-      });
       console.log("✅ Verified system roles and accounts.");
-    } catch (e) {
-      console.warn("⚠️ System account check warning:", e.message);
-    }
-
-    // 7. Reconcile verified question status to PUBLISHED
-    try {
-      const reconciled = await prisma.question.updateMany({
-        where: {
-          status: { in: ["NEEDS_REVIEW", "VERIFIED"] },
-          options: { some: { isCorrect: true } },
-          explanation: { isNot: null },
-        },
-        data: { status: "PUBLISHED" },
-      });
-      if (reconciled.count > 0) {
-        console.log(`✅ Promoted ${reconciled.count} verified questions to PUBLISHED.`);
-      }
-    } catch (e) {
-      console.warn("⚠️ Question status reconciliation warning:", e.message);
+    } catch (roleErr) {
+      console.warn("⚠️ Role check warning:", roleErr.message);
     }
   } catch (err) {
-    console.warn("⚠️ Table synchronizer warning:", err.message);
+    console.warn("⚠️ ensure_tables error:", err.message);
   } finally {
     await prisma.$disconnect();
-    console.log("=========================================\n");
   }
 }
 
-main().catch(console.error);
+main().catch((e) => {
+  console.error("Critical table sync failure:", e);
+});

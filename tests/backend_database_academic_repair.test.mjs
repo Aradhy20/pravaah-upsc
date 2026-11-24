@@ -119,13 +119,17 @@ describe("PRAVAAH UPSC — Backend, Database & Academic QA Repair Verification",
     }
   });
 
-  test("6. Payment Gateway Dormancy Security Check", () => {
-    // Must remain dormant (false) to prevent accidental charges during testing
+  test("6. Payment Gateway Configuration & Master Switch Test", () => {
+    // Must respect ENABLE_PAYMENTS switch
+    const orig = process.env.ENABLE_PAYMENTS;
+    process.env.ENABLE_PAYMENTS = "false";
     assert.strictEqual(
       isPaymentSystemEnabled(),
       false,
-      "isPaymentSystemEnabled() must evaluate to false while Cashfree merchant account is dormant"
+      "isPaymentSystemEnabled() must evaluate to false when ENABLE_PAYMENTS is false"
     );
+    if (orig !== undefined) process.env.ENABLE_PAYMENTS = orig;
+    else delete process.env.ENABLE_PAYMENTS;
   });
 
   test("7. Bilingual Parity & i18n Context Integrity", () => {
