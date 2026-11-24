@@ -4,6 +4,7 @@ import path from "path";
 
 let isSyncRunning = false;
 let isSynced = false;
+let isUserProfileSchemaEnsured = false;
 
 export interface DbSyncResult {
   success: boolean;
@@ -13,7 +14,53 @@ export interface DbSyncResult {
   message: string;
 }
 
+/**
+ * Ensures all required UserProfile columns and foundational schema columns exist.
+ * Executes non-destructive, safe ALTER TABLE IF NOT EXISTS commands directly on PostgreSQL.
+ * Runs once per process lifecycle to ensure zero overhead on hot paths.
+ */
+export async function ensureUserProfileSchema(): Promise<boolean> {
+  if (isUserProfileSchemaEnsured) return true;
+
+  try {
+    // 1. Ensure UserProfile columns exist
+    await prisma.$executeRawUnsafe(`
+      ALTER TABLE "UserProfile" 
+      ADD COLUMN IF NOT EXISTS "strongSubjects" TEXT,
+      ADD COLUMN IF NOT EXISTS "weakSubjects" TEXT,
+      ADD COLUMN IF NOT EXISTS "dailyStudyHours" DOUBLE PRECISION DEFAULT 4.0,
+      ADD COLUMN IF NOT EXISTS "preferredLanguage" TEXT DEFAULT 'en',
+      ADD COLUMN IF NOT EXISTS "preparationStage" TEXT DEFAULT 'BEGINNER',
+      ADD COLUMN IF NOT EXISTS "readinessIndex" DOUBLE PRECISION DEFAULT 0.0,
+      ADD COLUMN IF NOT EXISTS "targetExam" TEXT DEFAULT 'UPSC_CSE';
+    `);
+
+    // 2. Ensure default ASPIRANT role exists
+    await prisma.$executeRawUnsafe(`
+      INSERT INTO "Role" ("id", "name", "description", "createdAt")
+      VALUES ('role_aspirant', 'ASPIRANT', 'Standard Civil Services Aspirant', NOW())
+      ON CONFLICT ("name") DO NOTHING;
+    `);
+
+    // 3. Ensure Question and Options schema columns exist
+    await prisma.$executeRawUnsafe(`
+      ALTER TABLE "Question"
+      ADD COLUMN IF NOT EXISTS "questionFormat" TEXT DEFAULT 'SINGLE_CHOICE',
+      ADD COLUMN IF NOT EXISTS "isVerified" BOOLEAN DEFAULT true;
+    `);
+
+    isUserProfileSchemaEnsured = true;
+    return true;
+  } catch (err: any) {
+    console.error("ensureUserProfileSchema database sync notice:", err.message);
+    return false;
+  }
+}
+
 export async function ensureDatabaseTables(): Promise<DbSyncResult> {
+  // Always verify UserProfile schema first
+  await ensureUserProfileSchema();
+
   if (isSynced) {
     return {
       success: true,

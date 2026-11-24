@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getAuthenticatedUser } from "@/lib/auth";
+import { ensureUserProfileSchema } from "@/lib/db-sync";
 
 export const dynamic = "force-dynamic";
+
+function safeParseArray(val?: string | null): string[] {
+  if (!val) return [];
+  try {
+    const parsed = JSON.parse(val);
+    return Array.isArray(parsed) ? parsed : [String(parsed)];
+  } catch {
+    return val.split(",").map((s) => s.trim()).filter(Boolean);
+  }
+}
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,6 +25,8 @@ export async function GET(request: NextRequest) {
       );
     }
 
+    await ensureUserProfileSchema().catch(() => {});
+
     const profile = await prisma.userProfile.findUnique({
       where: { userId: user.id },
     });
@@ -24,14 +37,14 @@ export async function GET(request: NextRequest) {
         userId: user.id,
         fullName: user.fullName,
         email: user.email,
-        targetYear: profile?.targetYear || 2026,
+        targetYear: profile?.targetYear || 2027,
         targetExam: profile?.targetExam || "UPSC_CSE",
         preparationStage: profile?.preparationStage || "BEGINNER",
         preferredLanguage: profile?.preferredLanguage || "en",
         dailyStudyHours: profile?.dailyStudyHours || 4.0,
         optionalSubject: profile?.optionalSubject || null,
-        strongSubjects: profile?.strongSubjects ? JSON.parse(profile.strongSubjects) : [],
-        weakSubjects: profile?.weakSubjects ? JSON.parse(profile.weakSubjects) : [],
+        strongSubjects: safeParseArray(profile?.strongSubjects),
+        weakSubjects: safeParseArray(profile?.weakSubjects),
       },
     });
   } catch (error: any) {
@@ -53,6 +66,8 @@ export async function PUT(request: NextRequest) {
       );
     }
 
+    await ensureUserProfileSchema().catch(() => {});
+
     const body = await request.json().catch(() => ({}));
     const {
       targetYear,
@@ -68,7 +83,8 @@ export async function PUT(request: NextRequest) {
       where: { userId: user.id },
       create: {
         userId: user.id,
-        targetYear: targetYear ? parseInt(targetYear) : 2026,
+        targetYear: targetYear ? parseInt(targetYear) : 2027,
+        targetExam: "UPSC_CSE",
         preparationStage: preparationStage || "BEGINNER",
         preferredLanguage: preferredLanguage || "en",
         dailyStudyHours: dailyStudyHours ? parseFloat(dailyStudyHours) : 4.0,
@@ -96,14 +112,14 @@ export async function PUT(request: NextRequest) {
         preferredLanguage: updatedProfile.preferredLanguage,
         dailyStudyHours: updatedProfile.dailyStudyHours,
         optionalSubject: updatedProfile.optionalSubject,
-        strongSubjects: updatedProfile.strongSubjects ? JSON.parse(updatedProfile.strongSubjects) : [],
-        weakSubjects: updatedProfile.weakSubjects ? JSON.parse(updatedProfile.weakSubjects) : [],
+        strongSubjects: safeParseArray(updatedProfile.strongSubjects),
+        weakSubjects: safeParseArray(updatedProfile.weakSubjects),
       },
     });
   } catch (error: any) {
     console.error("PUT /api/v1/user/preferences error:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to update student preferences" },
+      { success: false, error: "Failed to update preferences" },
       { status: 500 }
     );
   }

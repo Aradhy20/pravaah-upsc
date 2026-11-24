@@ -190,13 +190,18 @@ export async function verifyGoogleIdToken(idToken: string): Promise<GoogleUserPr
   };
 }
 
+import { ensureUserProfileSchema } from "@/lib/db-sync";
+
 /**
  * Find existing user or provision a new Aspirant account for Google Sign-In
  */
 export async function findOrCreateGoogleUser(profile: GoogleUserProfile) {
   const normalizedEmail = profile.email.toLowerCase().trim();
 
-  // 1. Try finding by unique Google ID
+  // Ensure UserProfile columns and foundational schema exist
+  await ensureUserProfileSchema().catch(() => {});
+
+  // 1. Try finding by unique Google ID or verified email
   let user = await prisma.user.findFirst({
     where: {
       OR: [
@@ -234,41 +239,83 @@ export async function findOrCreateGoogleUser(profile: GoogleUserProfile) {
     return { user, isNew: false };
   }
 
-  // 3. User does not exist: Provision new Aspirant account
-  let role = await prisma.role.findUnique({
-    where: { name: "ASPIRANT" },
-  });
+  // 3. User does not exist: Provision new Aspirant account within atomic transaction
+  const executeGoogleProvisioningTx = async () => {
+    return await prisma.$transaction(async (tx) => {
+      let role = await tx.role.findUnique({
+        where: { name: "ASPIRANT" },
+      });
 
-  if (!role) {
-    role = await prisma.role.create({
-      data: { name: "ASPIRANT", description: "Standard Civil Services Aspirant" },
-    });
-  }
+      if (!role) {
+        role = await tx.role.create({
+          data: { name: "ASPIRANT", description: "Standard Civil Services Aspirant" },
+        });
+      }
 
-  // Generate an unguessable cryptographic password hash for the Google user
-  const randomPassword = crypto.randomBytes(32).toString("hex");
+      // Generate an unguessable cryptographic password hash for the Google user
+      const randomPassword = crypto.randomBytes(32).toString("hex");
 
-  const newUser = await prisma.user.create({
-    data: {
-      email: normalizedEmail,
-      fullName: profile.fullName || normalizedEmail.split("@")[0],
-      passwordHash: hashPassword(randomPassword),
-      googleId: profile.googleId,
-      avatarUrl: profile.avatarUrl || null,
-      roleId: role.id,
-      profile: {
-        create: {
-          targetYear: 2027,
-          dailyGoalMinutes: 60,
-          optionalSubject: "General",
+      const newUser = await tx.user.create({
+        data: {
+          email: normalizedEmail,
+          fullName: profile.fullName || normalizedEmail.split("@")[0],
+          passwordHash: hashPassword(randomPassword),
+          googleId: profile.googleId,
+          avatarUrl: profile.avatarUrl || null,
+          roleId: role.id,
+          profile: {
+            create: {
+              targetYear: 2027,
+              targetExam: "UPSC_CSE",
+              dailyGoalMinutes: 60,
+              dailyStudyHours: 4.0,
+              preferredLanguage: "en",
+              preparationStage: "BEGINNER",
+              readinessIndex: 0.0,
+              optionalSubject: "General",
+            },
+          },
         },
-      },
-    },
-    include: {
-      role: true,
-      profile: true,
-    },
-  });
+        include: {
+          role: true,
+          profile: true,
+        },
+      });
+
+      // Default Free Plan Subscription Assignment
+      const freePlan = await tx.plan.findFirst({
+        where: { code: { in: ["FREE", "ASPIRANT_FOUNDATION"] } },
+      });
+
+      if (freePlan) {
+        const tenYearsLater = new Date();
+        tenYearsLater.setFullYear(tenYearsLater.getFullYear() + 10);
+
+        await tx.subscription.create({
+          data: {
+            userId: newUser.id,
+            planId: freePlan.id,
+            status: "ACTIVE",
+            billingInterval: "ANNUAL",
+            currentPeriodStart: new Date(),
+            currentPeriodEnd: tenYearsLater,
+            cancelAtPeriodEnd: false,
+          },
+        });
+      }
+
+      return newUser;
+    });
+  };
+
+  let newUser;
+  try {
+    newUser = await executeGoogleProvisioningTx();
+  } catch (err: any) {
+    console.warn("Google provisioning initial attempt notice, re-verifying schema:", err.message);
+    await ensureUserProfileSchema();
+    newUser = await executeGoogleProvisioningTx();
+  }
 
   return { user: newUser, isNew: true };
 }
