@@ -7,4 +7,5 @@ export * from "./payment-types";
 export * from "./payment-status";
 export * from "./payment-config";
 export * from "./payment-provider";
+export * from "./pricing-catalogue";
 export * from "./providers/cashfree-provider";

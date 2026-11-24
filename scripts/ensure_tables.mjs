@@ -268,154 +268,166 @@ async function main() {
       console.warn("⚠️ FeatureEntitlement check warning:", feErr.message);
     }
 
-    // 4. Ensure Plans and PlanPrices exist
+    // 4. Ensure Plans and PlanPrices exist (Canonical Single Source of Truth)
     try {
-      const planCount = await prisma.plan.count();
-      if (planCount < 4) {
-        const plans = [
-          {
-            code: "FREE",
-            name: "Aspirant Foundation",
-            tier: 0,
-            description: "Start free with authentic PYQ exploration, personal bookmarks, and basic analytics.",
-            features: [
-              "Access to all 10,000+ authentic UPSC PYQs",
-              "Standard answer keys & basic explanations",
-              "1 full-length Prelims mock exam",
-              "Up to 5 saved bookmarks",
-              "Daily topic practice (3 questions/day)",
-              "Basic subject performance accuracy",
-              "Bilingual interface (Hindi & English)",
-              "Mobile-responsive practice player",
-            ],
-            prices: [
-              { billingInterval: "FREE", amountRupees: 0 },
-            ],
-          },
-          {
-            code: "BEGINNER",
-            name: "Prelims Sprint",
-            tier: 1,
-            description: "Focused practice for aspirants targeting upcoming Prelims with full question bank access.",
-            features: [
-              "Everything in Aspirant Foundation",
-              "Unlimited practice questions across all papers",
-              "15 full-length Prelims mock examinations",
-              "Detailed analytical explanations & micro-themes",
-              "Timed exam simulation mode with negative marking",
-              "Unlimited question bookmarks & custom tags",
-              "Speed & accuracy trend analytics",
-              "Question mistake revision notebook",
-            ],
-            prices: [
-              { billingInterval: "MONTHLY", amountRupees: 299 },
-              { billingInterval: "QUARTERLY", amountRupees: 799 },
-              { billingInterval: "ANNUAL", amountRupees: 1999 },
-            ],
-          },
-          {
-            code: "ACHIEVER",
-            name: "Comprehensive Scholar",
-            tier: 2,
-            isPopular: true,
-            description: "The complete preparation ecosystem for Prelims, Mains answer evaluation, and interview preparation.",
-            features: [
-              "Everything in Prelims Sprint",
-              "All 50+ Prelims mocks with all-India percentile",
-              "AI Mains Answer Evaluator (10 evaluations/month)",
-              "24/7 AI Personal UPSC Mentor & Study Coach",
-              "CSAT Master Coach with step-by-step logic",
-              "Interactive Prelims Map Lab with 300+ markers",
-              "Current affairs integration with connected PYQs",
-              "Topper copy comparative answer analysis",
-            ],
-            prices: [
-              { billingInterval: "MONTHLY", amountRupees: 499 },
-              { billingInterval: "QUARTERLY", amountRupees: 1299 },
-              { billingInterval: "ANNUAL", amountRupees: 3499 },
-            ],
-          },
-          {
-            code: "SCHOLAR",
-            name: "Ranker's Circle",
-            tier: 3,
-            description: "Uncapped, high-intensity preparation with unlimited AI evaluations, interview lab, and dedicated priority support.",
-            features: [
-              "Everything in Comprehensive Scholar",
-              "Unlimited AI Mains Answer Evaluations",
-              "Unlimited AI Mentor chats & custom study schedules",
-              "Personality Test (Interview) Lab simulator",
-              "Micro-theme trend forecaster & high-yield predictions",
-              "Downloadable offline PDF revision capsules",
-              "Priority doubt resolution within 2 hours",
-              "Dedicated 1-on-1 strategy audit calls",
-            ],
-            prices: [
-              { billingInterval: "MONTHLY", amountRupees: 999 },
-              { billingInterval: "QUARTERLY", amountRupees: 2499 },
-              { billingInterval: "ANNUAL", amountRupees: 5999 },
-            ],
-          },
-        ];
+      const canonicalPlans = [
+        {
+          code: "FREE",
+          name: "Free Aspirant",
+          tagline: "Essential UPSC PYQ practice with official answer keys",
+          tier: 0,
+          isPopular: false,
+          orderIndex: 1,
+          features: [
+            "Access to all authentic UPSC PYQs",
+            "Official answer keys & basic explanations",
+            "Daily 5-question Prelims micro-quiz",
+            "Personal question bookmarks quota (5)",
+            "Private study notes quota (3)",
+          ],
+          prices: [
+            { billingInterval: "MONTHLY", amountRupees: 0, discountPercent: 0 },
+            { billingInterval: "QUARTERLY", amountRupees: 0, discountPercent: 0 },
+            { billingInterval: "ANNUAL", amountRupees: 0, discountPercent: 0 },
+          ],
+        },
+        {
+          code: "PLUS",
+          name: "Aspirant Plus",
+          tagline: "Structured practice, verified explanations and smart revision",
+          tier: 1,
+          isPopular: false,
+          orderIndex: 2,
+          features: [
+            "Expanded daily practice (50 questions/day)",
+            "Detailed pedagogical explanations & elimination notes",
+            "SuperMemo-2 Spaced Repetition Mistake Notebook",
+            "Subject-wise accuracy and speed analytics",
+            "Personal bookmarks allowance (50)",
+            "Private study notes allowance (50)",
+          ],
+          prices: [
+            { billingInterval: "MONTHLY", amountRupees: 149, discountPercent: 0 },
+            { billingInterval: "QUARTERLY", amountRupees: 399, discountPercent: 11 },
+            { billingInterval: "ANNUAL", amountRupees: 999, discountPercent: 44 },
+          ],
+        },
+        {
+          code: "PRO",
+          name: "Aspirant Pro",
+          tagline: "AI Personal Mentor, Mission Control, Syllabus Map and Mains Evaluation",
+          tier: 2,
+          isPopular: true,
+          orderIndex: 3,
+          features: [
+            "Unlimited authentic PYQ catalogue practice",
+            "Full 2-Hour Timed Exam Simulator (+2.0 / -0.666 grading)",
+            "Pravaah AI Personal Mentor (100 messages/mo)",
+            "Pravaah Mission Control daily cockpit",
+            "Syllabus Intelligence Map with micro-nodes",
+            "Mains answer evaluations (5 credits/mo)",
+            "CSAT Survival Coach & speed drills",
+            "Unlimited bookmarks with custom tags",
+            "Unlimited private study notes",
+          ],
+          prices: [
+            { billingInterval: "MONTHLY", amountRupees: 299, discountPercent: 0 },
+            { billingInterval: "QUARTERLY", amountRupees: 799, discountPercent: 11 },
+            { billingInterval: "ANNUAL", amountRupees: 1999, discountPercent: 44 },
+          ],
+        },
+        {
+          code: "ELITE",
+          name: "Aspirant Elite",
+          tagline: "Higher AI mentor allowance, deep diagnostics and priority support",
+          tier: 3,
+          isPopular: false,
+          orderIndex: 4,
+          features: [
+            "Unlimited authentic PYQ catalogue practice",
+            "Pravaah AI Personal Mentor (300 messages/mo)",
+            "Mains answer evaluations (15 credits/mo)",
+            "Current Affairs exam converter packages",
+            "Unlimited Full Exam Simulations & custom topic mocks",
+            "Direct priority support desk & WhatsApp SLA",
+            "Unlimited study notes with PDF syllabus linking",
+          ],
+          prices: [
+            { billingInterval: "MONTHLY", amountRupees: 499, discountPercent: 0 },
+            { billingInterval: "QUARTERLY", amountRupees: 1299, discountPercent: 13 },
+            { billingInterval: "ANNUAL", amountRupees: 3499, discountPercent: 42 },
+          ],
+        },
+      ];
 
-        for (const p of plans) {
-          const planRecord = await prisma.plan.upsert({
-            where: { code: p.code },
-            create: {
+      for (const p of canonicalPlans) {
+        // Also check if legacy code exists to update it smoothly
+        let legacyCodes = [];
+        if (p.code === "PLUS") legacyCodes = ["BEGINNER"];
+        if (p.code === "PRO") legacyCodes = ["ACHIEVER"];
+        if (p.code === "ELITE") legacyCodes = ["SCHOLAR"];
+
+        let planRecord = await prisma.plan.findFirst({
+          where: { code: { in: [p.code, ...legacyCodes] } }
+        });
+
+        if (planRecord) {
+          planRecord = await prisma.plan.update({
+            where: { id: planRecord.id },
+            data: {
               code: p.code,
               name: p.name,
               tier: p.tier,
-              description: p.description,
-              isPopular: p.isPopular || false,
-            },
-            update: {
-              name: p.name,
-              tier: p.tier,
-              description: p.description,
-              isPopular: p.isPopular || false,
+              tagline: p.tagline,
+              isPopular: p.isPopular,
+              orderIndex: p.orderIndex,
+              isActive: true,
             },
           });
+        } else {
+          planRecord = await prisma.plan.create({
+            data: {
+              code: p.code,
+              name: p.name,
+              tier: p.tier,
+              tagline: p.tagline,
+              isPopular: p.isPopular,
+              orderIndex: p.orderIndex,
+              isActive: true,
+            },
+          });
+        }
 
-          // Ensure features
-          for (let i = 0; i < p.features.length; i++) {
-            const featText = p.features[i];
-            const existingFeat = await prisma.planFeature.findFirst({
-              where: { planId: planRecord.id, featureText: featText },
+        // Ensure canonical prices
+        for (const pr of p.prices) {
+          const existingPrice = await prisma.planPrice.findFirst({
+            where: { planId: planRecord.id, billingInterval: pr.billingInterval }
+          });
+          if (existingPrice) {
+            await prisma.planPrice.update({
+              where: { id: existingPrice.id },
+              data: {
+                amountRupees: pr.amountRupees,
+                currency: "INR",
+                discountPercent: pr.discountPercent,
+                isActive: true,
+              }
             });
-            if (!existingFeat) {
-              await prisma.planFeature.create({
-                data: {
-                  planId: planRecord.id,
-                  featureText: featText,
-                  displayOrder: i + 1,
-                  isIncluded: true,
-                },
-              });
-            }
-          }
-
-          // Ensure prices
-          for (const pr of p.prices) {
-            await prisma.planPrice.upsert({
-              where: {
-                planId_billingInterval: {
-                  planId: planRecord.id,
-                  billingInterval: pr.billingInterval,
-                },
-              },
-              create: {
+          } else {
+            await prisma.planPrice.create({
+              data: {
                 planId: planRecord.id,
                 billingInterval: pr.billingInterval,
                 amountRupees: pr.amountRupees,
-              },
-              update: {
-                amountRupees: pr.amountRupees,
-              },
+                currency: "INR",
+                discountPercent: pr.discountPercent,
+                isActive: true,
+              }
             });
           }
         }
-        console.log("✅ Ensured plans, features, and prices.");
       }
+      console.log("✅ Ensured canonical plans, features, and prices.");
     } catch (planErr) {
       console.warn("⚠️ Plan check warning:", planErr.message);
     }

@@ -37,7 +37,7 @@ import {
 export default function HomePage() {
   const [interactiveOption, setInteractiveOption] = useState<string>("C");
   const [interactiveLang, setInteractiveLang] = useState<"EN" | "HI">("EN");
-  const [pricingInterval, setPricingInterval] = useState<"MONTHLY" | "ANNUAL">("ANNUAL");
+  const [pricingInterval, setPricingInterval] = useState<"MONTHLY" | "QUARTERLY" | "ANNUAL">("ANNUAL");
   const [openFaqIndex, setOpenFaqIndex] = useState<number | null>(0);
 
   const popularKeywords = [
@@ -669,7 +669,7 @@ export default function HomePage() {
       {/* 7. Membership Plans Section */}
       <section className="py-16 sm:py-20 px-4 sm:px-6 bg-[#FBF7F0]" id="pricing">
         <div className="mx-auto max-w-7xl">
-          <div className="text-center max-w-3xl mx-auto mb-12">
+          <div className="text-center max-w-3xl mx-auto mb-10">
             <span className="inline-flex items-center gap-1.5 rounded-full bg-[#FAF2E6] px-3.5 py-1 text-xs font-bold uppercase tracking-wider text-[#741A2B] border border-[#E5C88E] mb-3">
               Transparent Membership
             </span>
@@ -679,6 +679,58 @@ export default function HomePage() {
             <p className="mt-3 text-sm sm:text-base text-[#786B68]">
               Free learning tools are always active. Premium features save preparation time and provide personalized mentorship.
             </p>
+
+            {/* Interactive Billing Interval Selector */}
+            <div className="mt-8 inline-flex items-center rounded-2xl bg-white p-1.5 border border-[#E7DDD4] shadow-xs">
+              <button
+                onClick={() => setPricingInterval("MONTHLY")}
+                className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
+                  pricingInterval === "MONTHLY"
+                    ? "bg-[#741A2B] text-white shadow-xs font-extrabold"
+                    : "text-[#786B68] hover:text-[#261B1E]"
+                }`}
+              >
+                Monthly
+              </button>
+              <button
+                onClick={() => setPricingInterval("QUARTERLY")}
+                className={`rounded-xl px-4 py-2 text-xs font-bold transition flex items-center gap-1.5 ${
+                  pricingInterval === "QUARTERLY"
+                    ? "bg-[#741A2B] text-white shadow-xs font-extrabold"
+                    : "text-[#786B68] hover:text-[#261B1E]"
+                }`}
+              >
+                <span>Quarterly</span>
+                <span
+                  className={`rounded-full px-1.5 py-0.5 text-[9px] font-black ${
+                    pricingInterval === "QUARTERLY"
+                      ? "bg-[#C69A4A] text-[#3A101A]"
+                      : "bg-[#EAE4DC] text-[#741A2B]"
+                  }`}
+                >
+                  Save ~11%
+                </span>
+              </button>
+              <button
+                onClick={() => setPricingInterval("ANNUAL")}
+                className={`rounded-xl px-4 py-2 text-xs font-bold transition flex items-center gap-1.5 ${
+                  pricingInterval === "ANNUAL"
+                    ? "bg-[#741A2B] text-white shadow-xs font-extrabold"
+                    : "text-[#786B68] hover:text-[#261B1E]"
+                }`}
+              >
+                <span>Annual</span>
+                <span
+                  className={`rounded-full px-2 py-0.5 text-[9px] font-black uppercase ${
+                    pricingInterval === "ANNUAL"
+                      ? "bg-[#C69A4A] text-[#3A101A]"
+                      : "bg-[#EAE4DC] text-[#741A2B]"
+                  }`}
+                >
+                  Save ~44%
+                </span>
+              </button>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -710,18 +762,26 @@ export default function HomePage() {
                 <span className="text-xs font-bold text-[#741A2B] uppercase tracking-wider">Tier 1</span>
                 <h3 className="mt-1 text-xl font-bold font-editorial text-[#261B1E]">Aspirant Plus</h3>
                 <div className="mt-3 flex items-baseline gap-1">
-                  <span className="text-3xl font-extrabold font-editorial text-[#741A2B]">₹149</span>
-                  <span className="text-xs text-[#786B68]">/ month</span>
+                  <span className="text-3xl font-extrabold font-editorial text-[#741A2B]">
+                    {pricingInterval === "MONTHLY" && "₹149"}
+                    {pricingInterval === "QUARTERLY" && "₹399"}
+                    {pricingInterval === "ANNUAL" && "₹999"}
+                  </span>
+                  <span className="text-xs text-[#786B68]">
+                    {pricingInterval === "MONTHLY" && "/ month"}
+                    {pricingInterval === "QUARTERLY" && "/ quarter (₹133/mo)"}
+                    {pricingInterval === "ANNUAL" && "/ year (₹83/mo)"}
+                  </span>
                 </div>
                 <p className="mt-2 text-xs text-[#786B68]">For consistent practice without daily question limits.</p>
                 <div className="mt-6 pt-4 border-t border-[#E7DDD4] space-y-2.5 text-xs text-[#261B1E]">
                   <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Unlimited PYQ Practice</span></div>
                   <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>SM-2 Spaced Mistake Queue</span></div>
                   <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>1 Full-Length Mock Test/mo</span></div>
-                  <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Bilingual Audio Enunciation</span></div>
+                  <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Detailed Explanations & Notes</span></div>
                 </div>
               </div>
-              <a href="/pricing" className="mt-6 block text-center rounded-xl bg-[#741A2B] hover:bg-[#5E1422] py-2.5 text-xs font-bold text-white transition shadow-xs">
+              <a href={`/pricing?plan=PLUS&interval=${pricingInterval}`} className="mt-6 block text-center rounded-xl bg-[#741A2B] hover:bg-[#5E1422] py-2.5 text-xs font-bold text-white transition shadow-xs">
                 View Plan Details
               </a>
             </div>
@@ -735,40 +795,56 @@ export default function HomePage() {
                 <span className="text-xs font-bold text-[#8C6721] uppercase tracking-wider">Tier 2</span>
                 <h3 className="mt-1 text-xl font-bold font-editorial text-[#261B1E]">Aspirant Pro</h3>
                 <div className="mt-3 flex items-baseline gap-1">
-                  <span className="text-3xl font-extrabold font-editorial text-[#741A2B]">₹299</span>
-                  <span className="text-xs text-[#786B68]">/ month</span>
+                  <span className="text-3xl font-extrabold font-editorial text-[#741A2B]">
+                    {pricingInterval === "MONTHLY" && "₹299"}
+                    {pricingInterval === "QUARTERLY" && "₹799"}
+                    {pricingInterval === "ANNUAL" && "₹1,999"}
+                  </span>
+                  <span className="text-xs text-[#786B68]">
+                    {pricingInterval === "MONTHLY" && "/ month"}
+                    {pricingInterval === "QUARTERLY" && "/ quarter (₹266/mo)"}
+                    {pricingInterval === "ANNUAL" && "/ year (₹166/mo)"}
+                  </span>
                 </div>
                 <p className="mt-2 text-xs text-[#786B68]">Complete exam simulator with diagnostic mistake analysis.</p>
                 <div className="mt-6 pt-4 border-t border-[#E7DDD4] space-y-2.5 text-xs text-[#261B1E]">
                   <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Everything in Plus</span></div>
                   <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Unlimited Timed Mock Tests</span></div>
+                  <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Pravaah AI Personal Mentor (100 msgs)</span></div>
                   <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Mains Answer Evaluation (5/mo)</span></div>
-                  <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>CSAT Survival Coach Telemetry</span></div>
                 </div>
               </div>
-              <a href="/pricing" className="mt-6 block text-center rounded-xl bg-[#C69A4A] hover:bg-[#B88B39] py-2.5 text-xs font-bold text-[#3A101A] transition shadow-gold">
+              <a href={`/pricing?plan=PRO&interval=${pricingInterval}`} className="mt-6 block text-center rounded-xl bg-[#C69A4A] hover:bg-[#B88B39] py-2.5 text-xs font-bold text-[#3A101A] transition shadow-gold">
                 View Plan Details
               </a>
             </div>
 
-            {/* Plan 4: Aspirant Scholar */}
+            {/* Plan 4: Aspirant Elite */}
             <div className="p-6 rounded-2xl border border-[#E7DDD4] bg-white flex flex-col justify-between shadow-xs">
               <div>
                 <span className="text-xs font-bold text-[#741A2B] uppercase tracking-wider">Tier 3</span>
-                <h3 className="mt-1 text-xl font-bold font-editorial text-[#261B1E]">Aspirant Scholar</h3>
+                <h3 className="mt-1 text-xl font-bold font-editorial text-[#261B1E]">Aspirant Elite</h3>
                 <div className="mt-3 flex items-baseline gap-1">
-                  <span className="text-3xl font-extrabold font-editorial text-[#741A2B]">₹499</span>
-                  <span className="text-xs text-[#786B68]">/ month</span>
+                  <span className="text-3xl font-extrabold font-editorial text-[#741A2B]">
+                    {pricingInterval === "MONTHLY" && "₹499"}
+                    {pricingInterval === "QUARTERLY" && "₹1,299"}
+                    {pricingInterval === "ANNUAL" && "₹3,499"}
+                  </span>
+                  <span className="text-xs text-[#786B68]">
+                    {pricingInterval === "MONTHLY" && "/ month"}
+                    {pricingInterval === "QUARTERLY" && "/ quarter (₹433/mo)"}
+                    {pricingInterval === "ANNUAL" && "/ year (₹291/mo)"}
+                  </span>
                 </div>
                 <p className="mt-2 text-xs text-[#786B68]">VIP academic mentor access and unlimited evaluations.</p>
                 <div className="mt-6 pt-4 border-t border-[#E7DDD4] space-y-2.5 text-xs text-[#261B1E]">
                   <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Everything in Pro</span></div>
-                  <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Unlimited Mains Evaluations</span></div>
-                  <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Personality Test DAF Analysis</span></div>
-                  <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Priority Faculty Support</span></div>
+                  <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Pravaah AI Personal Mentor (300 msgs)</span></div>
+                  <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Mains Evaluations (15/mo)</span></div>
+                  <div className="flex items-center gap-2"><Check className="h-3.5 w-3.5 text-[#1E7E55]" /><span>Priority Faculty Support & WhatsApp SLA</span></div>
                 </div>
               </div>
-              <a href="/pricing" className="mt-6 block text-center rounded-xl border border-[#E7DDD4] bg-[#FBF7F0] hover:bg-[#F4EDE2] py-2.5 text-xs font-bold text-[#261B1E] transition">
+              <a href={`/pricing?plan=ELITE&interval=${pricingInterval}`} className="mt-6 block text-center rounded-xl border border-[#E7DDD4] bg-[#FBF7F0] hover:bg-[#F4EDE2] py-2.5 text-xs font-bold text-[#261B1E] transition">
                 View Plan Details
               </a>
             </div>
@@ -778,10 +854,10 @@ export default function HomePage() {
           <div className="mt-10 p-4 rounded-2xl bg-white border border-[#E7DDD4] max-w-2xl mx-auto text-center shadow-xs">
             <div className="flex items-center justify-center gap-2 text-xs font-bold text-[#741A2B]">
               <ShieldCheck className="h-4 w-4 text-[#C69A4A]" />
-              <span>Cashfree Payment Gateway Integration In Progress</span>
+              <span>Official Cashfree Payment Gateway Active & Protected</span>
             </div>
             <p className="mt-1 text-[11px] text-[#786B68]">
-              Online payment checkouts are temporarily dormant pending merchant onboarding verification. All free practice tools, PYQ explorer, and daily learning workspaces are 100% active and unblocked.
+              All transactions are processed through 256-bit bank-grade encryption via Cashfree Payments. Instant UPI QR, NetBanking, and RuPay/Visa/MasterCard supported with zero hidden charges.
             </p>
           </div>
         </div>

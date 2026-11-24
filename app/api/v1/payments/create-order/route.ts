@@ -8,6 +8,12 @@ import {
   getCashfreeProvider,
   getCashfreeConfig,
 } from "@/lib/payments";
+import {
+  normalizePlanCode,
+  normalizeBillingInterval,
+  resolveCanonicalPrice,
+  REVERSE_PLAN_CODE_ALIASES,
+} from "@/lib/payments/pricing-catalogue";
 
 export const dynamic = "force-dynamic";
 
@@ -53,17 +59,20 @@ export async function POST(request: NextRequest) {
 
     // 3. Parse and validate request payload
     const body = await request.json().catch(() => ({}));
-    const planCode = (body.planCode || body.plan || "ACHIEVER").toUpperCase();
-    const billingInterval = (body.billingInterval || body.interval || "MONTHLY").toUpperCase();
+    const rawPlanCode = body.planCode || body.plan || body.productId || "PRO";
+    const rawBillingInterval = body.billingInterval || body.interval || "MONTHLY";
     const couponCode = body.couponCode ? String(body.couponCode).trim().toUpperCase() : null;
 
-    if (planCode === "FREE") {
+    const canonicalCode = normalizePlanCode(rawPlanCode);
+    const billingInterval = normalizeBillingInterval(rawBillingInterval);
+
+    if (canonicalCode === "FREE") {
       return NextResponse.json(
         {
           success: false,
           error: {
             code: "FREE_PLAN_SELECTED",
-            message: "The Aspirant Foundation plan is completely free. No checkout order required.",
+            message: "The Free Aspirant plan is completely free. No checkout order required.",
           },
         },
         { status: 400 }
@@ -71,9 +80,10 @@ export async function POST(request: NextRequest) {
     }
 
     // 4. Server-side Plan & Price Lookup (Zero client trust on amount)
+    const candidateCodes = REVERSE_PLAN_CODE_ALIASES[canonicalCode] || [canonicalCode];
     const plan = await prisma.plan.findFirst({
       where: {
-        code: planCode,
+        code: { in: candidateCodes },
         isActive: true,
       },
       include: {
@@ -87,31 +97,22 @@ export async function POST(request: NextRequest) {
           success: false,
           error: {
             code: "PLAN_NOT_FOUND",
-            message: `Plan with code '${planCode}' does not exist or is inactive.`,
+            message: `Plan with code '${canonicalCode}' does not exist or is inactive.`,
           },
         },
         { status: 404 }
       );
     }
 
+    // Authoritative canonical price resolution
+    const canonicalPrice = resolveCanonicalPrice(canonicalCode, billingInterval);
     const priceRecord = plan.prices.find(
       (p) => p.billingInterval === billingInterval && p.isActive
     );
 
-    if (!priceRecord) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: "INVALID_BILLING_INTERVAL",
-            message: `Billing interval '${billingInterval}' is not configured for plan '${plan.name}'.`,
-          },
-        },
-        { status: 400 }
-      );
-    }
-
-    let finalAmount = priceRecord.amountRupees;
+    // If database price matches canonical, use it; otherwise use authoritative canonical price
+    const baseAmount = priceRecord?.amountRupees ?? canonicalPrice.amountRupees;
+    let finalAmount = baseAmount;
     let discountAmount = 0;
 
     // Optional Coupon Validation

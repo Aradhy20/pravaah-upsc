@@ -52,7 +52,7 @@ async function runEndToEndVerification() {
   console.log(`  ✓ Initial Active Subscription: ${initialSub ? initialSub.status : "None (Free tier)"}`);
 
   // Step 2: Create Payment Order
-  console.log("\n[Step 2] Creating UPI Payment Order for ACHIEVER (Annual Plan: ₹5,499)...");
+  console.log("\n[Step 2] Creating UPI Payment Order for PRO (Annual Plan: ₹1,999)...");
   const createOrderRes = await fetch(`${BASE_URL}/api/v1/payments/create-order`, {
     method: "POST",
     headers: {
@@ -61,7 +61,7 @@ async function runEndToEndVerification() {
     },
     body: JSON.stringify({
       productType: "SUBSCRIPTION",
-      productId: "ACHIEVER",
+      productId: "PRO",
       billingInterval: "ANNUAL",
     }),
   });

@@ -30,7 +30,7 @@ const INITIAL_PLANS = [
   {
     id: "plan_free",
     code: "FREE",
-    name: "Free Aspirant (Foundation)",
+    name: "Free Aspirant",
     tagline: "Essential UPSC PYQ practice with official answer keys",
     tier: 0,
     isPopular: false,
@@ -40,17 +40,19 @@ const INITIAL_PLANS = [
       ANNUAL: { amount: 0, discountPercent: 0 },
     },
     features: [
-      { code: "PYQ_PRACTICE", name: "Daily PYQ practice allowance (15 questions/day)", isIncluded: true },
-      { code: "EXPLANATIONS", name: "Basic concept summaries and official answer keys", isIncluded: true },
-      { code: "DAILY_QUIZ", name: "Daily 5-question Prelims quiz", isIncluded: true },
-      { code: "SYLLABUS_MAP", name: "Basic syllabus explorer", isIncluded: true },
+      { code: "PYQ_PRACTICE", name: "Daily authentic PYQ practice (15 questions/day)", isIncluded: true },
+      { code: "EXPLANATIONS", name: "Verified answer keys & foundational concept notes", isIncluded: true },
+      { code: "DAILY_QUIZ", name: "Daily 5-question Prelims micro-quiz", isIncluded: true },
+      { code: "SYLLABUS_MAP", name: "Standard syllabus outline explorer", isIncluded: true },
+      { code: "BOOKMARKS_LIMIT", name: "Personal question bookmarks (5)", isIncluded: true },
+      { code: "NOTES_LIMIT", name: "Private study notes quota (3)", isIncluded: true },
       { code: "TIMED_EXAMS", name: "Timed 2-Hour Examination Simulator", isIncluded: false },
       { code: "AI_MENTOR", name: "Pravaah AI Personal Mentor", isIncluded: false },
     ],
   },
   {
-    id: "plan_beginner",
-    code: "BEGINNER",
+    id: "plan_plus",
+    code: "PLUS",
     name: "Aspirant Plus",
     tagline: "Structured practice, verified explanations and smart revision",
     tier: 1,
@@ -61,17 +63,21 @@ const INITIAL_PLANS = [
       ANNUAL: { amount: 999, discountPercent: 44 },
     },
     features: [
-      { code: "PYQ_PRACTICE", name: "Expanded daily PYQ practice (50 questions/day)", isIncluded: true },
+      { code: "PYQ_PRACTICE", name: "Expanded daily practice (50 questions/day)", isIncluded: true },
       { code: "EXPLANATIONS", name: "Detailed pedagogical explanations & elimination notes", isIncluded: true },
-      { code: "ADVANCED_ANALYTICS", name: "Subject-wise performance analytics", isIncluded: true },
-      { code: "MISTAKE_REVISION", name: "Mistake Notebook & Spaced Repetition", isIncluded: true },
+      { code: "ADVANCED_ANALYTICS", name: "Subject-wise accuracy and speed analytics", isIncluded: true },
+      { code: "MISTAKE_REVISION", name: "SuperMemo-2 Spaced Repetition Mistake Notebook", isIncluded: true },
+      { code: "BOOKMARKS_LIMIT", name: "Personal bookmarks allowance (50)", isIncluded: true },
+      { code: "NOTES_LIMIT", name: "Private study notes allowance (50)", isIncluded: true },
+      { code: "TIMED_EXAMS", name: "Timed 2-Hour Examination Simulator", isIncluded: true },
+      { code: "AI_MENTOR", name: "Pravaah AI Personal Mentor", isIncluded: false },
     ],
   },
   {
-    id: "plan_achiever",
-    code: "ACHIEVER",
-    name: "Aspirant Pro (Prelims Pro / Achiever)",
-    tagline: "Unlimited practice, Timed Exam Simulator and AI Mentor credits",
+    id: "plan_pro",
+    code: "PRO",
+    name: "Aspirant Pro",
+    tagline: "AI Personal Mentor, Mission Control, Syllabus Map and Mains Evaluation",
     tier: 2,
     isPopular: true,
     prices: {
@@ -80,17 +86,21 @@ const INITIAL_PLANS = [
       ANNUAL: { amount: 1999, discountPercent: 44 },
     },
     features: [
-      { code: "PYQ_PRACTICE", name: "Unlimited daily PYQ practice", isIncluded: true },
-      { code: "TIMED_EXAMS", name: "Timed Exam Simulator with real negative marking", isIncluded: true },
-      { code: "AI_MENTOR", name: "Pravaah AI Mentor (30 query credits/month)", isIncluded: true },
-      { code: "MAINS_EVAL", name: "Mains Answer Evaluation (5 evaluations/month)", isIncluded: true },
+      { code: "PYQ_PRACTICE", name: "Unlimited authentic PYQ catalogue practice", isIncluded: true },
+      { code: "TIMED_EXAMS", name: "Full 2-Hour Timed Exam Simulator (+2.0 / -0.666 grading)", isIncluded: true },
+      { code: "AI_MENTOR", name: "Pravaah AI Personal Mentor (100 messages/mo)", isIncluded: true },
+      { code: "MISSION_CONTROL", name: "Pravaah Mission Control daily cockpit", isIncluded: true },
+      { code: "SYLLABUS_MAP", name: "Syllabus Intelligence Map with micro-nodes", isIncluded: true },
+      { code: "PRELIMS_READINESS", name: "Prelims Readiness Analytics (0-100 index)", isIncluded: true },
+      { code: "MAINS_EVAL", name: "Mains answer evaluations (5 credits/mo)", isIncluded: true },
+      { code: "CSAT_COACH", name: "CSAT Survival Coach & speed drills", isIncluded: true },
     ],
   },
   {
-    id: "plan_scholar",
-    code: "SCHOLAR",
+    id: "plan_elite",
+    code: "ELITE",
     name: "Aspirant Elite",
-    tagline: "Comprehensive mastery suite: high AI credits & all learning packs",
+    tagline: "Higher AI mentor allowance, deep diagnostics and priority support",
     tier: 3,
     isPopular: false,
     prices: {
@@ -99,8 +109,12 @@ const INITIAL_PLANS = [
       ANNUAL: { amount: 3499, discountPercent: 42 },
     },
     features: [
-      { code: "AI_MENTOR", name: "High-quota AI Mentor (100 credits/month)", isIncluded: true },
-      { code: "MAINS_EVAL", name: "Expanded Mains Evaluation (20 evaluations/month)", isIncluded: true },
+      { code: "PYQ_PRACTICE", name: "Unlimited authentic PYQ catalogue practice", isIncluded: true },
+      { code: "AI_MENTOR", name: "Pravaah AI Personal Mentor (300 messages/mo)", isIncluded: true },
+      { code: "MAINS_EVAL", name: "Mains answer evaluations (15 credits/mo)", isIncluded: true },
+      { code: "CURRENT_AFFAIRS", name: "Current Affairs exam converter packages", isIncluded: true },
+      { code: "TIMED_EXAMS", name: "Unlimited Full Exam Simulations & custom topic mocks", isIncluded: true },
+      { code: "PRIORITY_SUPPORT", name: "Direct priority support desk & WhatsApp SLA", isIncluded: true },
       { code: "ALL_PACKS", name: "All 5 Specialized Learning Packs included", isIncluded: true },
     ],
   },
@@ -201,7 +215,7 @@ export default function PricingPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          planCode: plan.code,
+          planCode: plan.canonicalCode || plan.code,
           billingInterval,
           couponCode: couponResult?.code || undefined,
         }),
@@ -284,15 +298,14 @@ export default function PricingPage() {
           </div>
         )}
 
-        {/* Notice of Dormant Checkout during Cashfree onboarding */}
+        {/* Cashfree Secure Payment Protection Badge */}
         <div className="mt-6 rounded-2xl border border-heritage-gold/50 bg-heritage-cream/70 p-4 text-xs text-heritage-text flex items-center justify-between text-left shadow-xs">
           <div className="flex items-start gap-3">
-            <Clock className="h-5 w-5 text-heritage-gold shrink-0 mt-0.5" />
+            <ShieldCheck className="h-5 w-5 text-heritage-gold shrink-0 mt-0.5" />
             <div>
-              <p className="font-serif font-bold text-heritage-burgundy">Online payments are temporarily unavailable</p>
+              <p className="font-serif font-bold text-heritage-burgundy">100% Secure Checkout via Official Cashfree Gateway</p>
               <p className="mt-0.5 text-heritage-secondary leading-relaxed">
-                Our payment gateway is currently undergoing official compliance onboarding with <strong>Cashfree Payments</strong>.
-                All learning features, PYQ banks, AI mentor trials, and test simulators remain 100% free and operational for all registered students.
+                Instant activation for UPI AutoPay, Instant UPI QR, NetBanking, and credit/debit cards with 256-bit bank-grade encryption. All subscriptions include transparent billing and verified tax receipts.
               </p>
             </div>
           </div>
@@ -310,11 +323,12 @@ export default function PricingPage() {
           </button>
           <button
             onClick={() => setBillingInterval("QUARTERLY")}
-            className={`rounded-xl px-4 py-2 text-xs font-bold transition ${
+            className={`rounded-xl px-4 py-2 text-xs font-bold transition flex items-center gap-1.5 ${
               billingInterval === "QUARTERLY" ? "bg-white text-heritage-text shadow-xs font-extrabold" : "text-heritage-secondary hover:text-heritage-text"
             }`}
           >
-            Quarterly <span className="ml-1 text-[10px] text-emerald-700 font-extrabold">Save ~15%</span>
+            <span>Quarterly</span>
+            <span className="rounded-full bg-emerald-100 px-1.5 py-0.2 text-[9px] text-emerald-800 font-extrabold">Save ~11%</span>
           </button>
           <button
             onClick={() => setBillingInterval("ANNUAL")}
@@ -339,6 +353,7 @@ export default function PricingPage() {
           const price = priceObj?.amount ?? 0;
           const isPro = p.code === "ACHIEVER" || p.code === "PRO" || p.tier === 2;
           const isFree = p.tier === 0;
+          const displayName = p.name || (p.code === "FREE" ? "Free Aspirant" : p.code === "PLUS" || p.code === "BEGINNER" ? "Aspirant Plus" : p.code === "PRO" || p.code === "ACHIEVER" ? "Aspirant Pro" : "Aspirant Elite");
 
           return (
             <div
@@ -358,7 +373,7 @@ export default function PricingPage() {
               <div>
                 <div className="flex items-center justify-between">
                   <h3 className="font-serif text-lg font-bold text-heritage-text">
-                    {p.name === "Aspirant Foundation" || p.code === "FREE" ? "Free Aspirant (Foundation)" : p.name === "Prelims Pro" || p.code === "ACHIEVER" || p.code === "PRO" ? "Aspirant Pro (Prelims Pro / Achiever)" : p.name === "Syllabus Sprint" || p.code === "BEGINNER" || p.code === "PLUS" ? "Aspirant Plus" : p.name === "Ranker Suite" || p.code === "SCHOLAR" || p.code === "ELITE" ? "Aspirant Elite" : p.name}
+                    {displayName}
                   </h3>
                   <span className="rounded bg-heritage-cream px-2 py-0.5 text-[10px] font-mono font-bold text-heritage-burgundy border border-heritage-border">
                     Tier {p.tier}
@@ -371,9 +386,14 @@ export default function PricingPage() {
                   <span className="font-serif text-3xl sm:text-4xl font-bold text-heritage-text">₹{price}</span>
                   <span className="text-xs text-heritage-secondary">
                     {billingInterval === "MONTHLY" && "/ month"}
-                    {billingInterval === "QUARTERLY" && "/ quarter"}
-                    {billingInterval === "ANNUAL" && "/ year"}
+                    {billingInterval === "QUARTERLY" && `/ quarter (₹${Math.round(price / 3)}/mo)`}
+                    {billingInterval === "ANNUAL" && `/ year (₹${Math.round(price / 12)}/mo)`}
                   </span>
+                  {priceObj?.discountPercent ? (
+                    <span className="ml-auto rounded-full bg-emerald-100 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                      Save {priceObj.discountPercent}%
+                    </span>
+                  ) : null}
                 </div>
 
                 {/* Features List */}

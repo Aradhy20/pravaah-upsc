@@ -200,20 +200,20 @@ async function main() {
   // 2.9 Pricing Catalogue
   const plansRes = await verifyApiEndpoint('/api/v1/plans');
   const plansList = plansRes.json?.data || [];
-  const beginner = plansList.find(p => p.code === 'BEGINNER');
-  const achiever = plansList.find(p => p.code === 'ACHIEVER');
-  const scholar = plansList.find(p => p.code === 'SCHOLAR');
+  const beginner = plansList.find(p => p.code === 'PLUS' || p.code === 'BEGINNER');
+  const achiever = plansList.find(p => p.code === 'PRO' || p.code === 'ACHIEVER');
+  const scholar = plansList.find(p => p.code === 'ELITE' || p.code === 'SCHOLAR');
   const pricingOk =
     plansRes.status === 200 &&
-    beginner?.prices?.ANNUAL?.amount === 2999 &&
-    achiever?.prices?.ANNUAL?.amount === 5499 &&
-    scholar?.prices?.ANNUAL?.amount === 8999;
+    beginner?.prices?.ANNUAL?.amount === 999 &&
+    achiever?.prices?.ANNUAL?.amount === 1999 &&
+    scholar?.prices?.ANNUAL?.amount === 3499;
   recordTest(
     '2. Production API',
     'GET /api/v1/plans (Authoritative Pricing Tiers)',
     pricingOk ? 'PASS' : 'FAIL',
-    `Syllabus Sprint: ₹${beginner?.prices?.ANNUAL?.amount}, Prelims Pro: ₹${achiever?.prices?.ANNUAL?.amount}, Ranker Suite: ₹${scholar?.prices?.ANNUAL?.amount}`,
-    'Syllabus Sprint: ₹2,999, Prelims Pro: ₹5,499, Ranker Suite: ₹8,999',
+    `Aspirant Plus: ₹${beginner?.prices?.ANNUAL?.amount}, Aspirant Pro: ₹${achiever?.prices?.ANNUAL?.amount}, Aspirant Elite: ₹${scholar?.prices?.ANNUAL?.amount}`,
+    'Aspirant Plus: ₹999, Aspirant Pro: ₹1,999, Aspirant Elite: ₹3,499',
     `Plans returned: ${plansList.map(p => p.name).join(', ')}`
   );
 

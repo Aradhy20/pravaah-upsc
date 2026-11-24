@@ -25,11 +25,11 @@ describe("PRAVAAH UPSC — Cashfree Payment Gateway & Security Verification", ()
 
     // Retrieve active plan and price
     testPlan = await prisma.plan.findFirst({
-      where: { code: "ACHIEVER" },
+      where: { code: { in: ["PRO", "ACHIEVER"] } },
       include: { prices: true },
     });
 
-    assert.ok(testPlan, "ACHIEVER plan must exist in database");
+    assert.ok(testPlan, "PRO or ACHIEVER plan must exist in database");
     testPlanPrice = testPlan.prices.find((p) => p.billingInterval === "ANNUAL") || testPlan.prices[0];
     assert.ok(testPlanPrice, "ACHIEVER plan must have valid pricing");
   });

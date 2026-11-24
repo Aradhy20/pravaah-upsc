@@ -27,9 +27,9 @@ export function UpgradeModal({
   onClose,
   featureTitle = "Timed 2-Hour Examination Simulator",
   featureDescription = "Unlock full exam condition simulation, automated negative marking (-0.66), and detailed syllabus weakness diagnostics.",
-  recommendedPlanCode = "ACHIEVER",
+  recommendedPlanCode = "PRO",
 }: UpgradeModalProps) {
-  const [billingInterval, setBillingInterval] = useState<"MONTHLY" | "ANNUAL">("ANNUAL");
+  const [billingInterval, setBillingInterval] = useState<"MONTHLY" | "QUARTERLY" | "ANNUAL">("ANNUAL");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -138,15 +138,30 @@ export function UpgradeModal({
             <div className="inline-flex p-1 bg-slate-100 rounded-xl">
               <button
                 onClick={() => setBillingInterval("MONTHLY")}
-                className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all ${
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all ${
                   billingInterval === "MONTHLY" ? "bg-white text-slate-900 shadow-sm" : "text-slate-600"
                 }`}
               >
                 Monthly
               </button>
               <button
+                onClick={() => setBillingInterval("QUARTERLY")}
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1 ${
+                  billingInterval === "QUARTERLY"
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "text-slate-600 hover:text-slate-900"
+                }`}
+              >
+                <span>Quarterly</span>
+                <span className={`rounded px-1 text-[9px] font-black ${
+                  billingInterval === "QUARTERLY" ? "bg-amber-400 text-slate-900" : "bg-emerald-100 text-emerald-800"
+                }`}>
+                  -11%
+                </span>
+              </button>
+              <button
                 onClick={() => setBillingInterval("ANNUAL")}
-                className={`px-4 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+                className={`px-3.5 py-1.5 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 ${
                   billingInterval === "ANNUAL"
                     ? "bg-blue-600 text-white shadow-sm"
                     : "text-slate-600 hover:text-slate-900"
@@ -154,13 +169,13 @@ export function UpgradeModal({
               >
                 <span>Annual Commit</span>
                 <span className="rounded bg-amber-400 text-slate-900 px-1.5 py-0.2 text-[10px] font-black">
-                  SAVE 42%
+                  SAVE 44%
                 </span>
               </button>
             </div>
           </div>
 
-          {/* Featured Plan Card: Achiever Pro */}
+          {/* Featured Plan Card: Aspirant Pro */}
           <div className="rounded-2xl border-2 border-blue-600 bg-blue-50/40 p-5 relative mb-6">
             <div className="absolute -top-3 right-6 rounded-full bg-blue-700 px-3 py-0.5 text-[11px] font-black text-white uppercase tracking-wider shadow-sm">
               Most Popular
@@ -168,18 +183,22 @@ export function UpgradeModal({
 
             <div className="flex items-start justify-between">
               <div>
-                <h3 className="text-base font-extrabold text-slate-900">Achiever (Prelims Pro)</h3>
+                <h3 className="text-base font-extrabold text-slate-900">Aspirant Pro</h3>
                 <p className="text-xs text-slate-600 mt-0.5">
-                  Complete exam simulator + Spaced Repetition Notebook
+                  Complete exam simulator + AI Personal Mentor + Spaced Mistake Queue
                 </p>
               </div>
 
               <div className="text-right">
                 <div className="text-2xl font-black text-slate-900">
-                  {billingInterval === "ANNUAL" ? "₹5,499" : "₹799"}
+                  {billingInterval === "ANNUAL" ? "₹1,999" : billingInterval === "QUARTERLY" ? "₹799" : "₹299"}
                 </div>
                 <span className="text-[11px] text-slate-500 font-medium">
-                  {billingInterval === "ANNUAL" ? "billed annually (₹458/mo)" : "per month"}
+                  {billingInterval === "ANNUAL"
+                    ? "billed annually (₹166/mo)"
+                    : billingInterval === "QUARTERLY"
+                    ? "billed quarterly (₹266/mo)"
+                    : "per month"}
                 </span>
               </div>
             </div>
@@ -199,7 +218,7 @@ export function UpgradeModal({
               </div>
               <div className="flex items-center gap-1.5">
                 <CheckCircle className="h-3.5 w-3.5 text-emerald-600 shrink-0" />
-                <span>Unlimited Notes & Bookmarks</span>
+                <span>Pravaah AI Personal Mentor (100 msgs)</span>
               </div>
             </div>
           </div>
@@ -212,7 +231,7 @@ export function UpgradeModal({
 
           {/* Action Button */}
           <button
-            onClick={() => handleUpiCheckout("ACHIEVER")}
+            onClick={() => handleUpiCheckout("PRO")}
             disabled={loading}
             className="w-full flex items-center justify-center gap-2 py-3.5 px-6 rounded-xl bg-blue-700 hover:bg-blue-800 text-white font-bold text-sm shadow-lg shadow-blue-700/20 transition disabled:opacity-50"
           >
@@ -221,7 +240,9 @@ export function UpgradeModal({
             ) : (
               <>
                 <Zap className="h-4 w-4" />
-                <span>Pay ₹{billingInterval === "ANNUAL" ? "5,499" : "799"} via Instant UPI</span>
+                <span>
+                  Pay ₹{billingInterval === "ANNUAL" ? "1,999" : billingInterval === "QUARTERLY" ? "799" : "299"} via Instant UPI
+                </span>
                 <ArrowRight className="h-4 w-4" />
               </>
             )}
