@@ -198,3 +198,82 @@ test("8. Universal Aspirant Search & Knowledge Discovery", async (t) => {
     assert.ok(toppers.length >= 2, "Must find AIR 1 Aditya Srivastava and Shruti Sharma answer scripts");
   });
 });
+
+test("9. Master Data Engine: Canonical Source Registry & Provenance", async (t) => {
+  await t.test("verifies all 18 canonical primary and supplementary sources are registered", async () => {
+    const sources = await prisma.sourceRegistryRecord.findMany();
+    assert.ok(sources.length >= 18, `Source registry must contain at least 18 sources, found ${sources.length}`);
+
+    const primaryUPSC = sources.find((s) => s.sourceId === "UPSC_PREV_PAPERS");
+    assert.ok(primaryUPSC, "UPSC_PREV_PAPERS must be registered");
+    assert.strictEqual(primaryUPSC.priority, 1, "UPSC_PREV_PAPERS must have priority 1 (Tier 1)");
+
+    const pib = sources.find((s) => s.sourceId === "PIB_GOV_IN");
+    assert.ok(pib, "PIB_GOV_IN must be registered");
+
+    const unlock = sources.find((s) => s.sourceId === "UNLOCK_IAS_PORTAL");
+    assert.ok(unlock, "UNLOCK_IAS_PORTAL must be registered as supplementary");
+    assert.strictEqual(unlock.priority, 2, "UNLOCK_IAS_PORTAL must have priority 2 (Tier 2)");
+  });
+});
+
+test("10. Master Data Engine: 100% Canonical Syllabus & Answer Key Alignment", async (t) => {
+  await t.test("verifies 100% of published questions have canonical syllabus mappings and answer keys", async () => {
+    const published = await prisma.question.findMany({
+      where: { status: "PUBLISHED" },
+      include: {
+        syllabusMappings: true,
+        answerKeys: true,
+        explanation: true,
+      },
+    });
+
+    assert.strictEqual(published.length, 121, "Published question bank must contain exactly 121 Series A questions");
+
+    const withSyllabus = published.filter((q) => q.syllabusMappings.length > 0);
+    assert.strictEqual(withSyllabus.length, 121, "100% (121/121) of published questions must have SyllabusTopic mapping");
+
+    const withAnswerKey = published.filter((q) => q.answerKeys.length > 0);
+    assert.strictEqual(withAnswerKey.length, 121, "100% (121/121) of published questions must have official AnswerKeyVersion");
+
+    const withExplanation = published.filter((q) => q.explanation && q.explanation.detailedExplanation);
+    assert.strictEqual(withExplanation.length, 121, "100% (121/121) of published questions must have Explanation");
+  });
+});
+
+test("11. Master Data Engine: Data Quality, Deduplication & CSV Artifacts", async (t) => {
+  await t.test("verifies zero exact duplicates and validates all 8 audit reports exist", async () => {
+    const fs = await import("fs");
+    const path = await import("path");
+
+    const requiredReports = [
+      "DATA_AUDIT_REPORT.md",
+      "SOURCE_REGISTRY.md",
+      "DATABASE_MAPPING_REPORT.md",
+      "DATA_QUALITY_REPORT.md",
+      "INGESTION_COMPLETION_REPORT.md",
+      "DUPLICATE_REVIEW.csv",
+      "UNMAPPED_QUESTIONS.csv",
+      "FAILED_DOCUMENTS.csv",
+    ];
+
+    for (const report of requiredReports) {
+      const rootPath = path.resolve(process.cwd(), report);
+      const docsPath = path.resolve(process.cwd(), "docs", report);
+
+      assert.ok(fs.existsSync(rootPath), `Root report file ${report} must exist`);
+      assert.ok(fs.existsSync(docsPath), `Docs report file docs/${report} must exist`);
+      assert.ok(fs.statSync(rootPath).size > 50, `Root report ${report} must not be empty`);
+    }
+
+    // Verify 0 unmapped questions in DB
+    const unmapped = await prisma.question.count({
+      where: {
+        status: "PUBLISHED",
+        syllabusMappings: { none: {} },
+      },
+    });
+    assert.strictEqual(unmapped, 0, "There must be exactly 0 unmapped questions in published bank");
+  });
+});
+

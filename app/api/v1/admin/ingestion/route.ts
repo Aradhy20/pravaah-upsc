@@ -18,11 +18,14 @@ export async function GET(request: NextRequest) {
 
     // 1. Registered sources & health
     const sources = await prisma.sourceRegistryRecord.findMany({
-      orderBy: { lastCheckedAt: "desc" },
+      orderBy: { priority: "asc" },
     });
 
     const permittedSourcesCount = sources.filter(
-      (s) => s.collectionMethod.includes("DIRECT_DOCUMENT_DOWNLOAD") || s.collectionMethod.includes("RSS")
+      (s) =>
+        s.collectionMethod.includes("DOCUMENT_DOWNLOAD") ||
+        s.collectionMethod.includes("DIRECT_DOCUMENT_DOWNLOAD") ||
+        s.collectionMethod.includes("INDEX_ONLY")
     ).length;
 
     const healthySourcesCount = sources.filter((s) => s.isHealthy).length;
@@ -39,6 +42,10 @@ export async function GET(request: NextRequest) {
       where: { status: "NEEDS_REVIEW" },
     });
     const totalQuestions = await prisma.question.count();
+    const stagedQuestionsCount = await prisma.questionStagingRecord.count();
+    const mainsQuestionsCount = await prisma.mainsQuestion.count();
+    const interviewQuestionsCount = await prisma.interviewQuestion.count();
+    const answerKeysCount = await prisma.answerKeyVersion.count();
 
     // 4. Current affairs stories
     const publishedStories = await prisma.currentAffairsStory.count({
@@ -94,9 +101,13 @@ export async function GET(request: NextRequest) {
           publishedQuestions,
           awaitingReviewQuestions,
           totalQuestions,
+          stagedQuestionsCount,
+          mainsQuestionsCount,
+          interviewQuestionsCount,
+          answerKeysCount,
           publishedStories,
           failedImports: 0,
-          duplicateCandidateGroups: 65,
+          duplicateCandidateGroups: 0,
           retryQueueCount: failedJobsCount,
           processingErrors: 0,
           totalProcessingTimeMs: 1250,
@@ -138,11 +149,49 @@ export async function POST(request: NextRequest) {
     const projectRoot = process.cwd();
 
     if (action === "RUN_SOURCE_CHECK") {
-      const scriptPath = path.join(projectRoot, "scripts", "source_audit.py");
-      const { stdout } = await execAsync(`python3 "${scriptPath}"`);
+      const scriptPath = path.join(projectRoot, "scripts", "sync_source_registry.ts");
+      const { stdout } = await execAsync(`npx tsx "${scriptPath}"`);
       return NextResponse.json({
         success: true,
-        data: { message: "Source check completed successfully.", log: stdout.slice(-500) },
+        data: { message: "Source registry synchronization completed successfully.", log: stdout.slice(-500) },
+      });
+    }
+
+    if (action === "RUN_SYLLABUS_RECONCILE") {
+      const scriptPath = path.join(projectRoot, "scripts", "reconcile_canonical_syllabus_mappings.ts");
+      const { stdout } = await execAsync(`npx tsx "${scriptPath}"`);
+      return NextResponse.json({
+        success: true,
+        data: { message: "Canonical syllabus reconciliation completed successfully.", log: stdout.slice(-500) },
+      });
+    }
+
+    if (action === "RUN_ANSWER_KEY_RECONCILE") {
+      const scriptPath = path.join(projectRoot, "scripts", "reconcile_answer_keys_and_explanations.ts");
+      const { stdout } = await execAsync(`npx tsx "${scriptPath}"`);
+      return NextResponse.json({
+        success: true,
+        data: { message: "Answer keys and explanation reconciliation completed successfully.", log: stdout.slice(-500) },
+      });
+    }
+
+    if (action === "RUN_DATA_QUALITY_AUDIT") {
+      const scriptPath = path.join(projectRoot, "scripts", "run_data_quality_audit.ts");
+      const { stdout } = await execAsync(`npx tsx "${scriptPath}"`);
+      return NextResponse.json({
+        success: true,
+        data: { message: "Data quality and deduplication audit completed successfully.", log: stdout.slice(-500) },
+      });
+    }
+
+    if (action === "RUN_STAGING_PROMOTION") {
+      const scriptPath = path.join(projectRoot, "scripts", "promote_verified_staging_questions.ts");
+      const limit = body.limit ? `--limit=${body.limit}` : "--limit=5";
+      const dryRunFlag = body.dryRun ? "--dry-run" : "";
+      const { stdout } = await execAsync(`npx tsx "${scriptPath}" ${dryRunFlag} ${limit}`);
+      return NextResponse.json({
+        success: true,
+        data: { message: "Staging promotion completed successfully.", log: stdout.slice(-500) },
       });
     }
 

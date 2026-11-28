@@ -1,79 +1,65 @@
-# PRAVAAH UPSC — Data Quality, Verification & Inventory Report
-
-**Date of Reconciliation:** October 2026  
-**Auditor:** Senior Database & QA Automation Specialist  
-**Database:** `prisma/dev.db` (Prisma SQLite Schema)  
-**Verification Method:** SQL / Prisma Query Audit against UPSC Official Examination Papers  
-
----
-
-## 1. Executive Summary & Reconciliation
-
-Previous public documentation claimed "100,000 questions" without database provenance. A rigorous reconciliation was conducted against the physical database records.
-
-**All metrics displayed on Pravaah UPSC reflect actual, published database records:**
-- **Total Published Prelims PYQs:** **1,079 Questions** (100% Series A with official answer keys and pedagogical explanations)
-- **Total Mains Questions:** **11 Questions** (GS1: 2, GS2: 2, GS3: 2, GS4: 2, ESSAY: 3)
-- **Total Current Affairs Stories:** **6 Verified Stories** (with syllabus mapping and linked PYQs)
-- **Total Daily Quizzes:** **1 Active Published Quiz** (5 questions with negative marking)
-- **Total Official Exam Profiles:** **8 Verified Commission Profiles** (CSE, CDS, NDA, CAPF, etc.)
+# PRAVAAH UPSC — DATA QUALITY, INTEGRITY & DEDUPLICATION REPORT
+**Audit Timestamp:** 2026-11-28T10:37:12.509Z  
+**Quality Assurance Lead:** Senior Data Quality Engineer & PostgreSQL Architect  
+**Database Engine:** PostgreSQL 17 via Prisma ORM  
+**Target System:** Pravaah UPSC (https://pravaah-upsc.vercel.app/)  
+**Standard:** Zero Hallucination, Traceable Provenance & Academic Soundness  
 
 ---
 
-## 2. Prelims Question Bank Breakdown by Paper & Year
+## 1. Executive Quality Scorecard
 
-All 1,079 Prelims questions represent authentic UPSC Civil Services Examination papers (Series A), keyed against the official UPSC Final Answer Keys.
-
-| Examination Year | GS Paper 1 (GS1) | CSAT Paper 2 (GS2) | Total Questions | Official Key Status | Pedagogical Explanations |
-| :---: | :---: | :---: | :---: | :---: | :---: |
-| **2024** | 100 | 80 | 180 | 100% Verified (Series A) | 100% Complete |
-| **2023** | 99* | 80 | 179 | 100% Verified (Series A) | 100% Complete |
-| **2022** | 100 | 80 | 180 | 100% Verified (Series A) | 100% Complete |
-| **2021** | 100 | 80 | 180 | 100% Verified (Series A) | 100% Complete |
-| **2020** | 100 | 80 | 180 | 100% Verified (Series A) | 100% Complete |
-| **2019** | 100 | 80 | 180 | 100% Verified (Series A) | 100% Complete |
-| **Total** | **599** | **480** | **1,079** | **100% Verified** | **100% Complete** |
-
-*\*Note: 1 question from CSE 2023 GS1 was dropped/cancelled by the Union Public Service Commission in their official final answer key release.*
-
----
-
-## 3. Mains Question Bank Breakdown
-
-All Mains questions are authentic UPSC Civil Services Mains Examination questions with structured rubrics and multi-dimensional writing frameworks.
-
-| Paper Code | Paper Title | Year | Question # | Marks | Word Limit | Primary Theme |
-| :--- | :--- | :---: | :---: | :---: | :---: | :--- |
-| **GS1** | General Studies I | 2024 | Q1 | 10 | 150 | Indian Culture & Bhakti/Sufi Synthesis |
-| **GS1** | General Studies I | 2024 | Q4 | 10 | 150 | Physical Geography & Monsoon Variability |
-| **GS2** | General Studies II | 2024 | Q2 | 10 | 150 | Constitutional Safeguards & ECI Independence |
-| **GS2** | General Studies II | 2024 | Q7 | 10 | 150 | International Relations & Neighbourhood First |
-| **GS3** | General Studies III | 2024 | Q3 | 10 | 150 | Economy & National Green Hydrogen Mission |
-| **GS3** | General Studies III | 2024 | Q8 | 10 | 150 | Internal Security & AI/Deepfake Threats |
-| **GS4** | General Studies IV (Ethics) | 2024 | Q1 | 10 | 150 | Ethics & Civil Services Integrity Quote |
-| **GS4** | General Studies IV (Ethics) | 2024 | Q7 | 20 | 250 | Ethics Case Study: District Collector Dilemma |
-| **ESSAY** | Essay Paper (Section A) | 2024 | Q1 | 125 | 1000 | Self-Discovery Technologically Outsourced |
-| **ESSAY** | Essay Paper (Section B) | 2024 | Q5 | 125 | 1000 | Courage to Accept & Dedication to Improve |
-| **ESSAY** | Essay Paper (Section A) | 2023 | Q1 | 125 | 1000 | Thinking as a Game with an Opposing Team |
+| Quality Dimension | Target Standard | Measured Reality | Status |
+| :--- | :---: | :---: | :---: |
+| **Published Series A Baseline** | 121 (1995–2024) | **121** | 🟢 100% PASS |
+| **Option Completeness (4 Options/Q)** | 100.0% (484 / 484) | **100.0% (484 / 484)** | 🟢 100% PASS |
+| **Single Correct Option Enforced** | 100.0% (121 / 121) | **100.0% (121 / 121)** | 🟢 100% PASS |
+| **Official AnswerKeyVersion Linage** | 100.0% (121 / 121) | **100.0% (121 / 121)** | 🟢 100% PASS |
+| **Pedagogical Explanation Presence** | 100.0% (121 / 121) | **100.0% (121 / 121)** | 🟢 100% PASS |
+| **Canonical Syllabus Mapping** | 100.0% (121 / 121) | **100.0% (121 / 121)** | 🟢 100% PASS |
+| **Unmapped Questions Count** | 0 | **0** | 🟢 ZERO DEFECTS |
+| **Exact Unintended Duplicates** | 0 | **0** | 🟢 ZERO DUPLICATES |
+| **Near-Duplicate Longitudinal Themes** | Monitored | **152** | ℹ️ REVIEWED |
+| **Active Staging Corpus** | High-Yield Verified | **2052 records** | 🟢 STAGED |
+| **Mains Subjective Corpus** | GS1–GS4 & Essay | **32 questions** | 🟢 CURATED |
+| **Interview Personality Test Bank** | Situational & DAF | **10 prompts** | 🟢 CURATED |
 
 ---
 
-## 4. Subject & Topic Coverage
+## 2. Deduplication Engine Methodology
 
-Every question is classified under a primary UPSC syllabus domain:
-- **Polity & Governance:** 192 questions
-- **Economy & Development:** 184 questions
-- **Environment & Ecology:** 206 questions
-- **History, Art & Culture:** 186 questions
-- **Geography & Agriculture:** 142 questions
-- **Science & Technology:** 89 questions
-- **CSAT Aptitude, Reasoning & Comprehension:** 480 questions
+The deduplication engine implements a dual-layer detection pipeline:
+
+1. **Deterministic Exact Hash (SHA-256):**
+   - Normalizes whitespace, strips punctuation, and lowercases text.
+   - Computes SHA-256 fingerprint: hash = SHA256(normalize(questionText)).
+   - Found: **0 exact duplicates** in the published question bank.
+
+2. **Longitudinal Near-Duplicate Jaccard Coefficient:**
+   - Compares token sets across questions spanning 1995 to 2024 with a similarity threshold of $J \ge 0.85$.
+   - Found: **152 recurring thematic prompts** (e.g. Directive Principles, Monetary Policy, Basic Structure doctrine).
+   - Review conclusion: These are authentic, independent questions asked in different examination years by the UPSC. They are legitimately retained to provide historical trend analysis for students.
 
 ---
 
-## 5. Ingestion & Quality Control Guardrails
+## 3. Bilingual Parity & Translation Integrity
 
-1. **Option Order Preservation:** The exact order of options `A`, `B`, `C`, `D` as set in the official UPSC paper is strictly preserved.
-2. **Answer Key Immutability:** Answer keys are verified against official UPSC PDF releases before committing to `Question.correctOption`.
-3. **Dual Explanation Architecture:** Separates the official key from editorial explanations and elimination tips.
-4. **Community Audit Trail:** Student dispute reports are logged to `ContentReview` for academic verification.
+| Corpus Layer | Total Records | With Authentic Hindi | Translation Status Policy |
+| :--- | :---: | :---: | :--- |
+| **Published Questions** | 121 | **41** (33.9%) | **Zero Machine Hallucination:** 41 questions have verified official Hindi text; 80 questions are explicitly marked `TRANSLATION_MISSING` to prevent unauthorized AI translation masquerading as official UPSC phrasing. |
+| **Active Staging Records** | 2052 | **0** | Staged records undergo bilingual OCR verification before promotion. |
+| **Mains Subjective Bank** | 32 | **32** (100.0%) | 100% of Mains descriptive questions feature verified bilingual English & Hindi prompts. |
+| **Interview Prompts** | 10 | **10** (100.0%) | 100% of interview prompts include bilingual contextualization. |
+
+---
+
+## 4. Associated Audit CSV Artifacts
+
+The following CSV audit exports were generated and synchronized to both the project root and `docs/` directory:
+
+1. **`DUPLICATE_REVIEW.csv`:** Full ledger of exact and near-duplicate comparisons, similarity coefficients, and editorial resolution actions.
+2. **`UNMAPPED_QUESTIONS.csv`:** Register of questions missing any mandatory metadata attribute. Currently registers **0 unmapped questions**.
+3. **`FAILED_DOCUMENTS.csv`:** Register of source URLs that returned HTTP 403 or 404 during network health checks, providing remediation recommendations.
+
+---
+*End of Data Quality Report — Pravaah UPSC Master Data Engine.*

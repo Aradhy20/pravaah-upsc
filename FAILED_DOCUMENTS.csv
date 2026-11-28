@@ -1,0 +1,3 @@
+Document_ID,Title,Source_URL,Paper_Code,Year,Error_Reason,Remediation_Action
+src_src-upsc-official-archive,"UPSC Official Question Papers Archive",upsc.gov.in,N/A,0,"Endpoint returned HTTP status 403: HTTP 403: Forbidden","Check network gateway or use official archive mirrors; do not retry aggressively"
+src_src-isro-missions,"ISRO Missions & Science Announcements",isro.gov.in,N/A,0,"Endpoint returned HTTP status 404: HTTP 404: Not Found","Check network gateway or use official archive mirrors; do not retry aggressively"
