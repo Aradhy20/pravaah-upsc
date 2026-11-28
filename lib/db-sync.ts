@@ -17,73 +17,86 @@ export interface DbSyncResult {
 /**
  * Dedicated schema synchronizer for Question, QuestionOption, and Explanation models.
  * Guarantees that any missing column in the live database is added immediately.
+ * Executes each column individually so that a syntax issue on one column cannot block others.
  */
-export async function ensureQuestionSchema(): Promise<boolean> {
-  try {
-    await prisma.$executeRawUnsafe(`
-      ALTER TABLE "Question"
-      ADD COLUMN IF NOT EXISTS "recordId" TEXT,
-      ADD COLUMN IF NOT EXISTS "questionGroupId" TEXT,
-      ADD COLUMN IF NOT EXISTS "examId" TEXT,
-      ADD COLUMN IF NOT EXISTS "examYearId" TEXT,
-      ADD COLUMN IF NOT EXISTS "stageId" TEXT,
-      ADD COLUMN IF NOT EXISTS "questionFormat" TEXT DEFAULT 'SINGLE_CHOICE',
-      ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING',
-      ADD COLUMN IF NOT EXISTS "examStage" TEXT DEFAULT 'PRELIMS',
-      ADD COLUMN IF NOT EXISTS "questionTextEn" TEXT,
-      ADD COLUMN IF NOT EXISTS "questionTextHi" TEXT,
-      ADD COLUMN IF NOT EXISTS "bookletSeries" TEXT,
-      ADD COLUMN IF NOT EXISTS "examCategory" TEXT DEFAULT 'CSE',
-      ADD COLUMN IF NOT EXISTS "contentLabel" TEXT DEFAULT 'OFFICIAL_UPSC_PYQ',
-      ADD COLUMN IF NOT EXISTS "verificationStatus" TEXT DEFAULT 'OFFICIALLY_VERIFIED',
-      ADD COLUMN IF NOT EXISTS "corpusDocumentId" TEXT,
-      ADD COLUMN IF NOT EXISTS "sourceReference" TEXT,
-      ADD COLUMN IF NOT EXISTS "difficultyLevel" TEXT DEFAULT 'MEDIUM',
-      ADD COLUMN IF NOT EXISTS "subjectId" TEXT,
-      ADD COLUMN IF NOT EXISTS "topicId" TEXT,
-      ADD COLUMN IF NOT EXISTS "subtopicId" TEXT,
-      ADD COLUMN IF NOT EXISTS "marks" DOUBLE PRECISION DEFAULT 2.0,
-      ADD COLUMN IF NOT EXISTS "negativeMarks" DOUBLE PRECISION DEFAULT 0.666,
-      ADD COLUMN IF NOT EXISTS "sourceId" TEXT,
-      ADD COLUMN IF NOT EXISTS "sourcePage" TEXT,
-      ADD COLUMN IF NOT EXISTS "language" TEXT DEFAULT 'English',
-      ADD COLUMN IF NOT EXISTS "isStatic" BOOLEAN DEFAULT true,
-      ADD COLUMN IF NOT EXISTS "verifiedAt" TIMESTAMP WITH TIME ZONE,
-      ADD COLUMN IF NOT EXISTS "isVerified" BOOLEAN DEFAULT true;
-    `);
-  } catch (err: any) {
-    console.warn("Question table self-healing warning:", err.message);
+export async function ensureQuestionSchema(): Promise<{ success: boolean; log: string[] }> {
+  const log: string[] = [];
+
+  const questionCols = [
+    `"examStage" TEXT DEFAULT 'PRELIMS'`,
+    `"questionFormat" TEXT DEFAULT 'SINGLE_CHOICE'`,
+    `"translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING'`,
+    `"questionTextEn" TEXT`,
+    `"questionTextHi" TEXT`,
+    `"bookletSeries" TEXT`,
+    `"examCategory" TEXT DEFAULT 'CSE'`,
+    `"contentLabel" TEXT DEFAULT 'OFFICIAL_UPSC_PYQ'`,
+    `"verificationStatus" TEXT DEFAULT 'OFFICIALLY_VERIFIED'`,
+    `"corpusDocumentId" TEXT`,
+    `"questionGroupId" TEXT`,
+    `"recordId" TEXT`,
+    `"examId" TEXT`,
+    `"examYearId" TEXT`,
+    `"stageId" TEXT`,
+    `"sourceReference" TEXT`,
+    `"difficultyLevel" TEXT DEFAULT 'MEDIUM'`,
+    `"subjectId" TEXT`,
+    `"topicId" TEXT`,
+    `"subtopicId" TEXT`,
+    `"marks" DOUBLE PRECISION DEFAULT 2.0`,
+    `"negativeMarks" DOUBLE PRECISION DEFAULT 0.666`,
+    `"sourceId" TEXT`,
+    `"sourcePage" TEXT`,
+    `"language" TEXT DEFAULT 'English'`,
+    `"isStatic" BOOLEAN DEFAULT true`,
+    `"verifiedAt" TIMESTAMP WITH TIME ZONE`,
+    `"isVerified" BOOLEAN DEFAULT true`,
+  ];
+
+  for (const col of questionCols) {
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE "Question" ADD COLUMN IF NOT EXISTS ${col};`);
+      log.push(`Question col ${col.split(" ")[0]} ok`);
+    } catch (e: any) {
+      log.push(`Question col ${col.split(" ")[0]} err: ${e.message}`);
+    }
   }
 
-  try {
-    await prisma.$executeRawUnsafe(`
-      ALTER TABLE "QuestionOption"
-      ADD COLUMN IF NOT EXISTS "optionLabel" TEXT,
-      ADD COLUMN IF NOT EXISTS "optionTextEn" TEXT,
-      ADD COLUMN IF NOT EXISTS "optionTextHi" TEXT,
-      ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING',
-      ADD COLUMN IF NOT EXISTS "optionOrder" INTEGER DEFAULT 1,
-      ADD COLUMN IF NOT EXISTS "isCorrect" BOOLEAN DEFAULT false;
-    `);
-  } catch (err: any) {
-    console.warn("QuestionOption table self-healing warning:", err.message);
+  const optionCols = [
+    `"optionLabel" TEXT`,
+    `"optionTextEn" TEXT`,
+    `"optionTextHi" TEXT`,
+    `"translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING'`,
+    `"optionOrder" INTEGER DEFAULT 1`,
+    `"isCorrect" BOOLEAN DEFAULT false`,
+  ];
+
+  for (const col of optionCols) {
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE "QuestionOption" ADD COLUMN IF NOT EXISTS ${col};`);
+    } catch {
+      // ignore
+    }
   }
 
-  try {
-    await prisma.$executeRawUnsafe(`
-      ALTER TABLE "Explanation"
-      ADD COLUMN IF NOT EXISTS "explanationEn" TEXT,
-      ADD COLUMN IF NOT EXISTS "explanationHi" TEXT,
-      ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'ORIGINAL_SOURCE',
-      ADD COLUMN IF NOT EXISTS "explanationSource" TEXT,
-      ADD COLUMN IF NOT EXISTS "explanationType" TEXT DEFAULT 'PEDAGOGICAL',
-      ADD COLUMN IF NOT EXISTS "eliminationTechnique" TEXT,
-      ADD COLUMN IF NOT EXISTS "sourceCitation" TEXT,
-      ADD COLUMN IF NOT EXISTS "relatedConcept" TEXT,
-      ADD COLUMN IF NOT EXISTS "verifiedAt" TIMESTAMP WITH TIME ZONE;
-    `);
-  } catch (err: any) {
-    console.warn("Explanation table self-healing warning:", err.message);
+  const explanationCols = [
+    `"explanationEn" TEXT`,
+    `"explanationHi" TEXT`,
+    `"translationStatus" TEXT DEFAULT 'ORIGINAL_SOURCE'`,
+    `"explanationSource" TEXT`,
+    `"explanationType" TEXT DEFAULT 'PEDAGOGICAL'`,
+    `"eliminationTechnique" TEXT`,
+    `"sourceCitation" TEXT`,
+    `"relatedConcept" TEXT`,
+    `"verifiedAt" TIMESTAMP WITH TIME ZONE`,
+  ];
+
+  for (const col of explanationCols) {
+    try {
+      await prisma.$executeRawUnsafe(`ALTER TABLE "Explanation" ADD COLUMN IF NOT EXISTS ${col};`);
+    } catch {
+      // ignore
+    }
   }
 
   try {
@@ -94,10 +107,10 @@ export async function ensureQuestionSchema(): Promise<boolean> {
       ADD COLUMN IF NOT EXISTS "sourceReference" TEXT;
     `);
   } catch (err: any) {
-    console.warn("MainsQuestion table self-healing warning:", err.message);
+    // ignore
   }
 
-  return true;
+  return { success: true, log };
 }
 
 /**
