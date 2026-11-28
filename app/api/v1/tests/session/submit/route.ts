@@ -203,9 +203,15 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    // Calculate score with strict UPSC marking
+    // Calculate score with strict examination marking
     const paperCode = session.test.paper.code;
-    const scorecard = calculateScorecard(paperCode, gradingInputs);
+    const customScheme = session.test.paper.positiveMark
+      ? {
+          positiveMark: session.test.paper.positiveMark,
+          negativeMark: session.test.paper.negativeMark,
+        }
+      : undefined;
+    const scorecard = calculateScorecard(paperCode, gradingInputs, customScheme);
 
     // Atomic High-Performance Transaction Batching (eliminates 100+ sequential roundtrips)
     await prisma.$transaction(async (tx) => {

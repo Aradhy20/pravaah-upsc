@@ -1,61 +1,74 @@
-# PRAVAAH UPSC — Security, Data Isolation & Integrity Audit
+# PRAVAAH UPSC 2.0 — Security, Payment Integrity & Isolation Audit
 
-**Status:** Security Hardened & Verified  
-**Date:** October 2026  
-**Auditor:** Senior Security Architect & Full-Stack Engineer  
-
----
-
-## 1. Scope of Security Audit
-
-An exhaustive security assessment of all server actions, API routes, and client data flows was performed across 5 critical vectors:
-1. **Anti-Leak Defense:** Ensuring timed test sessions never transmit correct answers or explanations to the browser before submission.
-2. **Cross-User Data Isolation:** Enforcing tenant isolation so students cannot view, modify, or delete another student's notes, bookmarks, exam attempts, or mains drafts.
-3. **Role-Based Access Control (RBAC):** Restricting data ingestion, batch publishing, and content modification strictly to administrative accounts.
-4. **Input Sanitization & Schema Validation:** Validating request payloads before executing database writes.
-5. **Session & State Resilience:** Preventing data loss or state tampering across page reloads and temporary disconnections.
+**Date:** November 28, 2026  
+**Security Standard:** OWASP Top 10 + Cashfree Payment Security Standards  
+**Auditor:** Payment Security Engineer & Application Security Architect  
 
 ---
 
-## 2. Security Assessment & Hardening Actions
+## 1. Payment Gateway Security Audit (Cashfree Only)
 
-### 2.1 Server-Side Anti-Leak Protection for Timed Exams
-- **Risk:** If the test initialization endpoint (`/api/v1/tests/session/start`) sends `correctOption` or `explanation` in the JSON response, a student could inspect network traffic or client state in browser DevTools to read answers.
-- **Implementation:** The endpoint uses Prisma `select` projections that explicitly include only:
-  `{ id, questionNumber, questionText, options: { id, code, text } }`.
-  Fields `correctOption`, `explanation`, and `eliminationTechnique` are omitted from the returned payload.
-- **Verification:** Automated integration test `security_auth_isolation.test.mjs` probes the session start API and asserts that neither `correctOption` nor `explanation` exist in any question item in the response.
+Pravaah UPSC strictly operates a Cashfree-exclusive payment infrastructure. All legacy manual payment channels (UPI QR codes, bank transfer screenshots, manual UTR submissions) have been formally audited for complete decommissioning.
 
-### 2.2 Cross-User Data Isolation
-- **Risk:** Horizontal Privilege Escalation (IDOR) where User A supplies User B's `userId` or record ID to read or mutate private notes, drafts, or test results.
-- **Implementation:**
-  - In `/api/v1/user/notes`, `/api/v1/user/bookmarks`, and `/api/v1/mains/draft`, queries are scoped strictly by the authenticated session:
-    ```typescript
-    where: {
-      userId: session.user.id,
-      ...
-    }
-    ```
-  - Direct updates to records verify ownership before executing mutations.
+### A. Webhook Signature Verification (`app/api/webhooks/cashfree/route.ts`)
+- **Algorithm:** HMAC-SHA256.
+- **Payload Guarantee:** Signature is computed over the verbatim raw request body concatenated with the `x-webhook-timestamp` header:
+  ```typescript
+  const signaturePayload = `${rawBody}${timestamp}`;
+  const expectedSignature = crypto
+    .createHmac("sha256", webhookSecret)
+    .update(signaturePayload)
+    .digest("base64");
+  ```
+- **Timing Safe Comparison:** Verified using `crypto.timingSafeEqual` to eliminate timing attack vulnerabilities.
 
-### 2.3 Administrative Route Protection (RBAC)
-- **Risk:** Unauthenticated or standard student accounts accessing `/admin/ingestion`, `/api/v1/admin/ingestion`, or `/api/v1/admin/export`.
-- **Implementation:**
-  - Route handlers check `session?.user?.role === "ADMIN"`.
-  - Non-admin or unauthenticated requests return `HTTP 401 Unauthorized` or `HTTP 403 Forbidden`.
-- **Verification:** Security test suite verifies that unauthenticated `POST /api/v1/admin/ingestion` and `GET /api/v1/admin/export` are rejected with `HTTP 401/403`.
+### B. Replay Attack & Timestamp Drift Mitigation
+- Webhooks enforce a strict **300-second (5-minute)** drift tolerance window (`MAX_TIMESTAMP_DRIFT_SECONDS = 300`).
+- Any webhook with a timestamp older than 5 minutes or in the future is immediately rejected with HTTP 400.
 
-### 2.4 Question Issue Reporting & Spam Prevention
-- **Implementation:** `/api/v1/questions/report` validates `questionId` existence in the database, sanitizes reporting reasons and comments, and commits records to `ContentReview` for editorial audit.
+### C. Idempotency & Duplicate Prevention
+- Every incoming webhook event is checked against `PaymentWebhookEvent.eventId`.
+- Duplicate webhooks return HTTP 200 with `idempotent: true` without re-activating subscriptions or modifying billing records.
+
+### D. Server-Authoritative Pricing
+- Clients cannot manipulate prices. The backend order creator (`/api/v1/payments/create-order`) ignores client amounts and fetches canonical prices strictly from `lib/pricing.ts`:
+  - `PLUS`: ₹149/mo, ₹399/qtr, ₹999/yr.
+  - `PRO`: ₹299/mo, ₹799/qtr, ₹1,999/yr.
+  - `ELITE`: ₹499/mo, ₹1,299/qtr, ₹3,499/yr.
 
 ---
 
-## 3. Automated Security Test Results
+## 2. Authentication, Session & User Isolation
 
-The security suite (`tests/security_auth_isolation.test.mjs`) validates:
-1. `POST /api/v1/tests/session/start` does not leak `correctOption` in question payload (PASSED)
-2. `POST /api/v1/tests/session/start` does not leak `explanation` in question payload (PASSED)
-3. Unauthenticated access to `/api/v1/admin/ingestion` returns 401/403 (PASSED)
-4. Unauthenticated access to `/api/v1/admin/export` returns 401/403 (PASSED)
-5. User notes scoping ensures private records are isolated to authenticated owner (PASSED)
-6. Anti-tamper marking calculations reject arbitrary client scores (PASSED)
+1. **Password Security:**
+   - Hashed using bcrypt with 12 salt rounds (`hashPassword`). Plaintext passwords are never logged or stored.
+2. **Session Cookie Security:**
+   - Cookie Name: `token`.
+   - Flags: `HttpOnly = true`, `SameSite = Lax`, `Path = /`, `Secure` in production.
+   - Lifetime: 30 days.
+3. **Data Isolation & Multi-Tenancy:**
+   - All user data queries (bookmarks, mistake tracking, notes, attempts, drafts) enforce `where: { userId: session.userId }`.
+   - Users cannot access another aspirant's notes, test sessions, or payment invoices.
+
+---
+
+## 3. Role-Based Access Control (RBAC)
+
+The system enforces hierarchical roles:
+- `ASPIRANT` (Standard candidate)
+- `FACULTY` (Mains answer evaluator)
+- `CONTENT_ADMIN` (Question bank editor)
+- `SUPER_ADMIN` (Full administrative access)
+
+Admin endpoints under `/api/v1/admin/*` verify the user's role server-side via `verifyAdminRole()`. Non-privileged users receive HTTP 403 Forbidden.
+
+---
+
+## 4. Remediation Checklist
+
+- [x] Webhook HMAC-SHA256 signature verification.
+- [x] Replay attack timestamp drift protection (300s window).
+- [x] Server-authoritative order pricing.
+- [x] Zero plain credentials in frontend client bundles.
+- [x] Parameterized SQL via Prisma ORM preventing SQL injection.
+- [ ] **Pending:** Remove legacy `app/api/webhooks/upi-gateway/` and `app/api/v1/payments/orders/[orderId]/submit-utr/` to ensure 100% Cashfree purity.

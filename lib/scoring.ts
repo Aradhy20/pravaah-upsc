@@ -35,24 +35,41 @@ export interface TestScorecard {
 }
 
 export const UPSC_MARKING_SCHEMES: Record<string, MarkingScheme> = {
-  GS1: {
-    positiveMark: 2.0,
-    negativeMark: 2.0 / 3.0, // 0.6666...
-  },
-  GS2: {
-    positiveMark: 2.5,
-    negativeMark: 2.5 / 3.0, // 0.8333...
-  },
+  GS1: { positiveMark: 2.0, negativeMark: 2.0 / 3.0 },
+  GS2: { positiveMark: 2.5, negativeMark: 2.5 / 3.0 },
+  CSAT: { positiveMark: 2.5, negativeMark: 2.5 / 3.0 },
+  ENG_CDS: { positiveMark: 0.833, negativeMark: 0.277 },
+  GK_CDS: { positiveMark: 0.833, negativeMark: 0.277 },
+  MATH_CDS: { positiveMark: 1.0, negativeMark: 0.333 },
+  MATH_NDA: { positiveMark: 2.5, negativeMark: 0.833 },
+  GAT_NDA: { positiveMark: 4.0, negativeMark: 1.333 },
+  CAPF_P1: { positiveMark: 2.0, negativeMark: 0.666 },
+  CMS_P1: { positiveMark: 2.083, negativeMark: 0.694 },
+  CMS_P2: { positiveMark: 2.083, negativeMark: 0.694 },
+  ESE_GS: { positiveMark: 2.0, negativeMark: 0.666 },
+  ESE_ENGG_OBJ: { positiveMark: 2.0, negativeMark: 0.666 },
+  ISS_STAT_1: { positiveMark: 2.5, negativeMark: 0.833 },
+  ISS_STAT_2: { positiveMark: 2.5, negativeMark: 0.833 },
+  CGSE_GS: { positiveMark: 1.0, negativeMark: 0.333 },
+  CGSE_STREAM_OBJ: { positiveMark: 2.5, negativeMark: 0.833 },
+  EPFO_RT: { positiveMark: 2.5, negativeMark: 0.833 },
+  APFC_RT: { positiveMark: 2.5, negativeMark: 0.833 },
+  CISF_P1: { positiveMark: 2.0, negativeMark: 0.666 },
+  CBI_P1: { positiveMark: 2.0, negativeMark: 0.666 },
+  SCRA_P1: { positiveMark: 1.666, negativeMark: 0.555 },
+  SCRA_P2: { positiveMark: 1.666, negativeMark: 0.555 },
+  SCRA_P3: { positiveMark: 2.0, negativeMark: 0.666 },
 };
 
 /**
- * Calculates authentic UPSC score adhering to paper rules
+ * Calculates authentic UPSC score adhering to examination and paper rules
  */
 export function calculateScorecard(
   paperCode: string,
-  items: QuestionGradingInput[]
+  items: QuestionGradingInput[],
+  customScheme?: MarkingScheme
 ): TestScorecard {
-  const scheme = UPSC_MARKING_SCHEMES[paperCode] || UPSC_MARKING_SCHEMES.GS1;
+  const scheme = customScheme || UPSC_MARKING_SCHEMES[paperCode] || UPSC_MARKING_SCHEMES.GS1;
 
   let attemptedCount = 0;
   let correctCount = 0;

@@ -1,10 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
+import { ensureUserProfileSchema } from "@/lib/db-sync";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
   try {
+    await ensureUserProfileSchema();
     const { searchParams } = new URL(request.url);
 
     const paperCode = searchParams.get("paper"); // "GS1" | "GS2"

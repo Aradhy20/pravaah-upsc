@@ -251,6 +251,44 @@ export default function AdminDashboardPage() {
         </a>
 
         <a
+          href="/admin/exams"
+          className="group rounded-2xl border border-amber-200 bg-amber-50/40 p-6 shadow-sm hover:border-amber-400 hover:shadow-md transition"
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-100 text-amber-800 mb-4">
+            <Compass className="h-5 w-5" />
+          </div>
+          <h3 className="font-bold text-base text-slate-900 group-hover:text-amber-800 transition">
+            Examination Taxonomy
+          </h3>
+          <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+            Manage all 14 official UPSC tracks (CSE, IFoS, CDS, NDA, CAPF, ESE, CMS, EPFO), stages, and marking schemes.
+          </p>
+          <div className="mt-4 flex items-center gap-1 text-xs font-bold text-amber-800">
+            <span>Configure exams</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </div>
+        </a>
+
+        <a
+          href="/admin/translations"
+          className="group rounded-2xl border border-rose-200 bg-rose-50/40 p-6 shadow-sm hover:border-rose-400 hover:shadow-md transition"
+        >
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-100 text-rose-800 mb-4">
+            <Layers className="h-5 w-5" />
+          </div>
+          <h3 className="font-bold text-base text-slate-900 group-hover:text-rose-800 transition">
+            Hindi Translation Review
+          </h3>
+          <p className="mt-1 text-xs text-slate-600 leading-relaxed">
+            Side-by-side English vs Hindi stems, options, and explanations review for authentic bilingual parity.
+          </p>
+          <div className="mt-4 flex items-center gap-1 text-xs font-bold text-rose-800">
+            <span>Review translations</span>
+            <ArrowRight className="h-3.5 w-3.5" />
+          </div>
+        </a>
+
+        <a
           href="/admin/subscriptions"
           className="group rounded-2xl border border-slate-200 bg-white p-6 shadow-sm hover:border-blue-400 hover:shadow-md transition"
         >

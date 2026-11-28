@@ -42,11 +42,43 @@ export async function ensureUserProfileSchema(): Promise<boolean> {
       ON CONFLICT ("name") DO NOTHING;
     `);
 
-    // 3. Ensure Question and Options schema columns exist
+    // 3. Ensure Question columns exist
     await prisma.$executeRawUnsafe(`
       ALTER TABLE "Question"
       ADD COLUMN IF NOT EXISTS "questionFormat" TEXT DEFAULT 'SINGLE_CHOICE',
+      ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING',
+      ADD COLUMN IF NOT EXISTS "questionTextEn" TEXT,
+      ADD COLUMN IF NOT EXISTS "questionTextHi" TEXT,
+      ADD COLUMN IF NOT EXISTS "bookletSeries" TEXT,
+      ADD COLUMN IF NOT EXISTS "examCategory" TEXT DEFAULT 'CSE',
+      ADD COLUMN IF NOT EXISTS "contentLabel" TEXT DEFAULT 'OFFICIAL_UPSC_PYQ',
+      ADD COLUMN IF NOT EXISTS "verificationStatus" TEXT DEFAULT 'OFFICIALLY_VERIFIED',
+      ADD COLUMN IF NOT EXISTS "corpusDocumentId" TEXT,
+      ADD COLUMN IF NOT EXISTS "questionGroupId" TEXT,
+      ADD COLUMN IF NOT EXISTS "recordId" TEXT,
+      ADD COLUMN IF NOT EXISTS "examId" TEXT,
+      ADD COLUMN IF NOT EXISTS "examYearId" TEXT,
+      ADD COLUMN IF NOT EXISTS "stageId" TEXT,
       ADD COLUMN IF NOT EXISTS "isVerified" BOOLEAN DEFAULT true;
+    `);
+
+    // 4. Ensure QuestionOption columns exist
+    await prisma.$executeRawUnsafe(`
+      ALTER TABLE "QuestionOption"
+      ADD COLUMN IF NOT EXISTS "optionLabel" TEXT,
+      ADD COLUMN IF NOT EXISTS "optionTextEn" TEXT,
+      ADD COLUMN IF NOT EXISTS "optionTextHi" TEXT,
+      ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING';
+    `);
+
+    // 5. Ensure Explanation columns exist
+    await prisma.$executeRawUnsafe(`
+      ALTER TABLE "Explanation"
+      ADD COLUMN IF NOT EXISTS "explanationEn" TEXT,
+      ADD COLUMN IF NOT EXISTS "explanationHi" TEXT,
+      ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'ORIGINAL_SOURCE',
+      ADD COLUMN IF NOT EXISTS "explanationSource" TEXT,
+      ADD COLUMN IF NOT EXISTS "explanationType" TEXT DEFAULT 'PEDAGOGICAL';
     `);
 
     isUserProfileSchemaEnsured = true;
