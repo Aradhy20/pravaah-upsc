@@ -45,8 +45,14 @@ export async function ensureUserProfileSchema(): Promise<boolean> {
     // 3. Ensure Question columns exist
     await prisma.$executeRawUnsafe(`
       ALTER TABLE "Question"
+      ADD COLUMN IF NOT EXISTS "recordId" TEXT,
+      ADD COLUMN IF NOT EXISTS "questionGroupId" TEXT,
+      ADD COLUMN IF NOT EXISTS "examId" TEXT,
+      ADD COLUMN IF NOT EXISTS "examYearId" TEXT,
+      ADD COLUMN IF NOT EXISTS "stageId" TEXT,
       ADD COLUMN IF NOT EXISTS "questionFormat" TEXT DEFAULT 'SINGLE_CHOICE',
       ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING',
+      ADD COLUMN IF NOT EXISTS "examStage" TEXT DEFAULT 'PRELIMS',
       ADD COLUMN IF NOT EXISTS "questionTextEn" TEXT,
       ADD COLUMN IF NOT EXISTS "questionTextHi" TEXT,
       ADD COLUMN IF NOT EXISTS "bookletSeries" TEXT,
@@ -54,11 +60,18 @@ export async function ensureUserProfileSchema(): Promise<boolean> {
       ADD COLUMN IF NOT EXISTS "contentLabel" TEXT DEFAULT 'OFFICIAL_UPSC_PYQ',
       ADD COLUMN IF NOT EXISTS "verificationStatus" TEXT DEFAULT 'OFFICIALLY_VERIFIED',
       ADD COLUMN IF NOT EXISTS "corpusDocumentId" TEXT,
-      ADD COLUMN IF NOT EXISTS "questionGroupId" TEXT,
-      ADD COLUMN IF NOT EXISTS "recordId" TEXT,
-      ADD COLUMN IF NOT EXISTS "examId" TEXT,
-      ADD COLUMN IF NOT EXISTS "examYearId" TEXT,
-      ADD COLUMN IF NOT EXISTS "stageId" TEXT,
+      ADD COLUMN IF NOT EXISTS "sourceReference" TEXT,
+      ADD COLUMN IF NOT EXISTS "difficultyLevel" TEXT DEFAULT 'MEDIUM',
+      ADD COLUMN IF NOT EXISTS "subjectId" TEXT,
+      ADD COLUMN IF NOT EXISTS "topicId" TEXT,
+      ADD COLUMN IF NOT EXISTS "subtopicId" TEXT,
+      ADD COLUMN IF NOT EXISTS "marks" DOUBLE PRECISION DEFAULT 2.0,
+      ADD COLUMN IF NOT EXISTS "negativeMarks" DOUBLE PRECISION DEFAULT 0.666,
+      ADD COLUMN IF NOT EXISTS "sourceId" TEXT,
+      ADD COLUMN IF NOT EXISTS "sourcePage" TEXT,
+      ADD COLUMN IF NOT EXISTS "language" TEXT DEFAULT 'English',
+      ADD COLUMN IF NOT EXISTS "isStatic" BOOLEAN DEFAULT true,
+      ADD COLUMN IF NOT EXISTS "verifiedAt" TIMESTAMP WITH TIME ZONE,
       ADD COLUMN IF NOT EXISTS "isVerified" BOOLEAN DEFAULT true;
     `);
 
@@ -68,7 +81,9 @@ export async function ensureUserProfileSchema(): Promise<boolean> {
       ADD COLUMN IF NOT EXISTS "optionLabel" TEXT,
       ADD COLUMN IF NOT EXISTS "optionTextEn" TEXT,
       ADD COLUMN IF NOT EXISTS "optionTextHi" TEXT,
-      ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING';
+      ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING',
+      ADD COLUMN IF NOT EXISTS "optionOrder" INTEGER DEFAULT 1,
+      ADD COLUMN IF NOT EXISTS "isCorrect" BOOLEAN DEFAULT false;
     `);
 
     // 5. Ensure Explanation columns exist
@@ -78,7 +93,19 @@ export async function ensureUserProfileSchema(): Promise<boolean> {
       ADD COLUMN IF NOT EXISTS "explanationHi" TEXT,
       ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'ORIGINAL_SOURCE',
       ADD COLUMN IF NOT EXISTS "explanationSource" TEXT,
-      ADD COLUMN IF NOT EXISTS "explanationType" TEXT DEFAULT 'PEDAGOGICAL';
+      ADD COLUMN IF NOT EXISTS "explanationType" TEXT DEFAULT 'PEDAGOGICAL',
+      ADD COLUMN IF NOT EXISTS "eliminationTechnique" TEXT,
+      ADD COLUMN IF NOT EXISTS "sourceCitation" TEXT,
+      ADD COLUMN IF NOT EXISTS "relatedConcept" TEXT,
+      ADD COLUMN IF NOT EXISTS "verifiedAt" TIMESTAMP WITH TIME ZONE;
+    `);
+
+    // 6. Ensure MainsQuestion columns exist
+    await prisma.$executeRawUnsafe(`
+      ALTER TABLE "MainsQuestion"
+      ADD COLUMN IF NOT EXISTS "questionTextHi" TEXT,
+      ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING',
+      ADD COLUMN IF NOT EXISTS "sourceReference" TEXT;
     `);
 
     isUserProfileSchemaEnsured = true;
