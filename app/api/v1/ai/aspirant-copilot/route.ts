@@ -36,6 +36,20 @@ export async function POST(request: NextRequest) {
     }
 
     const queryClean = prompt.trim();
+    const stopWords = new Set([
+      "what", "when", "where", "which", "with", "about", "from", "into", "have", "your",
+      "this", "that", "these", "those", "how", "why", "who", "whom", "will", "would",
+      "could", "should", "prepare", "explain", "give", "tell", "show", "help", "please"
+    ]);
+    const terms = queryClean
+      .split(/[^a-zA-Z0-9\u0900-\u097F]+/)
+      .map((t) => t.trim())
+      .filter((t) => t.length > 2 && !stopWords.has(t.toLowerCase()));
+
+    const searchTerms = terms.length > 0 ? terms.slice(0, 4) : [queryClean];
+
+    // Build OR conditions across extracted key concepts
+    const textConditions = searchTerms.map((t) => ({ contains: t, mode: "insensitive" as const }));
 
     // 1. Parallel retrieval of related platform resources
     const [aiResponse, relatedVideos, relatedToppers, relatedNcert, relatedQuestions, relatedMaps] =
@@ -50,10 +64,10 @@ export async function POST(request: NextRequest) {
         prisma.videoLesson.findMany({
           where: {
             OR: [
-              { title: { contains: queryClean, mode: "insensitive" } },
-              { subject: { contains: queryClean, mode: "insensitive" } },
-              { topic: { contains: queryClean, mode: "insensitive" } },
-              { description: { contains: queryClean, mode: "insensitive" } },
+              ...textConditions.map((c) => ({ title: c })),
+              ...textConditions.map((c) => ({ subject: c })),
+              ...textConditions.map((c) => ({ topic: c })),
+              ...textConditions.map((c) => ({ description: c })),
             ],
           },
           take: 4,
@@ -63,9 +77,9 @@ export async function POST(request: NextRequest) {
         prisma.topperCopy.findMany({
           where: {
             OR: [
-              { title: { contains: queryClean, mode: "insensitive" } },
-              { description: { contains: queryClean, mode: "insensitive" } },
-              { keyTakeaways: { contains: queryClean, mode: "insensitive" } },
+              ...textConditions.map((c) => ({ title: c })),
+              ...textConditions.map((c) => ({ description: c })),
+              ...textConditions.map((c) => ({ keyTakeaways: c })),
             ],
           },
           take: 3,
@@ -74,9 +88,9 @@ export async function POST(request: NextRequest) {
         prisma.nCERTChapter.findMany({
           where: {
             OR: [
-              { chapterTitle: { contains: queryClean, mode: "insensitive" } },
-              { keyTopics: { contains: queryClean, mode: "insensitive" } },
-              { summary: { contains: queryClean, mode: "insensitive" } },
+              ...textConditions.map((c) => ({ chapterTitle: c })),
+              ...textConditions.map((c) => ({ keyTopics: c })),
+              ...textConditions.map((c) => ({ summary: c })),
             ],
           },
           take: 3,
@@ -87,12 +101,12 @@ export async function POST(request: NextRequest) {
           where: {
             status: "PUBLISHED",
             OR: [
-              { questionText: { contains: queryClean, mode: "insensitive" } },
-              {
+              ...textConditions.map((c) => ({ questionText: c })),
+              ...textConditions.map((c) => ({
                 explanation: {
-                  summary: { contains: queryClean, mode: "insensitive" },
+                  summary: c,
                 },
-              },
+              })),
             ],
           },
           take: 4,
@@ -107,15 +121,15 @@ export async function POST(request: NextRequest) {
         prisma.mapFeature.findMany({
           where: {
             OR: [
-              { name: { contains: queryClean, mode: "insensitive" } },
-              { keyFacts: { contains: queryClean, mode: "insensitive" } },
+              ...textConditions.map((c) => ({ name: c })),
+              ...textConditions.map((c) => ({ keyFacts: c })),
             ],
           },
           take: 2,
         }),
       ]);
 
-    const matchingGlossary = searchGlossary(queryClean, "en");
+    const matchingGlossary = searchTerms.flatMap((t) => searchGlossary(t, "en")).slice(0, 4);
 
     return NextResponse.json({
       success: true,
