@@ -218,6 +218,115 @@ async function main() {
       console.warn("⚠️ Phase 3 schema synchronization warning:", e.message);
     }
 
+    // 2c. Explicit synchronization of critical launch tables (Interview, Map, Usage, MainsDraft, NCERTLinks)
+    try {
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS "InterviewQuestion" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "questionTextEn" TEXT NOT NULL,
+          "questionTextHi" TEXT,
+          "contextEn" TEXT,
+          "contextHi" TEXT,
+          "sourceType" TEXT NOT NULL DEFAULT 'CANDIDATE_REPORTED',
+          "sourceAttribution" TEXT,
+          "year" INTEGER,
+          "topic" TEXT NOT NULL,
+          "tags" TEXT,
+          "frameworkGuidance" TEXT,
+          "frameworkGuidanceHi" TEXT,
+          "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE INDEX IF NOT EXISTS "InterviewQuestion_sourceType_topic_idx" ON "InterviewQuestion"("sourceType", "topic");
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE INDEX IF NOT EXISTS "InterviewQuestion_year_idx" ON "InterviewQuestion"("year");
+      `);
+
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS "MapFeature" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "name" TEXT NOT NULL,
+          "nameHi" TEXT,
+          "category" TEXT NOT NULL,
+          "stateOrCountry" TEXT NOT NULL,
+          "latitude" DOUBLE PRECISION NOT NULL,
+          "longitude" DOUBLE PRECISION NOT NULL,
+          "keyFacts" TEXT NOT NULL,
+          "keyFactsHi" TEXT,
+          "upscReference" TEXT,
+          "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE INDEX IF NOT EXISTS "MapFeature_category_stateOrCountry_idx" ON "MapFeature"("category", "stateOrCountry");
+      `);
+
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS "UserUsageLedger" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "userId" TEXT NOT NULL UNIQUE REFERENCES "User"("id") ON DELETE CASCADE,
+          "periodStart" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "periodEnd" TIMESTAMP(3) NOT NULL,
+          "aiMentorMessagesUsed" INTEGER NOT NULL DEFAULT 0,
+          "aiMentorMessagesLimit" INTEGER NOT NULL DEFAULT 0,
+          "mainsEvaluationsUsed" INTEGER NOT NULL DEFAULT 0,
+          "mainsEvaluationsLimit" INTEGER NOT NULL DEFAULT 0,
+          "pyqAttemptsToday" INTEGER NOT NULL DEFAULT 0,
+          "pyqDailyLimit" INTEGER NOT NULL DEFAULT 15,
+          "lastPyqAttemptDate" TIMESTAMP(3),
+          "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE INDEX IF NOT EXISTS "UserUsageLedger_userId_periodEnd_idx" ON "UserUsageLedger"("userId", "periodEnd");
+      `);
+
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS "MainsDraft" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "userId" TEXT NOT NULL REFERENCES "User"("id") ON DELETE CASCADE,
+          "mainsQuestionId" TEXT NOT NULL REFERENCES "MainsQuestion"("id") ON DELETE CASCADE,
+          "userAnswer" TEXT NOT NULL,
+          "wordCount" INTEGER NOT NULL DEFAULT 0,
+          "timeSpentSeconds" INTEGER NOT NULL DEFAULT 0,
+          "selfEvaluationScore" DOUBLE PRECISION,
+          "selfEvaluationNotes" TEXT,
+          "aiFeedbackJson" TEXT,
+          "isSubmitted" BOOLEAN NOT NULL DEFAULT false,
+          "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+          "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE UNIQUE INDEX IF NOT EXISTS "MainsDraft_userId_mainsQuestionId_key" ON "MainsDraft"("userId", "mainsQuestionId");
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE INDEX IF NOT EXISTS "MainsDraft_userId_isSubmitted_idx" ON "MainsDraft"("userId", "isSubmitted");
+      `);
+
+      await prisma.$executeRawUnsafe(`
+        CREATE TABLE IF NOT EXISTS "NCERTChapterQuestionLink" (
+          "id" TEXT NOT NULL PRIMARY KEY,
+          "chapterId" TEXT NOT NULL REFERENCES "NCERTChapter"("id") ON DELETE CASCADE,
+          "questionId" TEXT NOT NULL REFERENCES "Question"("id") ON DELETE CASCADE,
+          "relevanceScore" DOUBLE PRECISION NOT NULL DEFAULT 1.0,
+          "pedagogicalNote" TEXT,
+          "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP
+        );
+      `);
+      await prisma.$executeRawUnsafe(`
+        CREATE UNIQUE INDEX IF NOT EXISTS "NCERTChapterQuestionLink_chapterId_questionId_key" ON "NCERTChapterQuestionLink"("chapterId", "questionId");
+      `);
+
+      console.log("✅ Phase 2c: Synchronized InterviewQuestion, MapFeature, UserUsageLedger, MainsDraft, and NCERTLink tables.");
+    } catch (e) {
+      console.warn("⚠️ Phase 2c table sync warning:", e.message);
+    }
+
     // 3. Ensure FeatureEntitlements exist
     try {
       const feCount = await prisma.featureEntitlement.count();

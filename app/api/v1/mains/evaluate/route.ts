@@ -256,32 +256,36 @@ Provide your response in JSON format with this exact structure:
       evaluationData.isAiGeneratedEvaluation = true;
     }
 
-    // Persist AI evaluation in MainsDraft
-    await prisma.mainsDraft.upsert({
-      where: {
-        userId_mainsQuestionId: {
+    // Persist AI evaluation in MainsDraft with safe fallback
+    try {
+      await prisma.mainsDraft.upsert({
+        where: {
+          userId_mainsQuestionId: {
+            userId: user.id,
+            mainsQuestionId,
+          },
+        },
+        update: {
+          userAnswer,
+          wordCount,
+          selfEvaluationScore: evaluationData.totalScore,
+          aiFeedbackJson: JSON.stringify(evaluationData),
+          isSubmitted: true,
+          updatedAt: new Date(),
+        },
+        create: {
           userId: user.id,
           mainsQuestionId,
+          userAnswer,
+          wordCount,
+          selfEvaluationScore: evaluationData.totalScore,
+          aiFeedbackJson: JSON.stringify(evaluationData),
+          isSubmitted: true,
         },
-      },
-      update: {
-        userAnswer,
-        wordCount,
-        selfEvaluationScore: evaluationData.totalScore,
-        aiFeedbackJson: JSON.stringify(evaluationData),
-        isSubmitted: true,
-        updatedAt: new Date(),
-      },
-      create: {
-        userId: user.id,
-        mainsQuestionId,
-        userAnswer,
-        wordCount,
-        selfEvaluationScore: evaluationData.totalScore,
-        aiFeedbackJson: JSON.stringify(evaluationData),
-        isSubmitted: true,
-      },
-    });
+      });
+    } catch (draftErr: any) {
+      console.warn("MainsDraft persistence fallback:", draftErr.message);
+    }
 
     // Deduct evaluation credit from student's ledger
     await deductAiCredit(user.id, "MAINS_EVALUATION");

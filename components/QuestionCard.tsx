@@ -315,6 +315,12 @@ export function QuestionCard({
 
       {/* Question Body (Serif Editorial Styling) */}
       <div className="mt-4 space-y-3 font-serif">
+        {langMode === "HI" && !question.questionTextHi && (
+          <div className="rounded-lg border border-amber-200 bg-amber-50/70 p-3 text-xs text-amber-800 font-sans">
+            <span className="font-semibold block mb-0.5">आधिकारिक हिंदी अनुवाद सत्यापन में (Translation Pending)</span>
+            इस प्रश्न का आधिकारिक यूपीएससी हिंदी पाठ डिजिटलीकरण व सत्यापन प्रक्रिया में है। मूल अंग्रेजी पाठ नीचे दिया गया है:
+          </div>
+        )}
         {(langMode === "EN" || langMode === "BOTH" || !question.questionTextHi) && (
           <p className="whitespace-pre-line text-base sm:text-lg font-medium leading-relaxed text-heritage-text">
             {question.questionTextEn || question.questionText}

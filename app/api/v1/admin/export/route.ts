@@ -21,6 +21,7 @@ export async function GET(request: NextRequest) {
       "source_discovery_results.csv",
       "duplicate_candidates.csv",
       "import_errors.csv",
+      "import_audit_report.csv",
     ];
 
     if (!allowedFiles.includes(fileName)) {

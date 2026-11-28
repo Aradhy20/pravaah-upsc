@@ -1,0 +1,3769 @@
+{
+  "key": "2025_CSAT",
+  "year": 2025,
+  "paperCode": "CSAT",
+  "expectedCount": 80,
+  "extractedCount": 80,
+  "questions": [
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 1,
+      "questionTextEn": "A natural number \n is such that it can be expressed as \n, where \n and  are distinct\nfactors of \n. How many numbers below 50 have this property?",
+      "questionTextHi": "कोई धनपूर्ण संख्याा \n इस प्रकार है, कि इसे \n के रूप में, जहाँ \n और ,\n के भिन्न गुणनखंड हैं, व्यक्त\nकिया जा सकता है। 50 से कम की कितनी संख्यााओं में यह गुण है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "6",
+          "optionTextHi": "6",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "7",
+          "optionTextHi": "7",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "8",
+          "optionTextHi": "8",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "9",
+          "optionTextHi": "9",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 2,
+      "questionTextEn": "Three prime numbers \n and , each less than 20 , are such that \n. How many distinct\npossible values can we get for \n ?",
+      "questionTextHi": "तीन अभाज्य संख्यााएँ \n और , प्रत्येक 20 से कम, इस प्रकार हैं कि \n है। \n के लिए कितने भिन्न\nसंभव मान मिल सकते हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "4",
+          "optionTextHi": "4",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "5",
+          "optionTextHi": "5",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "6",
+          "optionTextHi": "6",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "More than 6",
+          "optionTextHi": "6 से अधिक",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 3,
+      "questionTextEn": "How many possible values of \n are there satisfying \n, where \n and  are\nnatural numbers (not necessarily distinct)?",
+      "questionTextHi": "के कितने संभव मान हैं, जो \n को, जहाँ \n और  धनपूर्ण संख्यााएँ हैं, संतुष्ट करते हैं (उनका\nभिन्न होना आवश्यक नहीं है)?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "None",
+          "optionTextHi": "कोई भी नहीं",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "One",
+          "optionTextHi": "एक",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Three",
+          "optionTextHi": "तीन",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "More than three",
+          "optionTextHi": "तीन से अधिक",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 4,
+      "questionTextEn": "Team \n scored a total of \n runs in 20 overs. Team  tied the score in \n less overs. Had team Y's\naverage run rate (runs per over) been \n higher, the scores would have been tied in 12 overs. How\nmany runs were scored by team X?",
+      "questionTextHi": "टीम \n ने 20 ओवर में कुल \n रन बनाए। टीम  ने \n कम ओवर में बराबर स्कोोर बनाया। यदि टीम Y की औसत रन दर\n(रन प्रति ओवर) \n अधिक होती, तो यह स्कोोर 12 ओवर में बराबर हो गया होता। टीम X द्वाारा कितने रन बनाए गए?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "72",
+          "optionTextHi": "72",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "144",
+          "optionTextHi": "144",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "216",
+          "optionTextHi": "216",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Cannot be determined",
+          "optionTextHi": "निर्धारित नहीं किया जा सकता",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 5,
+      "questionTextEn": "The price (p) of a commodity is first increased by \n; then decreased by \n; again increased by\n; and again decreased by \n. If the new price is q , then what is the relation between  and  ?",
+      "questionTextHi": "किसी वस्तु की कीमत (p) पहले \n बढ़ााई गई; फिर \n घटाई गई; फिर से \n बढ़ााई गई; और फिर \n घटाई गई। यदि नई\nकीमत q है, तो  और  के बीच क्याा संबंध है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "",
+          "optionTextHi": "",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "",
+          "optionTextHi": "",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "",
+          "optionTextHi": "",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "",
+          "optionTextHi": "",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "A",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 6,
+      "questionTextEn": "The petrol price shot up by \n as a result of the hike in crude oil prices. The price of petrol before\nthe hike was ₹\n per litre. A person travels 2200 km every month and his car gives a mileage of 16\nkm per litre. By how many km should he reduce his travel if he wants to maintain his expenditure at\nthe previous level?",
+      "questionTextHi": "कच्चे तेल की कीमतों में वृद्धि होने के कारण पेट्रोोल की कीमतें \n बढ़ गईं। कीमत-वृद्धि से पहले पेट्रोोल की कीमत ₹\n प्रति\nलीटर थी। कोई व्यक्ति प्रति माह 2200 km की यात्राा करता है और उसकी कार 16 km प्रति लीटर माइलेज देती है। यदि वह\nअपना खर्च पिछले स्तर पर बनाए रखना चाहता है, तो उसे अपनी यात्राा में कितने km की कमी करनी चाहिए?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "180 km",
+          "optionTextHi": "180 km",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "200 km",
+          "optionTextHi": "200 km",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "220 km",
+          "optionTextHi": "220 km",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "240 km",
+          "optionTextHi": "240 km",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 7,
+      "questionTextEn": "A 4-digit number \n is such that when divided by \n, 9 leaves a remainder \n respectively.\nWhat is the smallest value of \n ?",
+      "questionTextHi": "कोई 4-अंकों की संख्याा \n इस प्रकार है कि उसे \n, 9 से भाग देने पर क्रमशः \n शेषफल रहता है। \n का लघुतम\nमान क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "1068",
+          "optionTextHi": "1068",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "1072",
+          "optionTextHi": "1072",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "1078",
+          "optionTextHi": "1078",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "1082",
+          "optionTextHi": "1082",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 8,
+      "questionTextEn": "What is the unit digit in the multiplication of \n ?",
+      "questionTextHi": "के गुणन में इकाई अंक क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "1",
+          "optionTextHi": "1",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "3",
+          "optionTextHi": "3",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "5",
+          "optionTextHi": "5",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "9",
+          "optionTextHi": "9",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 9,
+      "questionTextEn": "Consider the first 100 natural numbers. How many of them are not divisible by any one of \nand 9 ?",
+      "questionTextHi": "प्रथम 100 धनपूर्ण संख्यााओं पर विचार कीजिए। उनमें से कितनी \n और 9 में किसी भी एक से विभाज्य नहीं हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "20",
+          "optionTextHi": "20",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "21",
+          "optionTextHi": "21",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "22",
+          "optionTextHi": "22",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "23",
+          "optionTextHi": "23",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 10,
+      "questionTextEn": "If \n and \n, then what is the ratio of maximum value of \n to minimum value of\n ?",
+      "questionTextHi": "यदि \n और \n, तो \n के महत्तम मान का \n के न्यूनतम मान से अनुपात क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "6",
+          "optionTextHi": "6",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "",
+          "optionTextHi": "",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "",
+          "optionTextHi": "",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "None of the above",
+          "optionTextHi": "उपर्युक्त में से कोई नहीं",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 11,
+      "questionTextEn": "Let both  and  be prime numbers such that \n is also a prime number less than 30 . What is\nthe number of possible values of  ?",
+      "questionTextHi": "मान लीजिए  और  दोनों अभाज्य संख्यााएँ इस प्रकार हैं कि \n भी एक अभाज्य संख्याा है जो 30 से कम है।  के\nसंभव मानों की संख्याा क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "4",
+          "optionTextHi": "4",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "5",
+          "optionTextHi": "5",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "6",
+          "optionTextHi": "6",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "7",
+          "optionTextHi": "7",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 12,
+      "questionTextEn": "There are  sets of numbers each having only three positive integers with LCM equal to 1001 and\nHCF equal to 1 . What is the value of  ?",
+      "questionTextHi": "संख्यााओं के  समुच्चय हैं जिनमें प्रत्येक में केवल तीन धन पूर्णांक हैं जिनका LCM, 1001 के बराबर है और HCF, 1 के बराबर\nहै।  का मान क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "6",
+          "optionTextHi": "6",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "7",
+          "optionTextHi": "7",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "8",
+          "optionTextHi": "8",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "More than 8",
+          "optionTextHi": "8 से अधिक",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 13,
+      "questionTextEn": "Let PQR be a 3-digit number, PPT be a 3-digit number and \n be a 2-digit number, where\n are distinct non-zero digits. Further, \n. If \n and \n, then what\nis the number of possible values of \n ?",
+      "questionTextHi": "मान लीजिए PQR कोई 3-अंकों वाली संख्याा है, PPT कोई 3-अंकों वाली संख्याा है और \n कोई 2-अंकों वाली संख्याा है, जहाँ\n भिन्न शून्येतर अंक हैं। इसके अतिरिक्त, \n है। यदि \n और \n, तो \n के\nसंभव मानों की संख्याा क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "2",
+          "optionTextHi": "2",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "3",
+          "optionTextHi": "3",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "4",
+          "optionTextHi": "4",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "More than 4",
+          "optionTextHi": "4 से अधिक",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 14,
+      "questionTextEn": "What is the maximum value of  such that \n is divisible by \n ?",
+      "questionTextHi": "का महत्तम मान क्याा होगा, इस प्रकार कि \n,\n से विभाज्य हो?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "3",
+          "optionTextHi": "3",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "4",
+          "optionTextHi": "4",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "5",
+          "optionTextHi": "5",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "7",
+          "optionTextHi": "7",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 15,
+      "questionTextEn": "and \n walk along a circular track. They start at 5:00 a.m. from the same point in opposite\ndirections.  walks at an average speed of 5 rounds per hour and Q walks at an average speed of 3\nrounds per hour. How many times will they cross each other between 5:20 a.m. and 7:00 a.m.?",
+      "questionTextHi": "और \n एक वृत्तााकार पथ पर चलते हैं। उन्होंोंने 5:00 a.m. पर एक ही बिंदु से एक-दूसरे की विपरीत दिशा में चलना शुरू\nकिया। , 5 चक्कर प्रति घंटा की औसत चाल से चलता है और Q, 3 चक्कर प्रति घंटा की औसत चाल से चलता है। वे 5:20\na.m. और 7:00 a.m. के बीच कितनी बार एक-दूसरे को पार करेंगे?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "12",
+          "optionTextHi": "12",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "13",
+          "optionTextHi": "13",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "14",
+          "optionTextHi": "14",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "15",
+          "optionTextHi": "15",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 16,
+      "questionTextEn": "A tram overtakes 2 persons \n and  walking at an average speed of \n and \n in the\nsame direction and completely passes them in 8 seconds and 9 seconds respectively. What is the\nlength of the tram?",
+      "questionTextHi": "कोई ट्रााम, \n और \n की औसत चाल से एक ही दिशा में चल रहे 2 व्यक्तियों \n और  से आगे निकलती है\nऔर उनको क्रमशः 8 सेकण्ड और 9 सेकण्ड में पूरी तरह पार कर जाती है। ट्रााम की लंबाई क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "15 m",
+          "optionTextHi": "15 m",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "18 m",
+          "optionTextHi": "18 m",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "20 m",
+          "optionTextHi": "20 m",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "24 m",
+          "optionTextHi": "24 m",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 17,
+      "questionTextEn": "If \n, then how many digits does the number N have?",
+      "questionTextHi": "यदि \n है, तो संख्याा N में कितने अंक हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "8",
+          "optionTextHi": "8",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "9",
+          "optionTextHi": "9",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "10",
+          "optionTextHi": "10",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "11",
+          "optionTextHi": "11",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 18,
+      "questionTextEn": "A set \n of 20 pipes can fill \n of a tank in 14 minutes. Another set ( \n ) of 10 pipes fills 3/8th of\nthe tank in  minutes. A third set (Z) of 16 pipes can empty half of the tank in 20 minutes. If half of\nthe pipes of set \n are closed and only half of the pipes of set \n are open, and all pipes of the set\n(Z) are open, then how long will it take to fill 50% of the tank?",
+      "questionTextHi": "20 नलों का समुच्चय \n किसी टंकी के \n भाग को 14 मिनट में भर सकता है। 10 नलों का दूसरा समुच्चय (\n) टंकी के\n3/8वें भाग को  मिनट में भर सकता है। 16 नलों का एक तीसरा समुच्चय (Z) उस टंकी के आधे भाग को 20 मिनट में खाली\nकर सकता है। यदि समुच्चय \n के आधे नल बंद हैं और समुच्चय \n के केवल आधे नल खुले हैं, और समुच्चय (Z) के सभी नल\nखुले हैं, तो उस टंकी के 50% भाग को भरने में कितना समय लगेगा?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "8 minutes",
+          "optionTextHi": "8 मिनट",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "10 minutes",
+          "optionTextHi": "10 मिनट",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "12 minutes",
+          "optionTextHi": "12 मिनट",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "16 minutes",
+          "optionTextHi": "16 मिनट",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 19,
+      "questionTextEn": "If  is a natural number, then what is the number of distinct remainders of \n when divided by\n4 ?",
+      "questionTextHi": "यदि  धनपूर्ण संख्याा है, तो \n को 4 से भाग देने पर उसके भिन्न शेषफलों की संख्याा क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "0",
+          "optionTextHi": "0",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "1",
+          "optionTextHi": "1",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "2",
+          "optionTextHi": "2",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "3",
+          "optionTextHi": "3",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 20,
+      "questionTextEn": "Let \n be a 3-digit number. What is the HCF of P and 481 ?",
+      "questionTextHi": "मान लीजिए \n कोई 3-अंकों की संख्याा है। P और 481 का महत्तम समापवर्तक (HCF) क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "1",
+          "optionTextHi": "1",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "13",
+          "optionTextHi": "13",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "37",
+          "optionTextHi": "37",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "481",
+          "optionTextHi": "481",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 21,
+      "questionTextEn": "What is the 489th digit in the number \n ?",
+      "questionTextHi": "संख्याा \n में 489वाँ अंक क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "0",
+          "optionTextHi": "0",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "3",
+          "optionTextHi": "3",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "6",
+          "optionTextHi": "6",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "9",
+          "optionTextHi": "9",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 22,
+      "questionTextEn": "The 5-digit number PQRST (all distinct digits) is such that \n.\n is thrice \n.\n is greater than \nby 4, while \n is greater than  by 3 . How many such 5-digit numbers are possible?",
+      "questionTextHi": "5-अंकों की संख्याा PQRST (सभी अंक भिन्न हैं) इस प्रकार है कि \n है। ,\n का तीन गुना है। ,\n से 4 बड़ाा है जबकि\n,\n से 3 बड़ाा है। 5-अंकों की ऐसी कितनी संख्यााएँ संभव हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "3",
+          "optionTextHi": "3",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "4",
+          "optionTextHi": "4",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "5",
+          "optionTextHi": "5",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "6",
+          "optionTextHi": "6",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 23,
+      "questionTextEn": "can complete one-third of a certain work in  days, \n can complete one-third of the same work in\n days and  can complete three-fourth of the same work in 12 days. All of them work together for\n days and then \n and  quit and  alone finishes the remaining work in \n days. What is  equal\nto?",
+      "questionTextHi": "किसी काम का एक-तिहाई भाग  दिनों में पूरा कर सकता है, \n उसी काम का एक-तिहाई भाग  दिनों में, और  उसी काम\nका तीन-चौथाई भाग 12 दिनों में पूरा कर सकता है। वे सभी एक साथ मिल कर  दिनों तक काम करते हैं, तब \n और  काम\nछोड़ देते हैं, और अकेला  शेष काम को \n दिनों में पूरा कर लेता है। तो  किसके बराबर है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "3",
+          "optionTextHi": "3",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "4",
+          "optionTextHi": "4",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "5",
+          "optionTextHi": "5",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "6",
+          "optionTextHi": "6",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 24,
+      "questionTextEn": "Consider the following statements:\nI. There exists a natural number which when increased by \n can have its number of factors\nunchanged.\nII. There exists a natural number which when increased by \n can have its number of factors\nunchanged.\nWhich of the statements given above is/are correct?",
+      "questionTextHi": "निम्नलिखित कथनों पर विचार कीजिए:\nI. एक धनपूर्ण संख्याा है, जिसको \n बढ़ाा देने पर, उसके गुणनखण्डोंों की संख्याा अपरिवर्तित रह सकती है।\nII. एक धनपूर्ण संख्याा है, जिसको \n बढ़ाा देने पर, उसके गुणनखण्डोंों की संख्याा अपरिवर्तित रह सकती है।\nउपर्युक्त कथनों में से कौन-सा/से सही है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 25,
+      "questionTextEn": "What is the remainder when \n is divided by 6 ?",
+      "questionTextHi": "को 6 से भाग देने पर शेषफल क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "0",
+          "optionTextHi": "0",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "1",
+          "optionTextHi": "1",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "2",
+          "optionTextHi": "2",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "3",
+          "optionTextHi": "3",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "A",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 26,
+      "questionTextEn": "In a T20 cricket match, three players X, Y and Z scored a total of 37 runs. The ratio of number of\nruns scored by \n to the number of runs scored by \n is equal to ratio of number of runs scored by \nto number of runs scored by .\nValue-III  Runs scored by \nWhich one of the following is correct?",
+      "questionTextHi": "एक T20 क्रिकेट मैच में, तीन खिलाड़ियों X, Y और Z ने कुल 37 रन बनाए। \n द्वाारा बनाए गए रनों की संख्याा का \n द्वाारा\nबनाए गए रनों की संख्याा से अनुपात,  द्वाारा बनाए गए रनों की संख्याा का  द्वाारा बनाए गए रनों की संख्याा से अनुपात के बराबर\nहै।\nमात्राा-III \n द्वाारा बनाए गए रन\nनिम्नलिखित में से कौन-सा एक सही है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "Value-I < Value-II < Value-III",
+          "optionTextHi": "मात्राा-I < मात्राा-II < मात्राा-III",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Value-III < Value-II < Value-I",
+          "optionTextHi": "मात्राा-III < मात्राा-II < मात्राा-I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Value-I < Value-III < Value-II",
+          "optionTextHi": "मात्राा-I < मात्राा-III < मात्राा-II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Cannot be determined due to insufficient data",
+          "optionTextHi": "अपर्याप्त आँकड़ोंों के कारण निर्धारित नहीं किया जा सकता",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 27,
+      "questionTextEn": "Let \n, where \n are integers.\nValue-I  Maximum value of \n when \n are positive integers.\nValue-II  Maximum value of \n when \n.\nWhich one of the following is correct?",
+      "questionTextHi": "मान लीजिए \n, जहाँ \n पूर्णांक हैं।\nमात्राा-I \n का महत्तम मान जब \n धनात्मक पूर्णांक हैं।\nमात्राा-II \n का महत्तम मान जब \n.\nनिम्नलिखित में से कौन-सा एक सही है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "Value-I < Value-II",
+          "optionTextHi": "मात्राा-I < मात्राा-II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Value-II < Value-I",
+          "optionTextHi": "मात्राा-II < मात्राा-I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Value-I = Value-II",
+          "optionTextHi": "मात्राा-I = मात्राा-II",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Cannot be determined due to insufficient data",
+          "optionTextHi": "अपर्याप्त आँकड़ोंों के कारण निर्धारित नहीं किया जा सकता",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 28,
+      "questionTextEn": "Consider a set of 11 numbers:\nValue-I = Minimum value of the average of the numbers of the set when they are consecutive\nintegers \n.\nValue-II = Minimum value of the product of the numbers of the set when they are consecutive non-\nnegative integers.\nWhich one of the following is correct?",
+      "questionTextHi": "11 संख्यााओं के एक समुच्चय पर विचार कीजिए:\nमात्राा-I = समुच्चय की संख्यााओं के औसत का न्यूनतम मान जब वे क्रमागत पूर्णांक \n हैं।\nमात्राा-II = समुच्चय की संख्यााओं के गुणनफल का न्यूनतम मान जब वे क्रमागत ऋणेतर पूर्णांक हैं।\nनिम्नलिखित में से कौन-सा एक सही है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "Value-I < Value-II",
+          "optionTextHi": "मात्राा-I < मात्राा-II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Value-II < Value-I",
+          "optionTextHi": "मात्राा-II < मात्राा-I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Value-I = Value-II",
+          "optionTextHi": "मात्राा-I = मात्राा-II",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Cannot be determined due to insufficient data\n Value-I = Runs scored by X \n Value-II = Runs scored by Y",
+          "optionTextHi": "अपर्याप्त आँकड़ोंों के कारण निर्धारित नहीं किया जा सकता",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 29,
+      "questionTextEn": "The average of three numbers \n and  is .  is as much more than the average as  is less than\nthe average. What is the value of  ?",
+      "questionTextHi": "तीन संख्यााओं \n और  का औसत  है।  औसत से उतना अधिक है, जितना  औसत से कम है।  का मान क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "k",
+          "optionTextHi": "k",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "",
+          "optionTextHi": "",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "",
+          "optionTextHi": "",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "",
+          "optionTextHi": "मात्राा-I = X द्वाारा बनाए गए रन \n मात्राा-II = Y द्वाारा बनाए गए रन",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "A",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 30,
+      "questionTextEn": "Let  be a real number between 0 and 1 . Which of the following statements is/are correct?\nI. \n.\nII. \n.\nSelect the correct answer using the code given below:",
+      "questionTextHi": "मान लीजिए , 0 और 1 के बीच की कोई वास्तविक संख्याा है। निम्नलिखित कथनों में से कौन-सा/से सही है/हैं?\nI. \n.\nII. \n.\nनीचे दिए गए कूट का प्रयोग कर सही उत्तर चुनिए:",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "A",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 31,
+      "questionTextEn": "The difference between any two natural numbers is 10 . What can be said about the natural\nnumbers which are divisible by 5 and lie between these two numbers?",
+      "questionTextHi": "किन्हींीं दो धनपूर्ण संख्यााओं के बीच अंतर 10 है। इन दो संख्यााओं के बीच, 5 से विभाज्य धनपूर्ण संख्यााओं के बारे में क्याा कहा\nजा सकता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "There is only one such number.",
+          "optionTextHi": "ऐसी केवल एक संख्याा है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "There are only two such numbers.",
+          "optionTextHi": "ऐसी केवल दो संख्यााएँ हैं।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "There can be more than one such number.",
+          "optionTextHi": "ऐसी एक से अधिक संख्यााएँ हो सकती हैं।",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "No such number exists.\n\n\nComprehension\n29 questions",
+          "optionTextHi": "ऐसी कोई संख्याा नहीं है।\nComprehension\n29 questions",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 32,
+      "questionTextEn": "Directions for the following 4 (four) items:\nRead the following two passages and answer the items that follow the passages. Your answers to these\nitems should be based on the passages only.\nMaintaining an ecosystem just to conserve biodiversity will affect its commercial potential as well as the\nlivelihoods dependent on the ecosystem. There is also a conflict between using an ecosystem only for\nlivelihoods, for commercial exploitation, or strictly for conservation. Deforestation caused due to\ncommercial exploitation will lead to indirect harm like floods, siltation problems and microclimatic\ninstability, apart from adversely affecting livelihoods dependent on forests. These conflicts are particularly\nacute in developing countries where the dependence of people on the ecosystem is significant, and\ncommercial exploitation has the potential to boost national income.\nWhich one of the following statements best reflects the critical message conveyed by the author of\nthe passage?",
+      "questionTextHi": "निम्नलिखित 4 (चार) प्रश्नांांशों के लिए निर्देश:\nनीचे दिए गए दो परिच्छेदों को पढ़िए और परिच्छेदों के नीचे आने वाले प्रश्नांांशों के उत्तर दीजिए। इन प्रश्नांांशों के लिए आपके उत्तर केवल\nइन परिच्छेदों पर आधारित होने चाहिए।\nकिसी पारिस्थितिकी तंत्र का, जैव-विविधता के संरक्षण भर के लिए, अनुरक्षण करने से इसकी वाणिज्यिक संभाव्यता, साथ ही इस\nपारिस्थितिकी तंत्र पर निर्भर आजीविकाएँ प्रभावित होंगी। किसी पारिस्थितिकी तंत्र का उपयोग केवल आजीविकाओं के लिए हो, या\nवाणिज्यिक दोहन के लिए हो, या अनिवार्यतः संरक्षण के लिए ही हो, इनके बीच भी परस्पर-विरोध है। वाणिज्यिक दोहन के परिणामस्वरूप\nहोने वाले वनोन्मूलन से वनों पर निर्भर आजीविकाओं पर प्रतिकूल प्रभाव पड़ने के अतिरिक्त, बाढ़, गाद बनने की समस्यााएँ और सूक्ष्म-\nजलवायवी अस्थिरता जैसी अप्रत्यक्ष हानियाँ होंगी। विकासशील देशों में, जहाँ पारिस्थितिकी तंत्र पर लोगों की निर्भरता महत्त्वपूर्ण है, और\nवाणिज्यिक दोहन से राष्ट्रीीय आय में अति वृद्धि आने की संभाव्यता है, ये परस्पर-विरोधी स्थितियाँ ख़ाास तौर पर विकट हैं।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद के लेखक द्वाारा व्यक्त अति महत्त्वपूर्ण सन्देश को सर्वोत्तम रूप से प्रतिबिंबित\nकरता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "Conservation of biodiversity is not an issue to be worried about when some people depend on\necosystems for their livelihoods.",
+          "optionTextHi": "जब कुछ लोग अपनी आजीविकाओं के लिए पारिस्थितिकी तंत्रोंों पर निर्भर होते हैं, तो जैव-विविधता के संरक्षण के मुद्दे को\nलेकर चिंता आवश्यक नहीं है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Commercial exploitation of forests goes against the fundamental rights of the people\ndependent on forests for food and shelter.",
+          "optionTextHi": "वनों का वाणिज्यिक दोहन, वनों पर भोजन और आश्रय के लिए निर्भर रहने वाले लोगों के मूल अधिकारों के विरुद्ध है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Sustenance of livelihood and degradation of ecosystem while being together exacerbate one\nanother, leading to conflicts and imbalance.",
+          "optionTextHi": "आजीविका का संपोषण और पारिस्थितिकी तंत्र का निम्नीीकरण एक साथ होने से वे एक दूसरे को तीव्र करते हैं, जिससे\nपरस्पर-विरोध और असंतुलन होता है।",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Commercial exploitation of ecosystems should be completely stopped.",
+          "optionTextHi": "पारिस्थितिकी तंत्रोंों का वाणिज्यिक दोहन पूर्ण रूप से बंद कर दिया जाना चाहिए।",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 33,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to above passage, the following assumptions have been made:\nI. No country needs to depend on ecosystems to boost national income.\nII. Resource-rich countries need to share their resources with those of scant resources so as to\nprevent the degradation of ecosystems.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nउपर्युक्त परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nI. किसी भी देश को, राष्ट्रीीय आय में अति वृद्धि लाने के लिए, पारिस्थितिकी तंत्रोंों पर निर्भर होने की आवश्यकता नहीं है।\nII. संसाधनों से समृद्ध देशों को, अपर्याप्त संसाधनों वाले देशों के साथ अपने संसाधन बाँटने चाहिए, ताकि पारिस्थितिकी तंत्रोंों के\nनिम्नीीकरण को रोका जा सके।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 34,
+      "questionTextEn": "Refer to the directions above.\nThe history of renewable energy suggests there is a steep learning curve, meaning that, as more is\nproduced, costs fall rapidly because of economies of scale and learning by doing. The firms' green\ninnovation is path-dependent: the more a firm does, the more it is likely to do in the future. The strongest\nevidence for this is the collapse in the price of solar energy, which became about \n cheaper during the\n2010s, repeatedly beating forecasts. Moving early and gradually gives economies more time to adjust,\nallowing them to reap the benefits of path-dependent green investment without much disruption. A late,\nmore chaotic transition is costlier.\nWhich one of the following statements best reflects the central idea of the passage?",
+      "questionTextHi": "Refer to the directions above.\nनवीकरणीय ऊर्जा के इतिहास से यह सूचित होता है, कि सीखने का एक अति-प्रवण वक्र है, अर्थात्, जितना अधिक उत्पाादन होता है, बड़े\nपैमाने की किफायतों और कार्यकलाप से सीखने के फलस्वरूप लागत उतनी तेज़ीी से गिरती है। प्रतिष्ठाानों का हरित नवप्रवर्तन मार्ग-आश्रित\nहै: कोई प्रतिष्ठाान इसे जितना अधिक करता है, उसके भविष्य में करने की संभावना उतनी ही अधिक होती जाती है। इसका सबसे प्रबल\nसाक्ष्य है सौर ऊर्जा की कीमतों में भारी गिरावट, जो 2010 के दशक में, पूर्वानुमानों को बारंबार झुठलाते हुए, लगभग \n सस्तीी हो गईं।\nशीघ्र प्राारंभ कर, क्रमिक रूप से चलने से, अर्थव्यवस्थााओं को व्यवस्थित होने के लिए अधिक समय मिल जाता है, जिससे उन्हें अधिक\nविघटन का सामना किए बिना, मार्ग-आश्रित हरित निवेश के लाभों को उठाने का अवसर मिलता है। विलंब से किया जाने वाला, अधिक\nअव्यवस्थित अंतरण और ज्याादा महँगा पड़ता है।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद के केन्द्रीीय विचार को सर्वोत्तम रूप से प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "Economies of scale is essential for transition to green growth.",
+          "optionTextHi": "हरित संवृद्धि की ओर अंतरण होने के लिए बड़े पैमाने की किफायतें अत्याावश्यक हैं।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Modern technological progress is intensely linked to path-dependent innovations.",
+          "optionTextHi": "आधुनिक प्रौौद्योोगिकीय प्रगति मार्ग-आश्रित नवप्रवर्तन के साथ गहन रूप से संबंधित है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Countries with large economies are in a better position to adopt green technologies.",
+          "optionTextHi": "वृहद् अर्थव्यवस्थााओं वाले देश, हरित प्रौौद्योोगिकियों को अपनाने के लिए बेहतर स्थिति में होते हैं।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Timing plays a crucial role in the case of green technology development.",
+          "optionTextHi": "हरित प्रौौद्योोगिकी विकास के मामले में उचित समय-चयन निर्णायक भूमिका निभाता है।",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 35,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to the above passage, the following assumptions have been made:\nI. Path-dependent green investments will eventually most likely benefit growth as well as public\nfinances in a country like India.\nII. If other green technologies follow the same pattern as that of solar energy, there will most likely\nbe an easy green transition.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nउपर्युक्त परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nI. भारत जैसे देश में मार्ग-आश्रित हरित निवेश अंततः सर्वाधिक संभावित रूप से संवृद्धि को, और साथ ही लोक वित्त को, लाभ\nपहुँँचाएँगे।\nII. यदि अन्य हरित प्रौौद्योोगिकियाँ उसी प्रतिरूप का अनुसरण करें, जिस प्रतिरूप का अनुसरण सौर ऊर्जा के मामले में हुआ, तो\nसर्वाधिक संभावना है कि हरित अंतरण सरल होगा।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 36,
+      "questionTextEn": "Refer to the directions above.\nEach State in India faces a distinctive set of challenges regarding the impact of warming, but also offers its\nown set of opportunities for reducing emissions depending on its natural resources. For example, coastal\nStates need to take action to protect their shores from sea level rise, districts that are drier need to prepare\nfor variable monsoon precipitation. Himalayan regions have their own unique challenges, and selected\nparts of peninsular India and offshore areas offer great opportunities for harnessing wind power. These\nvarious aspects need to be considered for developing clear and sustainable goals for the future.\nWhich one of the following statements best reflects the most logical, rational and pragmatic\nmessage conveyed by the author of the passage?",
+      "questionTextHi": "Refer to the directions above.\nभारत में प्रत्येक राज्य तापन के प्रभाव को लेकर सुभिन्न चुनौतियों के समूह का सामना करता है, किन्तु उत्सर्जन को कम करने के लिए\nप्रत्येक राज्य के पास अपने-अपने सुयोग हैं, जो उसके अपने प्रााकृतिक संसाधनों पर निर्भर हैं। उदाहरण के लिए, तटवर्ती राज्योंों को अपने\nतटों को समुद्र स्तर में बढ़ोोतरी से संरक्षित करने हेतु कार्रवाई करने की आवश्यकता है, अपेक्षााकृत सूखे जिलों को परिवर्ती मानसून वर्षा के\nलिए तैयारी करने की आवश्यकता है। हिमालयी क्षेत्रोंों की अपनी अनन्य चुनौतियाँ हैं, और प्राायद्वीीपीय भारत और अपतट क्षेत्रोंों के चुनिंदा\nभागों में पवन शक्ति को काम में लाने के लिए बड़े सुयोग उपलब्ध हैं। इन विभिन्न परिप्रेक्ष्योंों पर भविष्य के लिए स्पष्ट और सतत लक्ष्य\nविकसित करने हेतु विचार किए जाने की आवश्यकता है।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद के लेखक द्वाारा व्यक्त सर्वाधिक तर्कसंगत, विवेकपूर्ण और व्याावहारिक सन्देश\nको सर्वोत्तम रूप से प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "The mitigation and adaptation strategies to address/tackle the climate change is essentially the\nresponsibility of each State.",
+          "optionTextHi": "जलवायु परिवर्तन का सामना/प्रबंध करने के लिए न्यूनीकरण करना और अनुकूलन कार्य-नीतियाँ अपनाना अनिवार्य रूप से\nप्रत्येक राज्य का उत्तरदायित्व है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "India is too diverse to implement any effective strategy or programme to address/tackle the\nclimate change.",
+          "optionTextHi": "भारत इतना विविधतापूर्ण है, कि उसके लिए जलवायु परिवर्तन का सामना/प्रबंध करने के लिए कोई प्रभावकारी कार्यनीति\nया कार्यक्रम कार्यान्वित करना कठिन है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "It is basically the responsibility of the Union Government to implement the climate action plans\nand ensure net zero emissions.",
+          "optionTextHi": "जलवायु कार्य योजनाएँ कार्यान्वित करना और निवल शून्य उत्सर्जन सुनिश्चित करना मूलतः केंद्र सरकार का उत्तरदायित्व है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "India needs to formulate effective climate change mitigation and adaptation strategies at the\nState/region level.",
+          "optionTextHi": "भारत के लिए राज्य/क्षेत्र स्तर पर जलवायु परिवर्तन के लिए न्यूनीकरण और अनुकूलन की प्रभावी कार्य-नीतियाँ प्रतिपादित\nकरने की आवश्यकता है।",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 37,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to the passage, the following assumptions have been made:\nI. Green energy production can be linked to/integrated with the climate change mitigation and\nadaptation strategies.\nII. Effects of climate change are much more severe in coastal and mountainous regions.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nइस परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nI. हरित ऊर्जा उत्पाादन को, जलवायु परिवर्तन न्यूनीकरण और अनुकूलन कार्य-नीतियों के साथ सहबद्ध/संघटित किया जा सकता\nहै।\nII. जलवायु परिवर्तन के प्रभाव तटवर्ती और पर्वतीय क्षेत्रोंों में कहीं अधिक गंभीर हैं।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "A",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 38,
+      "questionTextEn": "Refer to the directions above.\nIf the social inequality is the most acutely felt social problem in India, insecurity, more than poverty, is the\nmost acutely felt economic problem. Besides those below the official poverty line, even those just over the\npoverty line are subject to multiple economic insecurities of various kinds (due to wealth and/or health\nrisks, market fluctuations, job-related uncertainties). Many Government policies are actually intended\ntowards mitigating these insecurities.\nWhich one of the following statements best reflects the critical message conveyed by the passage?",
+      "questionTextHi": "Refer to the directions above.\nयदि सामाजिक असमानता भारत में तीव्रतम रूप से महसूस की गई सामाजिक समस्याा है, तो असुरक्षाा, गरीबी से भी अधिक, तीव्रतम रूप\nसे महसूस की गई आर्थिक समस्याा है। जो लोग शासकीय गरीबी रेखा के नीचे हैं, और उनके अतिरिक्त वे भी, जो गरीबी रेखा के ठीक-ठीक\nऊपर हैं, अनेक प्रकार की (संपत्ति और/अथवा स्वाास्थ्य जोखिमों, बाज़ाार में घट-बढ़, रोज़गार-संबंधी अनिश्चितताओं के कारण) विभिन्न\nआर्थिक असुरक्षााओं से प्रभावित हैं। अनेक सरकारी नीतियों का लक्ष्य वास्तव में इन असुरक्षााओं का न्यूनीकरण है।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद द्वाारा व्यक्त अति महत्त्वपूर्ण सन्देश को सर्वोत्तम रूप से प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "India's political executive should be aware that poverty and social inequality and the consequent\nsense of insecurity is the main social problem.",
+          "optionTextHi": "भारत की राजनीतिक कार्यपालिका को इस बात से अवगत होना चाहिए, कि गरीबी और सामाजिक असमानता और उनके\nपरिणामस्वरूप हुआ असुरक्षाा-बोध ही मुख्य सामाजिक समस्याा है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "In India, poverty is the primary reason for social inequality and insecurity.",
+          "optionTextHi": "भारत में, गरीबी ही सामाजिक असमानता और असुरक्षाा का प्रााथमिक कारण है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Poverty and social inequality are so intricately linked that they pose an unmanageable crisis for\nIndia.",
+          "optionTextHi": "गरीबी और सामाजिक असमानता इतनी पेचीदगी से जुड़े हैं कि वे भारत के लिए अनियंत्रणीय संकट प्रस्तुत करते हैं।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Insecurity, more than poverty, is the main economic issue that Government policies must\naddress.",
+          "optionTextHi": "असुरक्षाा, गरीबी से भी बढ़ कर, वह मुख्य आर्थिक मुद्दाा है, जिसका सरकारी नीतियों द्वाारा अवश्य निराकरण किया जाना\nचाहिए।",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 39,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to the above passage, the following assumptions have been made:\nI. People above the poverty line also are prone to suffer from anxiety about economic insecurity.\nII. Eradication of poverty can result in peace and social equality in the country.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nउपर्युक्त परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nI. गरीबी रेखा से ऊपर के लोगों की भी आर्थिक असुरक्षाा के बारे में चिंताग्रस्त होने की प्रवृत्ति होती है।\nII. गरीबी के उन्मूलन के परिणामस्वरूप देश में सामाजिक समानता और शान्ति हो सकती है।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "A",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 40,
+      "questionTextEn": "Refer to the directions above.\nOne of the dismal realities of the agricultural sector in independent India has been that it never experienced\na high-growth phase, unlike the non-agricultural economy. The highest decadal growth (compound annual\ngrowth rate or CAGR) for agriculture has been just \n in the 1980s. Also, after experiencing a spurt in\ndecadal growth during the 1980s, agricultural growth suffered relative stagnation thereafter. This is in\nsharp contrast to non-agricultural growth, which consistently increased from the 1980s to 2000s.\nWhich one of the following statements best reflects the corollary to the above passage?",
+      "questionTextHi": "Refer to the directions above.\nस्वतंत्र भारत में कृषि क्षेत्र की निराशाजनक वास्तविकताओं में से एक यह रही है, कि इसमें कभी भी उच्च-संवृद्धि की स्थिति नहीं आई,\nजैसा कि ग़ैर-कृषि अर्थव्यवस्थाा में हुआ। कृषि के लिए उच्चतम दशकीय संवृद्धि (चक्रवृद्धि वार्षिक वृद्धि दर या CAGR) 1980 के दशक में\nमात्र \n रही है। यद्यपि 1980 के दशक के दौरान दशकीय संवृद्धि में एक उछाल आया, तथापि उसके उपरान्त कृषि संवृद्धि में\nअपेक्षााकृत गतिरोध ही बना रहा। यहाँ ग़ैर-कृषि संवृद्धि के, जो कि 1980 से 2000 तक के दशकों में लगातार बढ़ती रही है, ठीक विपरीत\nएक सुस्पष्ट विषमता दिखाई देती है।\nनिम्नलिखित में से कौन-सा एक कथन, उपर्युक्त परिच्छेद के उपनिगमन को सर्वोत्तम रूप में प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "The benefit of economic reforms percolates down more slowly to the agriculture sector than in\nother sectors of the economy.",
+          "optionTextHi": "आर्थिक सुधार का लाभ अर्थव्यवस्थाा के अन्य क्षेत्रोंों की अपेक्षाा कृषि क्षेत्र में धीमी गति से नीचे पहुँँचता है।",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "For India, the green revolution was not as useful as it was expected to be.",
+          "optionTextHi": "भारत के लिए, हरित क्राान्ति उतनी उपयोगी नहीं हुई, जितनी उसके होने की अपेक्षाा थी।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "India lagged behind other countries in adapting mechanised and modern farming.",
+          "optionTextHi": "भारत यंत्रीीकृत और आधुनिक कृषि को अनुकूलित करने में अन्य देशों से पिछड़ गया।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Rural-to-urban migration resulted in the stagnant agriculture sector.",
+          "optionTextHi": "गावों से शहरों में होने वाले प्रवसन के परिणामस्वरूप कृषि क्षेत्र में गतिरोध आया।",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "A",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 41,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to the passage, the following assumptions have been made:\nThe growing divergence between the fortunes of the agricultural and non-agricultural economy in\nIndia could have been reduced/contained by:\nI. adapting large-scale cultivation of commercial crops and viable corporate farming.\nII. providing free insurance for all crops and heavily subsidising seeds, fertilisers, electricity and\nfarm machinery at par with developed countries.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nउपर्युक्त परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nभारत में कृषि और ग़ैर-कृषि अर्थव्यवस्थाा के बीच बढ़ते हुए अंतर को निम्नलिखित में से किसके/किनके द्वाारा रोका/कम किया जा\nसकता था?\nI. बड़े पैमाने पर वाणिज्यिक फ़सलों की कृषि और लाभप्रद निगम कृषि (कॉर्पोरेट फार्मिंग) को अनुकूलित करना।\nII. सभी फ़सलों के लिए निःशुल्क बीमा उपलब्ध कराना और बीजों, उर्वरकों, बिजली और कृषि मशीनों में विकसित देशों के\nसमान भारी उपदान (सब्सिडी) प्रदान करना।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 42,
+      "questionTextEn": "Refer to the directions above.\nIn our country, handlooms are equated with a culture that ensures a continuity of tradition. This idea has\nbecome part of the public policy-framing and provides a legitimate basis for the State to support the\nsector. But the notion of tradition as a single, linear entity is being strongly contested today. The narratives\ndominant in defining culture/tradition in a particular way are seen to have emerged as the identities and\nhistories of large sections. The discounted and, at times, forcibly stifled identities are fighting for their\nrightful place in history. Against this backdrop, when we promote handloom as a traditional industry, it is\nnot surprising that large sections of our population choose to ignore it.\nWhich one of the following statements best reflects the most logical and rational message\nconveyed by the author of the passage?",
+      "questionTextHi": "Refer to the directions above.\nहमारे देश में, हथकरघों को परंपराओं का सातत्य सुनिश्चित करने वाली संस्कृृति से समीकृत किया जाता है। यह विचार लोक नीति-निर्माण\nका भाग बन गया है और राज्य को इस क्षेत्र को बल प्रदान करने के लिए एक वैध आधार प्रदान करता है। किन्तु आज एकल, रैखिक सत्व\nके रूप में परंपरा की इस धारणा का पुरजोर विरोध किया जा रहा है। संस्कृृति/परंपरा को एक ख़ाास तरीके से परिभाषित करने में प्रभावी\nआख्याानों को इस रूप में देखा जा रहा है, कि इनसे बड़े वर्गों की पहचान और इतिहास निर्गमित हुए हैं। कम की गई और कभी-कभी बलात्\nदबाई गई पहचानें इतिहास में अपने उचित स्थाान के लिए संघर्ष कर रही हैं। इस पृष्ठपट के सम्मुख, जब हथकरघे को पारंपरिक उद्योोग के\nरूप में प्रोोत्सााहित किया जाता है, यह आश्चर्यजनक नहीं है कि जनसंख्याा का एक बड़ाा वर्ग इसकी उपेक्षाा करना पसंद करता है।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद के लेखक द्वाारा व्यक्त सर्वाधिक तर्कसंगत और विवेकपूर्ण सन्देश को सर्वोत्तम\nरूप से प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "We need to free the handloom industry from the limited narrative linked to preserving cultural\nheritage.",
+          "optionTextHi": "हथकरघा उद्योोग को, सांस्कृृतिक विरासत के परिरक्षण से संबद्ध सीमित आख्याान से मुक्त करने की आवश्यकता है।",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Continued State support to the handloom industry ensures the preservation of some of our\nglorious art forms and old traditions.",
+          "optionTextHi": "हथकरघा उद्योोग को राज्य द्वाारा सतत सहायता प्रदान करने से हमारे कतिपय शानदार कला-रूपों और प्रााचीन परंपराओं का\nपरिरक्षण सुनिश्चित होता है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Household units of the handloom sector should be modernised and made an economically\nviable organised industry.",
+          "optionTextHi": "हथकरघा क्षेत्र की घरेलू इकाइयों का आधुनिकीकरण कर उन्हें आर्थिक रूप से लाभप्रद संगठित उद्योोग बनाया जाना चाहिए।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Handloom products need to be converted to machine-made designer products so as to make\nthem more popular.",
+          "optionTextHi": "हथकरघा उत्पाादों को मशीन-निर्मित अभिकल्पक (डिज़ााइनर) उत्पाादों में बदल देने की आवश्यकता है, ताकि वे अधिक\nलोकप्रिय बन सकें।",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "A",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 43,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to the above passage, the following assumptions have been made:\nI. There is no need for the State to be involved in any manner in the handloom sector.\nII. Handloom products are no longer appealing and attractive in the rapidly changing modern world.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nउपर्युक्त परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nI. हथकरघा क्षेत्र में राज्य को किसी भी रूप में अंतर्ग्रस्त होने की कोई आवश्यकता नहीं है।\nII. तेज़ीी से बदलते हुए आधुनिक विश्व में हथकरघा उत्पााद अब पसंदीदा और आकर्षक नहीं रह गए हैं।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 44,
+      "questionTextEn": "Refer to the directions above.\nIn our country, regrettably, teaching and learning for the examination have been our forte but the new\ndemands of society and the future of work require critical and independent thinking, learning through\ndoing, asking questions from multiple disciplinary perspectives on the same issue, using evidence for\nbuilding arguments, and reflecting and articulation. Higher education should not \"either be a mere servant\nof the government policy or a passive respondent to public mood.\" Higher learning is all about how to think\nrather than what to think. Teaching has to be re-invented.\nWhich one of the following statements best reflects the central idea conveyed by the passage?",
+      "questionTextHi": "Refer to the directions above.\nदुर्भाग्यवश हमारे देश में परीक्षााओं के लिए शिक्षण और शिक्षाा-प्रााप्ति ही हमारी विशिष्टता हो गई है। किन्तु, समाज की नई माँगों और\nभविष्य के कार्यक्षेत्र के लिए समीक्षाात्मक और स्वतंत्र चिंतन, कार्यकलाप से सीखने, उसी मुद्दे पर बहु-विद्याा परिप्रेक्ष्योंों से प्रश्न पूछने, तर्क\nनिर्माण के लिए साक्ष्योंों का उपयोग करने, और चिंतन और सुव्यक्तता की अपेक्षाा है। उच्च शिक्षाा को \"या तो सरकारी नीतियों का मात्र\nअनुचर या लोक मनःस्थिति का निष्क्रिय उत्तरदाता\" नहीं होना चाहिए। उच्च शिक्षाा-प्रााप्ति पूरी तौर पर यह है, कि कैसे चिंतन किया जाए, न\nकि क्याा चिंतन किया जाए। शिक्षण का पुनराविष्काार आवश्यक है।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद में व्यक्त केन्द्रीीय विचार को सर्वोत्तम रूप से प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "India does not have enough resources for promoting quality education in its universities.",
+          "optionTextHi": "भारत के पास अपने विश्वविद्याालयों में गुणवत्ताापूर्ण शिक्षाा के संवर्धन हेतु पर्याप्त संसाधन नहीं हैं।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "The institutions of higher learning in the country should not be under the control of the\nGovernment.",
+          "optionTextHi": "देश में उच्च शिक्षण संस्थाान सरकार के नियंत्रणाधीन नहीं होने चाहिए।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Classroom approach to higher education should be done away with.",
+          "optionTextHi": "उच्च शिक्षाा हेतु कक्षाा (क्लाासरूम) उपागम को हटा देना चाहिए।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Classroom needs to be reimagined and teaching needs to be re-invented.",
+          "optionTextHi": "कक्षाा की पुनर्कल्पना और शिक्षण का पुनराविष्काार करना आवश्यक है।",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 45,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to the above passage, the following assumptions have been made:\nI. Higher education is a constantly evolving subject that needs to align towards new developments\nin all spheres of society.\nII. In our country, sufficient funds are not allocated for promoting higher education.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nउपर्युक्त परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nI. उच्च शिक्षाा सतत विकसित होने वाला विषय है, जिसे समाज के सभी क्षेत्रोंों में हो रहे नए विकास के साथ पंक्तिबद्ध होने की\nआवश्यकता है।\nII. हमारे देश में, उच्च शिक्षाा के संवर्धन के लिए पर्याप्त निधियों का विनिधान नहीं किया जाता।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "A",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 46,
+      "questionTextEn": "Refer to the directions above.\nIf there is inequality in the pattern of population growth, there is greater inequality in food production and\nutilisation. As societies become wealthier, their consumption of animal products increases. This means\nthat a greater proportion of such basic foodstuff as grains and legumes that could feed humans directly is\ninstead being converted into feed for poultry and large farm animals. Yet this conversion of plant-based\nfood into animal food for humans is far from efficient. Only \n of the calories fed to chickens are\nrecovered by us when we eat them. This conversion rate goes down to five to seven per cent in large\nanimals that are fed grain to add fat and some protein before slaughter.\nWhich one of the following statements best reflects the crux of the passage?",
+      "questionTextHi": "Refer to the directions above.\nयदि जनसंख्याा वृद्धि के प्रतिरूप में असमानता है, तो खाद्य उत्पाादन और उपयोग में उससे भी अधिक असमानता है। जैसे-जैसे समाज\nअधिक धनी होते जाते हैं, उनका पशु उत्पाादों का उपभोग बढ़ता जाता है। इसका अर्थ है, कि दाना और फलियों जैसी मूलभूत खाद्य-\nसामग्रीी का बड़ाा भाग, जो मनुष्योंों का सीधे भरण कर सकता था, वह इसके बजाय कुक्कुुट-पालन और बड़े फार्म पशुओं के चारे में बदला\nजा रहा है। तथापि पादप-आधारित आहार का मनुष्योंों के लिए पशु आहार में यह परिवर्तन फलदायी होने से काफी दूर है। हमें कुक्कुुटों को\nखाने से, उन्हें खिलाई गई कैलोरी का केवल \n भाग ही वापस मिल पाता है। बड़े पशुओं में, जिन्हें पशुवध से पहले उनमें वसा और कुछ\nप्रोोटीन शामिल करने के लिए दाना खिलाया जाता है, यह परिवर्तन दर और कम हो कर पाँच से लेकर सात प्रतिशत तक रह जाती है।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद के मर्म को सर्वोत्तम रूप में प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "There is an urgent need for a public policy to promote the consumption of cereal-based foods in\nwealthier societies.",
+          "optionTextHi": "समृद्धतर समाजों में अनाज-आधारित खाद्य के उपभोग को बढ़ााने के लिए एक लोक नीति की तत्कााल आवश्यकता है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Animal-based food is far less efficient than grain/plant-based food in terms of production and\nutilisation.",
+          "optionTextHi": "उत्पाादन और उपयोग के आधार पर पशु-आधारित खाद्य, अनाज/पादप-आधारित खाद्य से काफी कम फलदायी है।",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Plant-based protein should replace the animal-based protein in our daily diets.",
+          "optionTextHi": "हमारे दैनिक आहार में पशु-आधारित प्रोोटीन का स्थाान पादप-आधारित प्रोोटीन को ले लेना चाहिए।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Inequality in food production and consumption is inevitable in any fast changing society.",
+          "optionTextHi": "किसी भी तीव्र परिवर्तनशील समाज में खाद्य उत्पाादन और उपभोग में असमानता अपरिहार्य है।",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 47,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to the above passage, the following assumptions have been made:\nI. The food manufacturing and processing industries in every country should align their objectives\nand processes in accordance with the changing needs of the societies.\nII. Wealthier societies tend to incur great loss of calories of food materials due to indirect utilisation\nof their agricultural produce.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nउपर्युक्त परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nI. प्रत्येक देश में खाद्य विनिर्माण और प्रसंस्करण उद्योोग को अपने उद्देश्योंों और पद्धतियों को समाजों की बदलती हुई\nआवश्यकताओं के अनुसार उससे संगत रूप में रखना चाहिए।\nII. समृद्धतर समाज, अपने कृषि उत्पाादों के अप्रत्यक्ष उपयोग के कारण खाद्य सामग्रियों की कैलोरियों में भारी हानि उठाने की ओर\nप्रवृत्त होते हैं।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 48,
+      "questionTextEn": "Refer to the directions above.\nOver the next 30 years, many countries are promising to move to net-zero carbon, implying that household\nemissions will have to be cut to close to nothing. A leading climate scientist reckons that, at best, half the\nreduction might be achieved through demand-side measures, such as behavioural changes by individuals\nand households. And even that would require companies and governments to provide more incentives to\nchange through supply-side investments to make low-carbon options cheaper and more widely available.\nWhich one of the following statements best reflects the central idea conveyed by the passage?",
+      "questionTextHi": "Refer to the directions above.\nअनेक देश यह वायदा कर रहे हैं, कि वे अगले तीस वर्षों में निवल-शून्य कार्बन तक आ जाएँगे, अर्थात् घरेलू उत्सर्जनों को घट कर शून्य के\nनिकट आ जाना होगा। एक अग्रणी जलवायु वैज्ञाानिक यह मानते हैं, कि अधिक-से-अधिक, माँग-पक्ष उपायों, जैसे कि व्यक्तियों और\nपरिवारों के व्यवहारपरक परिवर्तनों, के माध्यम से आधा न्यूनीकरण प्रााप्त किया जा सकता है। और उसे भी यह अपेक्षाा होगी, कि पूर्ति-पक्ष\nनिवेशों के माध्यम से परिवर्तन लाने हेतु कंपनियाँ और सरकारें अधिक प्रोोत्सााहन प्रदान करें, ताकि न्यून-कार्बन विकल्पोंों को अपेक्षााकृत\nअधिक सस्ताा और अधिक विस्तृत रूप से उपलब्ध बनाया जा सके।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद के केन्द्रीीय विचार को सर्वोत्तम रूप में प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "Moving to net-zero carbon is possible only by the reduction in household emissions.",
+          "optionTextHi": "निवल-शून्य कार्बन तक जाना केवल घरेलू उत्सर्जनों में न्यूनीकरण लाकर ही संभव है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Low-carbon behaviour in people can be brought about by incentivising them.",
+          "optionTextHi": "लोगों में न्यून-कार्बन व्यवहार उन्हें प्रोोत्सााहन देकर ही लाया जा सकता है।",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Cheaper goods and services can be made available to people by using low-carbon technologies.",
+          "optionTextHi": "न्यून-कार्बन प्रौौद्योोगिकियों का प्रयोग कर लोगों को अपेक्षााकृत सस्तीी वस्तुएँ और सेवाएँ उपलब्ध कराई जा सकती हैं।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Manufacturing industries that use low-carbon technologies should be provided with subsidies.",
+          "optionTextHi": "जो विनिर्माण उद्योोग न्यून-कार्बन प्रौौद्योोगिकियों का प्रयोग करते हैं, उन्हें उपदान (सब्सिडी) प्रदान किए जाने चाहिए।",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 49,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to the above passage, the following assumptions have been made:\nI. Supply-side investments in companies can result in low-carbon behaviour in people.\nII. People are not capable of adapting low-carbon behaviour without the involvement of Government\nand Companies.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nउपर्युक्त परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nI. कंपनियों में पूर्ति-पक्ष निवेश के परिणामस्वरूप लोगों में न्यून-कार्बन व्यवहार आ सकता है।\nII. लोग सरकार और कंपनियों के शामिल हुए बिना न्यून-कार्बन व्यवहार को अनुकूलित करने में समर्थ नहीं हैं।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "A",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 50,
+      "questionTextEn": "Refer to the directions above.\nIn only 50 years, the world's consumption of raw materials has nearly quadrupled, to more than 100 billion\ntons. Less than \n of this is reused. Batteries of old vehicles contain materials such as lithium, cobalt,\nmanganese and nickel that are pricey and can be hard to obtain. Supply chains are long and complicated.\nBuyers' risks are being aggravated by their suppliers' poor environmental and labour standards. Reusing\nmaterials makes sense. Once batteries reach the ends of their lives, they should go back to a factory where\ntheir ingredients can be recovered and put into new batteries.\nWhich one of the following statements best reflects the most logical, rational and pragmatic\nmessage conveyed by the passage?",
+      "questionTextHi": "Refer to the directions above.\nकेवल 50 वर्षों में ही, विश्व का कच्चे माल का उपभोग चार गुना के आसपास, 100 बिलियन टन से अधिक हो गया है। इसके \n से कम\nभाग को पुनः उपयोग में लाया जाता है। पुराने वाहनों की बैटरियों में लिथियम, कोबाल्ट, मैंगनीज़ और निकेल जैसे द्रव्य होते हैं जो कीमती\nहैं और जिन्हें प्रााप्त करना दुष्कर हो सकता है। पूर्ति श्रृंृंखलाएँ लंबी और जटिल हैं। पूर्तिकर्ताओं के निकृष्ट वातावरणीय और श्रम मानक\nउनके खरीददारों के जोखिम को बढ़ाा देते हैं। सामग्रियों के पुनः उपयोग करने में समझदारी है। एक बार जब बैटरियाँ अपने जीवन के\nअंतिम चरण पर पहुँँच जाएँ, उन्हें पुनः फैक्टरी में ले जा कर उनके संघटकों को पुनः प्रााप्त किया जा सकता है और नई बैटरियों में डाला जा\nसकता है।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद द्वाारा व्यक्त सर्वाधिक तर्कसंगत, विवेकपूर्ण और व्याावहारिक सन्देश को\nसर्वोत्तम रूप से प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "Green economy is not possible without reusing critical minerals.",
+          "optionTextHi": "अति आवश्यक खनिजों का पुनः उपयोग किए बिना हरित अर्थव्यवस्थाा संभव नहीं है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Every sector of economy should adapt the reuse of material resources immediately.",
+          "optionTextHi": "अर्थव्यवस्थाा के प्रत्येक क्षेत्र में द्रव्याात्मक संसाधनों के पुनः उपयोग को तत्कााल अनुकूलित किया जाना चाहिए।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Circular economy can be beneficial for sustainable growth.",
+          "optionTextHi": "चक्रीय अर्थव्यवस्थाा सतत संवृद्धि के लिए उपयोगी हो सकती है।",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Circular use of material resources is the only option for some industries for their survival.",
+          "optionTextHi": "कुछ उद्योोगों को अपना अस्तित्व बचाए रखने के लिए द्रव्याात्मक संसाधनों का चक्रीय उपयोग एकमात्र विकल्प है।",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 51,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to the above passage, the following assumptions have been made:\nI. Automobile factories are examples of the circular economy.\nII. Economic growth is compatible with circular use of mineral resources.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nउपर्युक्त परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nI. वाहन फैक्टरियाँ चक्रीय अर्थव्यवस्थाा के उदाहरण हैं।\nII. आर्थिक संवृद्धि खनिज संसाधनों के चक्रीय उपयोग से सुसंगत होती है।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 52,
+      "questionTextEn": "Refer to the directions above.\nIt is hard to predict how changes in the climate and the atmosphere's chemistry will affect the prevalence\nand virulence of agricultural diseases. But there is a risk that such changes will make some plant\ninfections more common in all climatic zones, perhaps catastrophically so. Part of the problem is that\ncenturies of selective breeding have refined the genomes of most high-value crops. They are spectacular at\ngrowing in today's conditions but genetic variations that are not immediately useful to them have been\nbred out. This is good for yields but bad for coping with changes. A minor disease or even an unknown one\ncould suddenly rampage through a genetically honed crop.\nWhich one of the following statements best reflects the central idea conveyed by the passage?",
+      "questionTextHi": "Refer to the directions above.\nइसका पूर्वानुमान लगाना कठिन है कि जलवायु और वायुमंडलीय रसायन में होने वाले परिवर्तन कृषि रोगों की व्याापकता और सांघातिकता\nको किस प्रकार प्रभावित करेंगे। लेकिन एक खतरा यह है, कि ऐसे परिवर्तन कुछ पादप संक्रमणों को सभी जलवायु क्षेत्रोंों में, संभवतः इस\nप्रकार एक अनर्थकर रूप में, अधिक आम बना देंगे। इस समस्याा का एक भाग यह है, कि शताब्दियों से अपनाए गए चयनात्मक प्रजनन से\nउच्च-मूल्य वाली फ़सलों के वंश-सूत्र (जीनोम) परिष्कृृत हुए हैं। वे आज की दशाओं में उपजने में शानदार हैं, किन्तु जो जननिक रूपांतरण\nउनके लिए तुरंत उपयोगी नहीं हैं, वे प्रजनन से बाहर हो गए हैं। यह उपज के लिए उत्तम है, किन्तु परिवर्तनों का सामना करने के लिए\nनिकृष्ट है। एक साधारण बीमारी या कोई अज्ञाात बीमारी भी आनुवंशिकतः संशोधित (जेनेटिकली होण्ड) फ़सलों को तुरंत तहस-नहस कर\nसकती है।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद के केन्द्रीीय विचार को सर्वोत्तम रूप में प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "Global climate change adversely affects the productivity of crops.",
+          "optionTextHi": "भूमंडलीय जलवायु परिवर्तन फ़सलों की उत्पाादकता को प्रतिकूलतः प्रभावित करता है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Our total dependence on genetically honed crops entails possible food insecurity.",
+          "optionTextHi": "आनुवंशिकतः संशोधित फ़सलों पर हमारी पूर्ण निर्भरता के परिणामस्वरूप खाद्य असुरक्षाा होना संभव है।",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Our food security should not depend on agricultural productivity alone.",
+          "optionTextHi": "हमारी खाद्य सुरक्षाा अकेले कृषि उत्पाादकता पर ही निर्भर नहीं होनी चाहिए।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Genetically honed crops should be replaced with their wild varieties in our present cultivation\npractices.",
+          "optionTextHi": "हमारी वर्तमान कृषि प्रथाओं में आनुवंशिकतः संशोधित फ़सलों को उनकी जंगली किस्मोंों से प्रतिस्थाापित कर देना चाहिए।",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 53,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to the above passage, the following assumptions have been made:\nI. Global climate change can result in the migration of several plant diseases to new areas.\nII. Scientific understanding of the wild relatives of our present crops would enable us to strengthen\nfood security.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nउपर्युक्त परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nI. भूमंडलीय जलवायु परिवर्तन के परिणामस्वरूप अनेक पादप रोग नए क्षेत्रोंों में स्थाानान्तरण कर सकते हैं।\nII. हमारी वर्तमान फ़सलों के जंगली संबंधियों को वैज्ञाानिक रूप से समझना हमें खाद्य सुरक्षाा को सशक्त बनाने में सहायक होगा।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 54,
+      "questionTextEn": "Refer to the directions above.\n\"A good statesman, like any other sensible human being, learns more from his opponents than from his\nfervent supporters. For his supporters will push him to disaster unless his opponents show him where the\ndangers are. So if he is wise he will often pray to be delivered from his friends, because they will ruin him.\nBut, though it hurts, he ought also to pray never to be left without opponents; for they keep him on the path\nof reason and good sense. The national unity of free people depends upon a sufficiently even balance of\npolitical power to make it impracticable for the administration to be arbitrary and for opposition to be\nrevolutionary and irreconcilable.\"\nWhich one of the following statements best reflects the critical message conveyed by the author of\nthe passage?",
+      "questionTextHi": "Refer to the directions above.\n\"एक अच्छाा राजनीतिज्ञ, किसी भी अन्य समझदार मनुष्य की तरह, अपने उत्सााही समर्थकों की अपेक्षाा अपने विरोधियों से अधिक सीखता\nहै। क्योंोंकि जब तक उसके विरोधी उसे न दिखाएँ कि ख़तरा कहाँ है, उसके समर्थक उसे संकट की ओर धकेल देंगे। अतः यदि वह\nबुद्धिमान है, तो वह अक्सर प्राार्थना करेगा, कि उसे अपने मित्रोंों से मुक्ति मिले, क्योंोंकि वे उसे विनष्ट कर देंगे। किन्तु, भले ही यह बात\nआघात पहुँँचाती है, उसे यह प्राार्थना करनी चाहिए कि वह कभी विरोधियों से रहित न हो; क्योंोंकि वे उसे तर्क और सुबुद्धि के मार्ग पर बनाए\nरखते हैं। स्वतंत्र व्यक्तियों की राष्ट्रीीय एकता, प्रशासन के स्वेच्छााचारी होने तथा विरोधी पक्ष के क्रांांतिपूर्ण विचार वाले और परस्पर-विरोधी\nहोने को दुष्कर बनाने के लिए, राजनीतिक शक्ति के पर्याप्त रूप से सम-संतुलन के ऊपर निर्भर करती है।\"\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद के लेखक द्वाारा व्यक्त अति महत्त्वपूर्ण सन्देश को सर्वोत्तम रूप से प्रतिबिंबित\nकरता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "Without opposition parties, the administration in a democracy gets to become more\nresponsible.",
+          "optionTextHi": "विरोधी पक्षोंों के बिना, लोकतंत्र में प्रशासन अधिक ज़िम्मेवार हो जाता है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Democracy needs to have revolutionaries in opposition to keep the government alert.",
+          "optionTextHi": "लोकतंत्र के लिए आवश्यक है कि सरकार को सचेत रखने के लिए विरोधपक्ष में क्रांांतिपूर्ण विचार वाले लोग हों।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Rulers in a democracy need the support of opposition for their political survival.",
+          "optionTextHi": "लोकतंत्र में शासकों को, उनके राजनीतिक रूप से बने रहने के लिए, विरोधपक्ष का सहारा आवश्यक है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "In a democracy, the opposition is indispensable for the balance of political power and good\ngovernance.",
+          "optionTextHi": "लोकतंत्र में, राजनीतिक शक्ति के संतुलन और सुशासन के लिए विरोधपक्ष का होना अपरिहार्य है।",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 55,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to the above passage, the following assumptions have been made:\nI. In a democracy, a strong opposition is required only if the Head of Government is indifferent.\nII. The more aggressive the opposition, the better is the governance in a democracy.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nउपर्युक्त परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nI. लोकतंत्र में, एक मजबूत विरोधपक्ष तभी आवश्यक है जब शासनाध्यक्ष उदासीन हो।\nII. लोकतंत्र में, विरोधपक्ष जितना आक्राामक होगा, शासन उतना ही बेहतर होगा।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 56,
+      "questionTextEn": "Directions for the following 3 (three) items:\nRead the following two passages and answer the items that follow the passages. Your answers to these\nitems should be based on the passages only.\nThere has been no democracy that has grown economically without corporate capitalism. It helps in\nmodernising the economy and enabling the transition from rural to urban, and agriculture to industry and\nservices, which are inevitable with growth. It generates jobs - and there is no other way to fix a country's\nunemployment challenge without a further impetus to private business. Big companies can operate on a\nlarge scale and become competitive both domestically and externally. A vibrant corporate capitalist base\nalso leads to additional revenues for the State- which in turn, can be used for greater welfare for the\nmarginalised and creating a more level playing field in terms of opportunities.\nWhich one of the following statements best reflects the critical message conveyed by the author of\nthe passage?",
+      "questionTextHi": "निम्नलिखित 3 (तीन) प्रश्नांांशों के लिए निर्देश:\nनीचे दिए गए दो परिच्छेदों को पढ़िए और परिच्छेदों के नीचे आने वाले प्रश्नांांशों के उत्तर दीजिए। इन प्रश्नांांशों के लिए आपके उत्तर केवल\nइन परिच्छेदों पर आधारित होने चाहिए।\nऐसा कोई लोकतंत्र नहीं हुआ जो निगमित पूँजीवाद के बिना आर्थिक रूप से संवृद्ध हुआ हो। यह अर्थव्यवस्थाा के आधुनिकीकरण में और\nग्राामीण से शहरी, और कृषि से उद्योोग और सेवाओं में अंतरण को, जो कि संवृद्धि के लिए अपरिहार्य है, सुकर बनाने में सहायक होता है।\nइससे रोज़गार सृजित होते हैं — तथा ग़ैर-सरकारी व्यवसाय में और अधिक संवेग लाए बिना देश की बेरोज़गारी की चुनौती का सामना\nकरने का और कोई रास्ताा नहीं है। बड़ीी कंपनियाँ बड़े पैमाने पर प्रचालन कर सकती हैं और देश और विदेश दोनों में प्रतियोगी-क्षमता प्रााप्त\nकर सकती हैं। एक जीवंत निगम पूँजीवादी आधार, राज्य के लिए अतिरिक्त राजस्व प्रााप्त करवाता है — जो आगे, वंचितों के बृहतर\nकल्यााण के लिए, तथा अवसरों के रूप में अधिक एक समान धरातल प्रदान करने हेतु उपयोग किया जा सकता है।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद के लेखक द्वाारा व्यक्त अति महत्त्वपूर्ण सन्देश को सर्वोत्तम रूप से प्रतिबिंबित\nकरता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "Corporate capitalism is important for economic growth of a State and also for democracy.",
+          "optionTextHi": "निगमित पूँजीवाद किसी राज्य की आर्थिक संवृद्धि के लिए और लोकतंत्र के लिए भी महत्त्वपूर्ण है।",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Corporate capitalism is imperative for a modern State to achieve its political objectives.",
+          "optionTextHi": "निगमित पूँजीवाद किसी आधुनिक राज्य द्वाारा अपने राजनीतिक उद्देश्योंों को प्रााप्त करने हेतु अनिवार्य है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "No State can ensure its economic survival for long without the role of corporate capitalism.",
+          "optionTextHi": "निगमित पूँजीवाद की भूमिका के बग़ैर कोई राज्य लंबे समय तक अपने आर्थिक अस्तित्व को सुनिश्चित नहीं रख सकता।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Corporate capitalism and democracy have mutual dependence for their continued existence.",
+          "optionTextHi": "निगमित पूँजीवाद और लोकतंत्र अपने सतत अस्तित्व के लिए परस्पर निर्भर हैं।",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "A",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 57,
+      "questionTextEn": "Refer to the directions above.\nRefer to the passage above.\nWith reference to the above passage, the following assumptions have been made:\nI. Corporate capitalism promotes the growth of labour force and provides more employment\nopportunities.\nII. Poor and marginalised sections of population are benefited by corporate capitalism due to trickle-\ndown effect.\nWhich of the above assumptions is/are valid?",
+      "questionTextHi": "Refer to the directions above.\nRefer to the passage above.\nउपर्युक्त परिच्छेद के सन्दर्भ में, निम्नलिखित पूर्वधारणाएँ बनाई गई हैं:\nI. निगमित पूँजीवाद श्रमिक बल की वृद्धि करता है और रोज़गार के अधिक अवसर प्रदान करता है।\nII. जनसंख्याा के निर्धन लोग और वे लोग जो हाशिये पर हैं, अधोमुखी धन-स्रााव प्रभाव (ट्रिकल-डाउन इफेक्ट) के कारण निगमित\nपूँजीवाद द्वाारा लाभान्वित होते हैं।\nउपर्युक्त पूर्वधारणाओं में से कौन-सी वैध है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 58,
+      "questionTextEn": "Refer to the directions above.\n\"A network of voluntary associations stands as a 'buffer' between the relatively powerless individual and\nthe potentially powerful State.\"\nWhich one of the following statements reflects the best explanation of the above passage?",
+      "questionTextHi": "Refer to the directions above.\n“स्वैच्छिक संघों का अंतर्जाल (नेटवर्क) अपेक्षााकृत शक्तिहीन व्यक्ति और संभाव्य रूप से शक्तिशाली राज्य के बीच ‘बफ़र’ के रूप में स्थित\nहोता है।”\nनिम्नलिखित में से कौन-सा एक कथन उपर्युक्त परिच्छेद की सर्वोत्तम व्यााख्याा को प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "It emphasises the inability of the State to enforce its will in practice against the opposition of\ncertain groups within it.",
+          "optionTextHi": "यह राज्य की, राज्य के अन्दर कतिपय समूहों की प्रतिकूलता के विरुद्ध अपने संकल्प को व्यवहार में प्रवर्तित करने की\nअसमर्थता पर बल देता है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "It is a cooperative organisation for the promotion of the well-being and development of the\npersonality of its members.",
+          "optionTextHi": "यह अपने सदस्योंों के कल्यााण के उन्नयन और उनके व्यक्तित्व के विकास हेतु सहकारी संगठन है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "It takes individuals out of a state of isolation and gives them a chance to participate in the\ncommon endeavour.",
+          "optionTextHi": "यह व्यक्तियों को पार्थक्य की स्थिति से बाहर ले आता है और उन्हें सर्व-सामान्य प्रयासों में भाग लेने के अवसर प्रदान करता\nहै।",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "It permits citizens to have a variety of loyalties and allegiance.",
+          "optionTextHi": "यह नागरिकों को विभिन्न प्रकार की निष्ठााएँ और लगाव रखने देता है।",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 59,
+      "questionTextEn": "Directions for the following 2 (two) items:\nRead the following two passages and answer the items that follow the passages. Your answers to these\nitems should be based on the passages only.\nA single number for inflation is an aggregate across different commodities and services - the price rise\ndiffers for different items of consumption. So, the single number is arrived at by assigning weights to\ndifferent commodities and services. For WPI, the weights in production are used; for CPI, the consumption\nbasket is used. But people are not homogeneous. The consumption basket is vastly different for the poor,\nthe middle classes, and the rich. Hence, the CPI is different for each of these classes and a composite\nindex requires averaging the baskets.\nWhich one of the following statements best reflects the most logical, rational and crucial message\nconveyed by the passage?",
+      "questionTextHi": "निम्नलिखित 2 (दो) प्रश्नांांशों के लिए निर्देश:\nनीचे दिए गए दो परिच्छेदों को पढ़िए और परिच्छेदों के नीचे आने वाले प्रश्नांांशों के उत्तर दीजिए। इन प्रश्नांांशों के लिए आपके उत्तर केवल\nइन परिच्छेदों पर आधारित होने चाहिए।\nमुद्राास्फीति की एकल संख्याा, विभिन्न वस्तुओं और सेवाओं सभी के लिए एक समष्टि होती है — उपभोग की विभिन्न मदों के लिए कीमत-\nवृद्धि अलग-अलग होती है। अतः, यह एकल संख्याा विभिन्न वस्तुओं और सेवाओं को भारित मान निर्दिष्ट करने से मिलती है। WPI के लिए,\nउत्पाादन के भारित मानों का उपयोग किया जाता है; CPI के लिए, उपभोग टोकरी (कंज़म्प्शन बास्केेट) का उपयोग किया जाता है। किन्तु\nव्यक्ति समरूप नहीं होते। उपभोग टोकरी गरीब, मध्यवर्ग, और धनी व्यक्तियों के लिए अत्यधिक रूप से अलग-अलग होती है। अतः, CPI\nइन वर्गों में से प्रत्येक के लिए अलग-अलग होती है और एक सम्मिश्र सूचकांक निकालने के लिए इन टोकरियों के औसत का परिकलन\nअपेक्षित होता है।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद में व्यक्त सर्वाधिक तर्कसंगत, विवेकपूर्ण और निर्णायक सन्देश को सर्वोत्तम\nरूप से प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "We must use WPI exclusively in measuring price rise and CPI should be done away with.",
+          "optionTextHi": "कीमत वृद्धि के मापन में केवल WPI का उपयोग किया जाना चाहिए, और CPI को उपयोग से हटा देना चाहिए।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "The present calculation of inflation rate does not correctly measure price rise of individual\nitem/commodity.",
+          "optionTextHi": "मुद्राास्फीति दर का वर्तमान परिकलन, अलग-अलग मद/उपभोक्ताा-वस्तु की कीमत-वृद्धि का सही-सही मापन नहीं करता।",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Inflation data under-presents services in the consumption basket.",
+          "optionTextHi": "मुद्राास्फीति के आँकड़े उपभोग टोकरी में सेवाओं को न्यून रूप से प्रस्तुत करते हैं।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Knowledge of inflation rate is not really of any use to anybody in the country.",
+          "optionTextHi": "मुद्राास्फीति दर की जानकारी वास्तव में देश के किसी भी व्यक्ति के काम की नहीं है।",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 60,
+      "questionTextEn": "Refer to the directions above.\nTrust stands commonly defined as being vulnerable to others. Entrepreneurship implies trust in others and\nwillingness to expose oneself to betrayal. Trust in expert systems is the essence of globalising behaviour;\ntrust itself emerges as a super-commodity in the social market and defines the characteristics of goods\nand services in a global market. Trusting conduct also means holding others in good esteem, and an\noptimism that they are, or will be, competent in certain respects.\nWhich one of the following statements best reflects the crux of the passage?",
+      "questionTextHi": "Refer to the directions above.\nविश्वाास को आमतौर पर अन्य लोगों के प्रति सुभेद्य होने के रूप में परिभाषित किया जाता है। उद्यमवृत्ति में अन्य लोगों का विश्वाास करने\nऔर स्वयं धोखे का विषय बनने में तत्पर होना निहित होता है। विशेषज्ञ प्रणालियों में विश्वाास, वैश्विक व्यवहार का सार है; विश्वाास स्वयं\nसामाजिक बाज़ाार में परम वस्तु के रूप में उभर कर आता है, और वैश्विक बाज़ाार में वस्तुओं और सेवाओं की विशिष्टताओं को परिभाषित\nकरता है। विश्वाास करने के आचरण का यह भी अर्थ है, कि अन्य लोगों को समुचित आदर का स्थाान देना, और कतिपय पहलुओं में\nआशापूर्ण दृष्टि से देखना कि वे सक्षम हैं, अथवा सक्षम होंगे।\nनिम्नलिखित में से कौन-सा एक कथन, इस परिच्छेद के मर्म को सर्वोत्तम रूप में प्रतिबिंबित करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "Trustworthiness cannot be expected in entrepreneurship.",
+          "optionTextHi": "उद्यमवृत्ति में विश्वसनीयता की अपेक्षाा नहीं की जा सकती।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Trustworthy people are the most vulnerable people.",
+          "optionTextHi": "जो लोग विश्वसनीय होते हैं, वे सर्वाधिक सुभेद्य होते हैं।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "No economic activity is possible without being exposed to betrayal.",
+          "optionTextHi": "धोखे का पात्र बने बिना कोई आर्थिक क्रियाकलाप संभव नहीं है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Trust is important though it entails risk.\nData Interpretation\n5 questions",
+          "optionTextHi": "विश्वाास करना महत्त्वपूर्ण है, यद्यपि इसमें ख़तरा होता है।\nData Interpretation\n5 questions",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 61,
+      "questionTextEn": "A question is given followed by two Statements I and II. Consider the Question and the Statements\nand mark the correct option.\nQuestion:\nWhat is the smallest 1 -digit number having exactly 4 distinct factors?\nStatement I: 2 is one of the factors.\nStatement II:  is one of the factors.\nWhich one of the following is correct in respect of the above Question and the Statements?",
+      "questionTextHi": "एक प्रश्न दिया गया है, जिसके बाद दो कथन I और II दिए गए हैं। उस प्रश्न और उन कथनों पर विचार कीजिए और सही विकल्प\nको चिह्नित कीजिए।\nप्रश्न:\nऐसी 1-अंक की लघुतम संख्याा क्याा है, जिसमें ठीक-ठीक 4 गुणनखंड हैं?\nकथन I: इनमें से एक गुणनखंड 2 है।\nकथन II: इनमें से एक गुणनखंड  है।\nउपर्युक्त प्रश्न और कथनों के सन्दर्भ में, निम्नलिखित में से कौन-सा एक सही है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "The Question can be answered by using one of the Statements alone, but cannot be answered\nusing the other statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, इन कथनों में से किसी एक का अकेले उपयोग कर दिया जा सकता है, किन्तु दूसरे कथन का अकेले\nउपयोग कर नहीं दिया जा सकता।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "The Question can be answered by using either Statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, दोनों कथनों में से किसी का भी अकेले उपयोग कर दिया जा सकता है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "The Question can be answered by using both the Statements together, but cannot be answered\nusing either Statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, दोनों कथनों का एक साथ उपयोग कर दिया जा सकता है, किन्तु दोनों में से किसी एक कथन का अकेले\nउपयोग कर नहीं दिया जा सकता।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "The Question can be answered even without using any of the Statements.",
+          "optionTextHi": "इस प्रश्न का उत्तर, इन कथनों में से किसी का उपयोग किए बिना भी दिया जा सकता है।",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 62,
+      "questionTextEn": "A question is given followed by two Statements I and II. Consider the Question and the Statements\nand mark the correct option.\nQuestion:\nLet \n be distinct non-zero digits. If \n RRSS, where \n and \n, then what is Q\nequal to ?\nStatement I: \n.\nStatement II: \n.\nWhich one of the following is correct in respect of the above Question and the Statements?",
+      "questionTextHi": "एक प्रश्न दिया गया है, जिसके बाद दो कथन I और II दिए गए हैं। उस प्रश्न और उन कथनों पर विचार कीजिए और सही विकल्प\nको चिह्नित कीजिए।\nप्रश्न:\nमान लीजिए, \n भिन्न शून्येतर अंक हैं। यदि \n RRSS, जहाँ \n और \n, तो Q किसके बराबर\nहै?\nकथन I: \n.\nकथन II: \n.\nउपर्युक्त प्रश्न और कथनों के सन्दर्भ में, निम्नलिखित में से कौन-सा एक सही है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "The Question can be answered by using one of the Statements alone, but cannot be answered\nusing the other statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, इन कथनों में से किसी एक का अकेले उपयोग कर दिया जा सकता है, किन्तु दूसरे कथन का अकेले\nउपयोग कर नहीं दिया जा सकता।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "The Question can be answered by using either Statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, दोनों कथनों में से किसी का भी अकेले उपयोग कर दिया जा सकता है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "The Question can be answered by using both the Statements together, but cannot be answered\nusing either Statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, दोनों कथनों का एक साथ उपयोग कर दिया जा सकता है, किन्तु दोनों में से किसी एक कथन का अकेले\nउपयोग कर नहीं दिया जा सकता।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "The Question can be answered even without using any of the Statements.",
+          "optionTextHi": "इस प्रश्न का उत्तर, इन कथनों में से किसी का उपयोग किए बिना भी दिया जा सकता है।",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 63,
+      "questionTextEn": "A question is given followed by two Statements I and II. Consider the Question and the Statements\nand mark the correct option.\nQuestion:\nHow is Q related to P?\nStatement I: P has two sisters, R and S.\nStatement II: R's father is the brother of Q.\nWhich one of the following is correct in respect of the above Question and the Statements?",
+      "questionTextHi": "एक प्रश्न दिया गया है, जिसके बाद दो कथन I और II दिए गए हैं। उस प्रश्न और उन कथनों पर विचार कीजिए और सही विकल्प\nको चिह्नित कीजिए।\nप्रश्न:\nQ, P से किस प्रकार संबंधित है?\nकथन I: P की दो बहनें, R और S हैं।\nकथन II: R का पिता, Q का भाई है।\nउपर्युक्त प्रश्न और कथनों के सन्दर्भ में, निम्नलिखित में से कौन-सा एक सही है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "The Question can be answered by using one of the Statements alone, but cannot be answered\nusing the other statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, इन कथनों में से किसी एक का अकेले उपयोग कर दिया जा सकता है, किन्तु दूसरे कथन का अकेले\nउपयोग कर नहीं दिया जा सकता।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "The Question can be answered by using either Statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, दोनों कथनों में से किसी का भी अकेले उपयोग कर दिया जा सकता है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "The Question can be answered by using both the Statements together, but cannot be answered\nusing either Statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, दोनों कथनों का एक साथ उपयोग कर दिया जा सकता है, किन्तु दोनों में से किसी एक कथन का अकेले\nउपयोग कर नहीं दिया जा सकता।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "The Question cannot be answered even using any of the Statements.",
+          "optionTextHi": "इस प्रश्न का उत्तर, इन कथनों में से किसी का उपयोग कर भी नहीं दिया जा सकता।",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 64,
+      "questionTextEn": "A question is given followed by two Statements I and II. Consider the Question and the Statements\nand mark the correct option.\nQuestion: In a football match, team P playing against Q was behind by 3 goals with 10 minutes\nremaining. Does team P win the match?\nStatement I: Team P scored 4 goals in the last 10 minutes.\nStatement II: Team Q scored a total of 4 goals in the match.\nWhich one of the following is correct in respect of the above Question and the Statements?",
+      "questionTextHi": "एक प्रश्न दिया गया है, जिसके बाद दो कथन I और II दिए गए हैं। उस प्रश्न और उन कथनों पर विचार कीजिए और सही विकल्प\nको चिह्नित कीजिए।\nप्रश्न: एक फुटबाल मैच में, जब 10 मिनट शेष बचे थे; टीम P, टीम Q के विरुद्ध खेलते हुए 3 गोल से पीछे थी। क्याा टीम P मैच\nजीत गई?\nकथन I: टीम P ने अंतिम 10 मिनटों में 4 गोल किए।\nकथन II: टीम Q ने मैच में कुल 4 गोल किए।\nउपर्युक्त प्रश्न और कथनों के सन्दर्भ में, निम्नलिखित में से कौन-सा एक सही है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "The Question can be answered by using one of the Statements alone, but cannot be answered\nusing the other statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, इन कथनों में से किसी एक का अकेले उपयोग कर दिया जा सकता है, किन्तु दूसरे कथन का अकेले\nउपयोग कर नहीं दिया जा सकता।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "The Question can be answered by using either Statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, दोनों कथनों में से किसी का भी अकेले उपयोग कर दिया जा सकता है।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "The Question can be answered by using both the Statements together, but cannot be answered\nusing either Statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, दोनों कथनों का एक साथ उपयोग कर दिया जा सकता है, किन्तु दोनों में से किसी एक कथन का अकेले\nउपयोग कर नहीं दिया जा सकता।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "The Question cannot be answered even using any of the Statements.",
+          "optionTextHi": "इस प्रश्न का उत्तर, इन कथनों में से किसी का उपयोग कर भी नहीं दिया जा सकता।",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 65,
+      "questionTextEn": "A question is given followed by two Statements I and II. Consider the Question and the Statements\nand mark the correct option.\nQuestion:\nIs \n, where \n are natural numbers, positive?\nStatement I: \n.\nStatement II: p>q.\nWhich one of the following is correct in respect of the above Question and the Statements?",
+      "questionTextHi": "एक प्रश्न दिया गया है, जिसके बाद दो कथन I और II दिए गए हैं। उस प्रश्न और उन कथनों पर विचार कीजिए और सही विकल्प\nको चिह्नित कीजिए।\nप्रश्न:\nक्याा \n, जहाँ \n धनपूर्ण संख्यााएँ हैं, धनात्मक है?\nकथन I: \n.\nकथन II: p>q.\nउपर्युक्त प्रश्न और कथनों के सन्दर्भ में, निम्नलिखित में से कौन-सा एक सही है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "The Question can be answered by using one of the Statements alone, but cannot be answered\nusing the other statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, इन कथनों में से किसी एक का अकेले उपयोग कर दिया जा सकता है, किन्तु दूसरे कथन का अकेले\nउपयोग कर नहीं दिया जा सकता।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "The Question can be answered by using either Statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, दोनों कथनों में से किसी का भी अकेले उपयोग कर दिया जा सकता है।",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "The Question can be answered by using both the Statements together, but cannot be answered\nusing either Statement alone.",
+          "optionTextHi": "इस प्रश्न का उत्तर, दोनों कथनों का एक साथ उपयोग कर दिया जा सकता है, किन्तु दोनों में से किसी एक कथन का अकेले\nउपयोग कर नहीं दिया जा सकता।",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "The Question can be answered even without using any of the Statements.\nLogical Reasoning and General Mental Ability\n15 questions",
+          "optionTextHi": "इस प्रश्न का उत्तर, इन कथनों में से किसी का उपयोग किए बिना भी दिया जा सकता है।\nLogical Reasoning and General Mental Ability\n15 questions",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 66,
+      "questionTextEn": "What comes at \n and  respectively in the following sequence?\nJanuary, January, December, October, X, March, October, Y, September",
+      "questionTextHi": "निम्नलिखित अनुक्रम में क्रमशः \n और  के स्थाान पर क्याा आता है?\nजनवरी, जनवरी, दिसंबर, अक्टूबर, X, मार्च, अक्टूबर, Y, सितंबर",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "July, May",
+          "optionTextHi": "जुलाई, मई",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "July, April",
+          "optionTextHi": "जुलाई, अप्रैल",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "June, May",
+          "optionTextHi": "जून, मई",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "June, April",
+          "optionTextHi": "जून, अप्रैल",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 67,
+      "questionTextEn": "A solid cube is painted yellow on all its faces. The cube is then cut into 60 smaller but equal pieces\nby making the minimum number of cuts. Which of the following statements is/are correct?\nI. The minimum number of cuts is 9 .\nII. The number of smaller pieces which are not painted on any face is 6 .\nSelect the correct answer using the code given below:",
+      "questionTextHi": "एक ठोस घन के सभी फलकों को पीले रंग से रंगा गया है। तब इस घन को 60 छोटे किन्तु बराबर टुकड़ोंों में इस प्रकार काटा गया\nहै कि कम-से-कम बार काटा जाए। निम्नलिखित में से कौन-सा/से कथन सही है/हैं?\nI. इस घन को न्यूनतम 9 बार काटा गया है।\nII. उन छोटे टुकड़ोंों की, जिनका कोई भी फलक रंगा नहीं है, संख्याा 6 है।\nनीचे दिए गए कूट का प्रयोग कर सही उत्तर चुनिए:",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 68,
+      "questionTextEn": "If \n and \n, then what is \n equal to?",
+      "questionTextHi": "यदि \n और \n है, तो \n किसके बराबर है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "70",
+          "optionTextHi": "70",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "66",
+          "optionTextHi": "66",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "65",
+          "optionTextHi": "65",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "64",
+          "optionTextHi": "64",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 69,
+      "questionTextEn": "Consider the following statements:\nI. If \n; then B is always greater than E .\nII. If \n; then S is always less than V .\nWhich of the statements given above is/are correct?",
+      "questionTextHi": "निम्नलिखित कथनों पर विचार कीजिए:\nI. यदि \n; तो B सदा E से बड़ाा है।\nII. यदि \n; तो S सदा V से कम है।\nउपर्युक्त कथनों में से कौन-सा/से सही है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 70,
+      "questionTextEn": "Consider the sequence AB_CC_A_BCCC_BBC_C that follows a certain pattern. Which one of the\nfollowing completes the sequence?",
+      "questionTextHi": "अनुक्रम AB_CC_A_BCCC_BBC_C पर विचार कीजिए, जो एक विशेष प्रतिरूप का अनुसरण करता है।\nनिम्नलिखित में से कौन-सा एक यह अनुक्रम पूरा करता है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "B, C, B, C, A",
+          "optionTextHi": "B, C, B, C, A",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "A, C, B, C, A",
+          "optionTextHi": "A, C, B, C, A",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "B, C, B, A, C",
+          "optionTextHi": "B, C, B, A, C",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "C, B, B, A, C",
+          "optionTextHi": "C, B, B, A, C",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 71,
+      "questionTextEn": "What is \n in the sequence",
+      "questionTextHi": "अनुक्रम में \n क्याा है",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "18",
+          "optionTextHi": "18",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "12",
+          "optionTextHi": "12",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "9",
+          "optionTextHi": "9",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "6",
+          "optionTextHi": "6",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 72,
+      "questionTextEn": "If \n, then insert the proper notations between the successive numbers\nin the equation \n :",
+      "questionTextHi": "यदि \n है, तो समीकरण \n में क्रमिक अंकों के बीच उचित संकेतन\nप्रविष्ट कीजिए:",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "SPRQ",
+          "optionTextHi": "SPRQ",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "QRPS",
+          "optionTextHi": "QRPS",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "QRSP",
+          "optionTextHi": "QRSP",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "SPQR",
+          "optionTextHi": "SPQR",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 73,
+      "questionTextEn": "A mobile phone has been stolen. There are 3 suspects ,\n and \n. They were questioned knowing\nthat only one of them is guilty. Their responses are as follows:\nP: I did not steal. Q stole it.\nQ: R did not steal. I did not steal.\nR: I did not steal. I do not know who did it.\nWho stole the mobile phone?",
+      "questionTextHi": "एक मोबाइल फोन चोरी हो गया है। ,\n और \n, 3 संदिग्ध व्यक्ति हैं। यह जानते हुए, कि उनमें से कोई एक ही व्यक्ति दोषी है,\nउनसे पूछताछ की गई। उनके उत्तर निम्नलिखित हैं:\nP: मैंने नहीं चुराया। उसे Q ने चुराया है।\nQ: R ने नहीं चुराया है। मैंने नहीं चुराया है।\nR: मैंने नहीं चुराया है। किसने चुराया है, मैं नहीं जानता।\nमोबाइल फोन किसने चुराया है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "P",
+          "optionTextHi": "P",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Q",
+          "optionTextHi": "Q",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "R",
+          "optionTextHi": "R",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Cannot be concluded",
+          "optionTextHi": "निष्कर्ष नहीं निकाला जा सकता",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 74,
+      "questionTextEn": "Three teams \n participated in a tournament in which the teams play with one another exactly\nonce. A win fetches a team 2 points and a draw 1 point. A team gets no point for a loss. Each team\nscored exactly one goal in the tournament. The team  got  points, \n got 2 points and R got 1\npoint. Which of the following statements is/are correct?\nI. The result of the match between  and \n is a draw with the score 0-0.\nII. The number of goals scored by R against Q is 1 .\nWhich of the statements given above is/are correct?",
+      "questionTextHi": "तीन टीमों \n ने किसी टूर्नामेंट में भाग लिया, जिसमें ये टीमें ठीक एक बार एक-दूसरे के साथ खेलती हैं। किसी टीम को\nएक जीत के 2 अंक और एक ड्राा (बराबरी) का 1 अंक मिलता है। हार पर टीम को कोई अंक नहीं मिलता। टूर्नामेंट में प्रत्येक टीम\nने ठीक-ठीक एक गोल किया। टीम  को  अंक मिले, \n को 2 अंक मिले और R को 1 अंक मिला। निम्नलिखित में से कौन-\nसा/से कथन सही है/हैं?\nI.  और \n के बीच मैच का परिणाम 0-0 की बराबरी पर हुआ।\nII. R द्वाारा Q के विरुद्ध किए गए गोल की संख्याा 1 है।\nउपर्युक्त कथनों में से कौन-सा/से सही है/हैं?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "I only",
+          "optionTextHi": "केवल I",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "II only",
+          "optionTextHi": "केवल II",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Both I and II",
+          "optionTextHi": "I और II दोनों",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Neither I nor II",
+          "optionTextHi": "न तो I और न ही II",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 75,
+      "questionTextEn": "is the brother of \n and R. S is R's mother. T is P's father. How many of the following statements\nare definitely true?\nI. S and T are a couple.\nII. Q is T's son.\nIII. T is Q's father.\nIV. S is P's mother.\nV. R is T's daughter.\nVI. P is S's son.\nSelect the correct answer using the code given below:",
+      "questionTextHi": ",\n और R का भाई है। S, R की माता है। T, P का पिता है। निम्नलिखित में से कितने कथन निश्चित रूप से सत्य हैं?\nI. S और T दंपति हैं।\nII. Q, T का पुत्र है।\nIII. T, Q का पिता है।\nIV. S, P की माता है।\nV. R, T की पुत्रीी है।\nVI. P, S का पुत्र है।\nनीचे दिए गए कूट का प्रयोग कर सही उत्तर चुनिए:",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "Only two",
+          "optionTextHi": "केवल दो",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "Only three",
+          "optionTextHi": "केवल तीन",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "Only four",
+          "optionTextHi": "केवल चार",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "Only five",
+          "optionTextHi": "केवल पाँच",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 76,
+      "questionTextEn": "If NO is coded as 210,NOT is coded as 4200 and NOTE is coded as 21000 , then how is NOTES\ncoded?",
+      "questionTextHi": "यदि NO को 210 के रूप में कूटबद्ध किया गया है, NOT को 4200 के रूप में कूटबद्ध किया गया है और NOTE को 21000 के\nरूप में कूटबद्ध किया गया है, तो NOTES को किस रूप में कूटबद्ध किया जाएगा?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "399000",
+          "optionTextHi": "399000",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "420000",
+          "optionTextHi": "420000",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "440000",
+          "optionTextHi": "440000",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "630000",
+          "optionTextHi": "630000",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "A",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 77,
+      "questionTextEn": "If FRANCE is coded as 654321 and GERMANY is coded as 9158437 , then how is YEMEN coded?",
+      "questionTextHi": "यदि FRANCE को 654321 के रूप में कूटबद्ध किया गया है और GERMANY को 9158437 के रूप में कूटबद्ध किया गया है,\nतो YEMEN को किस रूप में कूटबद्ध किया जाएगा?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "54321",
+          "optionTextHi": "54321",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "81913",
+          "optionTextHi": "81913",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "71913",
+          "optionTextHi": "71913",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "71813",
+          "optionTextHi": "71813",
+          "isCorrect": true
+        }
+      ],
+      "correctOption": "D",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 78,
+      "questionTextEn": "What is \n in the sequence \n ?",
+      "questionTextHi": "अनुक्रम \n में \n क्याा है?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "26",
+          "optionTextHi": "26",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "27",
+          "optionTextHi": "27",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "29",
+          "optionTextHi": "29",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "30",
+          "optionTextHi": "30",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 79,
+      "questionTextEn": "There are 7 places \n and G in a city connected by various roads\n and FG. A is 6 km south of B. A is 10 km west of C. D is 5 km east of .\nis 6 km north of \n.\n is 9 km west of .\n is 12 km north of . A person travels from \n to F through\nthese roads. What is the distance covered by the person?",
+      "questionTextHi": "विभिन्न मार्गों \n और FG से जुड़े किसी शहर में 7 स्थाान \n और G हैं। A, B से 6\nkm दक्षिण में है। A, C से 10 km पश्चिम में है। D,  से 5 km पूर्व में है। ,\n से 6 km उत्तर में है। ,\n से 9 km पश्चिम में\nहै। ,\n से 12 km उत्तर में है। कोई व्यक्ति इन मार्गों से चल कर \n से F तक पहुँँचता है। उस व्यक्ति ने कितनी दूरी तय की?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "20 km",
+          "optionTextHi": "20 km",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "25 km",
+          "optionTextHi": "25 km",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "31 km",
+          "optionTextHi": "31 km",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "37 km",
+          "optionTextHi": "37 km",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "C",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    },
+    {
+      "year": 2025,
+      "paperCode": "CSAT",
+      "questionNumber": 80,
+      "questionTextEn": "In a certain code if 64 is written as 343 and 216 is written as \n, then how is \n written in that\ncode?",
+      "questionTextHi": "यदि किसी विशेष कूट (कोड) में 64 को 343 के रूप में लिखा गया है और 216 को \n के रूप में लिखा गया है, तो उस कूट में\n को किस रूप में लिखा जाएगा?",
+      "options": [
+        {
+          "optionCode": "A",
+          "optionTextEn": "1000",
+          "optionTextHi": "1000",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "B",
+          "optionTextEn": "1331",
+          "optionTextHi": "1331",
+          "isCorrect": true
+        },
+        {
+          "optionCode": "C",
+          "optionTextEn": "1728",
+          "optionTextHi": "1728",
+          "isCorrect": false
+        },
+        {
+          "optionCode": "D",
+          "optionTextEn": "2197",
+          "optionTextHi": "2197",
+          "isCorrect": false
+        }
+      ],
+      "correctOption": "B",
+      "section": "Basic Numeracy",
+      "subjectSlug": "csat-quant",
+      "subjectName": "CSAT: Quantitative Aptitude",
+      "topicName": "Number System & Divisibility",
+      "pageEn": 2,
+      "pageHi": 2,
+      "sourceEn": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key.pdf",
+      "sourceHi": "UPSC Civil Service Prelims Paper II 2025 (CSAT) Question Paper with Answer Key (Hindi).pdf",
+      "fileHashEn": "19e4aa7c12031210200b314ea598ab0daaa7fa8d3b1caf81705819ae5e1c42d0",
+      "fileHashHi": "280adf2e83df03af1678a30627c68efff1a7f81422872a96326edec1b75af908",
+      "contentLabel": "TEACHER_VERIFIED_CONTENT",
+      "verificationStatus": "OFFICIALLY_VERIFIED",
+      "translationStatus": "HUMAN_VERIFIED"
+    }
+  ]
+}

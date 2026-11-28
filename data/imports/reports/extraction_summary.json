@@ -1,0 +1,110 @@
+[
+  {
+    "key": "2021_CSAT",
+    "year": 2021,
+    "paperCode": "CSAT",
+    "expectedCount": 80,
+    "extractedCount": 80,
+    "withHindiCount": 80,
+    "withAnswerKeyCount": 80
+  },
+  {
+    "key": "2021_GS1",
+    "year": 2021,
+    "paperCode": "GS1",
+    "expectedCount": 100,
+    "extractedCount": 100,
+    "withHindiCount": 100,
+    "withAnswerKeyCount": 100
+  },
+  {
+    "key": "2022_CSAT",
+    "year": 2022,
+    "paperCode": "CSAT",
+    "expectedCount": 80,
+    "extractedCount": 80,
+    "withHindiCount": 80,
+    "withAnswerKeyCount": 80
+  },
+  {
+    "key": "2022_GS1",
+    "year": 2022,
+    "paperCode": "GS1",
+    "expectedCount": 100,
+    "extractedCount": 100,
+    "withHindiCount": 100,
+    "withAnswerKeyCount": 100
+  },
+  {
+    "key": "2023_CSAT",
+    "year": 2023,
+    "paperCode": "CSAT",
+    "expectedCount": 80,
+    "extractedCount": 80,
+    "withHindiCount": 80,
+    "withAnswerKeyCount": 80
+  },
+  {
+    "key": "2023_GS1",
+    "year": 2023,
+    "paperCode": "GS1",
+    "expectedCount": 100,
+    "extractedCount": 100,
+    "withHindiCount": 100,
+    "withAnswerKeyCount": 100
+  },
+  {
+    "key": "2024_CSAT",
+    "year": 2024,
+    "paperCode": "CSAT",
+    "expectedCount": 80,
+    "extractedCount": 80,
+    "withHindiCount": 80,
+    "withAnswerKeyCount": 80
+  },
+  {
+    "key": "2024_GS1",
+    "year": 2024,
+    "paperCode": "GS1",
+    "expectedCount": 100,
+    "extractedCount": 100,
+    "withHindiCount": 100,
+    "withAnswerKeyCount": 100
+  },
+  {
+    "key": "2025_CSAT",
+    "year": 2025,
+    "paperCode": "CSAT",
+    "expectedCount": 80,
+    "extractedCount": 80,
+    "withHindiCount": 80,
+    "withAnswerKeyCount": 80
+  },
+  {
+    "key": "2025_GS1",
+    "year": 2025,
+    "paperCode": "GS1",
+    "expectedCount": 100,
+    "extractedCount": 100,
+    "withHindiCount": 100,
+    "withAnswerKeyCount": 100
+  },
+  {
+    "key": "2026_CSAT",
+    "year": 2026,
+    "paperCode": "CSAT",
+    "expectedCount": 80,
+    "extractedCount": 80,
+    "withHindiCount": 80,
+    "withAnswerKeyCount": 80
+  },
+  {
+    "key": "2026_GS1",
+    "year": 2026,
+    "paperCode": "GS1",
+    "expectedCount": 100,
+    "extractedCount": 100,
+    "withHindiCount": 100,
+    "withAnswerKeyCount": 99
+  }
+]

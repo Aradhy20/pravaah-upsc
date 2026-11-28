@@ -19,10 +19,11 @@ export interface CashfreeConfig {
 
 /**
  * Returns true if Cashfree payments are configured and enabled.
- * If ENABLE_PAYMENTS is explicitly "false", returns false.
+ * Strictly requires ENABLE_PAYMENTS="true" and complete credentials.
+ * Defaults to false for launch beta safety.
  */
 export function isPaymentSystemEnabled(): boolean {
-  if (process.env.ENABLE_PAYMENTS === "false") {
+  if (process.env.ENABLE_PAYMENTS !== "true") {
     return false;
   }
   const cashfree = getCashfreeConfig();
@@ -42,8 +43,13 @@ export function getCashfreeConfig(): CashfreeConfig {
     "sandbox"
   ).toUpperCase();
 
-  const environment: "TEST" | "PROD" =
+  let environment: "TEST" | "PROD" =
     envRaw === "PROD" || envRaw === "PRODUCTION" ? "PROD" : "TEST";
+
+  // Auto-detect production key format
+  if (clientSecret.startsWith("cfsk_ma_prod_") && envRaw !== "TEST" && envRaw !== "SANDBOX") {
+    environment = "PROD";
+  }
 
   const apiVersion = process.env.CASHFREE_API_VERSION || "2023-08-01";
   const webhookSecret = process.env.CASHFREE_WEBHOOK_SECRET || clientSecret;

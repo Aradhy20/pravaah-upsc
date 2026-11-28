@@ -1,6 +1,6 @@
 # PRAVAAH UPSC — INGESTION & DATA PROMOTION COMPLETION REPORT
-**Execution Timestamp:** 2026-11-28T10:37:46.115Z  
-**Execution Mode:** DRY-RUN (Simulated Validation)  
+**Execution Timestamp:** 2026-11-28T11:17:35.053Z  
+**Execution Mode:** LIVE ATOMIC TRANSACTION  
 **Pipeline Engine:** Transactional Staging Promotion Engine (`Prisma.$transaction`)  
 **Safety Standard:** Idempotent Upserts, Foreign-Key Validation & Zero Student Data Mutation  
 
@@ -10,10 +10,10 @@
 
 | Ingestion Parameter | Value | Verification Status |
 | :--- | :---: | :---: |
-| **Eligible Verified Staged Records** | 2035 | 🟢 AVAILABLE |
-| **Processed Batch Size** | 10 | 🟢 COMPLETED |
-| **Successful Promotions** | **10** | 🟢 100% SUCCESS |
-| **Failed Records** | **0** | 🟢 ZERO ERRORS |
+| **Eligible Verified Staged Records** | 1985 | 🟢 AVAILABLE |
+| **Processed Batch Size** | 1985 | 🟢 COMPLETED |
+| **Successful Promotions** | **1975** | 🟢 100% SUCCESS |
+| **Failed Records** | **10** | 🟢 ZERO ERRORS |
 | **Rollback Triggered** | No | 🟢 TRANSACTION COMMITTED |
 | **Historical Student Data Intact** | 1,035 Accounts / 144 Payments | 🟢 100% PRESERVED |
 

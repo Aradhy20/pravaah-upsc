@@ -28,6 +28,7 @@ import {
   MapPin,
   HelpCircle,
   TrendingUp,
+  Target,
 } from "lucide-react";
 import { AILearningAssistantModal } from "@/components/AILearningAssistantModal";
 import { LanguageSwitcher } from "@/components/LanguageSwitcher";
@@ -338,6 +339,28 @@ export function Header() {
                       <Bookmark className="h-4 w-4" />
                     </div>
                     <span>Notes and Bookmarks</span>
+                  </a>
+
+                  <a
+                    href="/sprint-board"
+                    onClick={() => setPrepOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl p-2.5 hover:bg-[#FBF7F0] transition group text-xs font-semibold text-[#261B1E]"
+                  >
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FAF2E6] text-[#741A2B] group-hover:bg-[#741A2B] group-hover:text-white transition">
+                      <Target className="h-4 w-4" />
+                    </div>
+                    <span>Sprint Board</span>
+                  </a>
+
+                  <a
+                    href="/habits"
+                    onClick={() => setPrepOpen(false)}
+                    className="flex items-center gap-2.5 rounded-xl p-2.5 hover:bg-[#FBF7F0] transition group text-xs font-semibold text-[#261B1E]"
+                  >
+                    <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-[#FAF2E6] text-[#741A2B] group-hover:bg-[#741A2B] group-hover:text-white transition">
+                      <TrendingUp className="h-4 w-4" />
+                    </div>
+                    <span>Habit Tracker</span>
                   </a>
 
                   <a

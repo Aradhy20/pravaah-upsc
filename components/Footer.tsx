@@ -188,6 +188,14 @@ export function Footer() {
                   <Mail className="h-3.5 w-3.5" />
                   <span className="truncate">jainaradhy123@gmail.com</span>
                 </a>
+
+                <a
+                  href="mailto:jainaradhy123@gmail.com?subject=UPSC%20Academic%20Errata%20Report"
+                  className="flex items-center gap-1.5 mt-2.5 font-bold text-[#741A2B] bg-[#FAF2E6] px-2.5 py-1.5 rounded-lg border border-[#E5C88E] hover:bg-[#F4EDE2] transition text-[11px]"
+                >
+                  <Shield className="h-3.5 w-3.5 text-[#C69A4A]" />
+                  <span>Report Academic Errata</span>
+                </a>
               </div>
 
               <div className="pt-2 text-[11px] space-y-1">

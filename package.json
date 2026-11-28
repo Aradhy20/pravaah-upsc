@@ -19,7 +19,7 @@
     "pyq:validate": "npx tsx scripts/pyq/validate-records.ts",
     "pyq:import": "npx tsx scripts/pyq/import-questions.ts",
     "pyq:report": "npx tsx scripts/pyq/generate-import-report.ts",
-    "test": "npx tsx --test tests/*.test.mjs"
+    "test": "NODE_ENV=test npx tsx --test tests/*.test.mjs"
   },
   "dependencies": {
     "@prisma/client": "^5.22.0",

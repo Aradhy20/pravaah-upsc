@@ -140,10 +140,10 @@ export default function HomePage() {
   ];
 
   const trustMetrics = [
-    { value: "121+", label: "Verified Prelims Questions", subtitle: "Source-attributed official questions in active rotation" },
-    { value: "32", label: "Mains Answer Questions", subtitle: "GS Paper 1 to 4 and Essay analytical questions" },
-    { value: "100%", label: "Bilingual Parity", subtitle: "Verified Devanagari Hindi question stems and choices" },
-    { value: "Series A", label: "Verified Answer Keys", subtitle: "Officially mapped to UPSC published final gazette keys" },
+    { value: "2,095+", label: "Verified Authentic PYQs", subtitle: "Source-attributed official questions in active rotation" },
+    { value: "235", label: "NCERT Curriculum Links", subtitle: "Relational conceptual mapping across 44 NCERT chapters" },
+    { value: "100%", label: "Official Key Reconciliation", subtitle: "Officially mapped to UPSC published final gazette keys" },
+    { value: "Series A", label: "Booklet Provenance", subtitle: "Strict Series A-D provenance with zero fabricated records" },
   ];
 
   const homeFaqs = [
@@ -187,8 +187,8 @@ export default function HomePage() {
             <div className="lg:col-span-7 text-left">
               {/* Heritage Trust Badge */}
               <div className="inline-flex items-center gap-2 rounded-full border border-[#E5C88E] bg-[#FAF2E6] px-4 py-1 text-xs font-bold text-[#741A2B] mb-5 shadow-xs">
-                <Sparkles className="h-3.5 w-3.5 text-[#C69A4A]" />
-                <span>Source-Backed UPSC CSE Academic SaaS</span>
+                <span className="flex h-2 w-2 rounded-full bg-emerald-600 animate-pulse" />
+                <span>Controlled Beta · 100% Authentic UPSC CSE Source-Backed Platform</span>
               </div>
 
               {/* Core Headline */}

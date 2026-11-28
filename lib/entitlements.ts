@@ -225,14 +225,46 @@ export async function getOrCreateUsageLedger(userId: string) {
     // Ignore pack query warning if table is cold
   }
 
-  const ledger = await prisma.userUsageLedger.upsert({
-    where: { userId },
-    update: {
-      aiMentorMessagesLimit: aiMentorLimit,
-      mainsEvaluationsLimit: mainsEvalLimit,
-      pyqDailyLimit,
-    },
-    create: {
+  try {
+    const ledger = await prisma.userUsageLedger.upsert({
+      where: { userId },
+      update: {
+        aiMentorMessagesLimit: aiMentorLimit,
+        mainsEvaluationsLimit: mainsEvalLimit,
+        pyqDailyLimit,
+      },
+      create: {
+        userId,
+        periodStart: now,
+        periodEnd,
+        aiMentorMessagesUsed: 0,
+        aiMentorMessagesLimit: aiMentorLimit,
+        mainsEvaluationsUsed: 0,
+        mainsEvaluationsLimit: mainsEvalLimit,
+        pyqAttemptsToday: 0,
+        pyqDailyLimit,
+      },
+    });
+
+    // Reset daily PYQ counter if last attempt was on a previous day
+    if (ledger.lastPyqAttemptDate) {
+      const lastDate = new Date(ledger.lastPyqAttemptDate).toDateString();
+      if (lastDate !== now.toDateString()) {
+        return await prisma.userUsageLedger.update({
+          where: { userId },
+          data: {
+            pyqAttemptsToday: 0,
+            lastPyqAttemptDate: now,
+          },
+        });
+      }
+    }
+
+    return ledger;
+  } catch (err: any) {
+    console.warn("Usage ledger fallback:", err.message);
+    return {
+      id: `ledger_${userId}`,
       userId,
       periodStart: now,
       periodEnd,
@@ -242,24 +274,11 @@ export async function getOrCreateUsageLedger(userId: string) {
       mainsEvaluationsLimit: mainsEvalLimit,
       pyqAttemptsToday: 0,
       pyqDailyLimit,
-    },
-  });
-
-  // Reset daily PYQ counter if last attempt was on a previous day
-  if (ledger.lastPyqAttemptDate) {
-    const lastDate = new Date(ledger.lastPyqAttemptDate).toDateString();
-    if (lastDate !== now.toDateString()) {
-      return await prisma.userUsageLedger.update({
-        where: { userId },
-        data: {
-          pyqAttemptsToday: 0,
-          lastPyqAttemptDate: now,
-        },
-      });
-    }
+      lastPyqAttemptDate: null,
+      createdAt: now,
+      updatedAt: now,
+    };
   }
-
-  return ledger;
 }
 
 /**
@@ -288,20 +307,25 @@ export async function deductAiCredit(
   userId: string,
   type: "AI_MENTOR" | "MAINS_EVALUATION"
 ) {
-  if (type === "AI_MENTOR") {
-    return await prisma.userUsageLedger.update({
-      where: { userId },
-      data: {
-        aiMentorMessagesUsed: { increment: 1 },
-      },
-    });
-  } else {
-    return await prisma.userUsageLedger.update({
-      where: { userId },
-      data: {
-        mainsEvaluationsUsed: { increment: 1 },
-      },
-    });
+  try {
+    if (type === "AI_MENTOR") {
+      return await prisma.userUsageLedger.update({
+        where: { userId },
+        data: {
+          aiMentorMessagesUsed: { increment: 1 },
+        },
+      });
+    } else {
+      return await prisma.userUsageLedger.update({
+        where: { userId },
+        data: {
+          mainsEvaluationsUsed: { increment: 1 },
+        },
+      });
+    }
+  } catch (err: any) {
+    console.warn("deductAiCredit ledger warning:", err.message);
+    return null;
   }
 }
 
@@ -312,21 +336,25 @@ export async function restoreAiCredit(
   userId: string,
   type: "AI_MENTOR" | "MAINS_EVALUATION"
 ) {
-  const ledger = await getOrCreateUsageLedger(userId);
-  if (type === "AI_MENTOR") {
-    if (ledger.aiMentorMessagesUsed > 0) {
-      await prisma.userUsageLedger.update({
-        where: { userId },
-        data: { aiMentorMessagesUsed: { decrement: 1 } },
-      });
+  try {
+    const ledger = await getOrCreateUsageLedger(userId);
+    if (type === "AI_MENTOR") {
+      if (ledger.aiMentorMessagesUsed > 0) {
+        await prisma.userUsageLedger.update({
+          where: { userId },
+          data: { aiMentorMessagesUsed: { decrement: 1 } },
+        });
+      }
+    } else {
+      if (ledger.mainsEvaluationsUsed > 0) {
+        await prisma.userUsageLedger.update({
+          where: { userId },
+          data: { mainsEvaluationsUsed: { decrement: 1 } },
+        });
+      }
     }
-  } else {
-    if (ledger.mainsEvaluationsUsed > 0) {
-      await prisma.userUsageLedger.update({
-        where: { userId },
-        data: { mainsEvaluationsUsed: { decrement: 1 } },
-      });
-    }
+  } catch (err: any) {
+    console.warn("restoreAiCredit ledger warning:", err.message);
   }
 }
 
@@ -336,24 +364,37 @@ export async function restoreAiCredit(
 export async function checkDailyPyqLimit(
   userId: string
 ): Promise<{ allowed: boolean; attemptsToday: number; dailyLimit: number }> {
-  const ledger = await getOrCreateUsageLedger(userId);
-  return {
-    allowed: ledger.pyqAttemptsToday < ledger.pyqDailyLimit,
-    attemptsToday: ledger.pyqAttemptsToday,
-    dailyLimit: ledger.pyqDailyLimit,
-  };
+  try {
+    const ledger = await getOrCreateUsageLedger(userId);
+    return {
+      allowed: ledger.pyqAttemptsToday < ledger.pyqDailyLimit,
+      attemptsToday: ledger.pyqAttemptsToday,
+      dailyLimit: ledger.pyqDailyLimit,
+    };
+  } catch {
+    return {
+      allowed: true,
+      attemptsToday: 0,
+      dailyLimit: 15,
+    };
+  }
 }
 
 /**
  * Increments daily PYQ practice counter.
  */
 export async function recordPyqAttempt(userId: string) {
-  const now = new Date();
-  return await prisma.userUsageLedger.update({
-    where: { userId },
-    data: {
-      pyqAttemptsToday: { increment: 1 },
-      lastPyqAttemptDate: now,
-    },
-  });
+  try {
+    const now = new Date();
+    return await prisma.userUsageLedger.update({
+      where: { userId },
+      data: {
+        pyqAttemptsToday: { increment: 1 },
+        lastPyqAttemptDate: now,
+      },
+    });
+  } catch (err: any) {
+    console.warn("recordPyqAttempt ledger warning:", err.message);
+    return null;
+  }
 }

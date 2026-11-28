@@ -72,75 +72,131 @@ export async function GET(request: NextRequest) {
       ];
     }
 
-    // Parallel multi-domain search across Aspirant Knowledge Base
-    const [questions, videoLessons, ncertChapters, topperCopies, mapFeatures] = await Promise.all([
-      prisma.question.findMany({
-        where,
-        take: 20,
-        orderBy: [{ year: "desc" }, { questionNumber: "asc" }],
-        include: {
-          paper: true,
-          options: { orderBy: { optionCode: "asc" } },
-          explanation: true,
-          topics: {
-            include: {
-              topic: {
-                include: { subject: true },
+    // Parallel multi-domain search across Aspirant Knowledge Base with resilient fallbacks
+    const [questions, videoLessons, ncertChapters, topperCopies, mapFeatures, currentAffairs, mainsQuestions] = await Promise.all([
+      prisma.question
+        .findMany({
+          where,
+          take: 20,
+          orderBy: [{ year: "desc" }, { questionNumber: "asc" }],
+          include: {
+            paper: true,
+            options: { orderBy: { optionCode: "asc" } },
+            explanation: true,
+            topics: {
+              include: {
+                topic: {
+                  include: { subject: true },
+                },
               },
             },
           },
-        },
-      }),
+        })
+        .catch((e) => {
+          console.warn("Search questions fallback:", e.message);
+          return [];
+        }),
 
-      prisma.videoLesson.findMany({
-        where: {
-          OR: [
-            { title: { contains: query, mode: "insensitive" } },
-            { description: { contains: query, mode: "insensitive" } },
-            { subject: { contains: query, mode: "insensitive" } },
-            { topic: { contains: query, mode: "insensitive" } },
-          ],
-        },
-        take: 8,
-        orderBy: { orderIndex: "asc" },
-      }),
+      prisma.videoLesson
+        .findMany({
+          where: {
+            OR: [
+              { title: { contains: query, mode: "insensitive" } },
+              { description: { contains: query, mode: "insensitive" } },
+              { subject: { contains: query, mode: "insensitive" } },
+              { topic: { contains: query, mode: "insensitive" } },
+            ],
+          },
+          take: 8,
+          orderBy: { orderIndex: "asc" },
+        })
+        .catch((e) => {
+          console.warn("Search videoLesson fallback:", e.message);
+          return [];
+        }),
 
-      prisma.nCERTChapter.findMany({
-        where: {
-          OR: [
-            { chapterTitle: { contains: query, mode: "insensitive" } },
-            { keyTopics: { contains: query, mode: "insensitive" } },
-            { summary: { contains: query, mode: "insensitive" } },
-          ],
-        },
-        take: 6,
-        include: { book: true },
-      }),
+      prisma.nCERTChapter
+        .findMany({
+          where: {
+            OR: [
+              { chapterTitle: { contains: query, mode: "insensitive" } },
+              { keyTopics: { contains: query, mode: "insensitive" } },
+              { summary: { contains: query, mode: "insensitive" } },
+            ],
+          },
+          take: 6,
+          include: { book: true },
+        })
+        .catch((e) => {
+          console.warn("Search ncertChapter fallback:", e.message);
+          return [];
+        }),
 
-      prisma.topperCopy.findMany({
-        where: {
-          OR: [
-            { title: { contains: query, mode: "insensitive" } },
-            { description: { contains: query, mode: "insensitive" } },
-            { topperName: { contains: query, mode: "insensitive" } },
-            { keyTakeaways: { contains: query, mode: "insensitive" } },
-          ],
-        },
-        take: 6,
-        orderBy: [{ year: "desc" }, { rank: "asc" }],
-      }),
+      prisma.topperCopy
+        .findMany({
+          where: {
+            OR: [
+              { title: { contains: query, mode: "insensitive" } },
+              { description: { contains: query, mode: "insensitive" } },
+              { topperName: { contains: query, mode: "insensitive" } },
+              { keyTakeaways: { contains: query, mode: "insensitive" } },
+            ],
+          },
+          take: 6,
+          orderBy: [{ year: "desc" }, { rank: "asc" }],
+        })
+        .catch((e) => {
+          console.warn("Search topperCopy fallback:", e.message);
+          return [];
+        }),
 
-      prisma.mapFeature.findMany({
-        where: {
-          OR: [
-            { name: { contains: query, mode: "insensitive" } },
-            { nameHi: { contains: query, mode: "insensitive" } },
-            { keyFacts: { contains: query, mode: "insensitive" } },
-            { stateOrCountry: { contains: query, mode: "insensitive" } },
-          ],
-        },
-        take: 6,
-      }),
+      prisma.mapFeature
+        .findMany({
+          where: {
+            OR: [
+              { name: { contains: query, mode: "insensitive" } },
+              { nameHi: { contains: query, mode: "insensitive" } },
+              { keyFacts: { contains: query, mode: "insensitive" } },
+              { stateOrCountry: { contains: query, mode: "insensitive" } },
+            ],
+          },
+          take: 6,
+        })
+        .catch((e) => {
+          console.warn("Search mapFeature fallback:", e.message);
+          return [];
+        }),
+
+      prisma.currentAffairsStory
+        .findMany({
+          where: {
+            OR: [
+              { title: { contains: query, mode: "insensitive" } },
+              { summary: { contains: query, mode: "insensitive" } },
+              { content: { contains: query, mode: "insensitive" } },
+            ],
+          },
+          take: 6,
+        })
+        .catch((e) => {
+          console.warn("Search currentAffairs fallback:", e.message);
+          return [];
+        }),
+
+      prisma.mainsQuestion
+        .findMany({
+          where: {
+            OR: [
+              { questionText: { contains: query, mode: "insensitive" } },
+              { theme: { contains: query, mode: "insensitive" } },
+            ],
+          },
+          take: 6,
+        })
+        .catch((e) => {
+          console.warn("Search mainsQuestion fallback:", e.message);
+          return [];
+        }),
     ]);
 
     // Format questions
@@ -214,6 +270,20 @@ export async function GET(request: NextRequest) {
           keyFacts: m.keyFacts,
           upscReference: m.upscReference,
         })),
+        currentAffairs: currentAffairs.map((ca) => ({
+          id: ca.id,
+          title: ca.title,
+          summary: ca.summary,
+          slug: ca.slug,
+        })),
+        mainsQuestions: mainsQuestions.map((mq) => ({
+          id: mq.id,
+          questionText: mq.questionText,
+          paperCode: mq.paperCode,
+          year: mq.year,
+          theme: mq.theme,
+          marks: mq.marks,
+        })),
         glossaryTerms,
       },
       synthesis: {
@@ -228,6 +298,8 @@ export async function GET(request: NextRequest) {
         totalNcert: ncertChapters.length,
         totalToppers: topperCopies.length,
         totalMaps: mapFeatures.length,
+        totalCurrentAffairs: currentAffairs.length,
+        totalMains: mainsQuestions.length,
         totalGlossary: glossaryTerms.length,
       },
     });

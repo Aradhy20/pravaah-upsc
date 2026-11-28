@@ -14,7 +14,14 @@ export interface CurrentUser {
 
 export const COOKIE_USER_ID = "pravaah_user_id";
 
-const AUTH_SECRET = process.env.AUTH_SECRET || "pravaah_auth_secret_token_2026_super_secure_key";
+const AUTH_SECRET =
+  process.env.AUTH_SECRET ||
+  (process.env.NODE_ENV === "production"
+    ? (() => {
+        console.warn("⚠️ AUTH_SECRET is not set in production. Please set AUTH_SECRET in your environment.");
+        return "pravaah_auth_secret_token_2026_super_secure_key";
+      })()
+    : "pravaah_auth_secret_token_2026_super_secure_key");
 
 /**
  * Sign a session token with HMAC-SHA256
@@ -28,7 +35,7 @@ export function signSessionToken(userId: string): string {
 
 /**
  * Verify and extract userId from an HMAC-SHA256 signed session token.
- * Maintains backward compatibility with raw CUIDs in local automated test suites.
+ * Strictly restricts raw CUID bypass to automated test environments.
  */
 export function verifySessionToken(token: string): string | null {
   if (!token) return null;
@@ -50,9 +57,11 @@ export function verifySessionToken(token: string): string | null {
     return null;
   }
 
-  // Backward compatibility fallback for test scripts passing direct raw user IDs
-  if (/^cm[a-z0-9]+$/.test(token) || token.startsWith("usr-") || token.startsWith("user_") || token === "guest-aspirant") {
-    return token;
+  // Strictly restrict raw user ID bypass to test execution environments
+  if (process.env.NODE_ENV === "test" || process.env.ENABLE_TEST_AUTH_BYPASS === "true") {
+    if (/^cm[a-z0-9]+$/.test(token) || token.startsWith("usr-") || token.startsWith("user_") || token === "guest-aspirant") {
+      return token;
+    }
   }
 
   return null;
@@ -76,12 +85,22 @@ export async function getAuthenticatedUser(request?: NextRequest): Promise<Curre
   if (request) {
     const xUserId = request.headers.get("x-user-id");
     if (xUserId) {
-      userId = verifySessionToken(xUserId) || xUserId;
+      const verified = verifySessionToken(xUserId);
+      if (verified) {
+        userId = verified;
+      } else if (process.env.NODE_ENV === "test" || process.env.ENABLE_TEST_AUTH_BYPASS === "true") {
+        userId = xUserId;
+      }
     } else {
       const authHeader = request.headers.get("authorization");
       if (authHeader && authHeader.startsWith("Bearer ")) {
         const rawToken = authHeader.substring(7).trim();
-        userId = verifySessionToken(rawToken) || rawToken;
+        const verified = verifySessionToken(rawToken);
+        if (verified) {
+          userId = verified;
+        } else if (process.env.NODE_ENV === "test" || process.env.ENABLE_TEST_AUTH_BYPASS === "true") {
+          userId = rawToken;
+        }
       } else {
         const cookieVal = request.cookies.get(COOKIE_USER_ID)?.value;
         if (cookieVal) {
