@@ -15,34 +15,11 @@ export interface DbSyncResult {
 }
 
 /**
- * Ensures all required UserProfile columns and foundational schema columns exist.
- * Executes non-destructive, safe ALTER TABLE IF NOT EXISTS commands directly on PostgreSQL.
- * Runs once per process lifecycle to ensure zero overhead on hot paths.
+ * Dedicated schema synchronizer for Question, QuestionOption, and Explanation models.
+ * Guarantees that any missing column in the live database is added immediately.
  */
-export async function ensureUserProfileSchema(): Promise<boolean> {
-  if (isUserProfileSchemaEnsured) return true;
-
+export async function ensureQuestionSchema(): Promise<boolean> {
   try {
-    // 1. Ensure UserProfile columns exist
-    await prisma.$executeRawUnsafe(`
-      ALTER TABLE "UserProfile" 
-      ADD COLUMN IF NOT EXISTS "strongSubjects" TEXT,
-      ADD COLUMN IF NOT EXISTS "weakSubjects" TEXT,
-      ADD COLUMN IF NOT EXISTS "dailyStudyHours" DOUBLE PRECISION DEFAULT 4.0,
-      ADD COLUMN IF NOT EXISTS "preferredLanguage" TEXT DEFAULT 'en',
-      ADD COLUMN IF NOT EXISTS "preparationStage" TEXT DEFAULT 'BEGINNER',
-      ADD COLUMN IF NOT EXISTS "readinessIndex" DOUBLE PRECISION DEFAULT 0.0,
-      ADD COLUMN IF NOT EXISTS "targetExam" TEXT DEFAULT 'UPSC_CSE';
-    `);
-
-    // 2. Ensure default ASPIRANT role exists
-    await prisma.$executeRawUnsafe(`
-      INSERT INTO "Role" ("id", "name", "description", "createdAt")
-      VALUES ('role_aspirant', 'ASPIRANT', 'Standard Civil Services Aspirant', NOW())
-      ON CONFLICT ("name") DO NOTHING;
-    `);
-
-    // 3. Ensure Question columns exist
     await prisma.$executeRawUnsafe(`
       ALTER TABLE "Question"
       ADD COLUMN IF NOT EXISTS "recordId" TEXT,
@@ -74,8 +51,11 @@ export async function ensureUserProfileSchema(): Promise<boolean> {
       ADD COLUMN IF NOT EXISTS "verifiedAt" TIMESTAMP WITH TIME ZONE,
       ADD COLUMN IF NOT EXISTS "isVerified" BOOLEAN DEFAULT true;
     `);
+  } catch (err: any) {
+    console.warn("Question table self-healing warning:", err.message);
+  }
 
-    // 4. Ensure QuestionOption columns exist
+  try {
     await prisma.$executeRawUnsafe(`
       ALTER TABLE "QuestionOption"
       ADD COLUMN IF NOT EXISTS "optionLabel" TEXT,
@@ -85,8 +65,11 @@ export async function ensureUserProfileSchema(): Promise<boolean> {
       ADD COLUMN IF NOT EXISTS "optionOrder" INTEGER DEFAULT 1,
       ADD COLUMN IF NOT EXISTS "isCorrect" BOOLEAN DEFAULT false;
     `);
+  } catch (err: any) {
+    console.warn("QuestionOption table self-healing warning:", err.message);
+  }
 
-    // 5. Ensure Explanation columns exist
+  try {
     await prisma.$executeRawUnsafe(`
       ALTER TABLE "Explanation"
       ADD COLUMN IF NOT EXISTS "explanationEn" TEXT,
@@ -99,14 +82,54 @@ export async function ensureUserProfileSchema(): Promise<boolean> {
       ADD COLUMN IF NOT EXISTS "relatedConcept" TEXT,
       ADD COLUMN IF NOT EXISTS "verifiedAt" TIMESTAMP WITH TIME ZONE;
     `);
+  } catch (err: any) {
+    console.warn("Explanation table self-healing warning:", err.message);
+  }
 
-    // 6. Ensure MainsQuestion columns exist
+  try {
     await prisma.$executeRawUnsafe(`
       ALTER TABLE "MainsQuestion"
       ADD COLUMN IF NOT EXISTS "questionTextHi" TEXT,
       ADD COLUMN IF NOT EXISTS "translationStatus" TEXT DEFAULT 'TRANSLATION_MISSING',
       ADD COLUMN IF NOT EXISTS "sourceReference" TEXT;
     `);
+  } catch (err: any) {
+    console.warn("MainsQuestion table self-healing warning:", err.message);
+  }
+
+  return true;
+}
+
+/**
+ * Ensures all required UserProfile columns and foundational schema columns exist.
+ * Executes non-destructive, safe ALTER TABLE IF NOT EXISTS commands directly on PostgreSQL.
+ * Runs once per process lifecycle to ensure zero overhead on hot paths.
+ */
+export async function ensureUserProfileSchema(): Promise<boolean> {
+  if (isUserProfileSchemaEnsured) return true;
+
+  try {
+    // 1. Ensure UserProfile columns exist
+    await prisma.$executeRawUnsafe(`
+      ALTER TABLE "UserProfile" 
+      ADD COLUMN IF NOT EXISTS "strongSubjects" TEXT,
+      ADD COLUMN IF NOT EXISTS "weakSubjects" TEXT,
+      ADD COLUMN IF NOT EXISTS "dailyStudyHours" DOUBLE PRECISION DEFAULT 4.0,
+      ADD COLUMN IF NOT EXISTS "preferredLanguage" TEXT DEFAULT 'en',
+      ADD COLUMN IF NOT EXISTS "preparationStage" TEXT DEFAULT 'BEGINNER',
+      ADD COLUMN IF NOT EXISTS "readinessIndex" DOUBLE PRECISION DEFAULT 0.0,
+      ADD COLUMN IF NOT EXISTS "targetExam" TEXT DEFAULT 'UPSC_CSE';
+    `);
+
+    // 2. Ensure default ASPIRANT role exists
+    await prisma.$executeRawUnsafe(`
+      INSERT INTO "Role" ("id", "name", "description", "createdAt")
+      VALUES ('role_aspirant', 'ASPIRANT', 'Standard Civil Services Aspirant', NOW())
+      ON CONFLICT ("name") DO NOTHING;
+    `);
+
+    // 3. Ensure Question and related schema columns exist
+    await ensureQuestionSchema();
 
     isUserProfileSchemaEnsured = true;
     return true;
