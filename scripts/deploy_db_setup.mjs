@@ -57,6 +57,17 @@ async function setup() {
     console.warn("⚠️ Table check warning:", syncErr.message);
   }
 
+  // 1c. Ensure expanded aspirant resources (videos, topper copies, interview, map) are seeded
+  try {
+    execSync("npx tsx scripts/seed_aspirant_resources.ts", {
+      stdio: "inherit",
+      env: { ...process.env, DATABASE_URL: dbUrl },
+    });
+    console.log("✅ Aspirant resources synchronized!");
+  } catch (seedResErr) {
+    console.warn("⚠️ Aspirant resource seed warning:", seedResErr.message);
+  }
+
   // 2. Check and Seed Data if empty
   console.log("🌱 Checking if database has question records...");
   try {

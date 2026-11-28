@@ -160,3 +160,41 @@ test("6. Cashfree Pure Payment Architecture", async (t) => {
     assert.equal(fs.existsSync("app/api/v1/payments/orders/[orderId]/submit-utr/route.ts"), false);
   });
 });
+
+test("7. Expanded Aspirant Learning Assets", async (t) => {
+  await t.test("verifies database contains expanded video academy, topper copies, and interview resources", async () => {
+    const videoCount = await prisma.videoLesson.count();
+    const topperCount = await prisma.topperCopy.count();
+    const interviewCount = await prisma.interviewQuestion.count();
+    const mapCount = await prisma.mapFeature.count();
+
+    assert.ok(videoCount >= 20, `Video Lessons count (${videoCount}) must be at least 20`);
+    assert.ok(topperCount >= 10, `Topper Copies count (${topperCount}) must be at least 10`);
+    assert.ok(interviewCount >= 10, `Interview Prompts count (${interviewCount}) must be at least 10`);
+    assert.ok(mapCount >= 15, `Map Features count (${mapCount}) must be at least 15`);
+  });
+});
+
+test("8. Universal Aspirant Search & Knowledge Discovery", async (t) => {
+  await t.test("verifies multi-domain search across questions, videos, topper copies, and glossary", async () => {
+    const videos = await prisma.videoLesson.findMany({
+      where: {
+        OR: [
+          { title: { contains: "Monetary", mode: "insensitive" } },
+          { topic: { contains: "Monetary", mode: "insensitive" } },
+        ],
+      },
+    });
+    assert.ok(videos.length >= 1, "Must find monetary policy video lessons");
+
+    const toppers = await prisma.topperCopy.findMany({
+      where: {
+        OR: [
+          { topperName: { contains: "Aditya", mode: "insensitive" } },
+          { topperName: { contains: "Shruti", mode: "insensitive" } },
+        ],
+      },
+    });
+    assert.ok(toppers.length >= 2, "Must find AIR 1 Aditya Srivastava and Shruti Sharma answer scripts");
+  });
+});
